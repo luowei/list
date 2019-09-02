@@ -1,0 +1,340 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>数据结构-链表的应用之通讯录管理及约瑟夫环</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="通讯录管理">通讯录管理</h3> <p><strong>list.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//通讯录管理 </span>
+ 
+<span class="cm">/*****************************/</span> 
+<span class="cm">/*    主控菜单处理测试程序   */</span>  
+<span class="cm">/*****************************/</span> 
+<span class="cp">#include&lt;stdio.h&gt; 
+#include&lt;string.h&gt; 
+#include&lt;stdlib.h&gt; 
+</span><span class="k">typedef</span> <span class="k">struct</span><span class="p">{</span>            <span class="c1">//通讯录结点类型 </span>
+    <span class="kt">char</span> <span class="n">num</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>        <span class="c1">//编号 </span>
+    <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="mi">9</span><span class="p">];</span>        <span class="c1">//姓名 </span>
+    <span class="kt">char</span> <span class="n">sex</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>        <span class="c1">//性别 </span>
+    <span class="kt">char</span> <span class="n">phone</span><span class="p">[</span><span class="mi">13</span><span class="p">];</span>        <span class="c1">//电话 </span>
+    <span class="kt">char</span> <span class="n">addr</span><span class="p">[</span><span class="mi">31</span><span class="p">];</span>        <span class="c1">//地址  </span>
+<span class="p">}</span><span class="n">DataType</span><span class="p">;</span>  
+ 
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">node</span><span class="p">{</span>    <span class="c1">//结点类型定义  </span>
+    <span class="n">DataType</span> <span class="n">data</span><span class="p">;</span>        <span class="c1">//结点数据域  </span>
+    <span class="k">struct</span> <span class="n">node</span> <span class="o">*</span> <span class="n">next</span><span class="p">;</span>    <span class="c1">//结点指针域  </span>
+<span class="p">}</span><span class="n">ListNode</span><span class="p">;</span> 
+ 
+<span class="k">typedef</span> <span class="n">ListNode</span> <span class="o">*</span> <span class="n">LinkList</span><span class="p">;</span>  
+<span class="n">LinkList</span> <span class="n">head</span><span class="p">;</span> 
+<span class="n">ListNode</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span> 
+ 
+<span class="c1">//函数说明 </span>
+<span class="kt">int</span> <span class="nf">menu_select</span><span class="p">();</span> 
+<span class="n">LinkList</span> <span class="nf">CreateList</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span> 
+<span class="kt">void</span> <span class="nf">InsertNode</span><span class="p">(</span><span class="n">LinkList</span> <span class="n">head</span><span class="p">,</span><span class="n">ListNode</span> <span class="o">*</span><span class="n">p</span><span class="p">);</span> 
+<span class="n">ListNode</span> <span class="o">*</span><span class="nf">ListFind</span><span class="p">(</span><span class="n">LinkList</span> <span class="n">head</span><span class="p">);</span> 
+<span class="kt">void</span> <span class="nf">DelNode</span><span class="p">(</span><span class="n">LinkList</span> <span class="n">head</span><span class="p">);</span> 
+<span class="kt">void</span> <span class="nf">PrintList</span><span class="p">(</span><span class="n">LinkList</span> <span class="n">head</span><span class="p">);</span> 
+ 
+<span class="c1">//主函数 </span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="k">for</span><span class="p">(;;)</span> 
+    <span class="p">{</span> 
+        <span class="k">switch</span><span class="p">(</span><span class="n">menu_select</span><span class="p">())</span> 
+        <span class="p">{</span> 
+            <span class="k">case</span> <span class="mi">1</span><span class="p">:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"****************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"*          通讯录链表的建立            *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"****************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="n">head</span><span class="o">=</span><span class="n">CreateList</span><span class="p">();</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">2</span><span class="p">:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"****************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"*            通讯者信息的添加          *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"****************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"*编号(4) 姓名(8) 性别 电话(11) 地址(31)*</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"****************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="n">p</span><span class="o">=</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ListNode</span><span class="p">));</span>    <span class="c1">//申请新结点 </span>
+                <span class="n">scanf</span><span class="p">(</span><span class="s">"%s%s%s%s%s"</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">num</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> 
+                    <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">sex</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">phone</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">addr</span><span class="p">);</span> 
+                <span class="n">InsertNode</span><span class="p">(</span><span class="n">head</span><span class="p">,</span><span class="n">p</span><span class="p">);</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">3</span><span class="p">:</span> 
+                 <span class="n">printf</span><span class="p">(</span><span class="s">"****************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                 <span class="n">printf</span><span class="p">(</span><span class="s">"*          通讯录信息的查询            *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                 <span class="n">printf</span><span class="p">(</span><span class="s">"****************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                 <span class="n">p</span><span class="o">=</span><span class="n">ListFind</span><span class="p">(</span><span class="n">head</span><span class="p">);</span> 
+                <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span> 
+                <span class="p">{</span> 
+                    <span class="n">printf</span><span class="p">(</span><span class="s">"*编 号  姓 名  性 别  联系电话  地 址  *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                     <span class="n">printf</span><span class="p">(</span><span class="s">"----------------------------------------</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                     <span class="n">printf</span><span class="p">(</span><span class="s">"%s</span><span class="se">\t</span><span class="s">%s</span><span class="se">\t</span><span class="s">%s</span><span class="se">\t</span><span class="s">%s</span><span class="se">\t</span><span class="s">%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">num</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> 
+                         <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">sex</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">phone</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">addr</span><span class="p">);</span> 
+                    <span class="n">printf</span><span class="p">(</span><span class="s">"----------------------------------------</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+                <span class="p">}</span> 
+                <span class="k">else</span> 
+                    <span class="n">printf</span><span class="p">(</span><span class="s">"没有查到要查询的通读者！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">4</span><span class="p">:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"****************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                 <span class="n">printf</span><span class="p">(</span><span class="s">"*          通讯录信息的删除            *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                 <span class="n">printf</span><span class="p">(</span><span class="s">"****************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                 <span class="n">DelNode</span><span class="p">(</span><span class="n">head</span><span class="p">);</span>    <span class="c1">//删除结点 </span>
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">5</span><span class="p">:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"****************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+                <span class="n">printf</span><span class="p">(</span><span class="s">"*          通讯录链表的输出            *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"****************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+                <span class="n">PrintList</span><span class="p">(</span><span class="n">head</span><span class="p">);</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">0</span><span class="p">:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\t</span><span class="s"> 再  见！ </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+                <span class="k">return</span><span class="p">;</span> 
+        <span class="p">}</span> 
+    <span class="p">}</span> 
+<span class="p">}</span> 
+ 
+<span class="cm">/**********************************/</span> 
+<span class="cm">/*       菜单选择函数程序         */</span> 
+<span class="cm">/**********************************/</span> 
+<span class="kt">int</span> <span class="nf">menu_select</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">sn</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"==============================</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"   通讯录管理系统</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"==============================</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"   1.通讯录链表的建立</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+    <span class="n">printf</span><span class="p">(</span><span class="s">"   2.通讯者结点的插入</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"   3.通讯者结点的查询</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"   4.通讯者结点的删除</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"   5.通讯录链表的输出</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"   0.退出管理系统</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"==============================</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="k">for</span><span class="p">(;;)</span> 
+    <span class="p">{</span> 
+        <span class="n">scanf</span><span class="p">(</span><span class="s">" %d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">sn</span><span class="p">);</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">sn</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">||</span><span class="n">sn</span><span class="o">&gt;</span><span class="mi">5</span><span class="p">)</span> 
+            <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n\t</span><span class="s">输入错误，重选0-5"</span><span class="p">);</span> 
+        <span class="k">else</span> 
+            <span class="k">break</span><span class="p">;</span>  
+    <span class="p">}</span> 
+    <span class="k">return</span> <span class="n">sn</span><span class="p">;</span> 
+<span class="p">}</span> 
+ 
+<span class="cm">/***********************************/</span> 
+<span class="cm">/*  用尾插法建立通讯录链表函数     */</span> 
+<span class="cm">/***********************************/</span> 
+<span class="n">LinkList</span> <span class="nf">CreateList</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="c1">//尾插法建立带头结点的通讯录链表算法 </span>
+    <span class="n">LinkList</span> <span class="n">head</span><span class="o">=</span><span class="p">(</span><span class="n">ListNode</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ListNode</span><span class="p">));</span> <span class="c1">//申请表头结点 </span>
+    <span class="n">ListNode</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span><span class="o">*</span><span class="n">rear</span><span class="p">;</span> 
+    <span class="kt">int</span> <span class="n">flag</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>        <span class="c1">//结束标志置0 </span>
+    <span class="n">rear</span><span class="o">=</span><span class="n">head</span><span class="p">;</span>         <span class="c1">//尾指针初始指向头结点 </span>
+    <span class="k">while</span><span class="p">(</span><span class="n">flag</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">p</span><span class="o">=</span><span class="p">(</span><span class="n">ListNode</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ListNode</span><span class="p">));</span>    <span class="c1">//申请新结点 </span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"编号(4) 姓名(8) 性别  电话(11)  地址(31) </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"-----------------------------------------</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">scanf</span><span class="p">(</span><span class="s">" %s%s%s%s%s"</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">num</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">sex</span><span class="p">,</span> 
+            <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">phone</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">addr</span><span class="p">);</span> 
+        <span class="n">rear</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">p</span><span class="p">;</span>            <span class="c1">//新结点连接到尾结点之后 </span>
+        <span class="n">rear</span><span class="o">=</span><span class="n">p</span><span class="p">;</span>                    <span class="c1">//尾指针指向新结点 </span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"结束建表吗？ (1/0):"</span><span class="p">);</span> 
+        <span class="n">scanf</span><span class="p">(</span><span class="s">" %d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">flag</span><span class="p">);</span>        <span class="c1">//读入一个标志数据  </span>
+    <span class="p">}</span> 
+    <span class="n">rear</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>            <span class="c1">//终端结点指针域置空 </span>
+    <span class="k">return</span> <span class="n">head</span><span class="p">;</span>  
+<span class="p">}</span> 
+ 
+<span class="cm">/*****************************************/</span> 
+<span class="cm">/*   在通讯录(顺序)链表head中插入结点    */</span> 
+<span class="cm">/*****************************************/</span> 
+<span class="kt">void</span> <span class="nf">InsertNode</span><span class="p">(</span><span class="n">LinkList</span> <span class="n">head</span><span class="p">,</span><span class="n">ListNode</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="n">ListNode</span> <span class="o">*</span><span class="n">p1</span><span class="p">,</span><span class="o">*</span><span class="n">p2</span><span class="p">;</span> 
+    <span class="n">p1</span><span class="o">=</span><span class="n">head</span><span class="p">;</span> 
+    <span class="n">p2</span><span class="o">=</span><span class="n">p1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span> 
+    <span class="k">while</span><span class="p">(</span><span class="n">p2</span><span class="o">!=</span><span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">strcmp</span><span class="p">(</span><span class="n">p2</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">num</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">num</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">p1</span><span class="o">=</span><span class="n">p2</span><span class="p">;</span>                <span class="c1">//p1指向刚访问过的结点 </span>
+        <span class="n">p2</span><span class="o">=</span><span class="n">p2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>        <span class="c1">//p2指向表的下一个结点 </span>
+    <span class="p">}</span> 
+    <span class="n">p1</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">p</span><span class="p">;</span>                <span class="c1">//插入p所指向的结点 </span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">p2</span><span class="p">;</span>                <span class="c1">//连接表中剩余部分 </span>
+<span class="p">}</span> 
+ 
+<span class="cm">/*****************************************/</span> 
+<span class="cm">/*        有序通讯录链表上的查找         */</span> 
+<span class="cm">/*****************************************/</span> 
+<span class="n">ListNode</span> <span class="o">*</span> <span class="nf">ListFind</span><span class="p">(</span><span class="n">LinkList</span> <span class="n">head</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="c1">//有序通讯录链表上的查找 </span>
+    <span class="n">ListNode</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span> 
+    <span class="kt">char</span> <span class="n">num</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span> 
+    <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="mi">9</span><span class="p">];</span> 
+    <span class="kt">int</span> <span class="n">xz</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"=================</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"  1.按编号查询   </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"  2.按姓名查询   </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+    <span class="n">printf</span><span class="p">(</span><span class="s">"=================</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"请选择:"</span><span class="p">);</span> 
+    <span class="n">p</span><span class="o">=</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>    <span class="c1">//假定通讯录表带关结点 </span>
+    <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">xz</span><span class="p">);</span> 
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">xz</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"请输入要查找者的编号："</span><span class="p">);</span> 
+        <span class="n">scanf</span><span class="p">(</span><span class="s">"%s"</span><span class="p">,</span><span class="n">num</span><span class="p">);</span> 
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span> 
+        <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="o">&amp;&amp;</span><span class="n">strcmp</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">num</span><span class="p">,</span><span class="n">num</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span> 
+        <span class="p">}</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">strcmpi</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">num</span><span class="p">,</span><span class="n">num</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>        <span class="c1">//没有查到要查找的通讯者  </span>
+        <span class="p">}</span> 
+    <span class="p">}</span> 
+    <span class="k">else</span> 
+    <span class="p">{</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">xz</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span> 
+            <span class="n">printf</span><span class="p">(</span><span class="s">"请输入要查找者的姓名："</span><span class="p">);</span> 
+            <span class="n">scanf</span><span class="p">(</span><span class="s">"%s"</span><span class="p">,</span><span class="n">name</span><span class="p">);</span> 
+            <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span> 
+            <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="o">&amp;&amp;</span><span class="n">strcmp</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="n">name</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span> 
+                <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>  
+    <span class="p">}</span> 
+    <span class="k">return</span> <span class="n">p</span><span class="p">;</span> 
+<span class="p">}</span> 
+ 
+<span class="cm">/*****************************************/</span> 
+<span class="cm">/*        通讯录链表上结点的删除         */</span> 
+<span class="cm">/*****************************************/</span> 
+<span class="kt">void</span> <span class="nf">DelNode</span><span class="p">(</span><span class="n">LinkList</span> <span class="n">head</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="kt">char</span> <span class="n">jx</span><span class="p">;</span> 
+    <span class="n">ListNode</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span><span class="o">*</span><span class="n">q</span><span class="p">;</span> 
+    <span class="n">p</span><span class="o">=</span><span class="n">ListFind</span><span class="p">(</span><span class="n">head</span><span class="p">);</span>    <span class="c1">//调用查找函数 </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"没有查到要删除的通讯者"</span><span class="p">);</span> 
+        <span class="k">return</span><span class="p">;</span> 
+    <span class="p">}</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"真的要删除该结点吗?(y/n):"</span><span class="p">);</span> 
+    <span class="n">scanf</span><span class="p">(</span><span class="s">"%c"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">jx</span><span class="p">);</span>    <span class="c1">//注意在%c前加上一空格可以处理掉输入缓冲区 </span>
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>        <span class="c1">//用这个函数也可以清除输入缓冲区 </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">jx</span><span class="o">==</span><span class="sc">'y'</span><span class="o">||</span><span class="n">jx</span><span class="o">==</span><span class="sc">'Y'</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">q</span><span class="o">=</span><span class="n">head</span><span class="p">;</span> 
+        <span class="k">while</span><span class="p">(</span><span class="n">q</span><span class="o">!=</span><span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">!=</span><span class="n">p</span><span class="p">)</span> 
+            <span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span> 
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>    <span class="c1">//删除结点 </span>
+        <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>            <span class="c1">//释放被删除的结点空间 </span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"通讯者已被删除</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+    <span class="p">}</span> 
+<span class="p">}</span> 
+ 
+<span class="cm">/*****************************************/</span> 
+<span class="cm">/*        通讯录链表上输出函数         */</span> 
+<span class="cm">/*****************************************/</span> 
+<span class="kt">void</span> <span class="nf">PrintList</span><span class="p">(</span><span class="n">LinkList</span> <span class="n">head</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="n">ListNode</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span> 
+    <span class="n">p</span><span class="o">=</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>            <span class="c1">//因为链表带头结点，使p指向链表开始结点  </span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"编号  姓名  性别  联系电话  地址</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"------------------------------------------</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%s%s%s%s%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">num</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> 
+            <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">sex</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">phone</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">addr</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"------------------------------------------</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>            <span class="c1">//后移一个结点  </span>
+    <span class="p">}</span> 
+<span class="p">}</span> 
+ 
+</code></pre></div></div> <h3 id="约瑟夫环">约瑟夫环</h3> <p><strong>ring.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//约瑟夫环  </span>
+ 
+<span class="cp">#include&lt;stdio.h&gt; 
+#include&lt;stdlib.h&gt; 
+</span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">node</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span> 
+    <span class="k">struct</span> <span class="n">node</span><span class="o">*</span> <span class="n">next</span><span class="p">;</span> 
+<span class="p">}</span><span class="n">ListNode</span><span class="p">;</span> 
+<span class="k">typedef</span> <span class="n">ListNode</span> <span class="o">*</span> <span class="n">LinkList</span><span class="p">;</span> 
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="n">LinkList</span> <span class="n">R</span><span class="p">;</span>            <span class="c1">//约瑟夫环     </span>
+    <span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">;</span>            <span class="c1">//n:环中的总结点数，k:出圈数的大小  </span>
+    <span class="n">LinkList</span> <span class="n">InitRing</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="n">LinkList</span> <span class="n">R</span><span class="p">);</span> 
+    <span class="n">LinkList</span> <span class="n">DeleteDeath</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="kt">int</span> <span class="n">k</span><span class="p">,</span><span class="n">LinkList</span> <span class="n">R</span><span class="p">);</span> 
+    <span class="kt">void</span> <span class="n">OutRing</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="n">LinkList</span> <span class="n">R</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"输入总人数n，报数上限k</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">scanf</span><span class="p">(</span><span class="s">" %d%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">n</span><span class="p">,</span><span class="o">&amp;</span><span class="n">k</span><span class="p">);</span> 
+    <span class="c1">//printf("n=%d,k=%d",n,k); </span>
+    <span class="n">R</span><span class="o">=</span><span class="n">InitRing</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">R</span><span class="p">);</span> 
+    <span class="n">R</span><span class="o">=</span><span class="n">DeleteDeath</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">R</span><span class="p">);</span> 
+    <span class="n">OutRing</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">R</span><span class="p">);</span>  
+<span class="p">}</span> 
+ 
+<span class="cm">/******************************************/</span> 
+<span class="cm">/**      建立循环链表函数       **/</span> 
+<span class="cm">/******************************************/</span> 
+<span class="n">LinkList</span> <span class="nf">InitRing</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="n">LinkList</span> <span class="n">R</span><span class="p">)</span> 
+<span class="p">{</span>  
+    <span class="n">ListNode</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span><span class="o">*</span><span class="n">q</span><span class="p">;</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span> 
+    <span class="n">R</span><span class="o">=</span><span class="n">q</span><span class="o">=</span><span class="p">(</span><span class="n">ListNode</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ListNode</span><span class="p">));</span> 
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">p</span><span class="o">=</span><span class="p">(</span><span class="n">ListNode</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ListNode</span><span class="p">));</span> 
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">i</span><span class="p">;</span> 
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">p</span><span class="p">;</span> 
+        <span class="n">q</span><span class="o">=</span><span class="n">p</span><span class="p">;</span> 
+    <span class="p">}</span> 
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">n</span><span class="p">;</span> 
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">R</span><span class="p">;</span> 
+    <span class="n">R</span><span class="o">=</span><span class="n">p</span><span class="p">;</span> 
+    <span class="k">return</span> <span class="n">R</span><span class="p">;</span>  
+<span class="p">}</span> 
+ 
+<span class="cm">/******************************************/</span> 
+<span class="cm">/**      出圈选择函数       **/</span> 
+<span class="cm">/******************************************/</span> 
+<span class="n">LinkList</span> <span class="nf">DeleteDeath</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="kt">int</span> <span class="n">k</span><span class="p">,</span><span class="n">LinkList</span> <span class="n">R</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">;</span> 
+    <span class="n">ListNode</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span><span class="o">*</span><span class="n">q</span><span class="p">;</span> 
+    <span class="n">p</span><span class="o">=</span><span class="n">R</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"出圈的数：</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">n</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>            <span class="c1">//删除一半的结点  </span>
+    <span class="p">{</span> 
+        <span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;=</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span>        <span class="c1">//沿链前进k-1步  </span>
+            <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span> 
+        <span class="n">q</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>                <span class="c1">//q为删除的结点 </span>
+        <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>        <span class="c1">//删除q指向的结点 </span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%4d"</span><span class="p">,</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>    <span class="c1">//打印出删除的结点  </span>
+        <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">%</span><span class="mi">10</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>  
+            <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+        <span class="n">free</span><span class="p">(</span><span class="n">q</span><span class="p">);</span> 
+    <span class="p">}</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">R</span><span class="o">=</span><span class="n">p</span><span class="p">;</span> 
+    <span class="k">return</span> <span class="n">R</span><span class="p">;</span> 
+<span class="p">}</span> 
+ 
+<span class="cm">/******************************************/</span> 
+<span class="cm">/**      输出所有没有出圈的函数       **/</span> 
+<span class="cm">/******************************************/</span> 
+<span class="kt">void</span> <span class="nf">OutRing</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="n">LinkList</span> <span class="n">R</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span> 
+    <span class="n">ListNode</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span> 
+    <span class="n">p</span><span class="o">=</span><span class="n">R</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"没有出圈的数：</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">n</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%4d"</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">%</span><span class="mi">10</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> 
+            <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="p">}</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+<span class="p">}</span> 
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/C_CPP/2011-09-07-%E9%93%BE%E8%A1%A8%E7%9A%84%E5%BA%94%E7%94%A8%E4%B9%8B%E9%80%9A%E8%AE%AF%E5%BD%95%E7%AE%A1%E7%90%86%E5%8F%8A%E7%BA%A6%E7%91%9F%E5%A4%AB%E7%8E%AF.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=数据结构-链表的应用之通讯录管理及约瑟夫环 - 知不知&amp;url=/list/docs/C_CPP/2011-09-07-%E9%93%BE%E8%A1%A8%E7%9A%84%E5%BA%94%E7%94%A8%E4%B9%8B%E9%80%9A%E8%AE%AF%E5%BD%95%E7%AE%A1%E7%90%86%E5%8F%8A%E7%BA%A6%E7%91%9F%E5%A4%AB%E7%8E%AF.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/C_CPP/2011-09-07-%E9%93%BE%E8%A1%A8%E7%9A%84%E5%BA%94%E7%94%A8%E4%B9%8B%E9%80%9A%E8%AE%AF%E5%BD%95%E7%AE%A1%E7%90%86%E5%8F%8A%E7%BA%A6%E7%91%9F%E5%A4%AB%E7%8E%AF.html&amp;title=数据结构-链表的应用之通讯录管理及约瑟夫环 - 知不知&amp;summary=链表的应用之通讯录管理及约瑟夫环&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/C_CPP/2011-09-07-%E9%93%BE%E8%A1%A8%E7%9A%84%E5%BA%94%E7%94%A8%E4%B9%8B%E9%80%9A%E8%AE%AF%E5%BD%95%E7%AE%A1%E7%90%86%E5%8F%8A%E7%BA%A6%E7%91%9F%E5%A4%AB%E7%8E%AF.html&amp;text=数据结构-链表的应用之通讯录管理及约瑟夫环 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/C_CPP/2011-09-07-%E9%93%BE%E8%A1%A8%E7%9A%84%E5%BA%94%E7%94%A8%E4%B9%8B%E9%80%9A%E8%AE%AF%E5%BD%95%E7%AE%A1%E7%90%86%E5%8F%8A%E7%BA%A6%E7%91%9F%E5%A4%AB%E7%8E%AF.html&amp;t=数据结构-链表的应用之通讯录管理及约瑟夫环 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/C_CPP/2011-09-07-%E9%93%BE%E8%A1%A8%E7%9A%84%E5%BA%94%E7%94%A8%E4%B9%8B%E9%80%9A%E8%AE%AF%E5%BD%95%E7%AE%A1%E7%90%86%E5%8F%8A%E7%BA%A6%E7%91%9F%E5%A4%AB%E7%8E%AF.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('数据结构-链表的应用之通讯录管理及约瑟夫环'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

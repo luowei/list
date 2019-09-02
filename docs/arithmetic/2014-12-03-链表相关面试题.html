@@ -1,0 +1,168 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>链表相关面试题</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h2 id="判断单链表是否存在环">判断单链表是否存在环</h2> <ul> <li>设置两个指针(fast, slow)，初始值都指向头，slow每次前进一步，fast每次前进二步，如果链表存在环，则fast必定先进入环，而slow后进入环，两个指针必定相遇。(当然，fast先行头到尾部为NULL，则为无环链表)程序如下：</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bool IsExitsLoop(List *head){
+   List *slow = head, *fast = head;
+    
+   while ( fast &amp;&amp; fast-&gt;next ){
+       slow = slow-&gt;next;
+       fast = fast-&gt;next-&gt;next;
+       if ( slow == fast ) break;
+   }
+    
+   return !(fast == NULL || fast-&gt;next == NULL);
+}
+</code></pre></div></div> <h2 id="寻找单链表环的入口点">寻找单链表环的入口点</h2> <ul> <li>推演过程</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>当fast若与slow相遇时，slow肯定没有走遍历完链表，而fast已经在环内循环了n圈(1&lt;=n)。假设slow走了s步，则fast走了2s步（fast步数还等于s 加上在环上多转的n圈），设环长为r，则：
+    
+2s = s + nr
+s= nr
+    
+设整个链表长L，入口环与相遇点距离为x，起点到环入口点的距离为a。
+a + x = nr
+a + x = (n – 1)r +r = (n-1)r + L - a
+a = (n-1)r + (L – a – x)
+    
+(L – a – x)为相遇点到环入口点的距离，由此可知，从链表头到环入口点等于(n-1)循环内环+相遇点到环入口点，于是我们从链表头、与相遇点分别设一个指针，每次各走一步，两个指针必定相遇，且相遇第一点为环入口点。程序描述如下：
+    
+list* FindLoopNode(list* head){
+   list *slow = head, *fast = head;
+    
+   while ( fast &amp;&amp; fast-&gt;next ){
+       slow = slow-&gt;next;
+       fast = fast-&gt;next-&gt;next;    //fast每次两步，slow每次一步
+       if ( slow == fast ) break;  //当两指针相等时，判断链表中有环
+   }
+    
+   if (fast == NULL || fast-&gt;next == NULL) //没有环就返回
+       return NULL;
+    
+   slow = head;
+   while (slow != fast){   //一个头指针，一个相遇点指针，两个第一次相等时为环入口点
+        slow = slow-&gt;next;
+        fast = fast-&gt;next;
+   }
+    
+   return slow;
+}
+</code></pre></div></div> <h2 id="判断两个链表是否相交假设两个链表均不带环">判断两个链表是否相交(假设两个链表均不带环）</h2> <ul> <li>两个无环单向链表，画出来只可能是2条不相干的链表或一个”Y”字形。我们只需从第二个链表开始遍历，看是否会回到起点就可以判断出来。</li> <li>解法一：一个简单的做法是对第一个链表的节点地址进行hash排序，建立hash表，然后针对第二个链表的每个节点的地址查询hash表，如果在hash表中出现，那么说明有共同的节点，时间复杂度为O(L1+L2),但是同时要附加O(L1)的存储空间。</li> <li>解法二：由于2个链表都没有环，我们可以<code class="highlighter-rouge">把第二个链表接在第一个链表后面</code>，如果得到的链表有环，则说明2个链表相交。这样就转换为了判断一个链表是否有环。最后，把链表再恢复原来的状态。</li> <li>解法三：用指针p1、p2分别指向两个链表头，不断后移；最后到达各自表尾时，若p1==p2，那么两个链表必相交，复杂度为O(L1+L2)，比解法3更好</li> <li>总结： <ul> <li>1.先判断带不带环</li> <li>2.如果都不带环，就判断尾节点是否相等</li> <li>3.如果都带环，判断一链表上俩指针相遇的那个节点，在不在另一条链表上。如果在，则相交，如果不在，则不相交。</li> </ul> </li> </ul> <p>判断是否带环：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct Node{  
+   int value;  
+   Node * next;  
+};  
+ 
+//1.先判断带不带环  
+//判断是否有环，返回bool，如果有环，返回环里的节点  
+//思路：用两个指针，一个指针步长为1，一个指针步长为2，判断链表是否有环  
+bool isCircle(Node * head, Node *&amp; circleNode, Node *&amp; lastNode){  
+   Node * fast = head-&gt;next;  
+   Node * slow = head;  
+   while(fast != slow &amp;&amp; fast &amp;&amp; slow){  
+       if(fast-&gt;next != NULL)  
+           fast = fast-&gt;next;  
+       if(fast-&gt;next == NULL)  
+           lastNode = fast;  
+       if(slow-&gt;next == NULL)  
+           lastNode = slow;  
+       fast = fast-&gt;next;  
+       slow = slow-&gt;next;     
+   }  
+   if(fast == slow &amp;&amp; fast &amp;&amp; slow){  
+       circleNode = fast;  
+       return true;  
+   }  
+   else  
+       return false;  
+}  
+</code></pre></div></div> <p>判断两个链表是否相交：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//判断带环不带环时链表是否相交  
+//2.如果都不带环，就判断尾节点是否相等  
+//3.如果都带环，判断一链表上俩指针相遇的那个节点，在不在另一条链表上。  
+bool detect(Node * head1, Node * head2){  
+   Node * circleNode1;  
+   Node * circleNode2;  
+   Node * lastNode1;  
+   Node * lastNode2;  
+     
+   bool isCircle1 = isCircle(head1,circleNode1, lastNode1);  
+   bool isCircle2 = isCircle(head2,circleNode2, lastNode2);  
+     
+   //一个有环，一个无环  
+   if(isCircle1 != isCircle2){  
+       return false;  
+   //两个都无环，判断最后一个节点是否相等  
+   }else if(!isCircle1 &amp;&amp; !isCircle2){  
+       return lastNode1 == lastNode2;  
+   }  
+   //两个都有环，判断环里的节点是否能到达另一个链表环里的节点  
+   else{  
+       Node * temp = circleNode1-&gt;next;   
+       while(temp != circleNode1){  
+           if(temp == circleNode2)  
+               return true;  
+           temp = temp-&gt;next;  
+       }  
+       return false;  
+   }  
+     
+   return false;  
+} 
+</code></pre></div></div> <h2 id="求链表倒数第k个结点">求链表倒数第k个结点</h2> <ul> <li>设置两个指针p1,p2，首先p1和p2都指向head，然后p2向前走k步，这样p1和p2之间就间隔k个节点，最后p1和p2同时向前移动，直至p2走到链表末尾。</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct ListNode{
+   char data;
+   ListNode* next;
+};
+ListNode* head,*p,*q;
+ListNode *pone,*ptwo;
+    
+   //求链表倒数第k个结点应该考虑k大于链表长度的case。
+   ListNode* fun(ListNode *head,int k){
+   assert(k &gt;= 0);
+   pone = ptwo = head;
+   for( ; k &gt; 0 &amp;&amp; ptwo != NULL; k--)
+       ptwo=ptwo-&gt;next;
+   if (k &gt; 0) return NULL;
+    
+   while(ptwo!=NULL){
+       pone=pone-&gt;next;
+       ptwo=ptwo-&gt;next;
+   }
+   return pone;
+} 
+</code></pre></div></div> <h2 id="求链表的中间节点">求链表的中间节点</h2> <ul> <li>题目：求链表的中间节点，如果链表的长度为偶数，返回中间两个节点的任意一个，若为奇数，则返回中间节点。</li> <li>分析：此题的解决思路和第3题「求链表的倒数第 k 个节点」很相似。可以先求链表的长度，然后计算出中间节点所在链表顺序的位置。但是如果要求只能扫描一遍链表，如何解决呢？最高效的解法和第3题一样，通过两个指针来完成。用两个指针从链表头节点开始，一个指针每次向后移动两步，一个每次移动一步，直到快指针移到到尾节点，那么慢指针即是所求。</li> </ul> <p>实现代码：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//求链表的中间节点
+Node* theMiddleNode(Node *head){
+    if(head == NULL)
+        return NULL;
+    Node *slow,*fast;
+    slow = fast = head;
+    //如果要求在链表长度为偶数的情况下，返回中间两个节点的第一个，可以用下面的循环条件
+    //while(fast &amp;&amp; fast-&gt;next != NULL &amp;&amp; fast-&gt;next-&gt;next != NULL)  
+    while(fast != NULL &amp;&amp; fast-&gt;next != NULL){
+        fast = fast-&gt;next-&gt;next;
+        slow = slow-&gt;next;
+    }
+    return slow;
+}
+</code></pre></div></div> <h2 id="求环长">求环长</h2> <ul> <li>求环长相对就比较容易了，就是在环的入口点设一指针和一计数器，让这一指针在环里面跑，计数器不断自增。当这一指针回到环的入口点的时候，环长就出来了。</li> </ul> <h2 id="单链表的转置">单链表的转置</h2> <ul> <li>即：输入一个单向链表，输出逆序反转后的链表</li> </ul> <p>以下是循环与递归两种方法实现：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//单链表的转置,循环方法
+Node* reverseByLoop(Node *head){
+    if(head == NULL || head-&gt;next == NULL)
+        return head;
+    Node *pre = NULL;
+    Node *next = NULL;
+    while(head != NULL){
+        next = head-&gt;next;
+
+        head-&gt;next = pre;
+        pre = head;
+        head = next;
+    }
+    return pre;
+}
+
+//单链表的转置,递归方法
+Node* reverseByRecursion(Node *head){
+    //第一个条件是判断异常，第二个条件是结束判断
+    if(head == NULL || head-&gt;next == NULL) 
+        return head;
+
+    Node *newHead = reverseByRecursion(head-&gt;next);
+
+    head-&gt;next-&gt;next = head;
+    head-&gt;next = NULL;
+
+    return newHead;    //返回新链表的头指针
+}
+</code></pre></div></div> <hr /> <p>以上参考：</p> <p><a href="http://blog.csdn.net/a809146548/article/details/51366261">编程判断两个链表是否相交及求环的入口点</a></p> <p><a href="http://www.cnblogs.com/ccdev/archive/2012/09/06/2673618.html">判断单链表是否存在环及求环入口点</a></p> <p><a href="http://wuchong.me/blog/2014/03/25/interview-link-questions/">面试精选：链表问题集锦</a></p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/arithmetic/2014-12-03-%E9%93%BE%E8%A1%A8%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=链表相关面试题 - 知不知&amp;url=/list/docs/arithmetic/2014-12-03-%E9%93%BE%E8%A1%A8%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/arithmetic/2014-12-03-%E9%93%BE%E8%A1%A8%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98.html&amp;title=链表相关面试题 - 知不知&amp;summary=链表相关面试题&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/arithmetic/2014-12-03-%E9%93%BE%E8%A1%A8%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98.html&amp;text=链表相关面试题 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/arithmetic/2014-12-03-%E9%93%BE%E8%A1%A8%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98.html&amp;t=链表相关面试题 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/arithmetic/2014-12-03-%E9%93%BE%E8%A1%A8%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('链表相关面试题'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

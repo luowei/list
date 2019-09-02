@@ -1,0 +1,217 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Web-ASP之VBScript学习笔记</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="通过inputbox输入计算两个数的和">通过inputBox输入计算两个数的和</h3> <p><strong>运行结果图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/other/web/asp_01.jpg" alt="运行结果图" /></p> <p><strong>通过inputBox输入计算两个数的和源文件：</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span> 
+    <span class="nt">&lt;head&gt;</span> 
+        <span class="nt">&lt;title&gt;</span>通过inputBox输入计算两个数的和<span class="nt">&lt;/title&gt;</span> 
+    <span class="nt">&lt;/head&gt;</span> 
+    <span class="nt">&lt;body&gt;</span> 
+     
+        <span class="nt">&lt;SCRIPT</span> <span class="na">LANGUAGE=</span><span class="s">"VBScript"</span><span class="nt">&gt;</span> 
+    <span class="c">&lt;!--  
+        ' The next line of code executes when the script tag is parsed. 
+        Call PrintWelcome 
+ 
+        Sub PrintWelcome 
+            Dim h 
+ 
+            h = Hour(Now) 
+            If h &lt; 12 then  
+                Document.Write "早上好！" 
+            ElseIf h &lt; 17 then  
+                Document.Write "下午好！" 
+            Else  
+                Document.Write "晚上好！" 
+            End If 
+            Document.Write "欢迎进入 VBScript 世界。" 
+            Document.Write("&lt;br/&gt;") 
+            Document.Write "现在是 :"  
+            Document.Write("&lt;input name='nowTime' type='text' size='30'  style='border:0;background:transparent;color: #FF0000;' readonly='readonly'&gt;") 
+ 
+        End Sub 
+    --&gt;</span> 
+    <span class="nt">&lt;/SCRIPT&gt;</span> 
+     
+<span class="c">&lt;!--时钟--&gt;</span> 
+    <span class="nt">&lt;script </span><span class="na">language=</span><span class="s">vbs</span><span class="nt">&gt;</span> 
+    <span class="kd">function</span> <span class="nx">myTime</span><span class="p">()</span> 
+        <span class="nx">nowTime</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">date</span><span class="o">&amp;</span><span class="dl">"</span><span class="s2"> </span><span class="dl">"</span><span class="o">&amp;</span><span class="nx">time</span> 
+        <span class="nx">t</span><span class="o">=</span><span class="nx">setTimeout</span><span class="p">(</span><span class="dl">"</span><span class="s2">myTime()</span><span class="dl">"</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span> 
+    <span class="nx">end</span> <span class="kd">function</span> 
+    <span class="nx">window_onload</span><span class="o">=</span><span class="nx">myTime</span> 
+    <span class="nt">&lt;/script&gt;</span> 
+     
+    <span class="nt">&lt;p&gt;</span>--------------------------------------------------<span class="nt">&lt;/P&gt;</span> 
+        <span class="nt">&lt;script </span><span class="na">language=</span><span class="s">"vbscript"</span><span class="nt">&gt;</span> 
+            <span class="nx">dim</span> <span class="nx">num1</span><span class="p">,</span><span class="nx">num2</span><span class="p">,</span><span class="nx">result</span> 
+            <span class="nx">sub</span> <span class="nx">Add</span><span class="p">()</span> 
+                <span class="nx">num1</span><span class="o">=</span><span class="nx">inputBox</span><span class="p">(</span><span class="dl">"</span><span class="s2">请输入第一个数</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">标题：num1</span><span class="dl">"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">700</span><span class="p">,</span><span class="mi">600</span><span class="p">)</span> 
+                <span class="k">do</span> <span class="k">while</span> <span class="nx">num1</span><span class="o">=</span><span class="nx">Empty</span> <span class="nx">or</span> <span class="p">(</span><span class="nx">not</span> <span class="nx">isNumeric</span><span class="p">(</span><span class="nx">num1</span><span class="p">))</span> 
+                    <span class="nx">MsgBox</span><span class="p">(</span><span class="dl">"</span><span class="s2">你输入有误</span><span class="dl">"</span><span class="p">)</span> 
+                    <span class="nx">num1</span><span class="o">=</span><span class="nx">inputBox</span><span class="p">(</span><span class="dl">"</span><span class="s2">请输入第一个数</span><span class="dl">"</span><span class="p">)</span> 
+                <span class="nx">loop</span> 
+                 
+                <span class="nx">num2</span><span class="o">=</span><span class="nx">inputBox</span><span class="p">(</span><span class="dl">"</span><span class="s2">请输入第二个数</span><span class="dl">"</span><span class="p">)</span> 
+                <span class="k">do</span> <span class="k">while</span> <span class="nx">isEmpty</span><span class="p">(</span><span class="nx">num2</span><span class="p">)</span> <span class="nx">or</span> <span class="p">(</span><span class="nx">not</span> <span class="nx">isNumeric</span><span class="p">(</span><span class="nx">num2</span><span class="p">))</span> 
+                    <span class="nx">MsgBox</span><span class="p">(</span><span class="dl">"</span><span class="s2">你输入有误</span><span class="dl">"</span><span class="p">)</span> 
+                    <span class="nx">num2</span><span class="o">=</span><span class="nx">inputBox</span><span class="p">(</span><span class="dl">"</span><span class="s2">请输入第二个数</span><span class="dl">"</span><span class="p">)</span> 
+                <span class="nx">loop</span> 
+                 
+                <span class="nx">result</span><span class="o">=</span><span class="nx">cint</span><span class="p">(</span><span class="nx">num1</span><span class="p">)</span><span class="o">+</span><span class="nx">num2</span> 
+                 
+                <span class="nx">MsgBox</span><span class="p">(</span><span class="dl">"</span><span class="s2">两个数的和是</span><span class="dl">"</span> <span class="o">&amp;</span> <span class="nx">result</span><span class="p">)</span> 
+            <span class="nx">end</span> <span class="nx">sub</span> 
+        <span class="nt">&lt;/script&gt;</span> 
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">onclick=</span><span class="s">"Add()"</span> <span class="na">value=</span><span class="s">"加法计算"</span><span class="nt">&gt;&lt;/input&gt;</span> 
+    <span class="nt">&lt;/body&gt;</span> 
+<span class="nt">&lt;/html&gt;</span> 
+</code></pre></div></div> <p>### 通过inputBox输入计算两个数的和</p> <p><strong>通过sub计算两个数的和源码：</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span> 
+<span class="nt">&lt;head&gt;</span> 
+    <span class="nt">&lt;title&gt;</span>通过sub计算两个数的和<span class="nt">&lt;/title&gt;</span> 
+    <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/vbscript"</span><span class="nt">&gt;</span> 
+        <span class="nx">sub</span> <span class="nx">equal_onclick</span><span class="p">()</span> 
+            <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">cint</span><span class="p">(</span><span class="nx">form1</span><span class="p">.</span><span class="nx">num1</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span><span class="o">+</span><span class="nx">form1</span><span class="p">.</span><span class="nx">num2</span><span class="p">.</span><span class="nx">value</span> 
+        <span class="nx">end</span> <span class="nx">sub</span> 
+    <span class="nt">&lt;/script&gt;</span> 
+<span class="nt">&lt;/head&gt;</span> 
+<span class="nt">&lt;body&gt;</span> 
+    <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">"form1"</span> <span class="na">action=</span><span class="s">""</span><span class="nt">&gt;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"num1"</span><span class="nt">&gt;&lt;/input&gt;</span><span class="ni">&amp;nbsp;</span>+<span class="ni">&amp;nbsp;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"num2"</span><span class="nt">&gt;&lt;/input&gt;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">name=</span><span class="s">"equal"</span> <span class="na">value=</span><span class="s">"="</span><span class="nt">&gt;&lt;/input&gt;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"result"</span><span class="nt">&gt;&lt;/input&gt;</span> 
+    <span class="nt">&lt;/form&gt;</span> 
+<span class="nt">&lt;/body&gt;</span> 
+<span class="nt">&lt;/html&gt;</span> 
+</code></pre></div></div> <h3 id="通过sub计算两个数的和">通过sub计算两个数的和</h3> <p><strong>通过sub计算两个数的和源码</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span> 
+<span class="nt">&lt;head&gt;</span> 
+    <span class="nt">&lt;title&gt;</span>通过sub计算两个数的和<span class="nt">&lt;/title&gt;</span> 
+    <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/vbscript"</span><span class="nt">&gt;</span> 
+        <span class="kd">function</span> <span class="nx">Add</span><span class="p">()</span> 
+            <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">cint</span><span class="p">(</span><span class="nx">form1</span><span class="p">.</span><span class="nx">num1</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span><span class="o">+</span><span class="nx">form1</span><span class="p">.</span><span class="nx">num2</span><span class="p">.</span><span class="nx">value</span> 
+        <span class="nx">end</span> <span class="kd">function</span> 
+    <span class="nt">&lt;/script&gt;</span> 
+<span class="nt">&lt;/head&gt;</span> 
+<span class="nt">&lt;body&gt;</span> 
+    <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">"form1"</span> <span class="na">action=</span><span class="s">""</span><span class="nt">&gt;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"num1"</span><span class="nt">&gt;&lt;/input&gt;</span><span class="ni">&amp;nbsp;</span>+<span class="ni">&amp;nbsp;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"num2"</span><span class="nt">&gt;&lt;/input&gt;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">onclick=</span><span class="s">"Add()"</span> <span class="na">value=</span><span class="s">"="</span><span class="nt">&gt;&lt;/input&gt;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"result"</span><span class="nt">&gt;&lt;/input&gt;</span> 
+    <span class="nt">&lt;/form&gt;</span> 
+<span class="nt">&lt;/body&gt;</span> 
+<span class="nt">&lt;/html&gt;</span> 
+</code></pre></div></div> <h3 id="下拉框式的加减乘除运算器">下拉框式的加减乘除运算器</h3> <p><strong>结果图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/other/web/asp_02.jpg" alt="运行结果图" /></p> <p><strong>下拉框式的加减乘除运算器源码</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 
+名称：下拉框式的加减乘除运算器 
+功能：实现加减乘除法运算 
+Author:罗维 
+时间：2011-9-19 
+--&gt;</span> 
+ 
+<span class="nt">&lt;html&gt;</span> 
+<span class="nt">&lt;head&gt;</span> 
+    <span class="nt">&lt;title&gt;</span>下拉框式的加减乘除运算器<span class="nt">&lt;/title&gt;</span> 
+    <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/vbscript"</span><span class="nt">&gt;</span> 
+        <span class="nx">dim</span> <span class="nx">num1</span><span class="p">,</span><span class="nx">num2</span><span class="p">,</span><span class="nx">num3</span> 
+    <span class="dl">'</span><span class="s1">-------------------------------------------------- 
+        function getnum()    </span><span class="dl">'</span><span class="err">获取输入框的数字</span> 
+            <span class="nx">num1</span><span class="o">=</span><span class="nx">cDbl</span><span class="p">(</span><span class="nx">form1</span><span class="p">.</span><span class="nx">num1</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span> 
+            <span class="k">if</span> <span class="nx">num1</span><span class="o">=</span><span class="nx">Empty</span> <span class="nx">or</span> <span class="p">(</span><span class="nx">not</span> <span class="nx">isNumeric</span><span class="p">(</span><span class="nx">num1</span><span class="p">))</span> <span class="nx">then</span> 
+                <span class="nx">MsgBox</span><span class="p">(</span><span class="dl">"</span><span class="s2">第一个输入框的数字有误</span><span class="dl">"</span><span class="p">)</span> 
+                <span class="nx">exit</span> <span class="kd">function</span> 
+            <span class="nx">end</span> <span class="k">if</span> 
+            <span class="nx">num2</span><span class="o">=</span><span class="nx">cDbl</span><span class="p">(</span><span class="nx">form1</span><span class="p">.</span><span class="nx">num2</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span> 
+            <span class="k">if</span> <span class="nx">num1</span><span class="o">=</span><span class="nx">Empty</span> <span class="nx">or</span> <span class="p">(</span><span class="nx">not</span> <span class="nx">isNumeric</span><span class="p">(</span><span class="nx">num2</span><span class="p">))</span> <span class="nx">then</span> 
+                <span class="nx">MsgBox</span><span class="p">(</span><span class="dl">"</span><span class="s2">第二个输入框的数字有误</span><span class="dl">"</span><span class="p">)</span> 
+                <span class="nx">exit</span> <span class="kd">function</span> 
+            <span class="nx">end</span> <span class="k">if</span> 
+            <span class="nx">getnum</span><span class="o">=</span><span class="kc">true</span> 
+        <span class="nx">end</span> <span class="kd">function</span> 
+    <span class="dl">'</span><span class="s1">--------------------------------------------------     
+        function Add()    </span><span class="dl">'</span><span class="err">加法运算</span> 
+            <span class="k">if</span> <span class="nx">getnum</span> <span class="nx">then</span> 
+                <span class="nx">Add</span><span class="o">=</span><span class="nx">num1</span><span class="o">+</span><span class="nx">num2</span> 
+            <span class="k">else</span> 
+                <span class="nx">exit</span> <span class="kd">function</span> 
+            <span class="nx">end</span> <span class="k">if</span> 
+        <span class="nx">end</span> <span class="kd">function</span> 
+    <span class="dl">'</span><span class="s1">--------------------------------------------------     
+        function Substract()    </span><span class="dl">'</span><span class="err">减法运算</span> 
+            <span class="k">if</span> <span class="nx">getnum</span> <span class="nx">then</span> 
+                <span class="nx">Substract</span><span class="o">=</span><span class="nx">num1</span><span class="o">-</span><span class="nx">num2</span> 
+            <span class="k">else</span> 
+                <span class="nx">exit</span> <span class="kd">function</span> 
+            <span class="nx">end</span> <span class="k">if</span> 
+        <span class="nx">end</span> <span class="kd">function</span> 
+    <span class="dl">'</span><span class="s1">--------------------------------------------------     
+        function Multiply()    </span><span class="dl">'</span><span class="err">乘法运算</span> 
+            <span class="k">if</span> <span class="nx">getnum</span> <span class="nx">then</span> 
+                <span class="nx">Multiply</span><span class="o">=</span><span class="nx">num1</span><span class="o">*</span><span class="nx">num2</span> 
+            <span class="k">else</span> 
+                <span class="nx">exit</span> <span class="kd">function</span> 
+            <span class="nx">end</span> <span class="k">if</span> 
+        <span class="nx">end</span> <span class="kd">function</span> 
+    <span class="dl">'</span><span class="s1">--------------------------------------------------     
+        function Divide()    </span><span class="dl">'</span><span class="err">除法运算</span> 
+            <span class="k">if</span> <span class="nx">getnum</span> <span class="nx">then</span> 
+                <span class="k">if</span><span class="p">(</span><span class="nx">num2</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="nx">then</span> 
+                    <span class="nx">MsgBox</span> <span class="dl">"</span><span class="s2">被除数为零！</span><span class="dl">"</span> 
+                    <span class="nx">exit</span> <span class="kd">function</span> 
+                <span class="nx">end</span> <span class="k">if</span> 
+                <span class="nx">Divide</span><span class="o">=</span><span class="nx">num1</span><span class="o">/</span><span class="nx">num2</span> 
+            <span class="k">else</span> 
+                <span class="nx">exit</span> <span class="kd">function</span> 
+            <span class="nx">end</span> <span class="k">if</span> 
+        <span class="nx">end</span> <span class="kd">function</span> 
+    <span class="dl">'</span><span class="s1">--------------------------------------------------     
+        function opt() 
+</span><span class="dl">'</span><span class="err">方式一</span> 
+<span class="dl">'</span><span class="s1">            if form1.operate.value="+" then 
+</span><span class="dl">'</span>                <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">Add</span> 
+<span class="dl">'</span><span class="s1">            elseif form1.operate.value="-" then 
+</span><span class="dl">'</span>                <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">Substract</span> 
+<span class="dl">'</span><span class="s1">            elseif form1.operate.value="*" then  
+</span><span class="dl">'</span>                <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">Multiply</span> 
+<span class="dl">'</span><span class="s1">            else form1.operate.value="/"  
+</span><span class="dl">'</span>                <span class="k">if</span> <span class="nx">Divide</span><span class="o">&gt;</span><span class="mi">0</span> <span class="nx">and</span> <span class="nx">Divide</span><span class="o">&lt;</span><span class="mi">1</span> <span class="nx">then</span> 
+<span class="dl">'</span><span class="s1">                    form1.result.value="0"+CStr(Divide) 
+</span><span class="dl">'</span>                <span class="nx">elseif</span> <span class="nx">Divide</span><span class="o">&lt;</span><span class="mi">0</span> <span class="nx">and</span> <span class="nx">Divide</span><span class="o">&gt;-</span><span class="mi">1</span> <span class="nx">then</span> 
+<span class="dl">'</span><span class="s1">                    form1.result.value="-0"+Mid(CStr(Divide),2) 
+</span><span class="dl">'</span>                <span class="k">else</span> 
+<span class="dl">'</span><span class="s1">                    form1.result.value=Divide 
+</span><span class="dl">'</span>                <span class="nx">end</span> <span class="k">if</span> 
+<span class="dl">'</span><span class="s1">            end if 
+</span><span class="dl">'</span><span class="err">方式二</span> 
+            <span class="nx">select</span> <span class="k">case</span> <span class="nx">form1</span><span class="p">.</span><span class="nx">operate</span><span class="p">.</span><span class="nx">value</span> 
+                <span class="k">case</span> <span class="dl">"</span><span class="s2">+</span><span class="dl">"</span> 
+                    <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">Add</span> 
+                <span class="k">case</span> <span class="dl">"</span><span class="s2">-</span><span class="dl">"</span> 
+                    <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">Substract</span> 
+                <span class="k">case</span> <span class="dl">"</span><span class="s2">*</span><span class="dl">"</span> 
+                    <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">Multiply</span> 
+                <span class="k">case</span> <span class="dl">"</span><span class="s2">/</span><span class="dl">"</span> 
+                    <span class="k">if</span> <span class="nx">Divide</span><span class="o">&gt;</span><span class="mi">0</span> <span class="nx">and</span> <span class="nx">Divide</span><span class="o">&lt;</span><span class="mi">1</span> <span class="nx">then</span> 
+                        <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="dl">"</span><span class="s2">0</span><span class="dl">"</span><span class="o">+</span><span class="nx">CStr</span><span class="p">(</span><span class="nx">Divide</span><span class="p">)</span> 
+                    <span class="nx">elseif</span> <span class="nx">Divide</span><span class="o">&lt;</span><span class="mi">0</span> <span class="nx">and</span> <span class="nx">Divide</span><span class="o">&gt;-</span><span class="mi">1</span> <span class="nx">then</span> 
+                        <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="dl">"</span><span class="s2">-0</span><span class="dl">"</span><span class="o">+</span><span class="nx">Mid</span><span class="p">(</span><span class="nx">Divide</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> 
+                    <span class="k">else</span> 
+                        <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">Divide</span> 
+                    <span class="nx">end</span> <span class="k">if</span> 
+            <span class="nx">end</span> <span class="nx">select</span> 
+        <span class="nx">end</span> <span class="kd">function</span> 
+    <span class="nt">&lt;/script&gt;</span> 
+<span class="nt">&lt;/head&gt;</span> 
+<span class="nt">&lt;body&gt;</span> 
+    <span class="nt">&lt;h1&gt;</span>下拉框式的加减乘除运算<span class="nt">&lt;/h1&gt;</span> 
+    <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">"form1"</span> <span class="na">action=</span><span class="s">""</span><span class="nt">&gt;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"num1"</span> <span class="nt">&gt;&lt;/input&gt;</span> 
+    <span class="nt">&lt;select</span> <span class="na">size=</span><span class="s">"1"</span> <span class="na">name=</span><span class="s">"operate"</span><span class="nt">&gt;</span> 
+        <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"+"</span> <span class="nt">&gt;</span>+<span class="nt">&lt;/option&gt;</span> 
+        <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"-"</span><span class="nt">&gt;</span>-<span class="nt">&lt;/option&gt;</span> 
+        <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"*"</span><span class="nt">&gt;</span>*<span class="nt">&lt;/option&gt;</span> 
+        <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"/"</span><span class="nt">&gt;</span>/<span class="nt">&lt;/option&gt;</span> 
+    <span class="nt">&lt;/select&gt;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"num2"</span><span class="nt">&gt;&lt;/input&gt;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">name=</span><span class="s">"equal"</span> <span class="na">value=</span><span class="s">"="</span> <span class="na">onclick=</span><span class="s">"opt"</span><span class="nt">&gt;&lt;/input&gt;</span> 
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"result"</span><span class="nt">&gt;&lt;/input&gt;</span> 
+    <span class="nt">&lt;/form&gt;</span> 
+<span class="nt">&lt;/body&gt;</span> 
+<span class="nt">&lt;/html&gt;</span> 
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/other/2011-09-09-ASP%E4%B9%8BVBScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Web-ASP之VBScript学习笔记 - 知不知&amp;url=/list/docs/other/2011-09-09-ASP%E4%B9%8BVBScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/other/2011-09-09-ASP%E4%B9%8BVBScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;title=Web-ASP之VBScript学习笔记 - 知不知&amp;summary=ASP之VBScript学习笔记&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/other/2011-09-09-ASP%E4%B9%8BVBScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;text=Web-ASP之VBScript学习笔记 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/other/2011-09-09-ASP%E4%B9%8BVBScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;t=Web-ASP之VBScript学习笔记 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/other/2011-09-09-ASP%E4%B9%8BVBScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Web-ASP之VBScript学习笔记'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-使用commons-fileupload做文件上传</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>方法一</strong></p> <p>1.在spring-mvc项目中引入commons-fileupload.jar包和commons-io.jar包还有jspSmartUpload.jar包，并在webmvc-config.xml配置文件中添加，如下代码(主要解决上传文件乱码问题)：</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+       <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="na">xmlns:mvc=</span><span class="s">"http://www.springframework.org/schema/mvc"</span>
+       <span class="na">xmlns:context=</span><span class="s">"http://www.springframework.org/schema/context"</span>
+       <span class="na">xmlns:p=</span><span class="s">"http://www.springframework.org/schema/p"</span>
+       <span class="na">xsi:schemaLocation=</span><span class="s">"
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+"</span><span class="nt">&gt;</span>
+    …………
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"multipartResolver"</span> <span class="na">class=</span><span class="s">"org.springframework.web.multipart.commons.CommonsMultipartResolver"</span> <span class="na">p:defaultEncoding=</span><span class="s">"utf-8"</span><span class="nt">/&gt;</span>
+    …………
+</code></pre></div></div> <p>2.jsp页面form表单，设置如下：</p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">"form1"</span> <span class="na">id=</span><span class="s">"form1"</span> <span class="na">enctype=</span><span class="s">"multipart/form-data"</span> <span class="na">method=</span><span class="s">"post"</span>
+      <span class="na">action=</span><span class="s">"${ctx }/manage/manageInfo/phone/new.do"</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div></div> <p><strong>3.编写上传文件代码：</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cm">/**
+     * 新增机型
+     * @author luowei
+     * @createTime 2012-1-12
+     * @param phone
+     * @param request
+     * @param result
+     * @return
+     */</span>
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/new"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">newPhone</span><span class="o">(</span><span class="nc">Phone</span> <span class="n">phone</span><span class="o">,</span><span class="nc">DefaultMultipartHttpServletRequest</span> <span class="n">request</span><span class="o">,</span>
+                           <span class="nc">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">MultipartFile</span> <span class="n">file</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getFile</span><span class="o">(</span><span class="s">"phoneimage1"</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">fileName</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="na">getOriginalFilename</span><span class="o">();</span>
+        <span class="nc">String</span> <span class="n">path</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getRealPath</span><span class="o">(</span><span class="s">"images/phone"</span><span class="o">);</span>
+        <span class="nc">File</span> <span class="n">targetFile</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="n">path</span><span class="o">,</span> <span class="n">fileName</span><span class="o">);</span>
+        <span class="k">if</span><span class="o">(!</span><span class="n">targetFile</span><span class="o">.</span><span class="na">exists</span><span class="o">()){</span>
+            <span class="n">targetFile</span><span class="o">.</span><span class="na">mkdirs</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">file</span><span class="o">.</span><span class="na">transferTo</span><span class="o">(</span><span class="n">targetFile</span><span class="o">);</span>    <span class="c1">//上传目标文件</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">phone</span><span class="o">.</span><span class="na">setPhoneImage</span><span class="o">(</span><span class="s">"/ttpod/images/phone/"</span><span class="o">+</span><span class="n">fileName</span><span class="o">);</span>
+        <span class="n">phone</span><span class="o">.</span><span class="na">setPhonebrand</span><span class="o">(</span><span class="k">new</span> <span class="nc">Phonebrand</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">((</span><span class="nc">String</span><span class="o">)</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"brandName"</span><span class="o">))));</span>
+        <span class="n">phone</span><span class="o">.</span><span class="na">setPlatform</span><span class="o">(</span><span class="k">new</span> <span class="nc">Platform</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">((</span><span class="nc">String</span><span class="o">)</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"platformName"</span><span class="o">))));</span>
+        <span class="n">phone</span><span class="o">.</span><span class="na">setPhoneAddDate</span><span class="o">(</span><span class="nc">DateUtil</span><span class="o">.</span><span class="na">datetimeToDate</span><span class="o">());</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">phoneManageService</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">phone</span><span class="o">);</span>
+        <span class="c1">//处理其它异外情况，。。。。。。。</span>
+        <span class="nc">String</span> <span class="n">currentPage</span> <span class="o">=</span> <span class="o">(</span><span class="nc">String</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">getSessionAttribute</span><span class="o">(</span><span class="n">request</span><span class="o">,</span><span class="s">"currentPage"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="n">response</span><span class="o">,</span> <span class="n">currentPage</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div> <p><strong>方法二</strong></p> <p>直接解析HttpServletRequest,示例代码如下，(表单格式仍然为：enctype=”multipart/form-data”)：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cm">/**
+     * 新增机型
+     *
+     * @param phone
+     * @param request
+     * @param result
+     * @return
+     * @author luowei
+     * @createTime 2012-1-12
+     */</span>
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/new"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">newPhone</span><span class="o">(</span><span class="nc">Phone</span> <span class="n">phone</span><span class="o">,</span> <span class="nc">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="nc">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Phone</span> <span class="n">phone</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Phone</span><span class="o">();</span>
+        <span class="nc">FileItemFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DiskFileItemFactory</span><span class="o">();</span>
+        <span class="nc">ServletFileUpload</span> <span class="n">upload</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ServletFileUpload</span><span class="o">(</span><span class="n">factory</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">request</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">"utf-8"</span><span class="o">);</span>
+            <span class="nc">List</span> <span class="n">items</span> <span class="o">=</span> <span class="n">upload</span><span class="o">.</span><span class="na">parseRequest</span><span class="o">(</span><span class="n">request</span><span class="o">);</span> <span class="c1">//解析HttpServletRequest</span>
+            <span class="nc">Iterator</span> <span class="n">iter</span> <span class="o">=</span> <span class="n">items</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">iter</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+                <span class="nc">FileItem</span> <span class="n">item</span> <span class="o">=</span> <span class="o">(</span><span class="nc">FileItem</span><span class="o">)</span> <span class="n">iter</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">item</span><span class="o">.</span><span class="na">isFormField</span><span class="o">())</span> <span class="c1">//如果是普通表单字段</span>
+                <span class="o">{</span>
+                    <span class="nc">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="na">getFieldName</span><span class="o">();</span> <span class="c1">//取得表单中字段的名</span>
+                    <span class="nc">String</span> <span class="n">value</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"utf-8"</span><span class="o">);</span> <span class="c1">//取得表单中字段的值</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"phoneName"</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="n">phone</span><span class="o">.</span><span class="na">setPhoneName</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+                    <span class="o">}</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">name</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">"brandName"</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="n">phone</span><span class="o">.</span><span class="na">setPhonebrand</span><span class="o">(</span><span class="k">new</span> <span class="nc">Phonebrand</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">value</span><span class="o">)));</span> <span class="c1">//将指定的手机品牌关联到机型</span>
+                    <span class="o">}</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"platformName"</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="n">phone</span><span class="o">.</span><span class="na">setPlatform</span><span class="o">(</span><span class="k">new</span> <span class="nc">Platform</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">value</span><span class="o">)));</span> <span class="c1">//将指定的手机平台关联到机型</span>
+                    <span class="o">}</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"phoneHeadName"</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="n">phone</span><span class="o">.</span><span class="na">setPhoneName</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+                    <span class="o">}</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"phoneResolution"</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="n">phone</span><span class="o">.</span><span class="na">setPhoneName</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+                    <span class="o">}</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"phoneStatus"</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="n">phone</span><span class="o">.</span><span class="na">setPhoneStatus</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">value</span><span class="o">));</span>
+                    <span class="o">}</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"phoneDesc"</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="n">phone</span><span class="o">.</span><span class="na">setPhoneDesc</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">value</span><span class="o">));</span>
+                    <span class="o">}</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="n">item</span><span class="o">.</span><span class="na">isFormField</span><span class="o">())</span> <span class="c1">//如果不是普通表单字段，即文件字段</span>
+                <span class="o">{</span>
+                    <span class="nc">String</span> <span class="n">fieldName</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="na">getFieldName</span><span class="o">();</span>
+                    <span class="nc">String</span> <span class="n">fileName</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+                    <span class="nc">String</span> <span class="n">contentType</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="na">getContentType</span><span class="o">();</span>
+                    <span class="kt">boolean</span> <span class="n">isInMemory</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="na">isInMemory</span><span class="o">();</span>
+                    <span class="kt">long</span> <span class="n">sizeInBytes</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="na">getSize</span><span class="o">();</span>
+                    <span class="c1">//System.out.println(fieldName+":"+fileName+":"+contentType+":"+sizeInBytes);</span>
+                    <span class="nc">String</span> <span class="n">path</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getRealPath</span><span class="o">(</span><span class="s">"images/phone"</span><span class="o">);</span>
+                    <span class="nc">File</span> <span class="n">uploadedFile</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="n">path</span><span class="o">,</span> <span class="nc">GetId</span><span class="o">.</span><span class="na">getNewId</span><span class="o">()</span> <span class="o">+</span> <span class="n">fileName</span><span class="o">);</span> <span class="c1">//创建一个上传文件对象</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">item</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">uploadedFile</span><span class="o">);</span> <span class="c1">//将要上传的文件对象写到item</span>
+                        <span class="n">phone</span><span class="o">.</span><span class="na">setPhoneImage</span><span class="o">(</span><span class="s">"/ttpod/images/phone/"</span> <span class="o">+</span> <span class="n">uploadedFile</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                        <span class="n">phone</span><span class="o">.</span><span class="na">setPhoneImage</span><span class="o">(</span><span class="s">""</span><span class="o">);</span>
+                    <span class="o">}</span>
+                    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">path</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">FileUploadException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">UnsupportedEncodingException</span> <span class="n">e1</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">phone</span><span class="o">.</span><span class="na">setPhoneAddDate</span><span class="o">(</span><span class="nc">DateUtil</span><span class="o">.</span><span class="na">datetimeToDate</span><span class="o">());</span> <span class="c1">//给phone对象的添加日期字段设置值</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">phoneManageService</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">phone</span><span class="o">);</span> <span class="c1">//执行保存</span>
+        <span class="nc">String</span> <span class="n">currentPage</span> <span class="o">=</span> <span class="o">(</span><span class="nc">String</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">getSessionAttribute</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="s">"currentPage"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="n">response</span><span class="o">,</span> <span class="n">currentPage</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2012-01-06-%E4%BD%BF%E7%94%A8commons-fileupload%E5%81%9A%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-使用commons-fileupload做文件上传 - 知不知&amp;url=/list/docs/java/2012-01-06-%E4%BD%BF%E7%94%A8commons-fileupload%E5%81%9A%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2012-01-06-%E4%BD%BF%E7%94%A8commons-fileupload%E5%81%9A%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0.html&amp;title=Java-使用commons-fileupload做文件上传 - 知不知&amp;summary=在Spring-MVC框架下使用commons-fileupload做文件上传&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2012-01-06-%E4%BD%BF%E7%94%A8commons-fileupload%E5%81%9A%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0.html&amp;text=Java-使用commons-fileupload做文件上传 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2012-01-06-%E4%BD%BF%E7%94%A8commons-fileupload%E5%81%9A%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0.html&amp;t=Java-使用commons-fileupload做文件上传 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2012-01-06-%E4%BD%BF%E7%94%A8commons-fileupload%E5%81%9A%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-使用commons-fileupload做文件上传'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

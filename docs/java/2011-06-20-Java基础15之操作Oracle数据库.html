@@ -1,0 +1,671 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础15之操作Oracle数据库</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong> 使用Java操作Oracle数据库、处理事务以及存储过程等</p> <p><strong>文件结构(java操作oracle数据库)</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_58.jpg" alt="文件结构" /></p> <p><strong>TestMyOracle/src/com.oracle/TestOra.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 演示如何使用Jdbc_obdb桥接方式操作oracle
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">oracle</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestOra</span> <span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">Statement</span> <span class="n">sm</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//1.加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"sun.jdbc.odbc.JdbcOdbcDriver"</span><span class="o">);</span>
+            <span class="c1">//2.加载驱动</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:odbc:orcl"</span><span class="o">,</span><span class="s">"scott"</span><span class="o">,</span><span class="s">"luowei"</span><span class="o">);</span>
+            <span class="c1">//以下和sql server 一样</span>
+            <span class="n">sm</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">createStatement</span><span class="o">();</span>
+            <span class="n">rs</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">(</span><span class="s">"select * from emp"</span><span class="o">);</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="c1">//用户名</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"用户名："</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">));</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="c1">//关闭打开的资源</span>
+                <span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">sm</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated catch block</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>TestMyOracle/src/com.oracle/TestOra2.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 使用jdbc连接oracle
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">oracle</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestOra2</span> <span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">Statement</span> <span class="n">sm</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//1.加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">);</span>
+            <span class="c1">//2.得到连接</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:oracle:thin:@127.0.0.1:1521:orcl"</span><span class="o">,</span><span class="s">"scott"</span><span class="o">,</span><span class="s">"luowei"</span><span class="o">);</span>
+            <span class="c1">//以下和sql server 一样</span>
+            <span class="n">sm</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">createStatement</span><span class="o">();</span>
+            <span class="n">rs</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">(</span><span class="s">"select * from emp"</span><span class="o">);</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="c1">//用户名</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"用户名："</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">));</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="c1">//关闭打开的资源</span>
+                <span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">sm</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated catch block</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>TestMyOracle/src/com.test1/TestTrans.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 测试事务的案例
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.Connection</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.DriverManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.ResultSet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.SQLException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.Statement</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestTrans</span>
+<span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">Statement</span> <span class="n">sm</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//1.加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"sun.jdbc.odbc.JdbcOdbcDriver"</span><span class="o">);</span>
+            <span class="c1">//2.加载驱动</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:odbc:orcl"</span><span class="o">,</span><span class="s">"scott"</span><span class="o">,</span><span class="s">"luowei"</span><span class="o">);</span>
+            <span class="c1">//以下和sql server 一样</span>
+            <span class="n">sm</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">createStatement</span><span class="o">();</span>
+            <span class="c1">//加入事务处理</span>
+            <span class="n">ct</span><span class="o">.</span><span class="na">setAutoCommit</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+            <span class="n">sm</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">(</span><span class="s">"update emp set sal=sal-100 where ename='SCOTT'"</span><span class="o">);</span>
+            <span class="c1">//int i=7/0;</span>
+            <span class="n">sm</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">(</span><span class="s">"update emp set sal=sal+100 where ename='SMITH'"</span><span class="o">);</span>
+            <span class="n">ct</span><span class="o">.</span><span class="na">commit</span><span class="o">();</span>
+            <span class="n">rs</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">(</span><span class="s">"select ename,sal from emp"</span><span class="o">);</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="c1">//用户名</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"用户名："</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">1</span><span class="o">));</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"    sal："</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">));</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">//如果发生异常就回滚</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">rollback</span><span class="o">();</span> <span class="c1">//回滚</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e1</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="c1">//关闭打开的资源</span>
+                <span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">sm</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated catch block</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>TestMyOracle/src/com.test2/TestOraclePro.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 测试Oracle的存储过程
+ * 演示java程序去调用oracle的存储过程
+ *
+ * 存储过程：
+ * 1/写一个过程，可以输入雇员名，新工资 可修改雇员名的工资
+ * 2/如何调用过程有两种方法：
+ * 3/如何在java程序中调用一个存储过程
+ create or replace procedure my_pro(myName varchar2,newSal number) is
+ --在这里可以定义变量
+ begin
+ --执行部分，根据用户名去修改工资
+ update emp set sal=newSal where ename=myName;
+ end;
+ /
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test2</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestOraclePro</span>
+<span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">CallableStatement</span> <span class="n">cs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="c1">//1.加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">);</span>
+            <span class="c1">//2.得到连接</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:oracle:thin:@127.0.0.1:1521:orcl"</span><span class="o">,</span><span class="s">"SCOTT"</span><span class="o">,</span><span class="s">"luowei"</span><span class="o">);</span>
+            <span class="c1">//3.创建CallableStatement</span>
+            <span class="n">cs</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareCall</span><span class="o">(</span><span class="s">"{call my_pro(?,?)}"</span><span class="o">);</span>
+            <span class="c1">//4.给?赋值</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">"SMITH"</span><span class="o">);</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">2088</span><span class="o">);</span>
+            <span class="c1">//加入事务处理</span>
+            <span class="n">ct</span><span class="o">.</span><span class="na">setAutoCommit</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+            <span class="c1">//5.执行</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+            <span class="n">ct</span><span class="o">.</span><span class="na">commit</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="c1">//如果发生异常就回滚</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">rollback</span><span class="o">();</span> <span class="c1">//回滚</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e1</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="c1">//关闭资源</span>
+                <span class="n">cs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>TestMyOracle/src/com.test3/Test1.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 调用一个无返回值的过程
+ * 存储过程：
+ --建book表
+ create table book(bookId number,bookName varchar2(50),publishHouse varchar2(50));
+ --编写过程
+ --in:表示函数的输入参数，不写默认是in
+ --out:表示一个输出参数
+ create or replace procedure my_pro(myBookId in number,
+ mybookName in varchar2,mypublishHouse in varchar2) is
+ begin
+ insert into book values(myBookId,mybookName,mypublishHouse);
+ end;
+ /
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test3</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test1</span>
+<span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">CallableStatement</span> <span class="n">cs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="c1">//1.加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">);</span>
+            <span class="c1">//2.得到连接</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:oracle:thin:@127.0.0.1:1521:orcl"</span><span class="o">,</span><span class="s">"SCOTT"</span><span class="o">,</span><span class="s">"luowei"</span><span class="o">);</span>
+            <span class="c1">//3.创建CallableStatement</span>
+            <span class="n">cs</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareCall</span><span class="o">(</span><span class="s">"{call my_pro(?,?,?)}"</span><span class="o">);</span>
+            <span class="c1">//4.给?赋值</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">10</span><span class="o">);</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="s">"三国演义"</span><span class="o">);</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="s">"人民出版社"</span><span class="o">);</span>
+            <span class="c1">//5.执行</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="c1">//关闭各种打开的资源</span>
+                <span class="n">cs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e1</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated catch block</span>
+                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>TestMyOracle/src/com.test3/Test2.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 调用一个有返回值的过程
+ * 存储过程：
+ --建book表
+ create table book(bookId number,bookName varchar2(50),publishHouse varchar2(50));
+ --有返回值的存储过程---------------------------------------------------
+ --1.编写一个过程，可以输入书的编号，并返回该书的名字
+ --有输入和输出的存储过程
+ create or replace procedure my_pro(myno in number,myName out varchar2) is
+ begin
+ select ename into myName from emp where empno=myno;
+ end;
+ /
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test3</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test2</span>
+<span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">CallableStatement</span> <span class="n">cs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="c1">//1.加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">);</span>
+            <span class="c1">//2.得到连接</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:oracle:thin:@127.0.0.1:1521:orcl"</span><span class="o">,</span><span class="s">"SCOTT"</span><span class="o">,</span><span class="s">"luowei"</span><span class="o">);</span>
+            <span class="c1">//3.创建CallableStatement</span>
+            <span class="n">cs</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareCall</span><span class="o">(</span><span class="s">"{call my_pro(?,?)}"</span><span class="o">);</span>
+            <span class="c1">//4.给?赋值</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">7788</span><span class="o">);</span>
+            <span class="c1">//给第二个?赋值(从第二个问号取出值)</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">registerOutParameter</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">oracle</span><span class="o">.</span><span class="na">jdbc</span><span class="o">.</span><span class="na">OracleTypes</span><span class="o">.</span><span class="na">VARCHAR</span><span class="o">);</span>
+            <span class="c1">//5.执行(不要忘记执行，否则会出现 NullPointException)</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+            <span class="c1">//取出返回值(从第二个?取返回值)</span>
+            <span class="nc">String</span> <span class="n">name</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"7788的名字是："</span><span class="o">+</span><span class="n">name</span><span class="o">);</span>
+            <span class="c1">//5.执行</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="c1">//关闭各种打开的资源</span>
+                <span class="n">cs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e1</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated catch block</span>
+                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>TestMyOracle/src/com.test3/Test3.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 调用一个有多个返回值的过程(非列表)
+ * 存储过程：
+ --建book表
+ --2.r返回多个值(非列表)-------------
+ create or replace procedure my_pro
+ (myno in number,myName out varchar2,
+ mySal out number,myJob out varchar2) is
+ begin
+ select ename,sal,job into myName,mySal,myJob from emp where empno=myno;
+ end;
+ /
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test3</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test3</span>
+<span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">CallableStatement</span> <span class="n">cs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="c1">//1.加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">);</span>
+            <span class="c1">//2.得到连接</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:oracle:thin:@127.0.0.1:1521:orcl"</span><span class="o">,</span><span class="s">"SCOTT"</span><span class="o">,</span><span class="s">"luowei"</span><span class="o">);</span>
+            <span class="c1">//3.创建CallableStatement</span>
+            <span class="n">cs</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareCall</span><span class="o">(</span><span class="s">"{call my_pro(?,?,?,?)}"</span><span class="o">);</span>
+            <span class="c1">//4.给?赋值</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">7369</span><span class="o">);</span>
+            <span class="c1">//给后面的?赋值(从第二个问号取出值)</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">registerOutParameter</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">oracle</span><span class="o">.</span><span class="na">jdbc</span><span class="o">.</span><span class="na">OracleTypes</span><span class="o">.</span><span class="na">VARCHAR</span><span class="o">);</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">registerOutParameter</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="n">oracle</span><span class="o">.</span><span class="na">jdbc</span><span class="o">.</span><span class="na">OracleTypes</span><span class="o">.</span><span class="na">NUMBER</span><span class="o">);</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">registerOutParameter</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="n">oracle</span><span class="o">.</span><span class="na">jdbc</span><span class="o">.</span><span class="na">OracleTypes</span><span class="o">.</span><span class="na">VARCHAR</span><span class="o">);</span>
+            <span class="c1">//5.执行(不要忘记执行，否则会出现 NullPointException)</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+            <span class="c1">//取出返回值(从第二个?取返回值)</span>
+            <span class="nc">String</span> <span class="n">name</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">job</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">4</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"7369的名字是："</span><span class="o">+</span><span class="n">name</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"7369的工作是："</span><span class="o">+</span><span class="n">job</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="c1">//关闭各种打开的资源</span>
+                <span class="n">cs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e1</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated catch block</span>
+                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>TestMyOracle/src/com.test3/Test4.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 调用一个有多个返回值的过程(列表)
+ * 存储过程：
+ --建book表
+ --3.返回多个值（列表[结果集]）--------------
+ --编写一个过程，输入部门号，返回该部门所有雇员信息
+ --oracle存储过程没有返回值，它的所有的返回值都是通过out参数来替代的，
+ --列表同样也不例外，但由于是集合，所以不能用一般的参数，必须要用package,所以要分两部分
+ ----第1步，创建一个包，在该包中，定义了类型test_cursor,是个游标类型
+ create or replace package testpackage as
+ type test_cursor is ref cursor;
+ end testpackage;
+ ----第2步，创建过程
+ create or replace procedure my_pro
+ (myNo in number,p_cursor out testpackage.test_cursor) is
+ begin
+ open p_cursor for select * from emp where deptno=myNo;
+ end;
+ /
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test3</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test4</span>
+<span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">CallableStatement</span> <span class="n">cs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="c1">//1.加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">);</span>
+            <span class="c1">//2.得到连接</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:oracle:thin:@127.0.0.1:1521:orcl"</span><span class="o">,</span><span class="s">"SCOTT"</span><span class="o">,</span><span class="s">"luowei"</span><span class="o">);</span>
+            <span class="c1">//3.创建CallableStatement</span>
+            <span class="n">cs</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareCall</span><span class="o">(</span><span class="s">"{call my_pro(?,?)}"</span><span class="o">);</span>
+            <span class="c1">//4.给?赋值</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">10</span><span class="o">);</span>
+            <span class="c1">//给后面的?赋值(从第二个问号取出值)</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">registerOutParameter</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">oracle</span><span class="o">.</span><span class="na">jdbc</span><span class="o">.</span><span class="na">OracleTypes</span><span class="o">.</span><span class="na">CURSOR</span><span class="o">);</span>
+            <span class="c1">//5.执行(不要忘记执行，否则会出现 NullPointException)</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+            <span class="c1">//得到结果集(从第二个?取返回值)</span>
+            <span class="n">rs</span><span class="o">=(</span><span class="nc">ResultSet</span><span class="o">)</span><span class="n">cs</span><span class="o">.</span><span class="na">getObject</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="mi">1</span><span class="o">)+</span><span class="s">"    "</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">));</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="c1">//关闭各种打开的资源</span>
+                <span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">cs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e1</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated catch block</span>
+                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>TestOracleFenYe/src/com.test/test1.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 调用一个有多个返回值的过程(列表)
+ * 存储过程：
+ --分页-----
+ select * from (select t1.*,rownum rn from (select * from emp) t1 where rownum&lt;=10)where rn&gt;=6;
+ ----------------------------------------------------------------------------
+ --首先创建一个包
+ create or replace package testpackage as
+ type test_cursor is ref cursor;
+ end testpackage;
+ --开始编写分布过程--------------------------------
+ create or replace procedure fenye
+ (tableName in varchar2,
+ pageSize in number, --每页显示的记录数
+ pageNow in number, --要显示的哪一页
+ myrows out number,--总记录数
+ myPageCount out number, --总页数
+ p_cursor out testpackage.test_cursor --返回的记录
+ ) is
+ --定义部分
+ --定义sql语句，字符串
+ v_sql varchar2(1000);
+ --定义两个整数
+ v_begin number:=(pageNow-1)*pageSize+1;
+ v_end number:=pageNow*pageSize;
+ begin
+ --执行部分
+ v_sql:='select * from (select t1.*,rownum rn from (select * from '||tableName||' order by sal) t1 where rownum&lt;='||v_end||')where rn&gt;='||v_begin; --将分页的字符串送给变量v_sql
+ --把游标和sql关联
+ open p_cursor for v_sql;
+ --计算myrows和myPageCount
+ --组织一个sql
+ v_sql:='select count(*) from '||tableName;
+ --执行sql，并把返回的值,赋给myrows
+ execute immediate v_sql into myrows;
+ --计算myPageCount
+ if mod(myrows,pageSize)=0 then
+ myPageCount:=myrows/pageSize;
+ else
+ myPageCount:=myrows/pageSize+1;
+ end if;
+ --关闭游标
+ --close p_cursor;
+ end;
+ /
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test1</span>
+<span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">CallableStatement</span> <span class="n">cs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="c1">//1.加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">);</span>
+            <span class="c1">//2.得到连接</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:oracle:thin:@127.0.0.1:1521:orcl"</span><span class="o">,</span><span class="s">"SCOTT"</span><span class="o">,</span><span class="s">"luowei"</span><span class="o">);</span>
+            <span class="c1">//3.创建CallableStatement</span>
+            <span class="n">cs</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareCall</span><span class="o">(</span><span class="s">"{call fenye(?,?,?,?,?,?)}"</span><span class="o">);</span>
+            <span class="c1">//4.给?赋值</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="s">"emp"</span><span class="o">);</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">5</span><span class="o">);</span> <span class="c1">//pageSize</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span> <span class="c1">//pageNow</span>
+            <span class="c1">//</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">registerOutParameter</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="n">oracle</span><span class="o">.</span><span class="na">jdbc</span><span class="o">.</span><span class="na">OracleTypes</span><span class="o">.</span><span class="na">INTEGER</span><span class="o">);</span> <span class="c1">//myrows(总记录数)</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">registerOutParameter</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="n">oracle</span><span class="o">.</span><span class="na">jdbc</span><span class="o">.</span><span class="na">OracleTypes</span><span class="o">.</span><span class="na">INTEGER</span><span class="o">);</span> <span class="c1">//pageCount</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">registerOutParameter</span><span class="o">(</span><span class="mi">6</span><span class="o">,</span> <span class="n">oracle</span><span class="o">.</span><span class="na">jdbc</span><span class="o">.</span><span class="na">OracleTypes</span><span class="o">.</span><span class="na">CURSOR</span><span class="o">);</span> <span class="c1">//结果集</span>
+            <span class="n">cs</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+            <span class="c1">//取出总记录数，注意getInt(4)是由该参数的位置决定的</span>
+            <span class="kt">int</span> <span class="n">rowNum</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="mi">4</span><span class="o">);</span>
+            <span class="kt">int</span> <span class="n">pageCount</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+            <span class="n">rs</span><span class="o">=(</span><span class="nc">ResultSet</span><span class="o">)</span><span class="n">cs</span><span class="o">.</span><span class="na">getObject</span><span class="o">(</span><span class="mi">6</span><span class="o">);</span>
+            <span class="c1">//显示取出的参数与结果集</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"rowNum:="</span><span class="o">+</span><span class="n">rowNum</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"pagaeCount:="</span><span class="o">+</span><span class="n">pageCount</span><span class="o">);</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"编号："</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="mi">1</span><span class="o">)+</span><span class="s">"    姓名："</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">)+</span><span class="s">"    工资"</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getFloat</span><span class="o">(</span><span class="mi">6</span><span class="o">));</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="c1">//关闭各种打开的资源</span>
+                <span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">cs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e1</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated catch block</span>
+                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>TestOracleFenYe/WebRoot/MyTest.jsp</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">language</span><span class="o">=</span><span class="s">"java"</span> <span class="kn">import</span><span class="err">="</span><span class="nn">java.util.*</span><span class="o">,</span><span class="n">java</span><span class="o">.</span><span class="na">sql</span><span class="o">.*</span><span class="s">" pageEncoding="</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="s">"%&gt;
+&lt;%
+    String path = request.getContextPath();
+    String basePath = request.getScheme()+"</span><span class="o">:</span><span class="c1">//"+request.getServerName()+":"+request.getServerPort()+path+"/";</span>
+<span class="o">%&gt;</span>
+<span class="o">&lt;!</span><span class="no">DOCTYPE</span> <span class="no">HTML</span> <span class="no">PUBLIC</span> <span class="s">"-//W3C//DTD HTML 4.01 Transitional//EN"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">html</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">head</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">base</span> <span class="n">href</span><span class="o">=</span><span class="s">"&lt;%=basePath%&gt;"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">title</span><span class="o">&gt;</span><span class="nc">My</span> <span class="no">JSP</span> <span class="err">'</span><span class="nc">MyTest</span><span class="o">.</span><span class="na">jsp</span><span class="err">'</span> <span class="n">starting</span> <span class="n">page</span><span class="o">&lt;/</span><span class="n">title</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">meta</span> <span class="n">http</span><span class="o">-</span><span class="n">equiv</span><span class="o">=</span><span class="s">"pragma"</span> <span class="n">content</span><span class="o">=</span><span class="s">"no-cache"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">meta</span> <span class="n">http</span><span class="o">-</span><span class="n">equiv</span><span class="o">=</span><span class="s">"cache-control"</span> <span class="n">content</span><span class="o">=</span><span class="s">"no-cache"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">meta</span> <span class="n">http</span><span class="o">-</span><span class="n">equiv</span><span class="o">=</span><span class="s">"expires"</span> <span class="n">content</span><span class="o">=</span><span class="s">"0"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">meta</span> <span class="n">http</span><span class="o">-</span><span class="n">equiv</span><span class="o">=</span><span class="s">"keywords"</span> <span class="n">content</span><span class="o">=</span><span class="s">"keyword1,keyword2,keyword3"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">meta</span> <span class="n">http</span><span class="o">-</span><span class="n">equiv</span><span class="o">=</span><span class="s">"description"</span> <span class="n">content</span><span class="o">=</span><span class="s">"This is my page"</span><span class="o">&gt;</span>
+    <span class="o">&lt;!--</span>
+    <span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s">"stylesheet"</span> <span class="n">type</span><span class="o">=</span><span class="s">"text/css"</span> <span class="n">href</span><span class="o">=</span><span class="s">"styles.css"</span><span class="o">&gt;</span>
+    <span class="o">--&gt;</span>
+<span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="n">oracle</span><span class="err">分页案例</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">table</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">用户名</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">薪水</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+    <span class="o">&lt;%</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">Statement</span> <span class="n">sm</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//1.加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">);</span>
+            <span class="c1">//2.得到连接</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:oracle:thin:@127.0.0.1:1521:orcl"</span><span class="o">,</span><span class="s">"scott"</span><span class="o">,</span><span class="s">"luowei"</span><span class="o">);</span>
+            <span class="c1">//以下和sql server 一样</span>
+            <span class="n">sm</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">createStatement</span><span class="o">();</span>
+            <span class="c1">//接收pageNow</span>
+            <span class="nc">String</span> <span class="n">s_pageNow</span><span class="o">=(</span><span class="nc">String</span><span class="o">)</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"pageNow"</span><span class="o">);</span>
+            <span class="kt">int</span> <span class="n">pageNow</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">s_pageNow</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">pageNow</span><span class="o">=</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">s_pageNow</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="c1">//查询总页数</span>
+            <span class="kt">int</span> <span class="n">pageCount</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>
+            <span class="kt">int</span> <span class="n">rowCount</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="c1">//共有多少记录</span>
+            <span class="kt">int</span> <span class="n">pageSize</span><span class="o">=</span><span class="mi">3</span><span class="o">;</span>    <span class="c1">//每页显示几条记录</span>
+            <span class="n">rs</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">(</span><span class="s">"select count(*) from emp"</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="n">rowCount</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">rowCount</span><span class="o">%</span><span class="n">pageSize</span><span class="o">==</span><span class="mi">0</span><span class="o">)</span>
+                <span class="o">{</span>
+                    <span class="n">pageCount</span><span class="o">=</span><span class="n">rowCount</span><span class="o">/</span><span class="n">pageSize</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="k">else</span>
+                <span class="o">{</span>
+                    <span class="n">pageCount</span><span class="o">=</span><span class="n">rowCount</span><span class="o">/</span><span class="n">pageSize</span><span class="o">+</span><span class="mi">1</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="c1">//分页，每页显示3个人</span>
+            <span class="n">rs</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">(</span><span class="s">"select * from (select a1.*,rownum rn from"</span>
+                    <span class="o">+</span><span class="s">" (select * from emp) a1 where rownum&lt;"</span><span class="o">+</span><span class="n">pageNow</span><span class="o">*</span><span class="n">pageSize</span><span class="o">+</span><span class="s">") where rn&gt;="</span><span class="o">+(</span><span class="n">pageNow</span><span class="o">-</span><span class="mi">1</span><span class="o">)*</span><span class="n">pageSize</span><span class="o">);</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;tr&gt;"</span><span class="o">);</span>
+                <span class="c1">//用户名</span>
+                <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">)+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">6</span><span class="o">)+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/tr&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="c1">//打印总页数</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">pageCount</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+            <span class="o">{</span>
+                <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=MyTest.jsp?pageNow="</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="s">"&gt;&amp;nbsp;"</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="s">"&amp;nbsp;&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="c1">//关闭打开的资源</span>
+                <span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">sm</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">e</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated catch block</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">%&gt;</span>
+<span class="o">&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2011-06-20-Java%E5%9F%BA%E7%A1%8015%E4%B9%8B%E6%93%8D%E4%BD%9COracle%E6%95%B0%E6%8D%AE%E5%BA%93.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Java基础15之操作Oracle数据库 - 知不知&amp;url=/list/docs/java/2011-06-20-Java%E5%9F%BA%E7%A1%8015%E4%B9%8B%E6%93%8D%E4%BD%9COracle%E6%95%B0%E6%8D%AE%E5%BA%93.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2011-06-20-Java%E5%9F%BA%E7%A1%8015%E4%B9%8B%E6%93%8D%E4%BD%9COracle%E6%95%B0%E6%8D%AE%E5%BA%93.html&amp;title=Java-Java基础15之操作Oracle数据库 - 知不知&amp;summary=使用Java操作Oracle数据库、处理事务以及存储过程&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2011-06-20-Java%E5%9F%BA%E7%A1%8015%E4%B9%8B%E6%93%8D%E4%BD%9COracle%E6%95%B0%E6%8D%AE%E5%BA%93.html&amp;text=Java-Java基础15之操作Oracle数据库 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2011-06-20-Java%E5%9F%BA%E7%A1%8015%E4%B9%8B%E6%93%8D%E4%BD%9COracle%E6%95%B0%E6%8D%AE%E5%BA%93.html&amp;t=Java-Java基础15之操作Oracle数据库 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2011-06-20-Java%E5%9F%BA%E7%A1%8015%E4%B9%8B%E6%93%8D%E4%BD%9COracle%E6%95%B0%E6%8D%AE%E5%BA%93.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Java基础15之操作Oracle数据库'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

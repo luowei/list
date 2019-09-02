@@ -1,0 +1,587 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java中的基本运算及简单算法</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java面向对象基础，日期处理、方法的重载和重写、类的属性和方法的访问控制、类与方法的修饰符、集合、反射、内部类、异常、GUI图形编程、多线程、求两个数的最大公约数与最大公倍数、常见的位运算等。</p> <h3 id="java面向对象基础">Java面向对象基础</h3> <p><strong>面向对象的思想：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>封装、继承、多态
+
+1.封装：隐藏对象的属性和方法 private
+2.继承：对象重用 减少代码冗余 extends，单继承 将父类的属性和方法 继承到子类中
+
+3.多态：同一个类域（存在继承关系的类）的不同对象在调用相同方法的时候表现不同
+
+修饰符 public protected private 无 修饰属性和方法
+public ：其他类可以任意访问 自己类可以访问
+protected：自己访问 子父类之间 相同包下
+无：自己访问 相同的包下
+
+单例模式：在整个虚拟机中只有一个类的实例
+</code></pre></div></div> <p><strong>专门处理日期</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java.util.Date 濒临灭绝
+java.util.Calendar 不能new
+//指向系统当前时间
+Calendar cal=Calendar.getInstance()
+//获取年份
+cal.get(Calendar.YEAR);
+//获取月份
+cal.get(Calendar.MONTH);
+</code></pre></div></div> <p><strong>extends</strong> 后只能有一个父类：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>this 表示当前类的实例
+this.属性
+this.方法（参数）
+this（）；调用构造函数
+this（参数）：
+</code></pre></div></div> <p><strong>方法的重载和重写</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>重载：在一个类内有多个相同（名字上）的方法
+参数类型不同。参数个数不同。参数的顺序不同。
+返回值：返回值是否相同对重载不构成影响
+
+Person{
+    public void print(){}
+    public void print(String message){}
+    public void print(int level){}
+}
+</code></pre></div></div> <p><strong>构造函数也可以重载：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>重写：发生在子类 。重新定义父类中的方法。
+方法签名要跟父类相同
+方法签名：返回值+方法名+方法参数（个数，顺序，类型 都相同）
+super：访问父类中的属性和方法
+super.父类属性
+super.父类方法（参数）
+super()//父类的构造器
+super（参数）//调用父类的重载构造器
+</code></pre></div></div> <p><strong>方法的参数传递</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.值传递：对于基本的参数类型 值拷贝（把外围的值拷贝到方法内供方法使用，对方法外的变量不构成影响）
+2.引用传递：地址值
+</code></pre></div></div> <p><strong>类的初始化：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>静态初始化代码段： static {}
+实例初始化代码段: {}
+</code></pre></div></div> <p><strong>接口：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interface 来声明。只允许定义常量 （public static final String str="abc"）和 空方法（抽象方法,没有实现）
+
+public interface Test {
+    public void test(String test);
+}
+
+接口的作用：用来描述规范，被其他的接口或者类 实现或者继承
+</code></pre></div></div> <p><strong>具体的类 实现（implements）</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>接口（一个或者多个，多个之间用"，"分割），必须实现接口内的所有方法
+接口 继承(extends) 接口
+接口不能被实例化。接口在一定程度上弥补类java的单继承
+</code></pre></div></div> <p>抽象类：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>如果一个类没有完全的实现接口中的所有的方法，必须把没有实现的方法声明为抽象方法。。（abstract）
+如果一个类中有一个抽象方法，那么该类必须被声明为抽象类（public abstract class）
+功能更普通类是一样，抽象类可以分担子类的一本分功能
+</code></pre></div></div> <p>方法 实例化 创建引用</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>实体类： 全部实现 可以 是
+抽象类： 部分实现 不可以 是
+接口： 全部不实现      不可以 是
+
+Son son=new Son();
+Father son=new Son();
+Son s=(Son)son；如果没有就报错：ClassCastingException
+
+因为 Son 继承 Father
+Father -&gt; Son
+
+抽象类 -&gt; 继承了抽象类的具体类
+接口-&gt; 实现接口的具体类
+
+casting： 类型转换，引用或者类类型
+向上转换：不需要显示的类型转换
+向下转换：要显示的强制类型转换
+上：father
+下：son
+</code></pre></div></div> <p><strong>例：员工管理：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>对于员工：cr（retravel）ud
+DML insert
+DDL drop
+存放员工的数据结构-》queue
+
+EmppoyeeDate{ Employee [] emArray;
+create();//增加员工
+find（int id）；
+update 更新
+delete
+}
+</code></pre></div></div> <p><strong>Java中类的属性和方法的访问控制</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>类没有protected和private修饰符
+被public 修饰的类，可以被其它包中的类访问
+没有被public 修饰的类，不能被其它包中的类访问
+同一包中，不能访问其它类的private 属性和方法
+同一包中，可以访问其它类的默认 属性和方法
+同一包中，可以访问其它类的protected 属性和方法
+同一包中，可以访问其它类的public 属性和方法
+同一包中，不能访问父类的private 属性和方法
+同一包中，可以访问父类的默认 属性和方法
+同一包中，可以访问父类的protected 属性和方法
+同一包中，可以访问父类的public 属性和方法
+不同包中，无法访问不同包的其它类的private 属性和方法
+不同包中，无法访问不同包的其它类的默认 属性和方法
+不同包中，无法访问不同包的其它类的protected 属性和方法
+不同包中，可以访问不同包的其它类的public 属性和方法
+不同包中，无法访问父类的private 属性和方法
+不同包中，无法访问父类的默认 属性和方法
+不同包中，无法访问父类的protected 属性和方法
+不同包中，可以访问父类的public 属性和方法
+可以看到，类中的默认的属性和方法为protected修饰的
+</code></pre></div></div> <p><strong>static</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.修饰属性：所有的类的实习共享同一个属性
+2.修饰方法：类名.方法名（调用方法）
+3.{};用来初始化类的static属性
+
+规则：
+static修饰的方法不能访问非static变量（成员变量）
+static修饰的方法不能访问非static方法（成员方法）
+</code></pre></div></div> <p><strong>Final修饰符</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>final：提高程序的健壮性
+1.修饰类 该类不能被继承 （java.long.String 不能有子类）
+2.修饰属性，改属性为常量 （程序运行期间值不能被改变的叫常量） 常量的赋值：在第一次被赋值之后，永远不能改变。常量的命名：全部大写 用下划线分隔 MAX_SIZE
+3.修饰方法 该方法不能被重写
+</code></pre></div></div> <p><strong>StringBuffer</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>StringBuffer 提高效率
+缓存：提高效率
+String : 做频繁的字符串连接操作，非常浪费系统空间
+String str="abc";
+str+="xyz";
+str="abcxyz";
+StringBuffer str=new StringBuffer("abc");
+str.append("xyz");
+str.toString()-&gt;StringBuffer-&gt;String;
+
+StringBuilder与StringBuffer
+StringBuilder和StringBuffer 使用方式完全相同
+
+StringBuffer 线程安全
+对象的比较
+对象的比较：== 对于引用来说比较的地址值 。对于基本类型比较的数值
+比较对象的内容：equals方法
+
+Person p1 = new Person("briup",13);
+Person p2 = new Person("briup",13);
+p1.equals(p2) -&gt; true :内容相同 false -&gt;内容不同
+
+equals的来源：java.long.object ，默认实现相当与== ， 重写该方法完成自定义的内容比较
+
+public boolean equals(Object obj){
+    if(obj=null)
+        return false;
+    if(this=obj)
+        return true;
+    if(this.getClass()!=obj.getClass())
+        return false;
+    Person p1=(Person)obj;
+    return this.getName().equals(p1)&amp;&amp;this.getAge()==p1.getAge();
+}
+
+代码覆盖率:测试用例是否可以覆盖（执行）所有代码
+</code></pre></div></div> <h3 id="java集合反射内部类异常">Java集合、反射、内部类、异常</h3> <p><strong>集合（collection）</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>管理若干个对象
+List:管理重复对象
+1.Aarraylist：基于数组的实现
+2.LinkedList:基于链表的实现
+
+Set：管理不可重复的对象
+1.HashSet:检索快
+2.TreeSet:排序（自定义规则）
+
+Map：做检索功能。键值对。key-&gt;value
+</code></pre></div></div> <p><strong>对集合进行遍历</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>迭代器：
+java.util.Iterator{
+    boolean hasNext();//判断是否存在下一个元素
+    Object nest();//取下一个元素
+}
+fot(int i=0;i&lt;3;i++){
+    it.next();
+}
+Object obj=it.next();
+println(obj);
+
+List:放置可重复的对象
+Set :放置不可重复的对象 有对象的equals方法（返回true）和hashCode方法（返回的int值相等）决定。
+HashSet:
+TreeSet：
+
+hashCode来源于object对象
+Object obj=new Object();
+System.out.println(obj);
+
+java.lang.Object@adfasdf123(由hashCode方法返回);
+
+TreeSet:在向集合中添加元素的同时进行排序。对放入treeSet中的对象实现comparable接口并实现compareTo方法
+Person 排序：
+p1.compareTo(p2):p1&gt;p2 return 1;p1=p2 return 0; p1&lt;p2 return -1;
+先排name ：String类型按字母表的数序
+如果相等,再按age
+
+Map：-&gt;HashMap 键值对 key-》value
+key value 可以是任何的object
+一般情况下使用String作为key,value用Object
+"bringup-1" à new Person（"bringup-1"，true，1）；
+存：put (key,value)
+取：get(key)返回value
+
+map遍历的两种方式：
+1.获取map中所有的key值 ：map.keySet();
+2.Map.Entry封装了key 和value
+</code></pre></div></div> <p><strong>反射：reflection</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>使用反射来处理class文件
+java.lang.reflect.*;
+Class{//描述一个类
+Field//描述类中的属性
+Method//描述类中的方法
+Constructor//描述类的构造函数
+}
+
+反射的作用：
+1、修改虚拟机中对象的属性（非常规）可以直接修改private属性,person.setName();
+2、条用对象的方法（非常规）person.toString();
+3、不通过new来创建类的对象的实例new Person();
+
+获取类的class实例：
+1、Class clz=Class.forName("ch06.Person");//需要处理异常
+2、类的引用.getClass(); Class clz=p1.getClass();
+3、类名.class Class clz=Person.class;
+4.类名.getSuperClass() Class clazz=p1.getSuperclass();
+5.primitive wraper classes的.TYPE语法,用于得到基本类类型：class clazz=Integer.TYPE;
+</code></pre></div></div> <p><strong>动态的创建类</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>不通过new来创建类的对象的实例：通过字符串形式命名，将类名迁移到配置文件中（通常是文本文件形式），根据横序的运行，动态的创建类得实例
+Constructor constructor =clz.getConstructor(String.class, boolean.class, int.class);
+Object obj=constructor.newInstance("briup-000",false,100);
+System.out.println("Constructor a new instance without new :" +obj);
+
+内部类
+//解耦：数据跟程序解耦
+//高内聚，低耦合
+内部类：类里面的另外的类 。 共享外部类的资源；有效的避免命名冲突
+
+静态内部类：
+不许要创建外部类的实例即可创建内部类实例。可以到达一定程度的封装
+
+局部内部类：
+类可以写在任意的地方
+
+</code></pre></div></div> <p><strong>异常(Exception)</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.异常
+异常：程序无法正常运行 程序当中的错误
+异常处理的机制：遇到异常代码，jvm寻找异常处理，如果找不到异常处理语句，则将该异常抛出至上层代码，如此反复，直至抛给虚拟机，终止程序运行
+
+异常的分为两类：checked 异常(继承java.lang.Exception的异常（在代码中必须处理）)。unchecked异常（java.lang.RuntimeException(不许要在程序编译的时候处理)）
+checked：编译期检查 如果源代码中没有进行处理，则无法通过编译
+unchecked：运行期检查 编译的不会检查
+Class.forName()-&gt;ClassNotFound
+
+对于异常的处理:
+1.try{//一般来说出来checked异常
+    //+可能有问题的代码
+}catch（异常的类型1）{
+    //+处理异常的代码
+}catch（异常的类型1）{
+    //+处理异常的代码
+}finally{
+    //+必须执行的代码段 通常用来回收资源
+}
+
+2.throw 异常类型
+return和finally(无论代码是否异常。都只返回finally的return)
+
+3.自定义的异常：
+一般都是unchecked;阐述系统中的业务逻辑错误
+UersNotFoundException:找不到数据的用户
+if(user==null)
+throw new UserNotFoundException;
+throw new NullPointerException;
+</code></pre></div></div> <p><strong>断言</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>断言：在程序运行过程中进行debug
+偏向于测试
+assert 布尔表达式(返回false的时候抛出AssertionError)；
+assert 布尔表达式："断言信息"；
+开启断言：java-ea ch07/Test
+当没开启断言的时候，对程序的效率没有任何影响
+判断程序运行过程中变量的值是否符合预期
+
+public class AssertTest{
+    public static void main(String args[]){
+        System.out.println("Before");
+        assert 1==1;
+        assert 1!=1:"wrong !!!";//类似于自定义异常的有参的函数构造
+        System.out.println("After");
+    }
+}
+
+判断程序运行的参数是否是"briup"，如果不是则抛出异常
+</code></pre></div></div> <p><strong>GUI 图形编程</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>容器：用来存放组件或者子容器
+顶级容器：只能存放组件或者其它子容器（javax.swing.Jframe）
+子容器：可以被其他容器所包含 也可以包含其他组件或者容器（javax.swing.JPanel）
+组件：按钮。文本框。菜单 在javax.swing.*;包下
+布局：用来表示组件或者容器的相对位置
+
+1.FlowLayout 流式布局 组件顺序拜访
+2.BorderLayout 边框布局 5个部分：south north west east center
+3.GridLayout 表格布局 以行和列的形式将组件组织在一起
+</code></pre></div></div> <p><strong>多线程</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java优点：跨平台 多线程
+进程：在os运行一个程序 用来完成一个独立完整的任务 至少要有一个线程（主线程）
+线程：将一个完整的任务分解成若干的独立的小任务来完成 （本质）更多的抢占cpu的时间片，达到并怕执行的效果
+
+计算机在同一时刻只能执行一条指令（单核）
+线程由进程衍生出来。地址空间共享。data共享。code共享。是独立运行的分支（程序流）
+
+java中如何实现线程：
+1.继承Thread类
+2.实现Runnable接口 解决单继承
+
+都要实现run()，线程所要做的事情
+public void run(){
+}
+
+如果run方法调用结束，线程结束
+启动线程：线程的引用.start（）；
+
+普通线程和精灵Deamon线程
+Thread.setDeamon(boolean);//设置普通线程为Deamon线程
+Deamon线程：在后台运行的线程。对于Deamon线程始终依赖（生命周期）与另外一个线程
+
+普通线程不存在依赖关系
+setDeamon（）必须在start（）；之前调用
+
+线程的优先级：如果优先级不同，那么线程运行的先后顺序可以不一样（取决于操作系统的调度程序）
+Thread.setPriority(0-10);
+java.lang.Thread
+Thread.sleep();让线程暂时停止运行某一特定的时间
+Thread t=Thread.currentThread();获取当前运行的线程的实例（静态方法）
+
+停止线程：不建议使用stop。可以设置标志位，通过对标志位的读取来终止线程的运行
+boolean flag=true;
+if(!flag)
+return;
+
+线程同步
+
+线程同步：多个线程操作同一个对象的时候
+1.为了保证多个线程操作同一个对象的完整性，可以对需要同步的方法使用synchronized修饰
+2.使用synchronized修饰的方法，在调用的时候必须先获得该对象的锁（一个对象只有一把锁），只有获得了锁之后，同步方法才能被调用，调用之后锁被自动的释放
+
+3.修饰代码块
+synchronized(对象的引用){
+需要同步的代码
+}
+传入的对象的引用被synchronized加锁。降低加锁的粒度。
+
+思索：deadlock 当两个对象相互持有对方所需要的锁的时候，并且都得不到释放，这时候产生死锁。。。。。。
+
+wait（）：释放对象的锁 java.lang.Object
+对象的引用.wait（）；释放引用锁指向的对象的锁，使当前程序停止运行，等待其他线程调用notify（）进行通知后方可运行
+
+sleep（）不会释放对象的锁
+</code></pre></div></div> <h3 id="java中的常见的基本算法">Java中的常见的基本算法</h3> <p><strong>求两个数的最大公约数与最大公倍数</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MaxDivisor</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">MaxDivisor</span> <span class="n">opt</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaxDivisor</span><span class="o">();</span>
+        <span class="c1">//System.out.println(Integer.valueOf(args[0])%Integer.valueOf(args[1]));</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最大公约数为："</span> <span class="o">+</span> <span class="n">opt</span><span class="o">.</span><span class="na">commonDivisor2</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]),</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">])));</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最小公倍数为："</span> <span class="o">+</span> <span class="n">opt</span><span class="o">.</span><span class="na">commonMultiple</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]),</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">])));</span>
+
+        <span class="c1">//问号表达式</span>
+        <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
+        <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="o">(</span><span class="n">b</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">b</span> <span class="o">:</span> <span class="o">(</span><span class="n">b</span> <span class="o">+</span> <span class="mi">2</span><span class="o">));</span>
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"opt.ret(b): "</span> <span class="o">+</span> <span class="n">opt</span><span class="o">.</span><span class="na">ret</span><span class="o">(</span><span class="n">b</span><span class="o">)</span> <span class="o">+</span> <span class="s">"\na = "</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="s">" b = "</span> <span class="o">+</span> <span class="n">b</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Add(a,b) = "</span> <span class="o">+</span> <span class="n">opt</span><span class="o">.</span><span class="na">Add</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">));</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"1^1:"</span> <span class="o">+</span> <span class="o">(</span><span class="mi">1</span> <span class="o">^</span> <span class="mi">1</span><span class="o">));</span>    <span class="c1">//得0</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"0^0:"</span> <span class="o">+</span> <span class="o">(</span><span class="mi">0</span> <span class="o">^</span> <span class="mi">0</span><span class="o">));</span>    <span class="c1">//得0</span>
+    <span class="o">}</span>
+
+    <span class="c1">//测试问号表达式</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">ret</span><span class="o">(</span><span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">b</span> <span class="o">:</span> <span class="o">(</span><span class="n">b</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//最大公倍数</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">commonDivisor1</span><span class="o">(</span><span class="kt">int</span> <span class="n">num1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="o">(</span><span class="n">num1</span> <span class="o">%</span> <span class="n">num2</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">?</span> <span class="n">num2</span> <span class="o">:</span> <span class="n">commonDivisor1</span><span class="o">(</span><span class="n">num2</span><span class="o">,</span> <span class="n">num1</span> <span class="o">%</span> <span class="n">num2</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">commonDivisor2</span><span class="o">(</span><span class="kt">int</span> <span class="n">num1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">t</span><span class="o">,</span> <span class="n">a</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">num1</span> <span class="o">&lt;</span> <span class="n">num2</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">//shift1(num1,num2);</span>
+            <span class="c1">//shift2(num1,num2);</span>
+            <span class="n">shift3</span><span class="o">(</span><span class="n">num1</span><span class="o">,</span> <span class="n">num2</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">while</span> <span class="o">((</span><span class="n">a</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">%</span> <span class="n">num2</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">num1</span> <span class="o">=</span> <span class="n">num2</span><span class="o">;</span>
+            <span class="n">num2</span> <span class="o">=</span> <span class="n">a</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">num1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">//最小公倍数</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">commonMultiple</span><span class="o">(</span><span class="kt">int</span> <span class="n">num1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">num1</span> <span class="o">*</span> <span class="n">num2</span> <span class="o">/</span> <span class="n">commonDivisor1</span><span class="o">(</span><span class="n">num1</span><span class="o">,</span> <span class="n">num2</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//交换函数</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shift1</span><span class="o">(</span><span class="kt">int</span> <span class="n">num1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="n">num1</span><span class="o">;</span>
+        <span class="n">num1</span> <span class="o">=</span> <span class="n">num2</span><span class="o">;</span>
+        <span class="n">num2</span> <span class="o">=</span> <span class="n">t</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shift2</span><span class="o">(</span><span class="kt">int</span> <span class="n">num1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">num1</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span><span class="o">;</span>
+        <span class="n">num2</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">-</span> <span class="n">num2</span><span class="o">;</span>
+        <span class="n">num1</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">-</span> <span class="n">num2</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shift3</span><span class="o">(</span><span class="kt">int</span> <span class="n">num1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">num1</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">^</span> <span class="n">num2</span><span class="o">;</span>    <span class="c1">//异或，相同为0，不同为1，找出不同的位(异或之后，为1的位)，</span>
+        <span class="n">num2</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">^</span> <span class="n">num2</span><span class="o">;</span>    <span class="c1">//再异或得到初始num1的值赋给num2</span>
+        <span class="n">num1</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">^</span> <span class="n">num2</span><span class="o">;</span>    <span class="c1">//再异或得到初始num2的值赋给num1</span>
+        <span class="c1">//num2的各位与0异或(两数中相同的位)保持不变，num2的各位与1异或(两数中不相同的位)反转，</span>
+    <span class="o">}</span>
+
+    <span class="c1">//位运算实现加法</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">Add</span><span class="o">(</span><span class="kt">int</span> <span class="n">num1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">num2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">num1</span> <span class="o">:</span> <span class="nc">Add</span><span class="o">(</span><span class="n">num1</span> <span class="o">^</span> <span class="n">num2</span><span class="o">,</span> <span class="o">(</span><span class="n">num1</span> <span class="o">&amp;</span> <span class="n">num2</span><span class="o">)</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="o">);</span>
+        <span class="c1">//先不计进位相加(num1^num2),得出的结果，再与进位相加，随着递归，直至进位变为0，递归结束</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>杨辉三角</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">YHTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span><span class="o">[][]</span> <span class="n">array</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">10</span><span class="o">][</span><span class="mi">10</span><span class="o">];</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;=</span> <span class="n">i</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="o">)</span>    <span class="c1">//如果是第一列或者对角线</span>
+                <span class="o">{</span>
+                    <span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="o">][</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="o">]</span> <span class="o">+</span> <span class="n">array</span><span class="o">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="o">][</span><span class="n">j</span><span class="o">];</span>
+                <span class="o">}</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">+</span> <span class="s">"\t"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>获取当前日期</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CalendarTest</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//获取当前日期</span>
+        <span class="nc">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+        <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">YEAR</span><span class="o">);</span>        <span class="c1">//得到当前日期的年份</span>
+        <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">);</span>    <span class="c1">//得到当前日期的月份</span>
+<span class="c1">//        cal.set();    //设置日期</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>常见的位运算</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test1</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"~2="</span> <span class="o">+</span> <span class="o">(~</span><span class="mi">2</span><span class="o">));</span><span class="c1">//取反</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"2&amp;3="</span> <span class="o">+</span> <span class="o">(</span><span class="mi">2</span> <span class="o">&amp;</span> <span class="mi">3</span><span class="o">));</span><span class="c1">//与</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"2|3="</span> <span class="o">+</span> <span class="o">(</span><span class="mi">2</span> <span class="o">|</span> <span class="mi">3</span><span class="o">));</span><span class="c1">//或</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"~-5="</span> <span class="o">+</span> <span class="o">(~-</span><span class="mi">5</span><span class="o">));</span><span class="c1">//取反</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-3^3="</span> <span class="o">+</span> <span class="o">(-</span><span class="mi">3</span> <span class="o">^</span> <span class="mi">3</span><span class="o">));</span><span class="c1">//异或</span>
+
+        <span class="c1">//算术右移：低位溢出，符号位不变，并用符号位补溢出的高位</span>
+        <span class="c1">//算术左移：符号位不变，低位补0</span>
+        <span class="c1">//逻辑右移:低位溢出，高位补零</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"1&gt;&gt;2="</span> <span class="o">+</span> <span class="o">(</span><span class="mi">1</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="o">));</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-1&gt;&gt;2="</span> <span class="o">+</span> <span class="o">(-</span><span class="mi">1</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="o">));</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"1&lt;&lt;2="</span> <span class="o">+</span> <span class="o">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="o">));</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-1&lt;&lt;2="</span> <span class="o">+</span> <span class="o">(-</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="o">));</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"3&gt;&gt;&gt;2="</span> <span class="o">+</span> <span class="o">(</span><span class="mi">3</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">2</span><span class="o">));</span><span class="c1">//逻辑右移</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="cm">/*
+~2=-3
+2&amp;3=2
+2|3=3
+~-5=4
+-3^3=-2
+1&gt;&gt;2=0      //算术右移
+-1&gt;&gt;2=-1
+1&lt;&lt;2=4      //算术左移
+-1&lt;&lt;2=-4
+3&gt;&gt;&gt;2=0     //逻辑右移
+*/</span>
+</code></pre></div></div> <p><strong>利用位操作相加、相减、逻辑右移、算术右移、循环左右移及由原码求补码</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">d2binary</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">31</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">a</span> <span class="o">&gt;&gt;</span> <span class="n">i</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="o">);</span>    <span class="c1">//输出二进制</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n\n"</span><span class="o">);</span>
+
+        <span class="n">d2binary</span> <span class="n">op</span> <span class="o">=</span> <span class="k">new</span> <span class="n">d2binary</span><span class="o">();</span>
+
+        <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">15</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">c</span><span class="o">;</span>
+
+<span class="c1">//        c=op.add(1,1);</span>
+<span class="c1">//        System.out.println("\nAdd(10,15)--&gt;c="+c);</span>
+
+    <span class="o">}</span>
+
+    <span class="cm">/*交换两个变量的值，有三种方法：
+    1.利用位操作(异或 ^)
+    2.两数相加、相减、相减
+    3.使用中间变量
+    */</span>
+
+    <span class="c1">//利用位操作交换两变量的值</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shift3</span><span class="o">(</span><span class="kt">int</span> <span class="n">num1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">num1</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">^</span> <span class="n">num2</span><span class="o">;</span>    <span class="c1">//异或，相同为0，不同为1，找出不同的位(异或之后，为1的位)，</span>
+        <span class="n">num2</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">^</span> <span class="n">num2</span><span class="o">;</span>    <span class="c1">//再异或得到初始num1的值赋给num2</span>
+        <span class="n">num1</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">^</span> <span class="n">num2</span><span class="o">;</span>    <span class="c1">//再异或得到初始num2的值赋给num1</span>
+        <span class="c1">//num2的各位与0异或(两数中相同的位)保持不变，num2的各位与1异或(两数中不相同的位)反转，</span>
+    <span class="o">}</span>
+
+    <span class="c1">//从32位的单元中取出某几位</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getMidBits</span><span class="o">(</span><span class="kt">int</span> <span class="n">val</span><span class="o">,</span> <span class="kt">int</span> <span class="n">n1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">n2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">z</span><span class="o">;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="o">~</span><span class="mi">0</span><span class="o">;</span>    <span class="c1">//将z初始化16位的1</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="o">(</span><span class="n">z</span> <span class="o">&gt;&gt;</span> <span class="n">n1</span><span class="o">)</span> <span class="o">&amp;</span> <span class="o">(</span><span class="n">z</span> <span class="o">&lt;&lt;</span> <span class="o">(</span><span class="mi">32</span> <span class="o">-</span> <span class="n">n2</span><span class="o">));</span>    <span class="c1">//将两端的化成0,中间的化成1</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">val</span> <span class="o">&amp;</span> <span class="n">z</span><span class="o">;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">z</span> <span class="o">&gt;&gt;</span> <span class="o">(</span><span class="mi">32</span> <span class="o">-</span> <span class="n">n2</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">z</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">//对32的二进制数取出它的奇数位(从左边起1，3，5 。。。)</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getOddBits</span><span class="o">(</span><span class="kt">int</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">z</span><span class="o">,</span> <span class="n">a</span><span class="o">,</span> <span class="n">q</span><span class="o">;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">31</span><span class="o">;</span> <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;=</span> <span class="o">(</span><span class="mi">32</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span>    <span class="c1">//要取的数的位数为原来的数的位数的1/2</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">q</span> <span class="o">*</span> <span class="mi">2</span><span class="o">;</span>        <span class="c1">//原数进位指针进两位，要取的数的指针进一位</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">val</span> <span class="o">&gt;&gt;</span> <span class="o">(</span><span class="mi">32</span> <span class="o">-</span> <span class="n">i</span><span class="o">);</span>    <span class="c1">//将第i个位置的数移到最低位</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="mi">31</span><span class="o">;</span>        <span class="c1">//通过左移31位，将将最低位移到最高位去，其后的位全都补0</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="o">;</span>        <span class="c1">//右移31位，将最高位移到最低，其前面的位全都补零，得到第i位</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">z</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">q</span><span class="o">;</span>        <span class="c1">//积加取出的数</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">z</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">//算术右移：低位溢出，符号位不变，并用符号位补溢出的高位</span>
+    <span class="c1">//算术左移：符号位不变，低位补0</span>
+    <span class="c1">//逻辑右移:低位溢出，高位补零</span>
+
+    <span class="c1">//实现算术右移函数</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">shiftRightArithmetic</span><span class="o">(</span><span class="kt">int</span> <span class="n">val</span><span class="o">,</span> <span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">z</span><span class="o">;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="o">~</span><span class="mi">0</span><span class="o">;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">z</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="o">;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="o">~</span><span class="n">z</span><span class="o">;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">z</span> <span class="o">|</span> <span class="o">(</span><span class="n">val</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">z</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">//实现逻辑右移函数</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">shiftRightLogical</span><span class="o">(</span><span class="kt">int</span> <span class="n">val</span><span class="o">,</span> <span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">z</span><span class="o">;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="o">(~(</span><span class="mi">1</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="o">))</span> <span class="o">&amp;</span> <span class="o">(</span><span class="n">val</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">z</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">//实现右在循环移位</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">moveRightCircle</span><span class="o">(</span><span class="kt">int</span> <span class="n">val</span><span class="o">,</span> <span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">z</span><span class="o">;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="o">(</span><span class="n">val</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="o">)</span> <span class="o">|</span> <span class="o">(</span><span class="n">val</span> <span class="o">&lt;&lt;</span> <span class="o">(</span><span class="mi">32</span> <span class="o">-</span> <span class="n">n</span><span class="o">));</span>
+        <span class="k">return</span> <span class="n">z</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">//实现左循环移位</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">moveLeftCircle</span><span class="o">(</span><span class="kt">int</span> <span class="n">val</span><span class="o">,</span> <span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">z</span><span class="o">;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="o">(</span><span class="n">val</span> <span class="o">&gt;&gt;</span> <span class="o">(</span><span class="mi">32</span> <span class="o">-</span> <span class="n">n</span><span class="o">))</span> <span class="o">|</span> <span class="o">(</span><span class="n">val</span> <span class="o">&lt;&lt;</span> <span class="n">n</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">z</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">//根据原码求补码(求二进制数的补码)</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">realBits2MaskBit</span><span class="o">(</span><span class="kt">int</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">z</span><span class="o">;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">val</span> <span class="o">&amp;</span> <span class="mi">10000000</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">z</span> <span class="o">==</span> <span class="mi">10000000</span><span class="o">)</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="o">~</span><span class="n">val</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+        <span class="k">else</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">val</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">z</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//一个正数的补码等于该数的原码，一个负数的补码等于该数的反码加1</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2011-11-16-Java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97%E5%8F%8A%E7%AE%80%E5%8D%95%E7%AE%97%E6%B3%95.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Java中的基本运算及简单算法 - 知不知&amp;url=/list/docs/java/2011-11-16-Java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97%E5%8F%8A%E7%AE%80%E5%8D%95%E7%AE%97%E6%B3%95.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2011-11-16-Java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97%E5%8F%8A%E7%AE%80%E5%8D%95%E7%AE%97%E6%B3%95.html&amp;title=Java-Java中的基本运算及简单算法 - 知不知&amp;summary=Java面向对象基础，Java中常用的位运算如：相加、相减、逻辑右移、算术右移、循环左右移及由原码求补码等，获取当前日期、求两个数的最大公约数与最大公倍数、杨辉三角&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2011-11-16-Java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97%E5%8F%8A%E7%AE%80%E5%8D%95%E7%AE%97%E6%B3%95.html&amp;text=Java-Java中的基本运算及简单算法 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2011-11-16-Java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97%E5%8F%8A%E7%AE%80%E5%8D%95%E7%AE%97%E6%B3%95.html&amp;t=Java-Java中的基本运算及简单算法 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2011-11-16-Java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97%E5%8F%8A%E7%AE%80%E5%8D%95%E7%AE%97%E6%B3%95.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Java中的基本运算及简单算法'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

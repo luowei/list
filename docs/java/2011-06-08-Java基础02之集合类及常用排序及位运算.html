@@ -1,0 +1,937 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础02之集合类及常用排序及位运算</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>项目文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_03.jpg" alt="项目文件结构" /></p> <p><strong>主要内容有：</strong>Java基础中的java的数组、冒泡排序、选择排序、快速排序、集合类及移位运算。</p> <h3 id="数组">数组</h3> <p><strong>Class5 / com.test1 / Demo5_1.java:</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 功能：数组的必要性  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo5_1</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>    
+    <span class="o">{</span>   
+        <span class="c1">//定义一个可以存放六个float类型的数组   </span>
+        <span class="kt">float</span><span class="o">[]</span> <span class="n">arr</span><span class="o">=</span><span class="k">new</span> <span class="kt">float</span><span class="o">[</span><span class="mi">6</span><span class="o">];</span>   
+        <span class="c1">//给数组的各个元数赋值   </span>
+        <span class="n">arr</span><span class="o">[</span><span class="mi">0</span><span class="o">]=</span><span class="mi">3</span><span class="o">;</span>   
+        <span class="n">arr</span><span class="o">[</span><span class="mi">1</span><span class="o">]=</span><span class="mi">5</span><span class="o">;</span>   
+        <span class="n">arr</span><span class="o">[</span><span class="mi">2</span><span class="o">]=</span><span class="mi">1</span><span class="o">;</span>   
+        <span class="n">arr</span><span class="o">[</span><span class="mi">3</span><span class="o">]=</span><span class="mf">3.4f</span><span class="o">;</span>   
+        <span class="n">arr</span><span class="o">[</span><span class="mi">4</span><span class="o">]=</span><span class="mi">2</span><span class="o">;</span>   
+        <span class="n">arr</span><span class="o">[</span><span class="mi">5</span><span class="o">]=</span><span class="mi">50</span><span class="o">;</span>   
+        <span class="c1">//算总体重   </span>
+        <span class="kt">float</span> <span class="n">all</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">6</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="n">all</span><span class="o">+=</span><span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>   
+        <span class="o">}</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"总体重是："</span><span class="o">+</span><span class="n">all</span><span class="o">);</span>   
+           
+        <span class="c1">//定义一个size=5的int数组   </span>
+        <span class="kt">int</span><span class="o">[]</span> <span class="n">arr1</span><span class="o">;</span>   
+        <span class="n">arr1</span><span class="o">=</span><span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">5</span><span class="o">];</span>   
+           
+        <span class="c1">//如果你访问的数组范围大了   </span>
+        <span class="c1">//arr[5]=10;   </span>
+        <span class="c1">//如何知道数组的大小   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"数组arr1的大小："</span><span class="o">+</span><span class="n">arr1</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>   
+           
+        <span class="c1">//滑板比赛   </span>
+        <span class="kt">float</span> <span class="n">arr2</span><span class="o">[]={</span><span class="mi">3</span><span class="o">,</span><span class="mi">6</span><span class="o">,</span><span class="mf">7.1f</span><span class="o">,</span><span class="mf">1.1f</span><span class="o">,</span><span class="mi">3</span><span class="o">};</span>   
+        <span class="kt">float</span> <span class="n">all2</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">arr2</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="n">all2</span><span class="o">+=</span><span class="n">arr2</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>   
+        <span class="o">}</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"平均时间："</span><span class="o">+(</span><span class="n">all2</span><span class="o">/</span><span class="n">arr2</span><span class="o">.</span><span class="na">length</span><span class="o">));</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>Class5 / com.test5_2 / Demo5_2.java:</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 功能：对象数组的使用  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo5_2</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>   
+        <span class="c1">//定义一个可以存放四只狗的对象数组   </span>
+        <span class="nc">Dog</span> <span class="n">dogs</span><span class="o">[]=</span><span class="k">new</span> <span class="nc">Dog</span><span class="o">[</span><span class="mi">4</span><span class="o">];</span>   
+        <span class="c1">//创建一个能存放4只狗的Dog[]对象数组   </span>
+           
+        <span class="cm">/*  
+        //给各个狗赋初值  
+        dogs[0]=new Dog();//将dogs[0]存放创建一只狗的空间的地址  
+        dogs[0].setName("花花");  
+        dogs[0].setWeight(4.5f);  
+        */</span>  
+        <span class="c1">//从控制台输入各个狗的信息   </span>
+        <span class="nc">InputStreamReader</span> <span class="n">isr</span><span class="o">=</span><span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span><span class="c1">//IO流   </span>
+        <span class="nc">BufferedReader</span> <span class="n">br</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">isr</span><span class="o">);</span><span class="c1">//将IO流转成Buffer流   </span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">4</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="n">dogs</span><span class="o">[</span><span class="n">i</span><span class="o">]=</span><span class="k">new</span> <span class="nc">Dog</span><span class="o">();</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入第"</span><span class="o">+(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">)+</span><span class="s">"只狗的狗名："</span><span class="o">);</span>   
+            <span class="nc">String</span> <span class="n">name</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span><span class="c1">//从控制台读取狗名   </span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入第"</span><span class="o">+(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">)+</span><span class="s">"只狗的体重:"</span><span class="o">);</span>   
+            <span class="nc">String</span> <span class="n">s_weight</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span><span class="c1">//从控制台读取体重   </span>
+            <span class="kt">float</span> <span class="n">weight</span><span class="o">=</span><span class="nc">Float</span><span class="o">.</span><span class="na">parseFloat</span><span class="o">(</span><span class="n">s_weight</span><span class="o">);</span><span class="c1">//将String转成float类型   </span>
+            <span class="c1">//将名字赋给对象   </span>
+            <span class="n">dogs</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">setName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>   
+            <span class="c1">//将体重赋给对象   </span>
+            <span class="n">dogs</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">setWeight</span><span class="o">(</span><span class="n">weight</span><span class="o">);</span>   
+               
+        <span class="o">}</span>   
+        <span class="c1">//计算总体重   </span>
+        <span class="kt">float</span> <span class="n">allWeight</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">4</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="n">allWeight</span><span class="o">+=</span><span class="n">dogs</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getWeight</span><span class="o">();</span>   
+        <span class="o">}</span>   
+        <span class="c1">//计算平均体重   </span>
+        <span class="kt">float</span> <span class="n">avgWeight</span><span class="o">=</span><span class="n">allWeight</span><span class="o">/</span><span class="n">dogs</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"总体重="</span><span class="o">+</span><span class="n">allWeight</span><span class="o">+</span><span class="s">" 平均="</span><span class="o">+</span><span class="n">avgWeight</span><span class="o">);</span>   
+           
+        <span class="c1">//找出体重最大的狗   </span>
+        <span class="c1">//假设第一只狗体重最大   </span>
+        <span class="kt">float</span> <span class="n">maxWeight</span><span class="o">=</span><span class="n">dogs</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">getWeight</span><span class="o">();</span>   
+        <span class="kt">int</span> <span class="n">maxIndex</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>   
+        <span class="c1">//依次比较狗的体重   </span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">dogs</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="k">if</span><span class="o">(</span><span class="n">maxWeight</span><span class="o">&lt;</span><span class="n">dogs</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getWeight</span><span class="o">())</span>   
+            <span class="o">{</span>   
+                <span class="c1">//修改   </span>
+                <span class="n">maxWeight</span><span class="o">=</span><span class="n">dogs</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getWeight</span><span class="o">();</span>   
+                <span class="n">maxIndex</span><span class="o">=</span><span class="n">i</span><span class="o">;</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"体重最大的狗是第"</span><span class="o">+(</span><span class="n">maxIndex</span><span class="o">+</span><span class="mi">1</span><span class="o">)+</span><span class="s">"只狗，其体重是："</span>  
+                <span class="o">+</span><span class="n">dogs</span><span class="o">[</span><span class="n">maxIndex</span><span class="o">].</span><span class="na">getWeight</span><span class="o">());</span>   
+           
+        <span class="c1">//输入狗的名字，查找它的体重   </span>
+        <span class="nc">BufferedReader</span> <span class="n">nam</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">isr</span><span class="o">);</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入想要查找体重的狗的名字："</span><span class="o">);</span>   
+        <span class="nc">String</span> <span class="n">dogName</span><span class="o">=</span><span class="n">nam</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">dogs</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="k">if</span><span class="o">(</span><span class="n">dogName</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">dogs</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getName</span><span class="o">()))</span>   
+            <span class="o">{</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">dogName</span><span class="o">+</span><span class="s">"的体重是："</span><span class="o">+</span><span class="n">dogs</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getWeight</span><span class="o">());</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+    <span class="o">}</span>   
+    <span class="cm">/*  
+     * 数组总结：  
+     * 1.数组可存放同一类型数据  
+     * 2.简单数据类型(int,float)数组，可直接赋值  
+     * 3.对象数组定义后，赋值时需要再次为每个对象分配空间[即：new 对象]  
+     * 4.数组大小 必须事先指定  
+     * 5.数组名可以理解为执行数组首地址的引用  
+     * 6.数组的下标是从0开始编号的  
+     */</span>  
+<span class="o">}</span>   
+  
+<span class="c1">//定义一个狗类   </span>
+<span class="kd">class</span> <span class="nc">Dog</span>   
+<span class="o">{</span>   
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="kd">private</span> <span class="kt">float</span> <span class="n">weight</span><span class="o">;</span>   
+    <span class="kd">public</span> <span class="kt">float</span> <span class="nf">getWeight</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">weight</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setWeight</span><span class="o">(</span><span class="kt">float</span> <span class="n">weight</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>  
+</code></pre></div></div> <p><strong>Class5 / com.test1 / Demo5_5.java:</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 功能：二维数组  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo5_5</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="kt">int</span><span class="o">[][]</span> <span class="n">a</span><span class="o">=</span><span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">4</span><span class="o">][</span><span class="mi">6</span><span class="o">];</span>   
+        <span class="n">a</span><span class="o">[</span><span class="mi">1</span><span class="o">][</span><span class="mi">2</span><span class="o">]=</span><span class="mi">1</span><span class="o">;</span>   
+        <span class="n">a</span><span class="o">[</span><span class="mi">2</span><span class="o">][</span><span class="mi">1</span><span class="o">]=</span><span class="mi">2</span><span class="o">;</span>   
+        <span class="n">a</span><span class="o">[</span><span class="mi">2</span><span class="o">][</span><span class="mi">3</span><span class="o">]=</span><span class="mi">3</span><span class="o">;</span>   
+        <span class="c1">//把图形输出   </span>
+        <span class="c1">//行   </span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">4</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="c1">//列   </span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">j</span><span class="o">&lt;</span><span class="mi">6</span><span class="o">;</span><span class="n">j</span><span class="o">++)</span>   
+            <span class="o">{</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]+</span><span class="s">" "</span><span class="o">);</span>   
+            <span class="o">}</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n"</span><span class="o">);</span>   
+        <span class="o">}</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>
+</code></pre></div></div> <h3 id="排序与查找">排序与查找</h3> <p><strong>排序介绍</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_04.jpg" alt="排序介绍" /></p> <p><strong>冒泡排序</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_05.jpg" alt="冒泡排序" /></p> <p><strong>选择排序</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_06.jpg" alt="选择排序" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_07.jpg" alt="选择排序" /></p> <p><strong>快速排序</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_08.jpg" alt="快速排序" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_09.jpg" alt="快速排序" /></p> <p><strong>Class5 / com.test1 / Demo5_3.java:</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 功能：演示各种排序法  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.util.Calendar</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo5_3</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>    
+    <span class="o">{</span>   
+        <span class="kt">int</span> <span class="n">len</span><span class="o">=</span><span class="mi">10</span><span class="o">;</span>   
+        <span class="kt">int</span><span class="o">[]</span> <span class="n">arr</span><span class="o">=</span><span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">len</span><span class="o">];</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">len</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="c1">//让程序随机产生一个1-10000的数   </span>
+            <span class="c1">//int t=(int)(Math.random()*10000);   </span>
+            <span class="kt">int</span> <span class="n">t</span><span class="o">=(</span><span class="kt">int</span><span class="o">)(</span><span class="nc">Math</span><span class="o">.</span><span class="na">random</span><span class="o">()*</span><span class="mi">100</span><span class="o">);</span>   
+            <span class="c1">//Math.random()会随机产生一个0~1的数   </span>
+            <span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]=</span><span class="n">t</span><span class="o">;</span>   
+        <span class="o">}</span>   
+        <span class="c1">//int arr[]={1,6,0,-1,9,2,14,24,5};   </span>
+           
+        <span class="c1">//创建一个Bubble实例   </span>
+        <span class="nc">Bubble</span> <span class="n">bubble</span><span class="o">=</span><span class="k">new</span> <span class="nc">Bubble</span><span class="o">();</span>   
+        <span class="c1">//在排序前打印系统时间   </span>
+        <span class="nc">Calendar</span> <span class="n">cal</span><span class="o">=</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span><span class="c1">//获得实例    </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"冒泡排序前："</span><span class="o">+</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">());</span>   
+           
+        <span class="n">bubble</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">arr</span><span class="o">);</span><span class="c1">//排序，通过引用修改arr数组的顺序   </span>
+           
+        <span class="n">cal</span><span class="o">=</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span><span class="c1">//重新获得实例    </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n冒泡排序后："</span><span class="o">+</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">());</span>   
+           
+        <span class="c1">//输出冒泡排序后的结果，打印有序数列   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n冒泡排序的结果："</span><span class="o">);</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]+</span><span class="s">" "</span><span class="o">);</span>   
+        <span class="o">}</span>   
+           
+        <span class="kt">int</span> <span class="n">a</span><span class="o">=</span><span class="mi">12</span><span class="o">;</span>   
+        <span class="n">bubble</span><span class="o">.</span><span class="na">test</span><span class="o">(</span><span class="n">a</span><span class="o">);</span><span class="c1">//简单数据类型传到函数中，它的改变不会导致外面的修改   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"\n\na="</span><span class="o">+</span><span class="n">a</span><span class="o">);</span>   
+           
+        <span class="c1">//-----------------------------------------------------   </span>
+        <span class="c1">//创建一个Select实例   </span>
+        <span class="nc">Select</span> <span class="n">select</span><span class="o">=</span><span class="k">new</span> <span class="nc">Select</span><span class="o">();</span>   
+        <span class="c1">//在排序前打印系统时间   </span>
+        <span class="n">cal</span><span class="o">=</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span><span class="c1">//获得实例    </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n选择排序前："</span><span class="o">+</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">());</span>   
+           
+        <span class="c1">//排序   </span>
+        <span class="n">select</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">arr</span><span class="o">);</span>   
+           
+        <span class="n">cal</span><span class="o">=</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span><span class="c1">//重新获得实例    </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n选择排序后："</span><span class="o">+</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">());</span>   
+           
+        <span class="c1">//输出选择排序后的结果，打印有序数列   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n选择排序的结果："</span><span class="o">);</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]+</span><span class="s">" "</span><span class="o">);</span>   
+        <span class="o">}</span>   
+           
+        <span class="c1">//-------------------------------------------------   </span>
+        <span class="c1">//创建一个InsertSort实例   </span>
+        <span class="nc">InsertSort</span> <span class="n">is</span><span class="o">=</span><span class="k">new</span> <span class="nc">InsertSort</span><span class="o">();</span>   
+        <span class="c1">//在排序前打印系统时间   </span>
+        <span class="n">cal</span><span class="o">=</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span><span class="c1">//获得实例    </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n\n插入排序前："</span><span class="o">+</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">());</span>   
+           
+        <span class="c1">//排序   </span>
+        <span class="n">is</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">arr</span><span class="o">);</span>   
+           
+        <span class="n">cal</span><span class="o">=</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span><span class="c1">//重新获得实例    </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n插入排序后："</span><span class="o">+</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">());</span>   
+           
+        <span class="c1">//输出选择排序后的结果，打印有序数列   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n插入排序的结果："</span><span class="o">);</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]+</span><span class="s">" "</span><span class="o">);</span>   
+        <span class="o">}</span>   
+           
+        <span class="c1">//-------------------------------------------------   </span>
+        <span class="c1">//创建一个QuickSort实例   </span>
+        <span class="nc">QuickSort</span> <span class="n">qs</span><span class="o">=</span><span class="k">new</span> <span class="nc">QuickSort</span><span class="o">();</span>   
+        <span class="c1">//在排序前打印系统时间   </span>
+        <span class="n">cal</span><span class="o">=</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span><span class="c1">//获得实例    </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n\n快速排序前："</span><span class="o">+</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">());</span>   
+           
+        <span class="c1">//排序   </span>
+        <span class="n">qs</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">-</span><span class="mi">1</span><span class="o">,</span><span class="n">arr</span><span class="o">);</span>   
+           
+        <span class="n">cal</span><span class="o">=</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span><span class="c1">//重新获得实例    </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n快速排序后："</span><span class="o">+</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">());</span>   
+           
+        <span class="c1">//输出选择排序后的结果，打印有序数列   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n快速排序的结果："</span><span class="o">);</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]+</span><span class="s">" "</span><span class="o">);</span>   
+        <span class="o">}</span>   
+    <span class="o">}</span>   
+  
+<span class="o">}</span>   
+  
+<span class="kd">class</span> <span class="nc">Bubble</span>   
+<span class="o">{</span>   
+    <span class="c1">//测试   </span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">)</span>   
+    <span class="o">{</span>   
+        <span class="n">a</span><span class="o">++;</span>   
+    <span class="o">}</span>   
+       
+    <span class="c1">//冒泡排序   </span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="kt">int</span> <span class="n">arr</span><span class="o">[])</span>   
+    <span class="o">{</span>   
+        <span class="kt">int</span> <span class="n">temp</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>   
+        <span class="c1">//外层循环,决定一共走几趟   </span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">-</span><span class="mi">1</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="c1">//内层循环，开始逐个比较，如果发现前一个数比后一个数大，则交换    </span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">i</span><span class="o">;</span><span class="n">j</span><span class="o">++)</span>   
+            <span class="o">{</span>   
+                <span class="k">if</span><span class="o">(</span><span class="n">arr</span><span class="o">[</span><span class="n">j</span><span class="o">]&gt;</span><span class="n">arr</span><span class="o">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">])</span>   
+                <span class="o">{</span>   
+                    <span class="c1">//换位   </span>
+                    <span class="n">temp</span><span class="o">=</span><span class="n">arr</span><span class="o">[</span><span class="n">j</span><span class="o">];</span>   
+                    <span class="n">arr</span><span class="o">[</span><span class="n">j</span><span class="o">]=</span><span class="n">arr</span><span class="o">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">];</span>   
+                    <span class="n">arr</span><span class="o">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">]=</span><span class="n">temp</span><span class="o">;</span>   
+                <span class="o">}</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>   
+  
+<span class="kd">class</span> <span class="nc">Select</span>   
+<span class="o">{</span>   
+    <span class="c1">//选择排序   </span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="kt">int</span> <span class="n">arr</span><span class="o">[])</span>   
+    <span class="o">{</span>   
+        <span class="kt">int</span> <span class="n">temp</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="c1">//临时变量   </span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">-</span><span class="mi">1</span><span class="o">;</span><span class="n">j</span><span class="o">++)</span>   
+        <span class="c1">//j&lt;arr.length说明当只剩最后一个数没比较时，不必再比较了   </span>
+        <span class="o">{</span>   
+            <span class="c1">//假设第j个数是最小的数   </span>
+            <span class="kt">int</span> <span class="n">min</span><span class="o">=</span><span class="n">arr</span><span class="o">[</span><span class="n">j</span><span class="o">];</span>   
+            <span class="c1">//记录最小数的下标   </span>
+            <span class="kt">int</span> <span class="n">minIndex</span><span class="o">=</span><span class="n">j</span><span class="o">;</span>   
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">;</span><span class="n">k</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">k</span><span class="o">++)</span>   
+            <span class="c1">//k&lt;arr.length说明只剩两个数未比较时，最后一个数要参与比较   </span>
+            <span class="o">{</span>   
+                <span class="k">if</span><span class="o">(</span><span class="n">min</span><span class="o">&gt;</span><span class="n">arr</span><span class="o">[</span><span class="n">k</span><span class="o">])</span>   
+                <span class="o">{</span>   
+                    <span class="c1">//修改最小   </span>
+                    <span class="n">min</span><span class="o">=</span><span class="n">arr</span><span class="o">[</span><span class="n">k</span><span class="o">];</span>   
+                    <span class="n">minIndex</span><span class="o">=</span><span class="n">k</span><span class="o">;</span>   
+                <span class="o">}</span>   
+            <span class="o">}</span>   
+            <span class="c1">//当退出内层for循环时，就找到这次的最小值   </span>
+            <span class="n">temp</span><span class="o">=</span><span class="n">arr</span><span class="o">[</span><span class="n">j</span><span class="o">];</span>   
+            <span class="n">arr</span><span class="o">[</span><span class="n">j</span><span class="o">]=</span><span class="n">arr</span><span class="o">[</span><span class="n">minIndex</span><span class="o">];</span>   
+            <span class="n">arr</span><span class="o">[</span><span class="n">minIndex</span><span class="o">]=</span><span class="n">temp</span><span class="o">;</span>   
+        <span class="o">}</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>   
+  
+<span class="c1">//插入排序   </span>
+<span class="kd">class</span> <span class="nc">InsertSort</span>   
+<span class="o">{</span>   
+    <span class="c1">//插入排序方法   </span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="kt">int</span> <span class="n">arr</span><span class="o">[])</span>   
+    <span class="o">{</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="kt">int</span> <span class="n">insertVal</span><span class="o">=</span><span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>   
+            <span class="c1">//insertVal准备和前一个数比较   </span>
+            <span class="kt">int</span> <span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="o">;</span>   
+            <span class="k">while</span><span class="o">(</span><span class="n">index</span><span class="o">&gt;=</span><span class="mi">0</span><span class="o">&amp;&amp;</span><span class="n">insertVal</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">[</span><span class="n">index</span><span class="o">])</span>   
+            <span class="o">{</span>   
+                <span class="c1">//将把arr[index]向后移动一位   </span>
+                <span class="n">arr</span><span class="o">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="o">]=</span><span class="n">arr</span><span class="o">[</span><span class="n">index</span><span class="o">];</span>   
+                <span class="c1">//让index向前移动   </span>
+                <span class="n">index</span><span class="o">--;</span>   
+            <span class="o">}</span>   
+            <span class="c1">//将insertVal插入到行当 位置   </span>
+            <span class="n">arr</span><span class="o">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="o">]=</span><span class="n">insertVal</span><span class="o">;</span>   
+        <span class="o">}</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>   
+  
+<span class="c1">//快速排序   </span>
+<span class="kd">class</span> <span class="nc">QuickSort</span>   
+<span class="o">{</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span><span class="kt">int</span> <span class="n">right</span><span class="o">,</span><span class="kt">int</span><span class="o">[]</span> <span class="n">array</span><span class="o">)</span>   
+    <span class="o">{</span>   
+        <span class="kt">int</span> <span class="n">l</span><span class="o">=</span><span class="n">left</span><span class="o">;</span><span class="c1">//左边   </span>
+        <span class="kt">int</span> <span class="n">r</span><span class="o">=</span><span class="n">right</span><span class="o">;</span><span class="c1">//右边   </span>
+        <span class="kt">int</span> <span class="n">pivot</span><span class="o">=</span><span class="n">array</span><span class="o">[(</span><span class="n">left</span><span class="o">+</span><span class="n">right</span><span class="o">)/</span><span class="mi">2</span><span class="o">];</span><span class="c1">//中间的作为隔板数   </span>
+        <span class="kt">int</span> <span class="n">temp</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>   
+        <span class="k">while</span><span class="o">(</span><span class="n">l</span><span class="o">&lt;</span><span class="n">r</span><span class="o">)</span>   
+        <span class="o">{</span>   
+            <span class="k">while</span><span class="o">(</span><span class="n">array</span><span class="o">[</span><span class="n">l</span><span class="o">]&lt;</span><span class="n">pivot</span><span class="o">)</span> <span class="n">l</span><span class="o">++;</span>   
+            <span class="k">while</span><span class="o">(</span><span class="n">array</span><span class="o">[</span><span class="n">r</span><span class="o">]&gt;</span><span class="n">pivot</span><span class="o">)</span> <span class="n">r</span><span class="o">--;</span>   
+            <span class="k">if</span><span class="o">(</span><span class="n">l</span><span class="o">&gt;=</span><span class="n">r</span><span class="o">)</span> <span class="k">break</span><span class="o">;</span>   
+            <span class="n">temp</span><span class="o">=</span><span class="n">array</span><span class="o">[</span><span class="n">l</span><span class="o">];</span>   
+            <span class="n">array</span><span class="o">[</span><span class="n">l</span><span class="o">]=</span><span class="n">array</span><span class="o">[</span><span class="n">r</span><span class="o">];</span>   
+            <span class="n">array</span><span class="o">[</span><span class="n">r</span><span class="o">]=</span><span class="n">temp</span><span class="o">;</span>   
+               
+            <span class="k">if</span><span class="o">(</span><span class="n">array</span><span class="o">[</span><span class="n">l</span><span class="o">]==</span><span class="n">pivot</span><span class="o">)</span> <span class="o">--</span><span class="n">r</span><span class="o">;</span>   
+            <span class="k">if</span><span class="o">(</span><span class="n">array</span><span class="o">[</span><span class="n">r</span><span class="o">]==</span><span class="n">pivot</span><span class="o">)</span> <span class="o">++</span><span class="n">l</span><span class="o">;</span>   
+        <span class="o">}</span>   
+        <span class="k">if</span><span class="o">(</span><span class="n">l</span><span class="o">==</span><span class="n">r</span><span class="o">)</span>   
+        <span class="o">{</span>   
+            <span class="n">l</span><span class="o">++;</span>   
+            <span class="n">r</span><span class="o">--;</span>   
+        <span class="o">}</span>   
+        <span class="k">if</span><span class="o">(</span><span class="n">left</span><span class="o">&lt;</span><span class="n">r</span><span class="o">)</span> <span class="n">sort</span><span class="o">(</span><span class="n">left</span><span class="o">,</span><span class="n">r</span><span class="o">,</span><span class="n">array</span><span class="o">);</span>   
+        <span class="k">if</span><span class="o">(</span><span class="n">right</span><span class="o">&gt;</span><span class="n">l</span><span class="o">)</span> <span class="n">sort</span><span class="o">(</span><span class="n">l</span><span class="o">,</span><span class="n">right</span><span class="o">,</span><span class="n">array</span><span class="o">);</span>            
+    <span class="o">}</span>   
+<span class="o">}</span>  
+</code></pre></div></div> <p><strong>Class5 / com.test1 / Demo5_4.java:</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 功能：二分查找  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo5_4</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="kt">int</span> <span class="n">arr</span><span class="o">[]={</span><span class="mi">2</span><span class="o">,</span><span class="mi">5</span><span class="o">,</span><span class="mi">7</span><span class="o">,</span><span class="mi">12</span><span class="o">,</span><span class="mi">25</span><span class="o">};</span>   
+        <span class="nc">BinaryFind</span> <span class="n">bf</span><span class="o">=</span><span class="k">new</span> <span class="nc">BinaryFind</span><span class="o">();</span>   
+        <span class="n">bf</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">-</span><span class="mi">1</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="n">arr</span><span class="o">);</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>   
+  
+<span class="c1">//二分查找   </span>
+<span class="kd">class</span> <span class="nc">BinaryFind</span>   
+<span class="o">{</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">find</span><span class="o">(</span><span class="kt">int</span> <span class="n">leftIndex</span><span class="o">,</span><span class="kt">int</span> <span class="n">rightIndex</span><span class="o">,</span><span class="kt">int</span> <span class="n">val</span><span class="o">,</span><span class="kt">int</span><span class="o">[]</span> <span class="n">arr</span><span class="o">)</span>   
+    <span class="o">{</span>   
+        <span class="c1">//首先找到中间的数   </span>
+        <span class="kt">int</span> <span class="n">midIndex</span><span class="o">=(</span><span class="n">rightIndex</span><span class="o">+</span><span class="n">leftIndex</span><span class="o">)/</span><span class="mi">2</span><span class="o">;</span>   
+        <span class="kt">int</span> <span class="n">midVal</span><span class="o">=</span><span class="n">arr</span><span class="o">[</span><span class="n">midIndex</span><span class="o">];</span>   
+        <span class="k">if</span><span class="o">(</span><span class="n">rightIndex</span><span class="o">&gt;=</span><span class="n">leftIndex</span><span class="o">)</span>   
+        <span class="o">{</span>   
+            <span class="c1">//如果要找的数比midVal大   </span>
+            <span class="k">if</span><span class="o">(</span><span class="n">midVal</span><span class="o">&gt;</span><span class="n">val</span><span class="o">)</span>   
+            <span class="o">{</span>   
+                <span class="c1">//在arr的左边数中找   </span>
+                <span class="n">find</span><span class="o">(</span><span class="n">leftIndex</span><span class="o">,</span><span class="n">midIndex</span><span class="o">-</span><span class="mi">1</span><span class="o">,</span><span class="n">val</span><span class="o">,</span><span class="n">arr</span><span class="o">);</span><span class="c1">//递归   </span>
+            <span class="o">}</span>   
+            <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">midVal</span><span class="o">&lt;</span><span class="n">val</span><span class="o">)</span>   
+            <span class="o">{</span>   
+                <span class="c1">//在arr的右边的数找   </span>
+                <span class="n">find</span><span class="o">(</span><span class="n">midIndex</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span><span class="n">rightIndex</span><span class="o">,</span><span class="n">val</span><span class="o">,</span><span class="n">arr</span><span class="o">);</span><span class="c1">//递归   </span>
+            <span class="o">}</span>   
+            <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">midVal</span><span class="o">==</span><span class="n">val</span><span class="o">)</span>   
+            <span class="o">{</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"找到下标"</span><span class="o">+</span><span class="n">midIndex</span><span class="o">);</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+        <span class="k">else</span>  
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"没有找到！"</span><span class="o">);</span>   
+        <span class="o">}</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>集合类及移位运算</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_10.jpg" alt="集合类及移位运算" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_11.jpg" alt="集合类及移位运算" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_12.jpg" alt="集合类及移位运算" /></p> <p><strong>Class7 / com.test1 / Demo7_1.java:</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 功能：演示java集合的用法  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>   
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo7_1</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="c1">//定数组   </span>
+        <span class="c1">//Clerk []clerks=new Clerk[???];   </span>
+        <span class="c1">//定义ArrayList对象   </span>
+        <span class="nc">ArrayList</span> <span class="n">al</span><span class="o">=</span><span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>   
+        <span class="c1">//显示大小   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"al大小："</span><span class="o">+</span><span class="n">al</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>   
+        <span class="c1">//向al中加入数据(类型是object)   </span>
+        <span class="c1">//创建一个职员   </span>
+        <span class="nc">Clerk</span> <span class="n">clerk1</span><span class="o">=</span><span class="k">new</span> <span class="nc">Clerk</span><span class="o">(</span><span class="s">"宋江"</span><span class="o">,</span><span class="mi">50</span><span class="o">,</span><span class="mi">1000</span><span class="o">);</span>   
+        <span class="nc">Clerk</span> <span class="n">clerk2</span><span class="o">=</span><span class="k">new</span> <span class="nc">Clerk</span><span class="o">(</span><span class="s">"吴用"</span><span class="o">,</span><span class="mi">45</span><span class="o">,</span><span class="mi">1200</span><span class="o">);</span>   
+        <span class="nc">Clerk</span> <span class="n">clerk3</span><span class="o">=</span><span class="k">new</span> <span class="nc">Clerk</span><span class="o">(</span><span class="s">"林冲"</span><span class="o">,</span><span class="mi">35</span><span class="o">,</span><span class="mi">1300</span><span class="o">);</span>   
+        <span class="c1">//将clerk1加入到al中   </span>
+        <span class="n">al</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">clerk1</span><span class="o">);</span>   
+        <span class="n">al</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">clerk2</span><span class="o">);</span>   
+        <span class="n">al</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">clerk3</span><span class="o">);</span>   
+        <span class="c1">//显示大小   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"al大小："</span><span class="o">+</span><span class="n">al</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>   
+        <span class="c1">//如何访问al中对象（数据）   </span>
+        <span class="c1">//访问第一个对象   </span>
+        <span class="nc">Clerk</span> <span class="n">temp</span><span class="o">=(</span><span class="nc">Clerk</span><span class="o">)</span><span class="n">al</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span><span class="c1">//因为get返回的是一个object   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"第一个名字是："</span><span class="o">+</span><span class="n">temp</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>   
+           
+        <span class="c1">//遍历al所有的对象   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"删除前"</span><span class="o">);</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">al</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">Clerk</span> <span class="n">temp1</span><span class="o">=(</span><span class="nc">Clerk</span><span class="o">)</span><span class="n">al</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"名字是："</span><span class="o">+</span><span class="n">temp1</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>   
+        <span class="o">}</span>   
+        <span class="c1">//从al中删除一个对象   </span>
+        <span class="n">al</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span><span class="c1">//删除吴用   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"=====删除吴用======"</span><span class="o">);</span>   
+        <span class="c1">//删除后   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"删除后"</span><span class="o">);</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">al</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">Clerk</span> <span class="n">temp1</span><span class="o">=(</span><span class="nc">Clerk</span><span class="o">)</span><span class="n">al</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"名字是："</span><span class="o">+</span><span class="n">temp1</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>   
+        <span class="o">}</span>   
+    <span class="o">}</span>   
+  
+<span class="o">}</span>   
+  
+<span class="c1">//定义一个员工类   </span>
+<span class="kd">class</span> <span class="nc">Clerk</span>   
+<span class="o">{</span>   
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>   
+    <span class="kd">private</span> <span class="kt">float</span> <span class="n">sal</span><span class="o">;</span>   
+       
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="o">}</span>   
+  
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="o">}</span>   
+  
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>   
+    <span class="o">}</span>   
+  
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>   
+    <span class="o">}</span>   
+  
+    <span class="kd">public</span> <span class="kt">float</span> <span class="nf">getSal</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">sal</span><span class="o">;</span>   
+    <span class="o">}</span>   
+  
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setSal</span><span class="o">(</span><span class="kt">float</span> <span class="n">sal</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">sal</span> <span class="o">=</span> <span class="n">sal</span><span class="o">;</span>   
+    <span class="o">}</span>   
+       
+    <span class="kd">public</span> <span class="nf">Clerk</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">,</span><span class="kt">int</span> <span class="n">age</span><span class="o">,</span><span class="kt">float</span> <span class="n">sal</span><span class="o">)</span>   
+    <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">=</span><span class="n">name</span><span class="o">;</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span><span class="o">=</span><span class="n">age</span><span class="o">;</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">sal</span><span class="o">=</span><span class="n">sal</span><span class="o">;</span>   
+    <span class="o">}</span>   
+<span class="o">}</span> 
+</code></pre></div></div> <p><strong>Class7 / com.test1 / Demo7_2.java:</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 功能：做一个公司职员薪水管理系统，要求完成如下功能 ：  
+ * 1.当有新员工时，将该员工加入到管理系统  
+ * 2.可以根据员工号，显示该员工的信息  
+ * 3.可以显示所员工信息  
+ * 4.可以修改员工薪水  
+ * 5.当员工离职时，将该员工从管理系统中删除  
+ * 6.可以按照薪水从低到高顺序排序  
+ * 7.可以统计员工的平均工资和最低、最高工资  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo7_2</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     * @throws IOException   
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>   
+        <span class="c1">//演示   </span>
+        <span class="nc">String</span> <span class="n">a</span><span class="o">=</span><span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="s">"abc"</span><span class="o">);</span>   
+        <span class="nc">String</span> <span class="n">b</span><span class="o">=</span><span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="s">"abc"</span><span class="o">);</span>   
+        <span class="k">if</span><span class="o">(</span><span class="n">a</span><span class="o">==</span><span class="n">b</span><span class="o">)</span>   
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"== ok"</span><span class="o">);</span>   
+        <span class="o">}</span>   
+        <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">b</span><span class="o">))</span>   
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"equals ok"</span><span class="o">);</span>   
+        <span class="o">}</span>   
+        <span class="k">else</span> <span class="o">;</span>   
+           
+        <span class="c1">//创建EmpManage对象   </span>
+        <span class="nc">EmpManage</span> <span class="n">em</span><span class="o">=</span><span class="k">new</span> <span class="nc">EmpManage</span><span class="o">();</span>   
+        <span class="c1">//Emp emptemp=new Emp(null,null,0);   </span>
+        <span class="c1">//定义一个BufferedReader流   </span>
+        <span class="nc">BufferedReader</span> <span class="n">br</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">));</span>   
+        <span class="c1">//作出一个简单菜单   </span>
+        <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>   
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请选择你要进行的操作："</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"1:表示添加一个雇员"</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"2:查找一个雇员"</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"3:显示所有雇员信息"</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"4:修改一个雇员工资"</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"5:删除一个雇员"</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"6：退出系统"</span><span class="o">);</span>   
+               
+            <span class="nc">String</span> <span class="n">operType</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>   
+               
+            <span class="k">if</span><span class="o">(</span><span class="n">operType</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"1"</span><span class="o">))</span>   
+            <span class="o">{</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入编号："</span><span class="o">);</span>   
+                <span class="nc">String</span> <span class="n">empNo</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入名字："</span><span class="o">);</span>   
+                <span class="nc">String</span> <span class="n">name</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入工资："</span><span class="o">);</span>   
+                <span class="kt">float</span> <span class="n">sal</span><span class="o">=</span><span class="nc">Float</span><span class="o">.</span><span class="na">parseFloat</span><span class="o">(</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">());</span>   
+                   
+                <span class="nc">Emp</span> <span class="n">emp</span><span class="o">=</span><span class="k">new</span> <span class="nc">Emp</span><span class="o">(</span><span class="n">empNo</span><span class="o">,</span><span class="n">name</span><span class="o">,</span><span class="n">sal</span><span class="o">);</span>   
+                <span class="nc">Emp</span> <span class="n">emptemp</span><span class="o">=</span><span class="n">em</span><span class="o">.</span><span class="na">addEmp</span><span class="o">(</span><span class="n">emp</span><span class="o">);</span>   
+                <span class="c1">//这里的"="相当于将返回的emp内存块直接复制一份给emptemp,即创建的同时   </span>
+                <span class="c1">//也就初始化了，所心不必再考的emptemp内部的属性是private，还是public,"="相当于直接复制   </span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"=====添加"</span><span class="o">+</span><span class="n">emptemp</span><span class="o">.</span><span class="na">getName</span><span class="o">()+</span><span class="s">"成功！======\n"</span><span class="o">);</span>   
+            <span class="o">}</span>   
+            <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">operType</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"2"</span><span class="o">))</span>   
+            <span class="o">{</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入编号："</span><span class="o">);</span>   
+                <span class="nc">String</span> <span class="n">empNo</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>   
+                <span class="c1">//查找   </span>
+                <span class="nc">Emp</span> <span class="n">emptemp</span><span class="o">=</span><span class="n">em</span><span class="o">.</span><span class="na">showInfo</span><span class="o">(</span><span class="n">empNo</span><span class="o">);</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"=====查找"</span><span class="o">+</span><span class="n">empNo</span><span class="o">+</span><span class="s">"("</span><span class="o">+</span><span class="n">emptemp</span><span class="o">.</span><span class="na">getName</span><span class="o">()+</span><span class="s">")"</span><span class="o">+</span><span class="s">"成功！======\n"</span><span class="o">);</span>   
+            <span class="o">}</span>   
+            <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">operType</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"3"</span><span class="o">))</span>   
+            <span class="o">{</span>   
+                <span class="c1">//显示所有员工信息   </span>
+                <span class="n">em</span><span class="o">.</span><span class="na">showAllInfo</span><span class="o">();</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"=====已列出！======\n"</span><span class="o">);</span>   
+            <span class="o">}</span>   
+            <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">operType</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"4"</span><span class="o">))</span>   
+            <span class="o">{</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入编号："</span><span class="o">);</span>   
+                <span class="nc">String</span> <span class="n">empNo</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入工资："</span><span class="o">);</span>   
+                <span class="kt">float</span> <span class="n">sal</span><span class="o">=</span><span class="nc">Float</span><span class="o">.</span><span class="na">parseFloat</span><span class="o">(</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">());</span>   
+                <span class="c1">//修改   </span>
+                <span class="nc">Emp</span> <span class="n">emptemp</span><span class="o">=</span><span class="n">em</span><span class="o">.</span><span class="na">updateSal</span><span class="o">(</span><span class="n">empNo</span><span class="o">,</span> <span class="n">sal</span><span class="o">);</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"=====修改"</span><span class="o">+</span><span class="n">empNo</span><span class="o">+</span><span class="s">"("</span><span class="o">+</span><span class="n">emptemp</span><span class="o">.</span><span class="na">getName</span><span class="o">()+</span><span class="s">")"</span><span class="o">+</span><span class="s">"工资成功！======\n"</span><span class="o">);</span>   
+            <span class="o">}</span>   
+            <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">operType</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"5"</span><span class="o">))</span>   
+            <span class="o">{</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入编号："</span><span class="o">);</span>   
+                <span class="nc">String</span> <span class="n">empNo</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>   
+                <span class="c1">//删除   </span>
+                <span class="nc">Emp</span> <span class="n">emptemp</span><span class="o">=</span><span class="n">em</span><span class="o">.</span><span class="na">delEmp</span><span class="o">(</span><span class="n">empNo</span><span class="o">);</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"=====删除"</span><span class="o">+</span><span class="n">empNo</span><span class="o">+</span><span class="s">"("</span><span class="o">+</span><span class="n">emptemp</span><span class="o">.</span><span class="na">getName</span><span class="o">()+</span><span class="s">")"</span><span class="o">+</span><span class="s">"成功！======\n"</span><span class="o">);</span>   
+            <span class="o">}</span>   
+            <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">operType</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"6"</span><span class="o">))</span>   
+            <span class="o">{</span>   
+                <span class="c1">//退出系统   </span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span><span class="c1">//0表示正常退出JVM,非0表示异常退出JVM   </span>
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+           
+    <span class="o">}</span>   
+  
+<span class="o">}</span>   
+  
+<span class="c1">//雇员类   </span>
+<span class="kd">class</span> <span class="nc">Emp</span>   
+<span class="o">{</span>   
+    <span class="c1">//学号   </span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">empNo</span><span class="o">;</span>   
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="kd">private</span> <span class="kt">float</span> <span class="n">sal</span><span class="o">;</span>   
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getEmpNo</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">empNo</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setEmpNo</span><span class="o">(</span><span class="nc">String</span> <span class="n">empNo</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">empNo</span> <span class="o">=</span> <span class="n">empNo</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">float</span> <span class="nf">getSal</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">sal</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setSal</span><span class="o">(</span><span class="kt">float</span> <span class="n">sal</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">sal</span> <span class="o">=</span> <span class="n">sal</span><span class="o">;</span>   
+    <span class="o">}</span>   
+       
+    <span class="c1">//构造函数   </span>
+    <span class="kd">public</span> <span class="nf">Emp</span><span class="o">(</span><span class="nc">String</span> <span class="n">empNo</span><span class="o">,</span><span class="nc">String</span> <span class="n">name</span><span class="o">,</span><span class="kt">float</span> <span class="n">sal</span><span class="o">)</span>   
+    <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">empNo</span><span class="o">=</span><span class="n">empNo</span><span class="o">;</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">=</span><span class="n">name</span><span class="o">;</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">sal</span><span class="o">=</span><span class="n">sal</span><span class="o">;</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>   
+  
+<span class="c1">//雇员管理类   </span>
+<span class="kd">class</span> <span class="nc">EmpManage</span>   
+<span class="o">{</span>   
+    <span class="kd">private</span> <span class="nc">ArrayList</span> <span class="n">al</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>   
+    <span class="kd">public</span> <span class="nf">EmpManage</span><span class="o">()</span>   
+    <span class="o">{</span>   
+        <span class="n">al</span><span class="o">=</span><span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>   
+    <span class="o">}</span>   
+    <span class="c1">//加入员工   </span>
+    <span class="kd">public</span> <span class="nc">Emp</span> <span class="nf">addEmp</span><span class="o">(</span><span class="nc">Emp</span> <span class="n">emp</span><span class="o">)</span>   
+    <span class="o">{</span>   
+        <span class="k">if</span><span class="o">(</span><span class="n">al</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">emp</span><span class="o">))</span><span class="c1">//如果添加成功   </span>
+            <span class="k">return</span> <span class="n">emp</span><span class="o">;</span>   
+        <span class="k">else</span>  
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="c1">//显示指定员工的相关信息   </span>
+    <span class="kd">public</span> <span class="nc">Emp</span> <span class="nf">showInfo</span><span class="o">(</span><span class="nc">String</span> <span class="n">empNo</span><span class="o">)</span>   
+    <span class="o">{</span>   
+        <span class="c1">//遍历整个ArrayList   </span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">al</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="c1">//取出Emp对象   </span>
+            <span class="nc">Emp</span> <span class="n">emp</span><span class="o">=(</span><span class="nc">Emp</span><span class="o">)</span><span class="n">al</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>   
+            <span class="c1">//比较编号   </span>
+            <span class="k">if</span><span class="o">(</span><span class="n">emp</span><span class="o">.</span><span class="na">getEmpNo</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">empNo</span><span class="o">));</span>   
+            <span class="o">{</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"找到该员工，他的信息是："</span><span class="o">);</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"编号="</span><span class="o">+</span><span class="n">emp</span><span class="o">.</span><span class="na">getEmpNo</span><span class="o">());</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"名字="</span><span class="o">+</span><span class="n">emp</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"工资="</span><span class="o">+</span><span class="n">emp</span><span class="o">.</span><span class="na">getSal</span><span class="o">());</span>   
+                   
+                <span class="k">return</span> <span class="n">emp</span><span class="o">;</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="c1">//显示所有员工的信息   </span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">showAllInfo</span><span class="o">()</span>   
+    <span class="o">{</span>   
+        <span class="c1">//遍历整个ArrayList   </span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">al</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">Emp</span> <span class="n">emp</span><span class="o">=(</span><span class="nc">Emp</span><span class="o">)</span><span class="n">al</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"编号："</span><span class="o">+</span><span class="n">emp</span><span class="o">.</span><span class="na">getEmpNo</span><span class="o">()+</span><span class="s">" "</span>  
+                    <span class="o">+</span><span class="s">"名字："</span><span class="o">+</span><span class="n">emp</span><span class="o">.</span><span class="na">getName</span><span class="o">()+</span><span class="s">" "</span>  
+                    <span class="o">+</span><span class="s">"工资："</span><span class="o">+</span><span class="n">emp</span><span class="o">.</span><span class="na">getSal</span><span class="o">()+</span><span class="s">" "</span><span class="o">+</span><span class="s">"\n"</span><span class="o">);</span>   
+        <span class="o">}</span>   
+    <span class="o">}</span>   
+    <span class="c1">//修改工资   </span>
+    <span class="kd">public</span> <span class="nc">Emp</span> <span class="nf">updateSal</span><span class="o">(</span><span class="nc">String</span> <span class="n">empNo</span><span class="o">,</span><span class="kt">float</span> <span class="n">newSal</span><span class="o">)</span>   
+    <span class="o">{</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">al</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">Emp</span> <span class="n">emp</span><span class="o">=(</span><span class="nc">Emp</span><span class="o">)</span><span class="n">al</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>   
+            <span class="k">if</span><span class="o">(</span><span class="n">emp</span><span class="o">.</span><span class="na">getEmpNo</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">empNo</span><span class="o">))</span>   
+            <span class="o">{</span>   
+                <span class="c1">//修改薪水   </span>
+                <span class="n">emp</span><span class="o">.</span><span class="na">setSal</span><span class="o">(</span><span class="n">newSal</span><span class="o">);</span>   
+                <span class="k">return</span> <span class="n">emp</span><span class="o">;</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="c1">//删除员工   </span>
+    <span class="kd">public</span> <span class="nc">Emp</span> <span class="nf">delEmp</span><span class="o">(</span><span class="nc">String</span> <span class="n">empNo</span><span class="o">)</span>   
+    <span class="o">{</span>   
+           
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">al</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">Emp</span> <span class="n">emp</span><span class="o">=(</span><span class="nc">Emp</span><span class="o">)</span><span class="n">al</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>   
+            <span class="k">if</span><span class="o">(</span><span class="n">emp</span><span class="o">.</span><span class="na">getEmpNo</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">empNo</span><span class="o">))</span>   
+            <span class="o">{</span>   
+                <span class="n">al</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">i</span><span class="o">);</span><span class="c1">//按编号删除员工   </span>
+                <span class="n">al</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">emp</span><span class="o">);</span><span class="c1">//按对象删除员工   </span>
+                <span class="k">return</span> <span class="n">emp</span><span class="o">;</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>   
+    <span class="o">}</span>   
+<span class="o">}</span> 
+</code></pre></div></div> <p><strong>Class7 / com.test1 / Demo7_3.java:</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 功能：各种集合的使用  
+ */</span>  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.util.Hashtable</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.util.Iterator</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.util.LinkedList</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.util.Stack</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.util.Vector</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo7_3</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="c1">//LinkedList的用法   </span>
+        <span class="nc">LinkedList</span> <span class="n">ll</span><span class="o">=</span><span class="k">new</span> <span class="nc">LinkedList</span><span class="o">();</span>   
+        <span class="nc">Emp</span> <span class="n">emp1</span><span class="o">=</span><span class="k">new</span> <span class="nc">Emp</span><span class="o">(</span><span class="s">"sa01"</span><span class="o">,</span><span class="s">"宋江"</span><span class="o">,</span><span class="mf">1.2f</span><span class="o">);</span>   
+        <span class="nc">Emp</span> <span class="n">emp2</span><span class="o">=</span><span class="k">new</span> <span class="nc">Emp</span><span class="o">(</span><span class="s">"sa02"</span><span class="o">,</span><span class="s">"卢俊义"</span><span class="o">,</span><span class="mf">1.8f</span><span class="o">);</span>   
+        <span class="nc">Emp</span> <span class="n">emp3</span><span class="o">=</span><span class="k">new</span> <span class="nc">Emp</span><span class="o">(</span><span class="s">"sa03"</span><span class="o">,</span><span class="s">"吴用"</span><span class="o">,</span><span class="mf">1.5f</span><span class="o">);</span>   
+        <span class="c1">//表示把emp1加在链表的最前面   </span>
+        <span class="n">ll</span><span class="o">.</span><span class="na">addFirst</span><span class="o">(</span><span class="n">emp1</span><span class="o">);</span><span class="c1">//向链表的当前结点的前面添加一个emp1结点   </span>
+        <span class="n">ll</span><span class="o">.</span><span class="na">addFirst</span><span class="o">(</span><span class="n">emp2</span><span class="o">);</span><span class="c1">//前加   </span>
+        <span class="n">ll</span><span class="o">.</span><span class="na">addLast</span><span class="o">(</span><span class="n">emp3</span><span class="o">);</span><span class="c1">//后加   </span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">ll</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(((</span><span class="nc">Emp</span><span class="o">)</span><span class="n">ll</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">)).</span><span class="na">getName</span><span class="o">());</span>   
+        <span class="o">}</span>   
+        <span class="c1">//------------------------------------------------------   </span>
+        <span class="c1">//Vector的用法   </span>
+        <span class="c1">//Vector与ArrayList的区别   </span>
+        <span class="c1">//1.Vector有同步机制，ArrayList没有同步机制    </span>
+        <span class="c1">//2.ArrayList缺省情况下自动增长原来的一倍，Vector是原来的50%增长   </span>
+        <span class="nc">Vector</span> <span class="n">vv</span><span class="o">=</span><span class="k">new</span> <span class="nc">Vector</span><span class="o">();</span>   
+        <span class="nc">Emp</span> <span class="n">emp4</span><span class="o">=</span><span class="k">new</span> <span class="nc">Emp</span><span class="o">(</span><span class="s">"1"</span><span class="o">,</span><span class="s">"林冲"</span><span class="o">,</span><span class="mf">1.6f</span><span class="o">);</span>   
+        <span class="n">vv</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">emp4</span><span class="o">);</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">vv</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">Emp</span> <span class="n">emp</span><span class="o">=(</span><span class="nc">Emp</span><span class="o">)</span><span class="n">vv</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">emp</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>   
+        <span class="o">}</span>   
+        <span class="c1">//------------------------------------------------------   </span>
+        <span class="c1">//栈的用法   </span>
+        <span class="nc">Stack</span> <span class="n">stack</span><span class="o">=</span><span class="k">new</span> <span class="nc">Stack</span><span class="o">();</span>   
+        <span class="nc">Emp</span> <span class="n">emp5</span><span class="o">=</span><span class="k">new</span> <span class="nc">Emp</span><span class="o">(</span><span class="s">"8"</span><span class="o">,</span><span class="s">"李逵"</span><span class="o">,</span><span class="mf">1.9f</span><span class="o">);</span>   
+        <span class="nc">Emp</span> <span class="n">emp6</span><span class="o">=</span><span class="k">new</span> <span class="nc">Emp</span><span class="o">(</span><span class="s">"9"</span><span class="o">,</span><span class="s">"武松"</span><span class="o">,</span><span class="mf">1.7f</span><span class="o">);</span>   
+        <span class="nc">Emp</span> <span class="n">emp7</span><span class="o">=</span><span class="k">new</span> <span class="nc">Emp</span><span class="o">(</span><span class="s">"5"</span><span class="o">,</span><span class="s">"公孙胜"</span><span class="o">,</span><span class="mf">1.7f</span><span class="o">);</span>   
+        <span class="n">stack</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">emp5</span><span class="o">);</span>   
+        <span class="n">stack</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">emp6</span><span class="o">);</span>   
+        <span class="n">stack</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">emp7</span><span class="o">);</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">stack</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">Emp</span> <span class="n">emp</span><span class="o">=(</span><span class="nc">Emp</span><span class="o">)</span><span class="n">stack</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">emp</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>   
+        <span class="o">}</span>   
+        <span class="c1">//------------------------------------------------------   </span>
+        <span class="c1">//HashMap的用法   </span>
+        <span class="c1">//创建一个HashMap对象   </span>
+        <span class="nc">HashMap</span> <span class="n">hm</span><span class="o">=</span><span class="k">new</span> <span class="nc">HashMap</span><span class="o">();</span>   
+        <span class="nc">Emp</span> <span class="n">emp8</span><span class="o">=</span><span class="k">new</span> <span class="nc">Emp</span><span class="o">(</span><span class="s">"s001"</span><span class="o">,</span><span class="s">"秦平"</span><span class="o">,</span><span class="mf">2.2f</span><span class="o">);</span>   
+        <span class="nc">Emp</span> <span class="n">emp9</span><span class="o">=</span><span class="k">new</span> <span class="nc">Emp</span><span class="o">(</span><span class="s">"s002"</span><span class="o">,</span><span class="s">"花荣"</span><span class="o">,</span><span class="mf">2.3f</span><span class="o">);</span>   
+        <span class="nc">Emp</span> <span class="n">emp10</span><span class="o">=</span><span class="k">new</span> <span class="nc">Emp</span><span class="o">(</span><span class="s">"s002"</span><span class="o">,</span><span class="s">"燕青"</span><span class="o">,</span><span class="mf">2.4f</span><span class="o">);</span>   
+        <span class="c1">//将emp放入到   </span>
+        <span class="n">hm</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"s001"</span><span class="o">,</span> <span class="n">emp8</span><span class="o">);</span>   
+        <span class="n">hm</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"s002"</span><span class="o">,</span> <span class="n">emp9</span><span class="o">);</span>   
+        <span class="n">hm</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"s002"</span><span class="o">,</span> <span class="n">emp10</span><span class="o">);</span><span class="c1">//出现键值相同时，会将emp10替换前面的   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">emp8</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">emp9</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>   
+           
+        <span class="c1">//如果要查找编号是s002   </span>
+        <span class="k">if</span><span class="o">(</span><span class="n">hm</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="s">"s002"</span><span class="o">))</span>   
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-----------\n有该员工"</span><span class="o">);</span>   
+            <span class="c1">//如何取出,键&lt;--&gt;值   </span>
+            <span class="nc">Emp</span> <span class="n">emp</span><span class="o">=(</span><span class="nc">Emp</span><span class="o">)</span><span class="n">hm</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"s002"</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"名字："</span><span class="o">+</span><span class="n">emp</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>   
+        <span class="o">}</span>   
+        <span class="k">else</span>  
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-----------\n没有该员工"</span><span class="o">);</span>   
+        <span class="o">}</span>   
+           
+        <span class="c1">//遍历HashMap中所有的key和value   </span>
+        <span class="nc">Iterator</span> <span class="n">it</span><span class="o">=</span><span class="n">hm</span><span class="o">.</span><span class="na">keySet</span><span class="o">().</span><span class="na">iterator</span><span class="o">();</span><span class="c1">//迭代器   </span>
+        <span class="c1">//hasNext返回一个boolean   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-------开始遍历HashMap！------"</span><span class="o">);</span>   
+        <span class="k">while</span><span class="o">(</span><span class="n">it</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span><span class="c1">//hasNext判断是否还有下一个   </span>
+        <span class="o">{</span>   
+            <span class="c1">//取出Key   </span>
+            <span class="nc">String</span> <span class="n">key</span><span class="o">=</span><span class="n">it</span><span class="o">.</span><span class="na">next</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>   
+            <span class="c1">//通过Key取出value   </span>
+            <span class="nc">Emp</span> <span class="n">emp</span><span class="o">=(</span><span class="nc">Emp</span><span class="o">)</span><span class="n">hm</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"名字："</span><span class="o">+</span><span class="n">emp</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>   
+        <span class="o">}</span>   
+        <span class="c1">//HashMap在多线程并发操作时，因为没有同步机制作，   </span>
+        <span class="c1">//可能会发生读脏数据，所以引入了安全的Hashtable   </span>
+        <span class="c1">//------------------------------------------------------   </span>
+        <span class="c1">//Hashtable的用法   </span>
+        <span class="nc">Hashtable</span> <span class="n">ht</span><span class="o">=</span><span class="k">new</span> <span class="nc">Hashtable</span><span class="o">();</span>   
+        <span class="cm">/*  
+        ht.put(null, null);  
+        System.out.println("Hashtable null值测试"+ht.get(null));  
+        //Hashtable不可以存放空值  
+        */</span>  
+        <span class="nc">HashMap</span> <span class="n">hm2</span><span class="o">=</span><span class="k">new</span> <span class="nc">HashMap</span><span class="o">();</span>   
+        <span class="n">hm2</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span><span class="c1">//HashMap可以存放空值   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"HashMap null值测试:"</span><span class="o">+</span><span class="n">hm2</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="kc">null</span><span class="o">));</span>   
+        <span class="c1">//Hashtable不可以存放空值   </span>
+           
+        <span class="cm">/*  
+         * 集合总结：  
+         * 1.如果要求线程安全，使用Vector,Hashtable  
+         * 2.如果要求线程安全，使用ArrayList,LinkedList,HashMap  
+         * 3.如果要求键值对，则使用HashMap,Hashtable  
+         * 4.如果数据量很大，又要线程安全考虑Vector  
+         */</span>  
+    <span class="o">}</span>   
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>Class7 / com.test1 / Test1.java:</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 功能：位运算和移位运算  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test1</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"~2="</span><span class="o">+(~</span><span class="mi">2</span><span class="o">));</span><span class="c1">//取反   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"2&amp;3="</span><span class="o">+(</span><span class="mi">2</span><span class="o">&amp;</span><span class="mi">3</span><span class="o">));</span><span class="c1">//与   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"2|3="</span><span class="o">+(</span><span class="mi">2</span><span class="o">|</span><span class="mi">3</span><span class="o">));</span><span class="c1">//或   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"~-5="</span><span class="o">+(~-</span><span class="mi">5</span><span class="o">));</span><span class="c1">//取反   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-3^3="</span><span class="o">+(-</span><span class="mi">3</span><span class="o">^</span><span class="mi">3</span><span class="o">));</span><span class="c1">//异或   </span>
+  
+        <span class="c1">//算术右移：低位溢出，符号位不变，并用符号位补溢出的高位   </span>
+        <span class="c1">//算术左移：符号位不变，低位补0   </span>
+        <span class="c1">//逻辑右移:低位溢出，高位补零   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"1&gt;&gt;2="</span><span class="o">+(</span><span class="mi">1</span><span class="o">&gt;&gt;</span><span class="mi">2</span><span class="o">));</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-1&gt;&gt;2="</span><span class="o">+(-</span><span class="mi">1</span><span class="o">&gt;&gt;</span><span class="mi">2</span><span class="o">));</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"1&lt;&lt;2="</span><span class="o">+(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">2</span><span class="o">));</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-1&lt;&lt;2="</span><span class="o">+(-</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">2</span><span class="o">));</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"3&gt;&gt;&gt;2="</span><span class="o">+(</span><span class="mi">3</span><span class="o">&gt;&gt;&gt;</span><span class="mi">2</span><span class="o">));</span><span class="c1">//逻辑右移   </span>
+    <span class="o">}</span>   
+<span class="o">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8002%E4%B9%8B%E9%9B%86%E5%90%88%E7%B1%BB%E5%8F%8A%E5%B8%B8%E7%94%A8%E6%8E%92%E5%BA%8F%E5%8F%8A%E4%BD%8D%E8%BF%90%E7%AE%97.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Java基础02之集合类及常用排序及位运算 - 知不知&amp;url=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8002%E4%B9%8B%E9%9B%86%E5%90%88%E7%B1%BB%E5%8F%8A%E5%B8%B8%E7%94%A8%E6%8E%92%E5%BA%8F%E5%8F%8A%E4%BD%8D%E8%BF%90%E7%AE%97.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8002%E4%B9%8B%E9%9B%86%E5%90%88%E7%B1%BB%E5%8F%8A%E5%B8%B8%E7%94%A8%E6%8E%92%E5%BA%8F%E5%8F%8A%E4%BD%8D%E8%BF%90%E7%AE%97.html&amp;title=Java-Java基础02之集合类及常用排序及位运算 - 知不知&amp;summary=Java基础中的java的数组、冒泡排序、选择排序、快速排序、集合类及移位运算&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8002%E4%B9%8B%E9%9B%86%E5%90%88%E7%B1%BB%E5%8F%8A%E5%B8%B8%E7%94%A8%E6%8E%92%E5%BA%8F%E5%8F%8A%E4%BD%8D%E8%BF%90%E7%AE%97.html&amp;text=Java-Java基础02之集合类及常用排序及位运算 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8002%E4%B9%8B%E9%9B%86%E5%90%88%E7%B1%BB%E5%8F%8A%E5%B8%B8%E7%94%A8%E6%8E%92%E5%BA%8F%E5%8F%8A%E4%BD%8D%E8%BF%90%E7%AE%97.html&amp;t=Java-Java基础02之集合类及常用排序及位运算 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8002%E4%B9%8B%E9%9B%86%E5%90%88%E7%B1%BB%E5%8F%8A%E5%B8%B8%E7%94%A8%E6%8E%92%E5%BA%8F%E5%8F%8A%E4%BD%8D%E8%BF%90%E7%AE%97.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Java基础02之集合类及常用排序及位运算'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

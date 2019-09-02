@@ -1,0 +1,279 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Linux常用的基本命令</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h2 id="curl防火墙文件传输用户用户组及权限">CURL/防火墙/文件传输/用户、用户组及权限</h2> <h3 id="curl-命令行浏览器的使用">CURL 命令行浏览器的使用</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1)访问指定的网页
+curl http://www.yahoo.com
+
+2)保存指定网页到文件
+curl http://www.yahoo.com &gt; page.html
+用curl的内置option就好，用option: -o
+curl -o page.html http://www.yahoo.com
+
+3)使用代理访问
+使用curl的时候，用这个option可以指定http访问所使用的proxy服务器及其端口： -x
+curl -x 123.45.67.89:1080 -o page.html http://www.yahoo.com
+
+4)处理cookie
+curl -x 123.45.67.89:1080 -o page.html -D cookie0001.txt http://www.yahoo.com
+option: -D &lt;-- 这个是把http的response里面的cookie信息存到一个特别的文件中去,当页面被存到page.html的同时，cookie信息也被存到了cookie0001.txt里面了
+
+5)带cookie访问
+使用这个option来把上次的cookie信息追加到http request里面去： -b
+curl -x 123.45.67.89:1080 -o page1.html -D cookie0002.txt -b cookie0001.txt http://www.yahoo.com
+
+6）模拟浏览器信息
+curl给我们提供了一个有用的option，可以让我们随意指定自己这次访问所宣称的自己的浏览器信息： -A
+curl -A "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)" -x 123.45.67.89:1080 -o page.html -D cookie0001.txt http://www.yahoo.com
+
+7）盗链访问
+curl给我们提供了设定referer的option： -e
+curl -A "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)" -x 123.45.67.89:1080 -e "mail.yahoo.com" -o page.html -D cookie0001.txt http://www.yahoo.com
+这样，就可以骗对方的服务器，以上是模拟一个从mail.yahoo.com点击某个链接过来的了
+
+8）利用curl 下载文件
+下载页面到一个文件里，可以使用 -o ，下载文件也是一样。
+比如， curl -o 1.jpg http://cgi2.tky.3web.ne.jp/~zzh/screen1.JPG
+
+使用大写的O下载服务器上的文件(默认下载到当前目录下)
+curl -O http://www.baidu.com/img/baidu_sylogo1.gif
+
+批量下载
+在curl里面，这么写就可以了：
+curl -O http://cgi2.tky.3web.ne.jp/~zzh/screen[1-10].JPG
+curl -O http://cgi2.tky.3web.ne.jp/~{zzh,nick}/[001-201].JPG
+这样产生的下载，如下
+~zzh/001.JPG
+~zzh/002.JPG
+...
+~zzh/201.JPG
+~nick/001.JPG
+~nick/002.JPG
+...
+~nick/201.JPG
+由于zzh/nick下的文件名都是001，002...，201，下载下来的文件重名，后面的把前面的文件都给覆盖掉了~~~
+
+自定义文件名的下载
+curl -o #2_#1.jpg http://cgi2.tky.3web.ne.jp/~{zzh,nick}/[001-201].JPG
+#1是变量，指的是{zzh,nick}这部分，第一次取值zzh，第二次取值nick
+#2代表的变量，则是第二段可变部分---[001-201]，取值从001逐一加到201
+这样，自定义出来下载下来的文件名，就变成了这样：
+原来： ~zzh/001.JPG ---&gt; 下载后： 001-zzh.JPG
+原来： ~nick/001.JPG ---&gt; 下载后： 001-nick.JPG
+
+9）分块下载
+分块下载，我们使用这个option就可以了： -r
+举例说明，比如我们有一个http://cgi2.tky.3web.ne.jp/~zzh/zhao1.mp3 要下载
+我们就可以用这样的命令：
+curl -r 0-10240 -o "zhao.part1" http:/cgi2.tky.3web.ne.jp/~zzh/zhao1.mp3 &amp;\
+curl -r 10241-20480 -o "zhao.part1" http:/cgi2.tky.3web.ne.jp/~zzh/zhao1.mp3 &amp;\
+curl -r 20481-40960 -o "zhao.part1" http:/cgi2.tky.3web.ne.jp/~zzh/zhao1.mp3 &amp;\
+curl -r 40961- -o "zhao.part1" http:/cgi2.tky.3web.ne.jp/~zzh/zhao1.mp3
+
+合并文件
+不过下载完后，需要自己把这些破碎的文件合并起来
+如果是UNIX或苹果，用 cat zhao.part* &gt; zhao.mp3就可以
+如果是Windows，用copy /b 来解决吧
+
+使用ftp协议下载
+curl -u name:passwd ftp://ip:port/path/file
+或者
+curl ftp://name:passwd@ip:port/path/file
+
+10)上传
+上传的option是 -T
+比如要向ftp传一个文件： curl -T localfile -u name:passwd ftp://upload_site:port/path/
+当然，向http服务器上传文件也可以
+比如 curl -T localfile http://cgi2.tky.3web.ne.jp/~zzh/abc.cgi
+注意，这时候，使用的协议是HTTP的PUT method
+
+GET模式访问
+只需要把变量写在url里面就可以了
+比如：
+curl http://www.yahoo.com/login.cgi?user=nickwolfe&amp;password=12345
+
+POST模式访问
+使用option  -d
+比如，curl -d "user=nickwolfe&amp;password=12345" http://www.yahoo.com/login.cgi
+就相当于向这个站点发出一次登陆申请
+到底该用GET模式还是POST模式，要看对面服务器的程序设定。
+
+POST模式下的文件上传
+比如
+&lt;form method="POST" enctype="multipar/form-data" action="http://cgi2.tky.3web.ne.jp/~zzh/up_file.cgi"&gt;
+&lt;input type=file name=upload&gt;
+&lt;input type=submit name=nick value="go"&gt;
+&lt;/form&gt;
+这样一个HTTP表单，我们要用curl进行模拟，就该是这样的语法：
+curl -F upload=@localfile -F nick=go http://cgi2.tky.3web.ne.jp/~zzh/up_file.cgi
+
+访问https 使用本地证书
+curl -E localcert.pem https://remote_server
+再比如，你还可以用curl通过dict协议去查字典~~~~~
+curl dict://dict.org/d:computer 
+</code></pre></div></div> <h3 id="linux防火墙的关闭和开启">Linux防火墙的关闭和开启</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1) 重启后生效
+开启： chkconfig iptables on
+关闭： chkconfig iptables off
+
+2) 即时生效，重启后失效
+开启： service iptables start
+关闭： service iptables stop
+需要说明的是对于Linux下的其它服务都可以用以上命令执行开启和关闭操作。
+
+在开启了防火墙时，做如下设置，开启相关端口，
+修改/etc/sysconfig/iptables 文件，添加以下内容：
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
+
+使用/etc/init.d/iptables status 查看防火墙信息，可以看到打开的端口。
+
+那么我们把需要使用的端口打开应该是一个比较可行的办法了，命令如下：
+/sbin/iptables -I INPUT -p tcp --dport 8080 -j ACCEPT #8080为指定端口
+/etc/init.d/iptables restart #重启防火墙以便改动生效，当然如果不觉得麻烦也可重启系统(命令：reboot)
+/etc/rc.d/init.d/iptables save #将更改进行保存
+
+当然了，还有另外直接在/etc/sysconfig/iptables中增加一行：
+-A RH-Firewall-1-INPUT -m state –state NEW -m tcp -p tcp –dport 8080 -j ACCEPT
+永久关闭防火墙
+</code></pre></div></div> <h3 id="传输文件">传输文件</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>不同的Linux之间copy文件常用有3种方法:  
+第一种就是ftp，也就是其中一台Linux安装ftp Server，这样可以另外一台使用ftp的client程序来进行文件的copy。
+第二种方法就是采用samba服务，类似Windows文件copy的方式来操作，比较简洁方便。
+第三种就是利用scp命令来进行文件复制。scp是有Security的文件copy，基于ssh登录。
+操作起来比较方便，比如要把当前一个文件copy到远程另外一台主机上，可以如下命令。
+
+ftp
+%ftp 主机名/IP  /*登录ftp服务器，会提示输入用户名和密码*/
+匿名登录：用户名输入：anonymous  密码输入：一个邮箱格式的任意字符串
+
+FTP&gt;ascii: 设定以ASCII方式传送文件(缺省值) 
+FTP&gt;bell: 每完成一次文件传送,报警提示. 
+FTP&gt;binary: 设定以二进制方式传送文件. 
+FTP&gt;bye: 终止主机FTP进程,并退出FTP管理方式. 
+FTP&gt;case: 当为ON时,用MGET命令拷贝的文件名到本地机器中,全部转换为小写字母. 
+FTP&gt;cd: 同UNIX的CD命令. 
+FTP&gt;cdup: 返回上一级目录. 
+FTP&gt;chmod: 改变远端主机的文件权限. 
+FTP&gt;close: 终止远端的FTP进程,返回到FTP命令状态, 所有的宏定义都被删除. 
+FTP&gt;delete: 删除远端主机中的文件. 
+FTP&gt;dir [remote-directory] [local-file] 列出当前远端主机目录中的文件.如果有本地文件,就将结果写至本地文件. 
+FTP&gt;get [remote-file] [local-file] 从远端主机中传送至本地主机中. 
+FTP&gt;help [command] 输出命令的解释. 
+FTP&gt;lcd: 改变当前本地主机的工作目录,如果缺省,就转到当前用户的HOME目录. 
+FTP&gt;ls [remote-directory] [local-file] 同DIR. 
+FTP&gt;macdef: 定义宏命令. 
+FTP&gt;mdelete [remote-files] 删除一批文件. 
+FTP&gt;mget [remote-files] 从远端主机接收一批文件至本地主机. 
+FTP&gt;mkdir directory-name 在远端主机中建立目录. 
+FTP&gt;mput local-files 将本地主机中一批文件传送至远端主机. 
+FTP&gt;open host [port] 重新建立一个新的连接. 
+FTP&gt;prompt: 交互提示模式. 
+FTP&gt;put local-file [remote-file] 将本地一个文件传送至远端主机中. 
+FTP&gt;pwd: 列出当前远端主机目录. 
+FTP&gt;quit: 同BYE. 
+FTP&gt;recv remote-file [local-file] 同GET. 
+FTP&gt;rename [from] [to] 改变远端主机中的文件名. 
+FTP&gt;rmdir directory-name 删除远端主机中的目录. 
+FTP&gt;send local-file [remote-file] 同PUT. 
+FTP&gt;status: 显示当前FTP的状态. 
+FTP&gt;system: 显示远端主机系统类型. 
+FTP&gt;user user-name [password] [account] 重新以别的用户名登录远端主机. 
+FTP&gt;? [command]: 同HELP. [command]指定需要帮助的命令名称。如果没有指定 command，ftp 将显示全部命令的列表。
+FTP&gt;! 从 ftp 子系统退出到外壳。
+
+scp
+scp /home/daisy/full.tar.gz root@172.19.2.75:/home/root
+然后会提示你输入另外那台172.19.2.75主机的root用户的登录密码，接着就开始copy了。
+如果想反过来操作，把文件从远程主机copy到当前系统，也很简单。
+scp root@172.19.2.75:/home/root /home/daisy/full.tar.gz 
+</code></pre></div></div> <h3 id="用户及用户组">用户及用户组</h3> <blockquote> <p>id 查看当前用户信息<br /> id someone 查看某个用户信息<br /> groups 查看当前登录用户的组内成员<br /> groups gliethttp 查看gliethttp用户所在的组,以及组内成员<br /> whoami 查看当前登录用户名<br /> /etc/group文件包含所有组<br /> /etc/shadow和/etc/passwd系统存在的所有用户名</p> </blockquote> <p><strong>1、/etc/group 解说</strong></p> <blockquote> <p>/etc/group 文件是用户组的配置文件，内容包括用户和用户组，并且能显示出用户是归属哪个用户组或哪几个用户组，因为一个用户可以归属一个或多个不同的用户组；同一用户组的用户之间具有相似的特征。比如我们把某一用户加入到root用户组，那么这个用户就可以浏览root用户家目录的文件，如果root用户把某个文件的读写执行权限开放，root用户组的所有用户都可以修改此文件，如果是可执行的文件（比如脚本），root用户组的用户也是可以执行的；</p> </blockquote> <p><strong>2、/etc/group 内容具体分析</strong></p> <blockquote> <p>/etc/group 的内容包括用户组（Group）、用户组口令、GID及该用户组所包含的用户（User），每个用户组一条记录；格式如下：<br /> <code class="highlighter-rouge">group_name:passwd:GID:user_list</code><br /> 在/etc/group 中的每条记录分四个字段：<br /> 第一字段：用户组名称；<br /> 第二字段：用户组密码；<br /> 第三字段：GID<br /> 第四字段：用户列表，每个用户之间用,号分割；本字段可以为空；如果字段为空表示用户组为GID的用户名；</p> </blockquote> <h3 id="删除目录下的多个文件">删除目录下的多个文件</h3> <p>删除当前目录下的所有文件：<code class="highlighter-rouge">find . -name '*' -exec rm {} \;</code></p> <h3 id="redhat使用sudo提示说用户不在sudoers文件内">redhat使用sudo提示说用户不在sudoers文件内</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>su -
+echo 'username  ALL=(ALL)    ALL' &gt;&gt; /etc/sudoers
+</code></pre></div></div> <p>username为你的用户名。</p> <p><strong>简单来说</strong><br /> 首先如果出现无法找到用户的名字,则先切换到root (<code class="highlighter-rouge">su -</code>) root权限下输入<code class="highlighter-rouge">Visudo</code> 或者 <code class="highlighter-rouge">vim /etc/sudoers</code>, 找到　<code class="highlighter-rouge">root ALL=(ALL) ALL</code> 的字段,在下一行追加:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        　　　　你要追加的名字  ALL=(ALL)     ALL
+</code></pre></div></div> <p>因为5分钟之后密码过期,下次需要重新输入,可以用以下方法:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            你要追加的名字 ALL=(ALL)     NOPASSWD: ALL
+</code></pre></div></div> <h2 id="让进程在后台可靠运行的几种方法">让进程在后台可靠运行的几种方法</h2> <p><strong>nohup/setsid/&amp;</strong></p> <blockquote> <p><strong>场景：</strong><br /> 如果只是临时有一个命令需要长时间运行，什么方法能最简便的保证它在后台稳定运行呢？</p> <p><strong>hangup 名称的来由</strong><br /> 在 Unix 的早期版本中，每个终端都会通过 modem 和系统通讯。当用户 logout 时，modem 就会挂断（hang up）电话。 同理，当 modem 断开连接时，就会给终端发送 hangup 信号来通知其关闭所有子进程。<br /> <strong>解决方法：</strong><br /> 我们知道，当用户注销（logout）或者网络断开时，终端会收到 HUP（hangup）信号从而关闭其所有子进程。因此，我们的解决办法就有两种途径：要么让进程忽略 HUP 信号，要么让进程运行在新的会话里从而成为不属于此终端的子进程。</p> </blockquote> <h3 id="1nohup">1.nohup</h3> <p>nohup 无疑是我们首先想到的办法。顾名思义，nohup 的用途就是让提交的命令忽略 hangup 信号。让我们先来看一下 nohup 的帮助信息：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NOHUP(1)                        User Commands                        NOHUP(1)  
+NAME
+       nohup - run a command immune to hangups, with output to a non-tty
+SYNOPSIS
+       nohup COMMAND [ARG]...
+       nohup OPTION
+DESCRIPTION
+       Run COMMAND, ignoring hangup signals.
+       --help display this help and exit
+       --version output version information and exit
+可见，nohup 的使用是十分方便的，只需在要处理的命令前加上 nohup  即可，标准输出和标准错误缺省会被重定向到 nohup.out 文件中。一般我们可在结尾加上"&amp;"来将命令同时放入后台运行，也可用"&gt;filename 2&gt;&amp;1"来更改缺省的重定向文件名。
+</code></pre></div></div> <p><strong>nohup 示例</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@pvcent107 ~]# nohup ping www.ibm.com &amp;
+[1] 3059
+nohup: appending output to `nohup.out'
+[root@pvcent107 ~]# ps -ef |grep 3059
+root      3059 984 0 21:06 pts/3    00:00:00 ping www.ibm.com
+root      3067   984  0 21:06 pts/3    00:00:00 grep 3059
+[root@pvcent107 ~]#  
+</code></pre></div></div> <h3 id="2setsid">2.setsid</h3> <p>nohup 无疑能通过忽略 HUP 信号来使我们的进程避免中途被中断，但如果我们换个角度思考，如果我们的进程不属于接受 HUP 信号的终端的子进程，那么自然也就不会受到 HUP 信号的影响了。</p> <p>setsid 就能帮助我们做到这一点。让我们先来看一下 setsid 的帮助信息：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SETSID(8)                 Linux Programmer’s Manual                 SETSID(8)
+NAME
+       setsid - run a program in a new session
+SYNOPSIS
+       setsid program [ arg ... ]
+DESCRIPTION
+       setsid runs a program in a new session. 
+</code></pre></div></div> <p>可见 setsid 的使用也是非常方便的，也只需在要处理的命令前加上 setsid 即可。</p> <p><strong>setsid 示例</strong>.</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@pvcent107 ~]# setsid ping www.ibm.com
+[root@pvcent107 ~]# ps -ef |grep www.ibm.com
+root     31094 1 0 07:28 ?        00:00:00 ping www.ibm.com
+root     31102 29217  0 07:29 pts/4    00:00:00 grep www.ibm.com
+[root@pvcent107 ~]#   
+</code></pre></div></div> <p>值得注意的是，上例中我们的进程 ID(PID)为31094，而它的父 ID（PPID）为1（即为 init 进程 ID），并不是当前终端的进程 ID。请将此例与nohup 例中的父 ID 做比较。</p> <h3 id="3-">3. &amp;</h3> <p>这里还有一个关于 subshell 的小技巧。将一个或多个命名包含在“()”中就能让这些命令在子 shell 中运行中，从而扩展出很多有趣的功能，我们现在要讨论的就是其中之一。</p> <p>当将”&amp;”也放入“()”内之后，我们就会发现所提交的作业并不在作业列表中，也就是说，是无法通过jobs来查看的。让我们来看看为什么这样就能躲过 HUP 信号的影响吧。</p> <p><strong>subshell 示例</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@pvcent107 ~]# (ping www.ibm.com &amp;)
+[root@pvcent107 ~]# ps -ef |grep www.ibm.com
+root     16270 1 0 14:13 pts/4    00:00:00 ping www.ibm.com
+root     16278 15362  0 14:13 pts/4    00:00:00 grep www.ibm.com
+[root@pvcent107 ~]#   
+</code></pre></div></div> <p>从上例中可以看出，新提交的进程的父 ID（PPID）为1（init 进程的 PID），并不是当前终端的进程 ID。因此并不属于当前终端的子进程，从而也就不会受到当前终端的 HUP 信号的影响了。</p> <h3 id="disown">disown</h3> <p><strong>场景：</strong><br /> 如果事先在命令前加上 nohup 或者 setsid 就可以避免 HUP 信号的影响。但是如果我们未加任何处理就已经提交了命令，该如何补救才能让它避免 HUP 信号的影响呢？</p> <p><strong>解决方法：</strong><br /> 这时想加 nohup 或者 setsid 已经为时已晚，只能通过作业调度和 disown 来解决这个问题了。下面看一下 disown 的帮助信息：</p> <blockquote> <p>disown [-ar] [-h] [jobspec …] Without options, each jobspec is removed from the table of active jobs. If the -h option is given, each jobspec is not removed from the table, but is marked so that SIGHUP is not sent to the job if the shell receives a SIGHUP. If no jobspec is present, and neither the -a nor the -r option is supplied, the current job is used. If no jobspec is supplied, the -a option means to remove or mark all jobs; the -r option without a jobspec argument restricts operation to running jobs. The return value is 0 unless a jobspec does not specify a valid job.</p> </blockquote> <p>可以看出，我们可以用如下方式来达成我们的目的。</p> <p><strong>灵活运用 CTRL-z</strong></p> <blockquote> <p>在我们的日常工作中，我们可以用 CTRL-z 来将当前进程挂起到后台暂停运行，执行一些别的操作，然后再用 fg 来将挂起的进程重新放回前台（也可用 bg 来将挂起的进程放在后台）继续运行。这样我们就可以在一个终端内灵活切换运行多个任务，这一点在调试代码时尤为有用。因为将代码编辑器挂起到后台再重新放回时，光标定位仍然停留在上次挂起时的位置，避免了重新定位的麻烦。</p> <p>用disown -h jobspec 来使某个作业忽略HUP信号。</p> <p>用disown -ah 来使所有的作业都忽略HUP信号。</p> <p>用disown -rh 来使正在运行的作业忽略HUP信号。</p> <p>需要注意的是，当使用过 disown 之后，会将把目标作业从作业列表中移除，我们将不能再使用jobs来查看它，但是依然能够用ps -ef查找到它。</p> <p>但是还有一个问题，这种方法的操作对象是作业，如果我们在运行命令时在结尾加了”&amp;”来使它成为一个作业并在后台运行，那么就万事大吉了，我们可以通过jobs命令来得到所有作业的列表。但是如果并没有把当前命令作为作业来运行，如何才能得到它的作业号呢？答案就是用 CTRL-z（按住Ctrl键的同时按住z键）了！</p> <p>CTRL-z 的用途就是将当前进程挂起（Suspend），然后我们就可以用jobs命令来查询它的作业号，再用bg jobspec 来将它放入后台并继续运行。需要注意的是，如果挂起会影响当前进程的运行结果，请慎用此方法。</p> </blockquote> <p><strong>disown 示例1</strong><br /> （如果提交命令时已经用“&amp;”将命令放入后台运行，则可以直接使用“disown”）</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@pvcent107 build]# cp -r testLargeFile largeFile &amp;
+[1] 4825
+[root@pvcent107 build]# jobs
+[1]+  Running                 cp -i -r testLargeFile largeFile &amp;
+[root@pvcent107 build]# disown -h %1
+[root@pvcent107 build]# ps -ef |grep largeFile
+root      4825   968  1 09:46 pts/4    00:00:00 cp -i -r testLargeFile largeFile
+root      4853   968  0 09:46 pts/4    00:00:00 grep largeFile
+[root@pvcent107 build]# logout 
+</code></pre></div></div> <p><strong>disown 示例2</strong><br /> （如果提交命令时未使用“&amp;”将命令放入后台运行，可使用 CTRL-z 和“bg”将其放入后台，再使用“disown”）</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@pvcent107 build]# cp -r testLargeFile largeFile2
+[1]+  Stopped                 cp -i -r testLargeFile largeFile2
+[root@pvcent107 build]# bg %1
+[1]+ cp -i -r testLargeFile largeFile2 &amp;
+[root@pvcent107 build]# jobs
+[1]+  Running                 cp -i -r testLargeFile largeFile2 &amp;
+[root@pvcent107 build]# disown -h %1
+[root@pvcent107 build]# ps -ef |grep largeFile2
+root      5790  5577  1 10:04 pts/3    00:00:00 cp -i -r testLargeFile largeFile2
+root      5824  5577  0 10:05 pts/3    00:00:00 grep largeFile2
+[root@pvcent107 build]#   
+</code></pre></div></div> <h3 id="screen">screen</h3> <p><strong>场景：</strong><br /> 我们已经知道了如何让进程免受 HUP 信号的影响，但是如果有大量这种命令需要在稳定的后台里运行，如何避免对每条命令都做这样的操作呢？</p> <p><strong>解决方法：</strong> <br /> 此时最方便的方法就是 screen 了。简单的说，screen 提供了 ANSI/VT100 的终端模拟器，使它能够在一个真实终端下运行多个全屏的伪终端。screen 的参数很多，具有很强大的功能，我们在此仅介绍其常用功能以及简要分析一下为什么使用 screen 能够避免 HUP 信号的影响。我们先看一下 screen 的帮助信息：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SCREEN(1)                                                           SCREEN(1)
+NAME
+       screen - screen manager with VT100/ANSI terminal emulation
+SYNOPSIS
+       screen [ -options ] [ cmd [ args ] ]
+       screen -r [[pid.]tty[.host]]
+       screen -r sessionowner/[[pid.]tty[.host]]
+DESCRIPTION
+       Screen  is  a  full-screen  window manager that multiplexes a physical
+       terminal between several  processes  (typically  interactive  shells).
+       Each  virtual  terminal provides the functions of a DEC VT100 terminal
+       and, in addition, several control functions from the  ISO  6429  (ECMA
+       48,  ANSI  X3.64)  and ISO 2022 standards (e.g. insert/delete line and
+       support for multiple character sets).  There is a  scrollback  history
+       buffer  for  each virtual terminal and a copy-and-paste mechanism that
+       allows moving text regions between windows. 
+</code></pre></div></div> <p>使用 screen 很方便，有以下几个常用选项：</p> <blockquote> <p>用screen -dmS session name 来建立一个处于断开模式下的会话（并指定其会话名）。<br /> 用screen -list 来列出所有会话。<br /> 用screen -r session name 来重新连接指定会话。<br /> 用快捷键CTRL-a d 来暂时断开当前会话。</p> </blockquote> <p><strong>screen 示例</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@pvcent107 ~]# screen -dmS Urumchi
+[root@pvcent107 ~]# screen -list
+There is a screen on:
+        12842.Urumchi   (Detached)
+1 Socket in /tmp/screens/S-root.
+[root@pvcent107 ~]# screen -r Urumchi  
+</code></pre></div></div> <p>当我们用“-r”连接到 screen 会话后，我们就可以在这个伪终端里面为所欲为，再也不用担心 HUP 信号会对我们的进程造成影响，也不用给每个命令前都加上“nohup”或者“setsid”了。这是为什么呢？下面来看一下下面两个例子。</p> <p><strong>1. 未使用 screen 时新进程的进程树</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@pvcent107 ~]# ping www.google.com &amp;
+[1] 9499
+[root@pvcent107 ~]# pstree -H 9499
+init─┬─Xvnc
+     ├─acpid
+     ├─atd
+     ├─2*[sendmail] ├─sshd─┬─sshd───bash───pstree
+     │  └─sshd───bash───ping 
+</code></pre></div></div> <p>我们可以看出，未使用 screen 时我们所处的 bash 是 sshd 的子进程，当 ssh 断开连接时，HUP 信号自然会影响到它下面的所有子进程（包括我们新建立的 ping 进程）。</p> <p><strong>2. 使用了 screen 后新进程的进程树</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@pvcent107 ~]# screen -r Urumchi
+[root@pvcent107 ~]# ping www.ibm.com &amp;
+[1] 9488
+[root@pvcent107 ~]# pstree -H 9488
+init─┬─Xvnc
+     ├─acpid
+     ├─atd ├─screen───bash───ping ├─2*[sendmail] 
+</code></pre></div></div> <p>而使用了 screen 后就不同了，此时 bash 是 screen 的子进程，而 screen 是 init（PID为1）的子进程。那么当 ssh 断开连接时，HUP 信号自然不会影响到 screen 下面的子进程了。</p> <h3 id="总结">总结</h3> <p>nohup/setsid 无疑是临时需要时最方便的方法，disown 能帮助我们来事后补救当前已经在运行了的作业，而 screen 则是在大批量操作时不二的选择了。</p> <p><strong>进程管理部分参考资料</strong><br /> “<a href="http://www.ibm.com/developerworks/cn/aix/library/es-unix-sysadmin1.html">系统管理员工具包：进程管理技巧</a>”（developerWorks 中国，2006 年 5 月）介绍了 Linux 进程管理的更多技巧。<br /> “<a href="http://www.ibm.com/developerworks/cn/linux/l-cn-screen/">Linux 技巧：使用 screen 管理你的远程会话</a>”（developerWorks 中国，2007 年 7 月）介绍了 screen 的更多技巧。<br /> 在 <a href="http://www.ibm.com/developerworks/cn/linux/">developerWorks 中国网站 Linux 专区</a>中学习更多 Linux 方面的知识。 <br /> 此章节参考转摘自：<a href="https://www.ibm.com/developerworks/cn/linux/l-cn-nohup/">Linux 技巧：让进程在后台运行更可靠的几种方法</a></p> <h3 id="查看当前shell">查看当前shell</h3> <ol> <li><code class="highlighter-rouge">echo $0</code> - will print the program name.</li> <li><code class="highlighter-rouge">ps -ef | grep $$ | grep -v grep</code> - This will look for the current process ID in the list of running processes.</li> <li><code class="highlighter-rouge">echo $SHELL</code> - The path to the current shell is stored as the SHELL variable for any shell.</li> </ol> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/linux/2012-09-03-Linux%E5%B8%B8%E7%94%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Linux常用的基本命令 - 知不知&amp;url=/list/docs/linux/2012-09-03-Linux%E5%B8%B8%E7%94%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/linux/2012-09-03-Linux%E5%B8%B8%E7%94%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.html&amp;title=Linux常用的基本命令 - 知不知&amp;summary=Linux常用的基本命令&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/linux/2012-09-03-Linux%E5%B8%B8%E7%94%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.html&amp;text=Linux常用的基本命令 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/linux/2012-09-03-Linux%E5%B8%B8%E7%94%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.html&amp;t=Linux常用的基本命令 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/linux/2012-09-03-Linux%E5%B8%B8%E7%94%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Linux常用的基本命令'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

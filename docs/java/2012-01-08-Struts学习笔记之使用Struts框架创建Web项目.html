@@ -1,0 +1,261 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Struts学习笔记之使用Struts框架创建Web项目</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>1.建立一个名为struts2的web project</strong></p> <p><strong>2.需要引入的包：</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">commons</span><span class="o">-</span><span class="n">fileupload</span><span class="o">-</span><span class="mf">1.2</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="na">jar</span>
+<span class="n">commons</span><span class="o">-</span><span class="n">io</span><span class="o">-</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="na">jar</span>
+<span class="n">commons</span><span class="o">-</span><span class="n">logging</span><span class="o">-</span><span class="mf">1.1</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="na">jar</span>
+<span class="n">ognl</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="na">jar</span>
+<span class="n">struts2</span><span class="o">-</span><span class="n">core</span><span class="o">-</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">3</span><span class="o">.</span><span class="na">jar</span>
+<span class="n">xwork</span><span class="o">-</span><span class="n">core</span><span class="o">-</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">3</span><span class="o">.</span><span class="na">jar</span>
+<span class="o">-----------------</span><span class="n">struts2</span><span class="o">.</span><span class="mi">0</span><span class="err">要求导入的包，除此以外还要添加以下的包：</span>
+<span class="n">freemarker</span><span class="o">-</span><span class="mf">2.3</span><span class="o">.</span><span class="mi">16</span><span class="o">.</span><span class="na">jar</span>
+<span class="n">javassist</span><span class="o">-</span><span class="mf">3.11</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="na">GA</span><span class="o">.</span><span class="na">jar</span>
+<span class="n">commons</span><span class="o">-</span><span class="n">lang</span><span class="o">-</span><span class="mf">2.5</span><span class="o">.</span><span class="na">jar</span>
+</code></pre></div></div> <p>将这些包直接复制到WebRoot/WEB-INF/lib目录下即可，Myeclipse会自动将这些包添加到class path里。</p> <p><strong>3.新建一个login.jsp</strong><br /> 1)修改web.xml, 配置filter（org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter），即配置struts过滤器。</p> <p>配置如下：</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;filter&gt;</span>
+    <span class="nt">&lt;filter-name&gt;</span>struts2<span class="nt">&lt;/filter-name&gt;</span>
+    <span class="nt">&lt;filter-class&gt;</span>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter<span class="nt">&lt;/filter-class&gt;</span>
+<span class="nt">&lt;/filter&gt;</span>
+<span class="nt">&lt;filter-mapping&gt;</span>
+<span class="nt">&lt;filter-name&gt;</span>struts2<span class="nt">&lt;/filter-name&gt;</span>
+<span class="nt">&lt;url-pattern&gt;</span>/*<span class="nt">&lt;/url-pattern&gt;</span>
+<span class="nt">&lt;/filter-mapping&gt;</span> 
+</code></pre></div></div> <p>2)添加struts本身的配置文件，在src下建下个struts.xml的文件; struts真正读取的文件是WEB-INF/classes/目录下的struts.xml文件，而当修改了src目录下的struts.xml文件后，MyEclipse会自动src目录下的struts.xml文件拷贝一份到WEB-INF/classes目录下。</p> <p>3)添加struts.xml的dtd验证,打开struts-2.2.3-all.zip\struts-2.2.3\apps目录下的 struts2-blank.war\WEB-INF\src\java目录下的struts.xml文件，拷贝dtd那一部分到src/struts.xml文件中。</p> <p>配置如下：</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd"&gt;</span>
+<span class="nt">&lt;struts&gt;</span>
+    <span class="nt">&lt;package</span> <span class="na">name=</span><span class="s">"struts2"</span> <span class="na">extends=</span><span class="s">"struts-default"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;action</span> <span class="na">name=</span><span class="s">"login"</span> <span class="na">class=</span><span class="s">"com.struts2.LoginAction"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"success"</span><span class="nt">&gt;</span>/result.jsp<span class="nt">&lt;/result&gt;</span>
+        <span class="nt">&lt;/action&gt;</span>
+    <span class="nt">&lt;/package&gt;</span>
+<span class="nt">&lt;/struts&gt;</span>
+</code></pre></div></div> <p>4)在src目录下建一个包:com.struts2,并在包中建一个类:LoginAction.java，并编辑，如下：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LoginAction</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">username</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">password</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getUsername</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">username</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUsername</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">username</span> <span class="o">=</span> <span class="n">username</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getPassword</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">password</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setPassword</span><span class="o">(</span><span class="nc">String</span> <span class="n">password</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">password</span> <span class="o">=</span> <span class="n">password</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"success"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>5)再修改login.jsp ,如下：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s">"login"</span> <span class="kd">class</span><span class="err">="</span><span class="nc">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">.</span><span class="na">LoginAction</span><span class="s">"&gt;
+    username:&lt;input type="</span><span class="n">text</span><span class="s">" name="</span><span class="n">username</span><span class="s">"&gt;&lt;br&gt;
+    password:&lt;input type="</span><span class="n">password</span><span class="s">" name="</span><span class="n">password</span><span class="s">"&gt;&lt;br&gt;
+    &lt;input type="</span><span class="n">submit</span><span class="s">" value="</span><span class="n">submit</span><span class="err">"</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
+</code></pre></div></div> <p>然后再在webRoot目录一添加一个result.jsp页面，编辑如下：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="nl">username:</span> <span class="err">$</span><span class="o">{</span><span class="n">requestScope</span><span class="o">.</span><span class="na">username</span> <span class="o">}&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<span class="nl">username:</span> <span class="err">$</span><span class="o">{</span><span class="n">username</span> <span class="o">}&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<span class="nl">username:</span> <span class="err">$</span><span class="o">{</span><span class="n">param</span><span class="o">.</span><span class="na">username</span> <span class="o">}&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<span class="o">&lt;!--</span> <span class="err">注意这一种取值方式与上面两种之间的差别</span><span class="o">,</span><span class="err">上面两种的取值方式相同</span> <span class="o">--&gt;</span>
+<span class="nl">password:</span> <span class="err">$</span><span class="o">{</span><span class="n">requestScope</span><span class="o">.</span><span class="na">password</span> <span class="o">}&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span> 
+</code></pre></div></div> <p><strong>4.向tomcat中添加此应用</strong><br /> 将struts2项目添加到tomcat应用中，修改Tomcat 6.0\conf目录下的server.xml文件</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">server</span><span class="o">&gt;</span>
+    <span class="o">............</span>
+    <span class="o">&lt;</span><span class="nc">Context</span> <span class="n">path</span><span class="o">=</span><span class="s">"/struts2"</span> <span class="n">docBase</span><span class="o">=</span><span class="s">"F:\workspace6.5\struts2\WebRoot"</span> <span class="n">reloadable</span><span class="o">=</span><span class="s">"true"</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="nc">Host</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="nc">Engine</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="nc">Service</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="nc">Server</span><span class="o">&gt;</span> 
+</code></pre></div></div> <p><strong>关联jar包的源文件</strong> 给某一个jar包关联源代码，在工程上点右键 -&gt; builder path -&gt; libaries -&gt; 点开那个指定的包，选择 Source attachment ，然后再选择Edit，择中源文件所在的文件夹即可。</p> <p><strong>根据源文件生成chm帮助文档</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>根据源代码，生在struts的帮助文档
+1.新建一个struts_doc的java project,然后将需要生在doc文件的源文件复制到src目录下，并引入相对应的依赖包到build path中。
+
+2.在MyEclipse中选择project -&gt; generate javadoc -&gt; 选中struts_doc工程,并指定目标文件夹 -&gt; 下一步，并给document取一个title -&gt; next -&gt; finish 。 
+
+3.然后将jd2chm.exe拷贝到刚生成的帮助文档文件夹当中即可。  
+</code></pre></div></div> <p><strong>Struts2中类型转换</strong><br /> 1.Struts2 的类型转换，对于 8 个原生数据类型以及 Date，String 等常见类型，Struts2可以使用内建的类型转换器实现自动的转换；但对于自定义的对象类型来说，就需要我们自己指定类型转换的方式了。</p> <ol> <li>对于自定义的类型转换器来说需要提供 3个信息：Action的名字、Action 中待转换的属性名以及该属性对应的类型转换器。其中Action的名字是通过属性文件名来获得的、 Action中待转换的属性名是通过属性文件中的 key来获得的，该属性对应的类型转换器是通过该key所对应的 value来获得的。</li> </ol> <p>例： 在项目中新建一个test.jsp,编辑：</p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;h1&gt;</span>使用分号隔开用户名与密码信息<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"userAction.action"</span><span class="nt">&gt;</span>
+    user info:<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"user"</span><span class="nt">&gt;&lt;br&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div> <p>再在src目录下新建一个com.bean包，并在包中新建一个名为User的类如下：user.java</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">com</span><span class="p">.</span><span class="n">bean</span><span class="p">;</span>
+<span class="k">public</span> <span class="n">class</span> <span class="n">User</span> <span class="p">{</span>
+    <span class="n">private</span> <span class="k">String</span> <span class="n">username</span><span class="p">;</span>
+    <span class="n">private</span> <span class="k">String</span> <span class="n">password</span><span class="p">;</span>
+    <span class="k">public</span> <span class="k">String</span> <span class="n">getUsername</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">return</span> <span class="n">username</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">public</span> <span class="n">void</span> <span class="n">setUsername</span><span class="p">(</span><span class="k">String</span> <span class="n">username</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="p">.</span><span class="n">username</span> <span class="p">=</span> <span class="n">username</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">public</span> <span class="k">String</span> <span class="n">getPassword</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">return</span> <span class="n">password</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">public</span> <span class="n">void</span> <span class="n">setPassword</span><span class="p">(</span><span class="k">String</span> <span class="n">password</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="p">.</span><span class="n">password</span> <span class="p">=</span> <span class="n">password</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>新建一个userAction类，并继承ActionSupport,并在struts.xml中添加</strong></p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;action</span> <span class="na">name=</span><span class="s">"userAction"</span> <span class="na">class=</span><span class="s">"com.struts2.UserAction"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"success"</span><span class="nt">&gt;</span>/output.jsp<span class="nt">&lt;/result&gt;</span>
+<span class="nt">&lt;/action&gt;</span>
+</code></pre></div></div> <p>编辑userAction.java:</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+        <span class="kn">import</span> <span class="nn">com.bean.User</span><span class="o">;</span>
+        <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionSupport</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserAction</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
+<span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">User</span> <span class="n">user</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">User</span> <span class="nf">getUser</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUser</span><span class="o">(</span><span class="nc">User</span> <span class="n">user</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">user</span><span class="o">=</span><span class="n">user</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"username:"</span><span class="o">+</span><span class="n">user</span><span class="o">.</span><span class="na">getUsername</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"password:"</span><span class="o">+</span><span class="n">user</span><span class="o">.</span><span class="na">getPassword</span><span class="o">());</span>
+        <span class="k">return</span> <span class="no">SUCCESS</span><span class="o">;</span>    <span class="c1">//SUCCESS是ActionSupport中的一个常量</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>新建一个com.converter的包，并在包在添加一个类UserConverter,编辑如下：UserConverter.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">converter</span><span class="o">;</span>
+        <span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+        <span class="kn">import</span> <span class="nn">java.util.StringTokenizer</span><span class="o">;</span>
+        <span class="kn">import</span> <span class="nn">com.bean.User</span><span class="o">;</span>
+        <span class="kn">import</span> <span class="nn">ognl.DefaultTypeConverter</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserConverter</span> <span class="kd">extends</span> <span class="nc">DefaultTypeConverter</span>
+<span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">convertValue</span><span class="o">(</span><span class="nc">Map</span> <span class="n">context</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">value</span><span class="o">,</span> <span class="nc">Class</span> <span class="n">toType</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="nc">User</span><span class="o">.</span><span class="na">class</span><span class="o">==</span><span class="n">toType</span><span class="o">)</span>    <span class="c1">//从页面向后台对象转换</span>
+        <span class="o">{</span>
+            <span class="nc">String</span><span class="o">[]</span> <span class="n">str</span><span class="o">=(</span><span class="nc">String</span><span class="o">[])</span><span class="n">value</span><span class="o">;</span>
+            <span class="nc">String</span> <span class="n">firstValue</span><span class="o">=</span><span class="n">str</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+            <span class="nc">StringTokenizer</span> <span class="n">st</span><span class="o">=</span><span class="k">new</span> <span class="nc">StringTokenizer</span><span class="o">(</span><span class="n">firstValue</span><span class="o">,</span><span class="s">";"</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">username</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="na">nextToken</span><span class="o">();</span>
+            <span class="nc">String</span> <span class="n">password</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="na">nextToken</span><span class="o">();</span>
+            <span class="nc">User</span> <span class="n">user</span><span class="o">=</span><span class="k">new</span> <span class="nc">User</span><span class="o">();</span>
+            <span class="n">user</span><span class="o">.</span><span class="na">setUsername</span><span class="o">(</span><span class="n">username</span><span class="o">);</span>
+            <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">password</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="nc">String</span><span class="o">.</span><span class="na">class</span><span class="o">==</span><span class="n">toType</span><span class="o">)</span>    <span class="c1">//从后台对象向页面转换</span>
+        <span class="o">{</span>
+            <span class="nc">User</span> <span class="n">user</span><span class="o">=(</span><span class="nc">User</span><span class="o">)</span><span class="n">value</span><span class="o">;</span>
+            <span class="nc">String</span> <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="na">getUsername</span><span class="o">();</span>
+            <span class="nc">String</span> <span class="n">password</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="na">getPassword</span><span class="o">();</span>
+            <span class="nc">String</span> <span class="n">userInfo</span><span class="o">=</span><span class="s">"username:"</span><span class="o">+</span><span class="n">username</span><span class="o">+</span><span class="s">", password:"</span><span class="o">+</span><span class="n">password</span><span class="o">;</span>
+            <span class="k">return</span> <span class="n">userInfo</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>然后在com.struts2包中建立一个UserAction-conversion.properties文件，并编辑： user=com.converter.UserConverter<br /> 重新启动tomcat，测试。</p> <p>Output.jsp</p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;s:property</span> <span class="na">value=</span><span class="s">"user"</span><span class="nt">/&gt;</span><span class="c">&lt;!-- 获得UserAction当中的user属性 --&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div> <ol> <li>可以使用 Struts2 框架自带的类型转换器 StrutsTypeConverter 简化类 型 转 换 代 码 的 编 写 ， StrutsTypeConverter 继 承 于DefaultTypeConverter 父 类 ， 并 且 提 供 了 两 个 抽 象 方 法 ：convertFromString与convertToString，分别表示从页面的字符串转换为后台对象以及从后台对象转换为页面的字符串，我们只需实现这两个抽象方法即可实现类型转换。</li> </ol> <p>例：在com.converter包下再新建一个UserConverter2类，并继承StrutsTypeConverter，编辑：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">converter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.StringTokenizer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.struts2.util.StrutsTypeConverter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.bean.User</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserConverter2</span> <span class="kd">extends</span> <span class="nc">StrutsTypeConverter</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">convertFromString</span><span class="o">(</span><span class="nc">Map</span> <span class="n">context</span><span class="o">,</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">values</span><span class="o">,</span> <span class="nc">Class</span> <span class="n">toClass</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">User</span> <span class="n">user</span><span class="o">=</span><span class="k">new</span> <span class="nc">User</span><span class="o">();</span>
+        <span class="nc">String</span> <span class="n">value</span><span class="o">=</span><span class="n">values</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+        <span class="nc">StringTokenizer</span> <span class="n">st</span><span class="o">=</span><span class="k">new</span> <span class="nc">StringTokenizer</span><span class="o">(</span><span class="n">value</span><span class="o">,</span><span class="s">";"</span><span class="o">);</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setUsername</span><span class="o">(</span><span class="n">st</span><span class="o">.</span><span class="na">nextToken</span><span class="o">());</span>
+        <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">convertToString</span><span class="o">(</span><span class="nc">Map</span> <span class="n">context</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">User</span> <span class="n">user</span><span class="o">=(</span><span class="nc">User</span><span class="o">)</span><span class="n">o</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="na">getUsername</span><span class="o">();</span>
+        <span class="nc">String</span> <span class="n">password</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="na">getPassword</span><span class="o">();</span>
+        <span class="nc">String</span> <span class="n">userInfo</span><span class="o">=</span><span class="s">"username:"</span><span class="o">+</span><span class="n">username</span><span class="o">+</span><span class="s">",password:"</span><span class="o">+</span><span class="n">password</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">userInfo</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>并修改UserAction-Converter.properties,如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#user=com.converter.UserConverter
+user=com.converter.UserConverter2
+</code></pre></div></div> <p>重启tomcat，测试。</p> <p><strong>批量的类型转换</strong></p> <p><strong>Usertest.jsp</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;h1&gt;</span>使用分号隔开用户名与密码信息<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"usersAction.action"</span><span class="nt">&gt;</span>
+    user info1:<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"users"</span><span class="nt">&gt;&lt;br&gt;</span>
+    user info2:<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"users"</span><span class="nt">&gt;&lt;br&gt;</span>
+    user info3:<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"users"</span><span class="nt">&gt;&lt;br&gt;</span>
+    user info4:<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"users"</span><span class="nt">&gt;&lt;br&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div> <p><strong>usersAction.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.bean.User</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionSupport</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UsersAction</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
+<span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="n">users</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="nf">getUsers</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">users</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUsers</span><span class="o">(</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="n">users</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">users</span> <span class="o">=</span> <span class="n">users</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="k">for</span><span class="o">(</span><span class="nc">User</span> <span class="nl">u:</span><span class="n">users</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="na">getUsername</span><span class="o">()+</span><span class="s">", "</span><span class="o">+</span><span class="n">u</span><span class="o">.</span><span class="na">getPassword</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="no">SUCCESS</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>UsersConverter.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">converter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.StringTokenizer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.struts2.util.StrutsTypeConverter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.bean.User</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UsersConverter</span> <span class="kd">extends</span> <span class="nc">StrutsTypeConverter</span>
+<span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">convertFromString</span><span class="o">(</span><span class="nc">Map</span> <span class="n">context</span><span class="o">,</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">values</span><span class="o">,</span> <span class="nc">Class</span> <span class="n">toClass</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">=</span><span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;();</span>
+        <span class="k">for</span><span class="o">(</span><span class="nc">String</span> <span class="nl">value:</span><span class="n">values</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="nc">StringTokenizer</span> <span class="n">st</span><span class="o">=</span><span class="k">new</span> <span class="nc">StringTokenizer</span><span class="o">(</span><span class="n">value</span><span class="o">,</span><span class="s">";"</span><span class="o">);</span>
+            <span class="nc">User</span> <span class="n">user</span><span class="o">=</span><span class="k">new</span> <span class="nc">User</span><span class="o">();</span>
+            <span class="n">user</span><span class="o">.</span><span class="na">setUsername</span><span class="o">(</span><span class="n">st</span><span class="o">.</span><span class="na">nextToken</span><span class="o">());</span>
+            <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">st</span><span class="o">.</span><span class="na">nextToken</span><span class="o">());</span>
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">list</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">convertToString</span><span class="o">(</span><span class="nc">Map</span> <span class="n">context</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">=(</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;)</span><span class="n">o</span><span class="o">;</span>
+        <span class="nc">StringBuffer</span> <span class="n">buffer</span><span class="o">=</span><span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="nc">User</span> <span class="n">user</span> <span class="o">:</span> <span class="n">list</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="nc">String</span> <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="na">getUsername</span><span class="o">();</span>
+            <span class="nc">String</span> <span class="n">password</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="na">getPassword</span><span class="o">();</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"username:"</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">username</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">" password:"</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">password</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">" "</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">buffer</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>UsersAction-Converter.properties</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>users=com.converter.UsersConverter
+</code></pre></div></div> <p><strong>output.jsp</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;s:property</span> <span class="na">value=</span><span class="s">"user"</span><span class="nt">/&gt;</span><span class="c">&lt;!-- 获得UserAction当中的user属性 --&gt;</span>
+<span class="nt">&lt;s:property</span> <span class="na">value=</span><span class="s">"users"</span><span class="nt">/&gt;</span><span class="c">&lt;!-- 获得UsersAction当中的users属性 --&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div> <p>重启tomcat。</p> <p><strong>全局类型转换</strong> <br /> 全局类型转换。在src目录下新建xwork-conversion.properties，该文件的内容是待转换的类=转换器的名字，即 com.shengsiyuan.bean.User=com.shengsiyuan.converter.UserConverter2 。</p> <p>这样设置之后，对所有的action中的User对象自动调用UserConverter2全局对象。</p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2012-01-08-Struts%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%BF%E7%94%A8Struts%E6%A1%86%E6%9E%B6%E5%88%9B%E5%BB%BAWeb%E9%A1%B9%E7%9B%AE.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Struts学习笔记之使用Struts框架创建Web项目 - 知不知&amp;url=/list/docs/java/2012-01-08-Struts%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%BF%E7%94%A8Struts%E6%A1%86%E6%9E%B6%E5%88%9B%E5%BB%BAWeb%E9%A1%B9%E7%9B%AE.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2012-01-08-Struts%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%BF%E7%94%A8Struts%E6%A1%86%E6%9E%B6%E5%88%9B%E5%BB%BAWeb%E9%A1%B9%E7%9B%AE.html&amp;title=Java-Struts学习笔记之使用Struts框架创建Web项目 - 知不知&amp;summary=使用Struts框架创建Web项目&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2012-01-08-Struts%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%BF%E7%94%A8Struts%E6%A1%86%E6%9E%B6%E5%88%9B%E5%BB%BAWeb%E9%A1%B9%E7%9B%AE.html&amp;text=Java-Struts学习笔记之使用Struts框架创建Web项目 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2012-01-08-Struts%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%BF%E7%94%A8Struts%E6%A1%86%E6%9E%B6%E5%88%9B%E5%BB%BAWeb%E9%A1%B9%E7%9B%AE.html&amp;t=Java-Struts学习笔记之使用Struts框架创建Web项目 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2012-01-08-Struts%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%BF%E7%94%A8Struts%E6%A1%86%E6%9E%B6%E5%88%9B%E5%BB%BAWeb%E9%A1%B9%E7%9B%AE.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Struts学习笔记之使用Struts框架创建Web项目'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

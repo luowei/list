@@ -1,0 +1,930 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础10之网络编程实现简易版QQ聊天程序</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java网络编程应用</p> <h3 id="文件结构">文件结构</h3> <p><img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_30.jpg" alt="文件结构" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_31.jpg" alt="文件结构" /></p> <p><strong>Myqq功能说明：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要求实现的功能：
+    1.把登录界面，好友列表界面，聊天界面实现.
+    2.当用户点击登录后，把qq号码和密码发送给QqServer去验证如果该用户合法，则返回ok,如果不合法，则返回err.
+    3.完成好友互相聊天功能.
+    4.如果好友在线则，显示彩色头像，反之显示色头像.
+    5.当好友上线后，则提示.
+扩展实现：
+    1.实现真的多人聊天，不出现错误.
+    2.把接收到的消息，显示到该显示的聊天界面
+    3.如果好友在线，则显彩色头像，反之，显示灰色头像
+        思路：当一个用户登录成功后，就向服务器发送一个要求返回
+        在线好友的包，服务器就回送一个在线好友的信息包。[客户端
+        得到这个包后再处理]
+
+        服务器返回
+        type:message_ret_onLineFriend;
+        con: "3 4 5 6 9 12"
+
+        如何在前面登录的人，知道后面登录人的情况
+        思路，让每一个人登陆ok后，就通知其它在线的人，我上线了
+
+要求自己完成：
+    1.不让同一个账号反复登录(通过数据库验证)
+    2.如果好友不在线，则不能聊天
+</code></pre></div></div> <p><strong>QQ好友列表布局</strong> <br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_32.jpg" alt="QQ好友列表布局" /></p> <p><strong>QQ登录验证3层模型</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_33.jpg" alt="QQ登录验证3层模型" /></p> <p><strong>服务端_QqServer/com.qq.server.view/MyServerFrame.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 这 是服务器端的控制界面，可以完成启动服务器，关闭服务器
+ * 可以管理和监控用户。
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">sever</span><span class="o">.</span><span class="na">view</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.server.model.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyServerFrame</span> <span class="kd">extends</span> <span class="nc">JFrame</span> <span class="kd">implements</span> <span class="nc">ActionListener</span><span class="o">{</span>
+    <span class="nc">JPanel</span> <span class="n">jp1</span><span class="o">;</span>
+    <span class="nc">JButton</span> <span class="n">jb1</span><span class="o">,</span><span class="n">jb2</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="nc">MyServerFrame</span> <span class="n">mysf</span><span class="o">=</span><span class="k">new</span> <span class="nc">MyServerFrame</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">MyServerFrame</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="n">jp1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+        <span class="n">jb1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"启动服务器"</span><span class="o">);</span>
+        <span class="n">jb1</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span><span class="c1">//监听</span>
+        <span class="n">jb2</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"关闭服务器"</span><span class="o">);</span>
+        <span class="n">jp1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jb1</span><span class="o">);</span>
+        <span class="n">jp1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jb2</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp1</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">500</span><span class="o">,</span><span class="mi">400</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"Myqq服务器端"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setDefaultCloseOperation</span><span class="o">(</span><span class="nc">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="nc">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//判断</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getSource</span><span class="o">()==</span><span class="n">jb1</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="k">new</span> <span class="nf">MyQqServer</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>服务端_QqServer/com.qq.server.model/QqServerUser.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">server</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">QqServerUser</span> <span class="o">{</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>服务端_QqServer/com.qq.server.model/MyQqServer.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 这是QQ服务器，它在监听，等待某个qq客户端，来连接
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">server</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.common.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyQqServer</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">MyQqServer</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//在9999监听</span>
+            <span class="nc">ServerSocket</span> <span class="n">ss</span><span class="o">=</span><span class="k">new</span> <span class="nc">ServerSocket</span><span class="o">(</span><span class="mi">9999</span><span class="o">);</span>
+            <span class="c1">//System.out.println("服务器在9999监听");</span>
+            <span class="c1">//阻塞，等待客户端来连接</span>
+            <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="n">ss</span><span class="o">.</span><span class="na">accept</span><span class="o">();</span>
+                <span class="c1">//接收客户端发来的信息</span>
+                <span class="nc">ObjectInputStream</span> <span class="n">ois</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectInputStream</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+                <span class="nc">User</span> <span class="n">u</span><span class="o">=(</span><span class="nc">User</span><span class="o">)</span><span class="n">ois</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span>
+                <span class="c1">//System.out.println("服务器接收到用户名id:"+u.getUserId()+" 密码："+u.getPassWd());</span>
+                <span class="c1">//返回一个成功登陆的信息包</span>
+                <span class="nc">Message</span> <span class="n">m</span><span class="o">=</span><span class="k">new</span> <span class="nc">Message</span><span class="o">();</span>
+                <span class="nc">ObjectOutputStream</span> <span class="n">oos</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectOutputStream</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="na">getPassWd</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"123456"</span><span class="o">))</span>
+                <span class="o">{</span>
+                    <span class="n">m</span><span class="o">.</span><span class="na">setMesType</span><span class="o">(</span><span class="s">"1"</span><span class="o">);</span>
+                    <span class="n">oos</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">m</span><span class="o">);</span>
+                    <span class="c1">//这里就单开一个线程，让该线程与该客户端保持通信</span>
+                    <span class="nc">SerConClientThread</span> <span class="n">scct</span><span class="o">=</span><span class="k">new</span> <span class="nc">SerConClientThread</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+                    <span class="nc">ManageClientThread</span><span class="o">.</span><span class="na">addClientThread</span><span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="na">getUserId</span><span class="o">(),</span> <span class="n">scct</span><span class="o">);</span>
+                    <span class="n">scct</span><span class="o">.</span><span class="na">start</span><span class="o">();</span><span class="c1">//启动与该客户端通信的线程</span>
+                    <span class="c1">//并通知其它在线用户</span>
+                    <span class="n">scct</span><span class="o">.</span><span class="na">notifyOther</span><span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="na">getUserId</span><span class="o">());</span>
+                <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+                    <span class="n">m</span><span class="o">.</span><span class="na">setMesType</span><span class="o">(</span><span class="s">"2"</span><span class="o">);</span>
+                    <span class="n">oos</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">m</span><span class="o">);</span>
+                    <span class="c1">//关闭连接</span>
+                    <span class="n">s</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>服务端_QqServer/com.qq.server.model/ ManageClientThread.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 管理客户端的线程
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">server</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ManageClientThread</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">SerConClientThread</span><span class="o">&gt;</span> <span class="n">hm</span><span class="o">=</span><span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">SerConClientThread</span><span class="o">&gt;();</span>
+    <span class="c1">//向hm中添加一个客户端通讯线程</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">addClientThread</span><span class="o">(</span><span class="nc">String</span> <span class="n">uid</span><span class="o">,</span><span class="nc">SerConClientThread</span> <span class="n">ct</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="n">hm</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">uid</span><span class="o">,</span><span class="n">ct</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">SerConClientThread</span> <span class="nf">getClientThread</span><span class="o">(</span><span class="nc">String</span> <span class="n">uid</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">return</span><span class="o">(</span><span class="nc">SerConClientThread</span><span class="o">)</span><span class="n">hm</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">uid</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="c1">//返回当前在线的人的情况</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="nf">getAllOnLineUserid</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="c1">//使用迭代器完成对HashMap的keys的遍历</span>
+        <span class="nc">Iterator</span> <span class="n">it</span><span class="o">=</span><span class="n">hm</span><span class="o">.</span><span class="na">keySet</span><span class="o">().</span><span class="na">iterator</span><span class="o">();</span>
+        <span class="nc">String</span> <span class="n">res</span><span class="o">=</span><span class="s">""</span><span class="o">;</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">it</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span>
+        <span class="o">{</span>
+            <span class="n">res</span><span class="o">+=</span><span class="n">it</span><span class="o">.</span><span class="na">next</span><span class="o">().</span><span class="na">toString</span><span class="o">()+</span><span class="s">" "</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>服务端_QqServer/com.qq.server.model/ SerConClientThread.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 功能：是服务器和某个客户端的通讯线程
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">server</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Iterator</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.common.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SerConClientThread</span> <span class="kd">extends</span> <span class="nc">Thread</span><span class="o">{</span>
+    <span class="nc">Socket</span> <span class="n">s</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">SerConClientThread</span><span class="o">(</span><span class="nc">Socket</span> <span class="n">s</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//把服务器和该客户端连接赋给s</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">s</span><span class="o">=</span><span class="n">s</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//让该线程去通知其它用户</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">notifyOther</span><span class="o">(</span><span class="nc">String</span> <span class="n">iam</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//得到所有在线的人的线程</span>
+        <span class="nc">HashMap</span> <span class="n">hm</span><span class="o">=</span><span class="nc">ManageClientThread</span><span class="o">.</span><span class="na">hm</span><span class="o">;</span>
+        <span class="nc">Iterator</span> <span class="n">it</span><span class="o">=</span><span class="n">hm</span><span class="o">.</span><span class="na">keySet</span><span class="o">().</span><span class="na">iterator</span><span class="o">();</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">it</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span>
+        <span class="o">{</span>
+            <span class="nc">Message</span> <span class="n">m</span><span class="o">=</span><span class="k">new</span> <span class="nc">Message</span><span class="o">();</span>
+            <span class="n">m</span><span class="o">.</span><span class="na">setCon</span><span class="o">(</span><span class="n">iam</span><span class="o">);</span>
+            <span class="n">m</span><span class="o">.</span><span class="na">setMesType</span><span class="o">(</span><span class="nc">MessageType</span><span class="o">.</span><span class="na">message_ret_onLineFriend</span><span class="o">);</span>
+            <span class="c1">//取出在线人的id</span>
+            <span class="nc">String</span> <span class="n">onLineUserId</span><span class="o">=</span><span class="n">it</span><span class="o">.</span><span class="na">next</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="nc">ObjectOutputStream</span> <span class="n">oos</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectOutputStream</span><span class="o">(</span><span class="nc">ManageClientThread</span><span class="o">.</span>
+                        <span class="nf">getClientThread</span><span class="o">(</span><span class="n">onLineUserId</span><span class="o">).</span><span class="na">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span>
+                <span class="n">m</span><span class="o">.</span><span class="na">setGetter</span><span class="o">(</span><span class="n">onLineUserId</span><span class="o">);</span>
+                <span class="n">oos</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">m</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="c1">//这里该线程就可以接收客户端的信息</span>
+                <span class="nc">ObjectInputStream</span> <span class="n">ois</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectInputStream</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+                <span class="nc">Message</span> <span class="n">m</span><span class="o">=(</span><span class="nc">Message</span><span class="o">)</span><span class="n">ois</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span>
+                <span class="c1">//System.out.println(m.getSender()+"给"+m.getGetter()+"说："+m.getCon());</span>
+                <span class="c1">//转发</span>
+                <span class="c1">//从客户端取得的消息进行类型判断，然后做相应的处理</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">m</span><span class="o">.</span><span class="na">getMesType</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="nc">MessageType</span><span class="o">.</span><span class="na">message_comm_mes</span><span class="o">))</span>
+                <span class="o">{</span>
+                    <span class="c1">//取得接收人的通信线程</span>
+                    <span class="nc">SerConClientThread</span> <span class="n">sc</span><span class="o">=</span><span class="nc">ManageClientThread</span><span class="o">.</span><span class="na">getClientThread</span><span class="o">(</span><span class="n">m</span><span class="o">.</span><span class="na">getGetter</span><span class="o">());</span>
+                    <span class="nc">ObjectOutputStream</span> <span class="n">oos</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectOutputStream</span><span class="o">(</span><span class="n">sc</span><span class="o">.</span><span class="na">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span>
+                    <span class="n">oos</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">m</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">m</span><span class="o">.</span><span class="na">getMesType</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="nc">MessageType</span><span class="o">.</span><span class="na">message_get_onLineFriend</span><span class="o">))</span>
+                <span class="o">{</span>
+                    <span class="c1">//System.out.println(m.getSender()+" 要他的好友");</span>
+                    <span class="c1">//把在服务器的好友给该客户端返回</span>
+                    <span class="nc">String</span> <span class="n">res</span><span class="o">=</span><span class="nc">ManageClientThread</span><span class="o">.</span><span class="na">getAllOnLineUserid</span><span class="o">();</span>
+                    <span class="nc">Message</span> <span class="n">m2</span><span class="o">=</span><span class="k">new</span> <span class="nc">Message</span><span class="o">();</span>
+                    <span class="n">m2</span><span class="o">.</span><span class="na">setMesType</span><span class="o">(</span><span class="nc">MessageType</span><span class="o">.</span><span class="na">message_ret_onLineFriend</span><span class="o">);</span>
+                    <span class="n">m2</span><span class="o">.</span><span class="na">setCon</span><span class="o">(</span><span class="n">res</span><span class="o">);</span>
+                    <span class="n">m2</span><span class="o">.</span><span class="na">setGetter</span><span class="o">(</span><span class="n">m</span><span class="o">.</span><span class="na">getSender</span><span class="o">());</span>
+                    <span class="nc">ObjectOutputStream</span> <span class="n">oos</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectOutputStream</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span>
+                    <span class="n">oos</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">m2</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>服务端_QqServer/com.qq.common/ Message.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 对Message规定一些规则
+ * mesType1-&gt;表示是登陆成功
+ * mesType2-&gt;表示是登陆失败
+ * mesType3-&gt;表示是普通的消息包
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">common</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Message</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">mesType</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">sender</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">getter</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">con</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">sendTime</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getSender</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">sender</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setSender</span><span class="o">(</span><span class="nc">String</span> <span class="n">sender</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">sender</span> <span class="o">=</span> <span class="n">sender</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getGetter</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">getter</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setGetter</span><span class="o">(</span><span class="nc">String</span> <span class="n">getter</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">getter</span> <span class="o">=</span> <span class="n">getter</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getCon</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">con</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCon</span><span class="o">(</span><span class="nc">String</span> <span class="n">con</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">con</span> <span class="o">=</span> <span class="n">con</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getSendTime</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">sendTime</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setSendTime</span><span class="o">(</span><span class="nc">String</span> <span class="n">sendTime</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">sendTime</span> <span class="o">=</span> <span class="n">sendTime</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getMesType</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">mesType</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setMesType</span><span class="o">(</span><span class="nc">String</span> <span class="n">mesType</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">mesType</span> <span class="o">=</span> <span class="n">mesType</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>服务端_QqServer/com.qq.common/ MessageType.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 定义消息包的种类
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">common</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MessageType</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">message_succeed</span><span class="o">=</span><span class="s">"1"</span><span class="o">;</span><span class="c1">//登录成功</span>
+    <span class="nc">String</span> <span class="n">message_login_fail</span><span class="o">=</span><span class="s">"2"</span><span class="o">;</span><span class="c1">//登录失败</span>
+    <span class="nc">String</span> <span class="n">message_comm_mes</span><span class="o">=</span><span class="s">"3"</span><span class="o">;</span><span class="c1">//普通信息包</span>
+    <span class="nc">String</span> <span class="n">message_get_onLineFriend</span><span class="o">=</span><span class="s">"4"</span><span class="o">;</span><span class="c1">//请求在线好友的信息包</span>
+    <span class="nc">String</span> <span class="n">message_ret_onLineFriend</span><span class="o">=</span><span class="s">"5"</span><span class="o">;</span><span class="c1">//返回在线好友的信息包</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>服务端_QqServer/com.qq.common/ User.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 这是用户信息类
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">common</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span><span class="o">{</span>
+    <span class="c1">//将这个类序列化，就使其对应的对象可以在网络上或者是在文件中传输</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">passWd</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getUserId</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUserId</span><span class="o">(</span><span class="nc">String</span> <span class="n">userId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userId</span> <span class="o">=</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getPassWd</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">passWd</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setPassWd</span><span class="o">(</span><span class="nc">String</span> <span class="n">passWd</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">passWd</span> <span class="o">=</span> <span class="n">passWd</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>服务端_QqServer/com.qq.server.db/ SqlHelper.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">server</span><span class="o">.</span><span class="na">db</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SqlHelper</span> <span class="o">{</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.view/QqClientLogin.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 功能：qq客户端登录界面
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">view</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.client.tools.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.cllient.model.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.common.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">QqClientLogin</span> <span class="kd">extends</span> <span class="nc">JFrame</span> <span class="kd">implements</span> <span class="nc">ActionListener</span><span class="o">{</span>
+    <span class="c1">//定义北部需要的组件</span>
+    <span class="nc">JLabel</span> <span class="n">jbl1</span><span class="o">;</span>
+    <span class="c1">//定义中部需要的组件</span>
+    <span class="c1">//中部有三个JPanel，由一个选项卡窗口管理</span>
+    <span class="nc">JTabbedPane</span> <span class="n">jtp</span><span class="o">;</span>
+    <span class="nc">JPanel</span> <span class="n">jp2</span><span class="o">,</span><span class="n">jp3</span><span class="o">,</span><span class="n">jp4</span><span class="o">;</span> <span class="c1">//jp2放qq号码输入</span>
+    <span class="nc">JLabel</span> <span class="n">jp2_jbl1</span><span class="o">,</span><span class="n">jp2_jbl2</span><span class="o">,</span><span class="n">jp2_jbl3</span><span class="o">,</span><span class="n">jp2_jbl4</span><span class="o">;</span>
+    <span class="nc">JButton</span> <span class="n">jp2_jb1</span><span class="o">;</span>
+    <span class="nc">JTextField</span> <span class="n">jp2_jtf</span><span class="o">;</span>
+    <span class="nc">JPasswordField</span> <span class="n">jp2_jpf</span><span class="o">;</span>
+    <span class="nc">JCheckBox</span> <span class="n">jp2_jcb1</span><span class="o">,</span><span class="n">jp2_jcb2</span><span class="o">;</span>
+    <span class="c1">//定义南部需要的组件</span>
+    <span class="nc">JPanel</span> <span class="n">jp1</span><span class="o">;</span>
+    <span class="nc">JButton</span> <span class="n">jp1_jb1</span><span class="o">,</span><span class="n">jp1_jb2</span><span class="o">,</span><span class="n">jp1_jb3</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="nc">QqClientLogin</span> <span class="n">qqClientLogin</span><span class="o">=</span><span class="k">new</span> <span class="nc">QqClientLogin</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">QqClientLogin</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="c1">//处理北部</span>
+        <span class="n">jbl1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"image/tou.gif"</span><span class="o">));</span>
+        <span class="c1">//处理中部</span>
+        <span class="n">jp2</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">(</span><span class="k">new</span> <span class="nc">GridLayout</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span><span class="mi">3</span><span class="o">));</span>
+        <span class="n">jp2_jbl1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"QQ号码"</span><span class="o">,</span><span class="nc">JLabel</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>
+        <span class="n">jp2_jbl2</span><span class="o">=</span><span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"QQ密码"</span><span class="o">,</span><span class="nc">JLabel</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>
+        <span class="n">jp2_jbl3</span><span class="o">=</span><span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"忘记密码"</span><span class="o">,</span><span class="nc">JLabel</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>
+        <span class="n">jp2_jbl3</span><span class="o">.</span><span class="na">setForeground</span><span class="o">(</span><span class="nc">Color</span><span class="o">.</span><span class="na">blue</span><span class="o">);</span>
+        <span class="n">jp2_jbl4</span><span class="o">=</span><span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"申请密码保护"</span><span class="o">,</span><span class="nc">JLabel</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>
+        <span class="n">jp2_jb1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"image/clear.gif"</span><span class="o">));</span>
+        <span class="n">jp2_jtf</span><span class="o">=</span><span class="k">new</span> <span class="nc">JTextField</span><span class="o">();</span>
+        <span class="n">jp2_jpf</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPasswordField</span><span class="o">();</span>
+        <span class="n">jp2_jcb1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JCheckBox</span><span class="o">(</span><span class="s">"隐身登录"</span><span class="o">);</span>
+        <span class="n">jp2_jcb2</span><span class="o">=</span><span class="k">new</span> <span class="nc">JCheckBox</span><span class="o">(</span><span class="s">"记住密码"</span><span class="o">);</span>
+        <span class="c1">//把控件按照顺序加入到jp2</span>
+        <span class="n">jp2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp2_jbl1</span><span class="o">);</span>
+        <span class="n">jp2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp2_jtf</span><span class="o">);</span>
+        <span class="n">jp2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp2_jb1</span><span class="o">);</span>
+        <span class="n">jp2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp2_jbl2</span><span class="o">);</span>
+        <span class="n">jp2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp2_jpf</span><span class="o">);</span>
+        <span class="n">jp2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp2_jbl3</span><span class="o">);;</span>
+        <span class="n">jp2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp2_jcb1</span><span class="o">);</span>
+        <span class="n">jp2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp2_jcb2</span><span class="o">);</span>
+        <span class="n">jp2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp2_jbl4</span><span class="o">);</span>
+        <span class="n">jtp</span><span class="o">=</span><span class="k">new</span> <span class="nc">JTabbedPane</span><span class="o">();</span><span class="c1">//创建选项卡窗口</span>
+        <span class="n">jtp</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"QQ号码"</span><span class="o">,</span><span class="n">jp2</span><span class="o">);</span>
+        <span class="n">jp3</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+        <span class="n">jtp</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"手机号码"</span><span class="o">,</span><span class="n">jp3</span><span class="o">);</span>
+        <span class="n">jp4</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+        <span class="n">jtp</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"电子邮件"</span><span class="o">,</span><span class="n">jp4</span><span class="o">);</span>
+        <span class="c1">//处理南部</span>
+        <span class="n">jp1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+        <span class="n">jp1_jb1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"image/denglu.gif"</span><span class="o">));</span>
+        <span class="c1">//响应用户点击登录</span>
+        <span class="n">jp1_jb1</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="n">jp1_jb2</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"image/quxiao.gif"</span><span class="o">));</span>
+        <span class="n">jp1_jb3</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"image/xiangdao.gif"</span><span class="o">));</span>
+        <span class="c1">//把三个按钮放入到jp1</span>
+        <span class="n">jp1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp1_jb1</span><span class="o">);</span>
+        <span class="n">jp1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp1_jb2</span><span class="o">);</span>
+        <span class="n">jp1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp1_jb3</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jbl1</span><span class="o">,</span><span class="s">"North"</span><span class="o">);</span>    <span class="c1">//北部</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jtp</span><span class="o">,</span><span class="s">"Center"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp1</span><span class="o">,</span><span class="s">"South"</span><span class="o">);</span>    <span class="c1">//南部</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">350</span><span class="o">,</span><span class="mi">240</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"QQ登录"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setDefaultCloseOperation</span><span class="o">(</span><span class="nc">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="nc">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//如果要用户点击了登录</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getSource</span><span class="o">()==</span><span class="n">jp1_jb1</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="nc">QqClientUser</span> <span class="n">qqClientUser</span><span class="o">=</span><span class="k">new</span> <span class="nc">QqClientUser</span><span class="o">();</span>
+            <span class="nc">User</span> <span class="n">u</span><span class="o">=</span><span class="k">new</span> <span class="nc">User</span><span class="o">();</span>
+            <span class="n">u</span><span class="o">.</span><span class="na">setUserId</span><span class="o">(</span><span class="n">jp2_jtf</span><span class="o">.</span><span class="na">getText</span><span class="o">().</span><span class="na">trim</span><span class="o">());</span>
+            <span class="n">u</span><span class="o">.</span><span class="na">setPassWd</span><span class="o">(</span><span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="n">jp2_jpf</span><span class="o">.</span><span class="na">getPassword</span><span class="o">()));</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">qqClientUser</span><span class="o">.</span><span class="na">checkUser</span><span class="o">(</span><span class="n">u</span><span class="o">))</span>
+            <span class="o">{</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="c1">//创建好友列表</span>
+                    <span class="nc">QqFriendList</span> <span class="n">qqList</span><span class="o">=</span><span class="k">new</span> <span class="nc">QqFriendList</span><span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="na">getUserId</span><span class="o">());</span>
+                    <span class="c1">//并将登录成功的加入到好友列表</span>
+                    <span class="nc">ManageQqFriendList</span><span class="o">.</span><span class="na">addQqFrendList</span><span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="na">getUserId</span><span class="o">(),</span> <span class="n">qqList</span><span class="o">);</span>
+                    <span class="c1">//发送一个要求返回在线好友的请求包</span>
+                    <span class="nc">ObjectOutputStream</span> <span class="n">oos</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectOutputStream</span>
+                            <span class="o">(</span><span class="nc">ManageClientConServerThread</span><span class="o">.</span><span class="na">getClientConServerThread</span>
+                                    <span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="na">getUserId</span><span class="o">()).</span><span class="na">getS</span><span class="o">().</span><span class="na">getOutputStream</span><span class="o">());</span>
+                    <span class="c1">//做一个message包</span>
+                    <span class="nc">Message</span> <span class="n">m</span><span class="o">=</span><span class="k">new</span> <span class="nc">Message</span><span class="o">();</span>
+                    <span class="c1">//指明包的类型</span>
+                    <span class="n">m</span><span class="o">.</span><span class="na">setMesType</span><span class="o">(</span><span class="nc">MessageType</span><span class="o">.</span><span class="na">message_get_onLineFriend</span><span class="o">);</span>
+                    <span class="c1">//并在包中指明是这个QQ号的好友情况</span>
+                    <span class="n">m</span><span class="o">.</span><span class="na">setSender</span><span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="na">getUserId</span><span class="o">());</span>
+                    <span class="n">oos</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">m</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e1</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                <span class="o">}</span>
+                <span class="c1">//关闭掉登录界面</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">dispose</span><span class="o">();</span>
+            <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+                <span class="nc">JOptionPane</span><span class="o">.</span><span class="na">showMessageDialog</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"用户名或密码错误"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.view/QqChat.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 与好友聊天的界面
+ * 因为客户端，要处于读取的状态，因此我们把它做成一个线程
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">view</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.client.tools.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.cllient.model.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.common.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">QqChat</span> <span class="kd">extends</span> <span class="nc">JFrame</span> <span class="kd">implements</span> <span class="nc">ActionListener</span><span class="o">{</span>
+    <span class="nc">JTextArea</span> <span class="n">jta</span><span class="o">;</span>
+    <span class="nc">JTextField</span> <span class="n">jtf</span><span class="o">;</span>
+    <span class="nc">JButton</span> <span class="n">jb</span><span class="o">;</span>
+    <span class="nc">JPanel</span> <span class="n">jp</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">ownerId</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">friendId</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="c1">//QqChat qqChat=new QqChat("1");</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">QqChat</span><span class="o">(</span><span class="nc">String</span> <span class="n">ownerId</span><span class="o">,</span><span class="nc">String</span> <span class="n">friend</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">ownerId</span><span class="o">=</span><span class="n">ownerId</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">friendId</span><span class="o">=</span><span class="n">friend</span><span class="o">;</span>
+        <span class="n">jta</span><span class="o">=</span><span class="k">new</span> <span class="nc">JTextArea</span><span class="o">();</span>
+        <span class="n">jtf</span><span class="o">=</span><span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+        <span class="n">jb</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"发送"</span><span class="o">);</span>
+        <span class="n">jb</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span><span class="c1">//监听</span>
+        <span class="n">jp</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+        <span class="n">jp</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jtf</span><span class="o">);</span>
+        <span class="n">jp</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jb</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jta</span><span class="o">,</span><span class="s">"Center"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp</span><span class="o">,</span><span class="s">"South"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">300</span><span class="o">,</span><span class="mi">200</span><span class="o">);</span>
+        <span class="c1">//this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="n">ownerId</span><span class="o">+</span><span class="s">" 正在和 "</span><span class="o">+</span><span class="n">friend</span><span class="o">+</span><span class="s">" 聊天"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setIconImage</span><span class="o">((</span><span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"image/qq.gif"</span><span class="o">)).</span><span class="na">getImage</span><span class="o">());</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="c1">//this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);</span>
+    <span class="o">}</span>
+    <span class="c1">//写一个方法，让它显示消息</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">showMessage</span><span class="o">(</span><span class="nc">Message</span> <span class="n">m</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//显示</span>
+        <span class="nc">String</span> <span class="n">info</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="na">getSender</span><span class="o">()+</span><span class="s">" 对"</span><span class="o">+</span><span class="n">m</span><span class="o">.</span><span class="na">getGetter</span><span class="o">()+</span><span class="s">" 说："</span><span class="o">+</span><span class="n">m</span><span class="o">.</span><span class="na">getCon</span><span class="o">()+</span><span class="s">"\r\n"</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">jta</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">info</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="nc">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//判断</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getSource</span><span class="o">()==</span><span class="n">jb</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="c1">//如果用户点击了 发送按钮</span>
+            <span class="nc">Message</span> <span class="n">m</span><span class="o">=</span><span class="k">new</span> <span class="nc">Message</span><span class="o">();</span>
+            <span class="n">m</span><span class="o">.</span><span class="na">setMesType</span><span class="o">(</span><span class="nc">MessageType</span><span class="o">.</span><span class="na">message_comm_mes</span><span class="o">);</span>
+            <span class="n">m</span><span class="o">.</span><span class="na">setSender</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">ownerId</span><span class="o">);</span>
+            <span class="n">m</span><span class="o">.</span><span class="na">setGetter</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">friendId</span><span class="o">);</span>
+            <span class="n">m</span><span class="o">.</span><span class="na">setCon</span><span class="o">(</span><span class="n">jtf</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+            <span class="n">m</span><span class="o">.</span><span class="na">setSendTime</span><span class="o">(</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Date</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="c1">//发送给服务器</span>
+                <span class="nc">ObjectOutputStream</span> <span class="n">oos</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectOutputStream</span>
+                        <span class="o">(</span><span class="nc">ManageClientConServerThread</span><span class="o">.</span><span class="na">getClientConServerThread</span><span class="o">(</span><span class="n">ownerId</span><span class="o">).</span><span class="na">getS</span><span class="o">().</span><span class="na">getOutputStream</span><span class="o">());</span>
+                <span class="c1">//通过管理线程的类取得线程，然后通过线程取得对应线程中的Socket,再通过这个Socket输出流取得Socket中内容</span>
+                <span class="n">oos</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">m</span><span class="o">);</span><span class="c1">//发送</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e1</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="c1">//    @Override</span>
+<span class="c1">//    public void run() {</span>
+<span class="c1">//        //读取状态</span>
+<span class="c1">//        while(true)</span>
+<span class="c1">//        {</span>
+<span class="c1">//            //读取[如果读不到就等待]</span>
+<span class="c1">//            try {</span>
+<span class="c1">//                ObjectInputStream ois=new ObjectInputStream(QqClientConServer.s.getInputStream());</span>
+<span class="c1">//                Message m=(Message)ois.readObject();</span>
+<span class="c1">//                </span>
+<span class="c1">//                //显示</span>
+<span class="c1">//                String info=m.getSender()+" 对"+m.getGetter()+" 说："+m.getCon()+"\r\n";</span>
+<span class="c1">//                this.jta.append(info);</span>
+<span class="c1">//            } catch (Exception e) {</span>
+<span class="c1">//                e.printStackTrace();</span>
+<span class="c1">//            }</span>
+<span class="c1">//            </span>
+<span class="c1">//        }</span>
+<span class="c1">//    }</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.view/QqFriendList.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 我的好友列表,(也包括陌生人，黑名单)
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">view</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.client.tools.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.common.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">QqFriendList</span> <span class="kd">extends</span> <span class="nc">JFrame</span> <span class="kd">implements</span> <span class="nc">ActionListener</span><span class="o">,</span><span class="nc">MouseListener</span><span class="o">{</span>
+    <span class="c1">//定义控件</span>
+    <span class="c1">//第一张卡片(好友)</span>
+    <span class="nc">JPanel</span> <span class="n">jphy1</span><span class="o">,</span><span class="n">jphy2</span><span class="o">,</span><span class="n">jphy3</span><span class="o">;</span>
+    <span class="nc">JButton</span> <span class="n">jphy_jb1</span><span class="o">,</span><span class="n">jphy_jb2</span><span class="o">,</span><span class="n">jphy_jb3</span><span class="o">;</span>
+    <span class="nc">JScrollPane</span> <span class="n">jsp1</span><span class="o">;</span>
+    <span class="c1">//第二张卡片(陌生人)</span>
+    <span class="nc">JPanel</span> <span class="n">jpmsr1</span><span class="o">,</span><span class="n">jpmsr2</span><span class="o">,</span><span class="n">jpmsr3</span><span class="o">;</span>
+    <span class="nc">JButton</span> <span class="n">jpmsr_jb1</span><span class="o">,</span><span class="n">jpmsr_jb2</span><span class="o">,</span><span class="n">jpmsr_jb3</span><span class="o">;</span>
+    <span class="nc">JScrollPane</span> <span class="n">jsp2</span><span class="o">;</span>
+    <span class="nc">JLabel</span> <span class="o">[]</span><span class="n">jbls</span><span class="o">;</span>
+    <span class="nc">JLabel</span> <span class="o">[]</span><span class="n">jbls2</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">owner</span><span class="o">;</span>
+    <span class="c1">//把整个JFrame设置成CardLayout布局</span>
+    <span class="nc">CardLayout</span> <span class="n">cl</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//</span>
+        <span class="c1">//QqFriendList qqFriendList=new QqFriendList();</span>
+    <span class="o">}</span>
+    <span class="c1">//更新在线好友的情况</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">updateFriend</span><span class="o">(</span><span class="nc">Message</span> <span class="n">m</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">onLineFriend</span><span class="o">[]=</span><span class="n">m</span><span class="o">.</span><span class="na">getCon</span><span class="o">().</span><span class="na">split</span><span class="o">(</span><span class="s">" "</span><span class="o">);</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">onLineFriend</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+        <span class="o">{</span>
+            <span class="c1">//把对应的好友状态设置成在线</span>
+            <span class="n">jbls</span><span class="o">[</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">onLineFriend</span><span class="o">[</span><span class="n">i</span><span class="o">])-</span><span class="mi">1</span><span class="o">].</span><span class="na">setEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="c1">//System.out.println("创建了 "+jbls[Integer.parseInt(onLineFriend[i])-1]);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">QqFriendList</span><span class="o">(</span><span class="nc">String</span> <span class="n">ownerId</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">owner</span><span class="o">=</span><span class="n">ownerId</span><span class="o">;</span>
+        <span class="c1">//处理第一张卡片(显示好友列表)</span>
+        <span class="n">jphy1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">(</span><span class="k">new</span> <span class="nc">BorderLayout</span><span class="o">());</span>
+        <span class="c1">//假定有50个好友(50行,1列,两个4分别表示行间距与列间距)</span>
+        <span class="n">jphy2</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">(</span><span class="k">new</span> <span class="nc">GridLayout</span><span class="o">(</span><span class="mi">50</span><span class="o">,</span><span class="mi">1</span><span class="o">,</span><span class="mi">4</span><span class="o">,</span><span class="mi">4</span><span class="o">));</span>
+        <span class="c1">//给jphy2，初始化50好友</span>
+        <span class="n">jbls</span><span class="o">=</span><span class="k">new</span> <span class="nc">JLabel</span><span class="o">[</span><span class="mi">50</span><span class="o">];</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">jbls</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+        <span class="o">{</span>
+            <span class="n">jbls</span><span class="o">[</span><span class="n">i</span><span class="o">]=</span><span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="s">""</span><span class="o">,</span><span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"image/mm.jpg"</span><span class="o">),</span><span class="nc">JLabel</span><span class="o">.</span><span class="na">LEFT</span><span class="o">);</span>
+            <span class="n">jbls</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">addMouseListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span><span class="c1">//监听每一个好友</span>
+            <span class="n">jbls</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">setEnabled</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span><span class="c1">//把其它人物设置成不线状态</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">jbls</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getText</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">ownerId</span><span class="o">))</span><span class="c1">//把自己设置成在线状态</span>
+            <span class="o">{</span>
+                <span class="n">jbls</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">setEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">jphy2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jbls</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+        <span class="o">}</span>
+        <span class="n">jphy3</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">(</span><span class="k">new</span> <span class="nc">GridLayout</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span><span class="mi">1</span><span class="o">));</span>
+        <span class="n">jphy_jb1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"我的好友"</span><span class="o">);</span>
+        <span class="n">jphy_jb2</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"陌生人"</span><span class="o">);</span>
+        <span class="n">jphy_jb2</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="n">jphy_jb3</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"黑名单"</span><span class="o">);</span>
+        <span class="c1">//把两个按钮加到jphy3中</span>
+        <span class="n">jphy3</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jphy_jb2</span><span class="o">);</span>
+        <span class="n">jphy3</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jphy_jb3</span><span class="o">);</span>
+        <span class="n">jsp1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JScrollPane</span><span class="o">(</span><span class="n">jphy2</span><span class="o">);</span>
+        <span class="n">jphy1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jphy_jb1</span><span class="o">,</span><span class="s">"North"</span><span class="o">);</span>
+        <span class="n">jphy1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jsp1</span><span class="o">,</span><span class="s">"Center"</span><span class="o">);</span>
+        <span class="n">jphy1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jphy3</span><span class="o">,</span><span class="s">"South"</span><span class="o">);</span>
+        <span class="c1">//处理第二张卡片(陌生人)</span>
+        <span class="n">jpmsr1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">(</span><span class="k">new</span> <span class="nc">BorderLayout</span><span class="o">());</span>
+        <span class="n">jpmsr2</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">(</span><span class="k">new</span> <span class="nc">GridLayout</span><span class="o">(</span><span class="mi">20</span><span class="o">,</span><span class="mi">1</span><span class="o">,</span><span class="mi">4</span><span class="o">,</span><span class="mi">4</span><span class="o">));</span>
+        <span class="n">jbls2</span><span class="o">=</span><span class="k">new</span> <span class="nc">JLabel</span><span class="o">[</span><span class="mi">20</span><span class="o">];</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">jbls2</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+        <span class="o">{</span>
+            <span class="n">jbls2</span><span class="o">[</span><span class="n">i</span><span class="o">]=</span><span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="s">""</span><span class="o">,</span><span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"image/mm.jpg"</span><span class="o">),</span><span class="nc">JLabel</span><span class="o">.</span><span class="na">LEFT</span><span class="o">);</span>
+            <span class="n">jbls2</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">addMouseListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span><span class="c1">//监听每一个黑名单</span>
+<span class="c1">//            jbls2[i].setEnabled(false);//把其它人物设置成不线状态</span>
+<span class="c1">//            if(jbls2[i].getText().equals(ownerId))//把自己设置成在线状态</span>
+<span class="c1">//            {</span>
+<span class="c1">//                jbls2[i].setEnabled(true);</span>
+<span class="c1">//            }</span>
+            <span class="n">jpmsr2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jbls2</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+        <span class="o">}</span>
+        <span class="n">jpmsr3</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">(</span><span class="k">new</span> <span class="nc">GridLayout</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span><span class="mi">1</span><span class="o">));</span>
+        <span class="n">jpmsr_jb1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"我的好友"</span><span class="o">);</span>
+        <span class="n">jpmsr_jb1</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="n">jpmsr_jb2</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"陌生人"</span><span class="o">);</span>
+        <span class="n">jpmsr_jb3</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"黑名单"</span><span class="o">);</span>
+        <span class="c1">//把两个按钮加到jpmsr3中</span>
+        <span class="n">jpmsr3</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jpmsr_jb1</span><span class="o">);</span>
+        <span class="n">jpmsr3</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jpmsr_jb2</span><span class="o">);</span>
+        <span class="n">jsp2</span><span class="o">=</span><span class="k">new</span> <span class="nc">JScrollPane</span><span class="o">(</span><span class="n">jpmsr2</span><span class="o">);</span>
+        <span class="n">jpmsr1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jpmsr3</span><span class="o">,</span><span class="s">"North"</span><span class="o">);</span>
+        <span class="n">jpmsr1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jsp2</span><span class="o">,</span><span class="s">"Center"</span><span class="o">);</span>
+        <span class="n">jpmsr1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jpmsr_jb3</span><span class="o">,</span><span class="s">"South"</span><span class="o">);</span>
+        <span class="n">cl</span><span class="o">=</span><span class="k">new</span> <span class="nc">CardLayout</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setLayout</span><span class="o">(</span><span class="n">cl</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jphy1</span><span class="o">,</span><span class="s">"1"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jpmsr1</span><span class="o">,</span><span class="s">"2"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span><span class="mi">400</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setDefaultCloseOperation</span><span class="o">(</span><span class="nc">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="n">ownerId</span><span class="o">+</span><span class="s">" 好友列表"</span><span class="o">);</span><span class="c1">//窗口显示自己的编号</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="nc">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//如果点击了陌生人按钮，就显示第二张卡片</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getSource</span><span class="o">()==</span><span class="n">jphy_jb2</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">cl</span><span class="o">.</span><span class="na">show</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">(),</span><span class="s">"2"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getSource</span><span class="o">()==</span><span class="n">jpmsr_jb1</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">cl</span><span class="o">.</span><span class="na">show</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">(),</span><span class="s">"1"</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">mouseClicked</span><span class="o">(</span><span class="nc">MouseEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//响应用户双击事件，并得到好友的编号</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getClickCount</span><span class="o">()==</span><span class="mi">2</span><span class="o">)</span><span class="c1">//双击</span>
+        <span class="o">{</span>
+            <span class="c1">//得到该好友的编号</span>
+            <span class="nc">String</span> <span class="n">friendNo</span><span class="o">=((</span><span class="nc">JLabel</span><span class="o">)</span><span class="n">e</span><span class="o">.</span><span class="na">getSource</span><span class="o">()).</span><span class="na">getText</span><span class="o">();</span>
+            <span class="c1">//System.out.println("你希望和"+friendNo+"聊天");</span>
+            <span class="nc">QqChat</span> <span class="n">qqChat</span><span class="o">=</span><span class="k">new</span> <span class="nc">QqChat</span><span class="o">(</span><span class="n">owner</span><span class="o">,</span><span class="n">friendNo</span><span class="o">);</span>
+            <span class="c1">//启动线程</span>
+            <span class="c1">//Thread t=new Thread(qqChat);</span>
+            <span class="c1">//t.start();</span>
+            <span class="c1">//把聊天界面加入到管理类中</span>
+            <span class="nc">ManageQqChat</span><span class="o">.</span><span class="na">addQqChat</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">owner</span><span class="o">+</span><span class="s">" "</span><span class="o">+</span><span class="n">friendNo</span><span class="o">,</span> <span class="n">qqChat</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">mouseEntered</span><span class="o">(</span><span class="nc">MouseEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//</span>
+        <span class="nc">JLabel</span> <span class="n">jl</span><span class="o">=(</span><span class="nc">JLabel</span><span class="o">)</span><span class="n">e</span><span class="o">.</span><span class="na">getSource</span><span class="o">();</span>
+        <span class="n">jl</span><span class="o">.</span><span class="na">setForeground</span><span class="o">(</span><span class="nc">Color</span><span class="o">.</span><span class="na">red</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">mouseExited</span><span class="o">(</span><span class="nc">MouseEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="nc">JLabel</span> <span class="n">jl</span><span class="o">=(</span><span class="nc">JLabel</span><span class="o">)</span><span class="n">e</span><span class="o">.</span><span class="na">getSource</span><span class="o">();</span>
+        <span class="n">jl</span><span class="o">.</span><span class="na">setForeground</span><span class="o">(</span><span class="nc">Color</span><span class="o">.</span><span class="na">black</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">mousePressed</span><span class="o">(</span><span class="nc">MouseEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">mouseReleased</span><span class="o">(</span><span class="nc">MouseEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.model/QqClientConServer.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 这是客户端连接服务器的后台
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">cllient</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.client.tools.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.common.*</span><span class="o">;;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">QqClientConServer</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">Socket</span> <span class="n">s</span><span class="o">;</span>
+    <span class="c1">//发送第一次请求</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">sendInfoToServer</span><span class="o">(</span><span class="nc">Object</span> <span class="n">o</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="kt">boolean</span> <span class="n">b</span><span class="o">=</span><span class="kc">false</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//System.out.println("kk");</span>
+            <span class="n">s</span><span class="o">=</span><span class="k">new</span> <span class="nc">Socket</span><span class="o">(</span><span class="s">"127.0.0.1"</span><span class="o">,</span><span class="mi">9999</span><span class="o">);</span>
+            <span class="nc">ObjectOutputStream</span> <span class="n">oos</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectOutputStream</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span>
+            <span class="n">oos</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">o</span><span class="o">);</span>
+            <span class="nc">ObjectInputStream</span> <span class="n">ois</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectInputStream</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+            <span class="nc">Message</span> <span class="n">ms</span><span class="o">=(</span><span class="nc">Message</span><span class="o">)</span><span class="n">ois</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span>
+            <span class="c1">//这里就是验证用户登录的地方</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">ms</span><span class="o">.</span><span class="na">getMesType</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"1"</span><span class="o">))</span>
+            <span class="o">{</span>
+                <span class="c1">//就创建一个该qq号和服务器端保持通讯连接的线程</span>
+                <span class="nc">ClientConServerThread</span> <span class="n">ccst</span><span class="o">=</span><span class="k">new</span> <span class="nc">ClientConServerThread</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+                <span class="c1">//启动该通讯线程</span>
+                <span class="n">ccst</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+                <span class="nc">ManageClientConServerThread</span><span class="o">.</span><span class="na">addClientConServerThread</span><span class="o">(((</span><span class="nc">User</span><span class="o">)</span><span class="n">o</span><span class="o">).</span><span class="na">getUserId</span><span class="o">(),</span> <span class="n">ccst</span><span class="o">);</span>
+                <span class="n">b</span><span class="o">=</span><span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+                <span class="c1">//关闭socket</span>
+                <span class="n">s</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">b</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//发送信息</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">SendInfoToServer</span><span class="o">(</span><span class="nc">Object</span> <span class="n">o</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="k">new</span> <span class="nc">Socket</span><span class="o">(</span><span class="s">"127.0.0.1"</span><span class="o">,</span><span class="mi">9999</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.model/QqClientUser.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 在model层中的 登录验证
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">cllient</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.common.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">QqClientUser</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">checkUser</span><span class="o">(</span><span class="nc">User</span> <span class="n">u</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">QqClientConServer</span><span class="o">().</span><span class="na">sendInfoToServer</span><span class="o">(</span><span class="n">u</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.tools/ManageQqChat.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 这是一个管理用户聊天界面的类
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">tools</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.client.view.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ManageQqChat</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="nc">HashMap</span> <span class="n">hm</span><span class="o">=</span><span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">QqChat</span><span class="o">&gt;();</span>
+    <span class="c1">//加入HashMap</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">addQqChat</span><span class="o">(</span><span class="nc">String</span> <span class="n">loginIdAndFriendId</span><span class="o">,</span><span class="nc">QqChat</span> <span class="n">qqChat</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="n">hm</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">loginIdAndFriendId</span><span class="o">,</span> <span class="n">qqChat</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="c1">//从HashMap取出</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">QqChat</span> <span class="nf">getQqChat</span><span class="o">(</span><span class="nc">String</span> <span class="n">loginIdAndFriendId</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="o">(</span><span class="nc">QqChat</span><span class="o">)</span><span class="n">hm</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">loginIdAndFriendId</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.tools/ManageQqFriendList.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 管理好友、陌生人、黑名单...界面类
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">tools</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.client.view.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ManageQqFriendList</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="nc">HashMap</span> <span class="n">hm</span><span class="o">=</span><span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">QqFriendList</span><span class="o">&gt;();</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">addQqFrendList</span><span class="o">(</span><span class="nc">String</span> <span class="n">qqid</span><span class="o">,</span><span class="nc">QqFriendList</span> <span class="n">qqFriendList</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="n">hm</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">qqid</span><span class="o">,</span> <span class="n">qqFriendList</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">QqFriendList</span> <span class="nf">getQqFriendList</span><span class="o">(</span><span class="nc">String</span> <span class="n">qqId</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="o">(</span><span class="nc">QqFriendList</span><span class="o">)</span><span class="n">hm</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">qqId</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.tools/ClientConServerThread.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 这是客户端和服务器端保持通讯的线程
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">tools</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.client.view.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.common.Message</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.qq.common.MessageType</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ClientConServerThread</span> <span class="kd">extends</span> <span class="nc">Thread</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Socket</span> <span class="n">s</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">Socket</span> <span class="nf">getS</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setS</span><span class="o">(</span><span class="nc">Socket</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//构造函数</span>
+    <span class="kd">public</span> <span class="nf">ClientConServerThread</span><span class="o">(</span><span class="nc">Socket</span> <span class="n">s</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">s</span><span class="o">=</span><span class="n">s</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="c1">//不停的读取从服务器端发来的消息</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="nc">ObjectInputStream</span> <span class="n">ois</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectInputStream</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+                <span class="nc">Message</span> <span class="n">m</span><span class="o">=(</span><span class="nc">Message</span><span class="o">)</span><span class="n">ois</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span>
+<span class="c1">//                System.out.println("读取到从服务器发来的消息"+m.getSender()+" 给"+</span>
+<span class="c1">//                        m.getGetter()+" 内容："+m.getCon());</span>
+                <span class="c1">//如果是普通包</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">m</span><span class="o">.</span><span class="na">getMesType</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="nc">MessageType</span><span class="o">.</span><span class="na">message_comm_mes</span><span class="o">))</span>
+                <span class="o">{</span>
+                    <span class="c1">//把从服务器获得的消息，显示到该显示的聊天界面</span>
+                    <span class="nc">QqChat</span> <span class="n">qqChat</span><span class="o">=</span><span class="nc">ManageQqChat</span><span class="o">.</span><span class="na">getQqChat</span><span class="o">(</span><span class="n">m</span><span class="o">.</span><span class="na">getGetter</span><span class="o">()+</span><span class="s">" "</span><span class="o">+</span><span class="n">m</span><span class="o">.</span><span class="na">getSender</span><span class="o">());</span>
+                    <span class="c1">//显示</span>
+                    <span class="n">qqChat</span><span class="o">.</span><span class="na">showMessage</span><span class="o">(</span><span class="n">m</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="c1">//如果返回的是好友上线的包</span>
+                <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">m</span><span class="o">.</span><span class="na">getMesType</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="nc">MessageType</span><span class="o">.</span><span class="na">message_ret_onLineFriend</span><span class="o">))</span>
+                <span class="o">{</span>
+                    <span class="c1">//System.out.println("客户端接收到:"+m.getCon());</span>
+                    <span class="nc">String</span> <span class="n">con</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="na">getCon</span><span class="o">();</span>
+                    <span class="nc">String</span> <span class="n">friends</span><span class="o">[]=</span><span class="n">con</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">" "</span><span class="o">);</span>
+                    <span class="nc">String</span> <span class="n">getter</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="na">getGetter</span><span class="o">();</span>
+                    <span class="c1">//System.out.println("getter="+getter);</span>
+                    <span class="c1">//修改相应的好友列表.</span>
+                    <span class="nc">QqFriendList</span> <span class="n">qqFriendList</span><span class="o">=</span><span class="nc">ManageQqFriendList</span><span class="o">.</span><span class="na">getQqFriendList</span><span class="o">(</span><span class="n">getter</span><span class="o">);</span>
+                    <span class="k">if</span><span class="o">(</span><span class="n">qqFriendList</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+                    <span class="o">{</span>
+                        <span class="c1">//更新在线好友</span>
+                        <span class="n">qqFriendList</span><span class="o">.</span><span class="na">updateFriend</span><span class="o">(</span><span class="n">m</span><span class="o">);</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.tools/ManageClientConServerThread.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 这是一个管理客户端和服务器保持通讯的线程类
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">tools</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ManageClientConServerThread</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">ClientConServerThread</span><span class="o">&gt;</span> <span class="n">hm</span><span class="o">=</span><span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">ClientConServerThread</span><span class="o">&gt;();</span>
+    <span class="c1">//把创建好的ClientConServerThread放入到hm</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">addClientConServerThread</span><span class="o">(</span><span class="nc">String</span> <span class="n">qqId</span><span class="o">,</span><span class="nc">ClientConServerThread</span> <span class="n">ccst</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="n">hm</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">qqId</span><span class="o">,</span> <span class="n">ccst</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="c1">//可以通过qqId取得该线程</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">ClientConServerThread</span> <span class="nf">getClientConServerThread</span><span class="o">(</span><span class="nc">String</span> <span class="n">qqId</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="o">(</span><span class="nc">ClientConServerThread</span><span class="o">)</span><span class="n">hm</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">qqId</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.common/Message.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 对Message规定一些规则
+ * mesType 1-&gt;表示是登陆成功
+ * mesType 2-&gt;表示是登陆失败
+ * mesType 3-&gt;表示是普通的消息包
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">common</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Message</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">mesType</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">sender</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">getter</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">con</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">sendTime</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getSender</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">sender</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setSender</span><span class="o">(</span><span class="nc">String</span> <span class="n">sender</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">sender</span> <span class="o">=</span> <span class="n">sender</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getGetter</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">getter</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setGetter</span><span class="o">(</span><span class="nc">String</span> <span class="n">getter</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">getter</span> <span class="o">=</span> <span class="n">getter</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getCon</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">con</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCon</span><span class="o">(</span><span class="nc">String</span> <span class="n">con</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">con</span> <span class="o">=</span> <span class="n">con</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getSendTime</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">sendTime</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setSendTime</span><span class="o">(</span><span class="nc">String</span> <span class="n">sendTime</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">sendTime</span> <span class="o">=</span> <span class="n">sendTime</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getMesType</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">mesType</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setMesType</span><span class="o">(</span><span class="nc">String</span> <span class="n">mesType</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">mesType</span> <span class="o">=</span> <span class="n">mesType</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.common/MessageType.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 定义消息包的种类
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">common</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MessageType</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">message_succeed</span><span class="o">=</span><span class="s">"1"</span><span class="o">;</span><span class="c1">//登录成功</span>
+    <span class="nc">String</span> <span class="n">message_login_fail</span><span class="o">=</span><span class="s">"2"</span><span class="o">;</span><span class="c1">//登录失败</span>
+    <span class="nc">String</span> <span class="n">message_comm_mes</span><span class="o">=</span><span class="s">"3"</span><span class="o">;</span><span class="c1">//普通信息包</span>
+    <span class="nc">String</span> <span class="n">message_get_onLineFriend</span><span class="o">=</span><span class="s">"4"</span><span class="o">;</span><span class="c1">//请求在线好友的信息包</span>
+    <span class="nc">String</span> <span class="n">message_ret_onLineFriend</span><span class="o">=</span><span class="s">"5"</span><span class="o">;</span><span class="c1">//返回在线好友的信息包</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>客户端_QqServer/com.qq.client.common/User.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 这是用户信息类
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">qq</span><span class="o">.</span><span class="na">common</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span><span class="o">{</span>
+    <span class="c1">//将这个类序列化，就使其对应的对象可以在网络上或者是在文件中传输</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">passWd</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getUserId</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUserId</span><span class="o">(</span><span class="nc">String</span> <span class="n">userId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userId</span> <span class="o">=</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getPassWd</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">passWd</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setPassWd</span><span class="o">(</span><span class="nc">String</span> <span class="n">passWd</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">passWd</span> <span class="o">=</span> <span class="n">passWd</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2011-06-15-Java%E5%9F%BA%E7%A1%8010%E4%B9%8B%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E7%89%88QQ%E8%81%8A%E5%A4%A9%E7%A8%8B%E5%BA%8F.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Java基础10之网络编程实现简易版QQ聊天程序 - 知不知&amp;url=/list/docs/java/2011-06-15-Java%E5%9F%BA%E7%A1%8010%E4%B9%8B%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E7%89%88QQ%E8%81%8A%E5%A4%A9%E7%A8%8B%E5%BA%8F.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2011-06-15-Java%E5%9F%BA%E7%A1%8010%E4%B9%8B%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E7%89%88QQ%E8%81%8A%E5%A4%A9%E7%A8%8B%E5%BA%8F.html&amp;title=Java-Java基础10之网络编程实现简易版QQ聊天程序 - 知不知&amp;summary=Java网络编程应用，实现简易版QQ包含用户登录、单聊与多聊、好友在线状态显示等功能&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2011-06-15-Java%E5%9F%BA%E7%A1%8010%E4%B9%8B%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E7%89%88QQ%E8%81%8A%E5%A4%A9%E7%A8%8B%E5%BA%8F.html&amp;text=Java-Java基础10之网络编程实现简易版QQ聊天程序 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2011-06-15-Java%E5%9F%BA%E7%A1%8010%E4%B9%8B%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E7%89%88QQ%E8%81%8A%E5%A4%A9%E7%A8%8B%E5%BA%8F.html&amp;t=Java-Java基础10之网络编程实现简易版QQ聊天程序 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2011-06-15-Java%E5%9F%BA%E7%A1%8010%E4%B9%8B%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E7%89%88QQ%E8%81%8A%E5%A4%A9%E7%A8%8B%E5%BA%8F.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Java基础10之网络编程实现简易版QQ聊天程序'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

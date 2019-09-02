@@ -1,0 +1,551 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java中的基本数据类型</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java编译、环境配置、内存模型、基本数据类型、原码、反码、补码、排队系统、数组二分查找。</p> <h3 id="基本概念">基本概念</h3> <p><strong>编译执行java文件</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\~&gt;javac -d . ch01/HelloWorld.java
+C:\~&gt;java ch01.HelloWorld
+
+Hello World!
+
+C:\~&gt;java ch01/HelloWorld    这样也可以
+
+Hello World!
+</code></pre></div></div> <p><strong>生成Javadoc:标准的注释文档(html)</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\~&gt;javadoc -d doc ch02
+C:\~&gt;javadoc -author -version -d doc ch02
+window下默认字符编码:GBK
+linux下的默认字符编码：utf-8
+生成javadoc：标准的注释文档（html）
+javadoc -d doc ch02; （不显示单行注释和多行注释。不显示）
+win下默认的字符编码是：gbk
+linux下默认编码是：utf-8
+-d ：生成的文档放在哪里
+-author：生成作者
+-version:生成版本
+java api 用javadoc 来生成的
+</code></pre></div></div> <p><strong>java内存模型</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.堆区（heap）：放置新生成的对象
+2.栈区（stack）：存在我们程序运行过程中的变量
+变量：内存节点的值可以被重写
+常量：内存节点的值不可以被重写
+
+3.方法区：方法的信息，程序运行过程中类的信息
+4.常量区 静态存储区：存放程序运行过程中的常量
+
+程序中随着数据的增加，堆地址不断地向高地址增加，栈地址不断地向低地址减小
+String a = "abc";//常量区
+String b = new String ("abc");//堆区
+String c = new String ("abc");
+String d = "abc";
+a==b 错 b==c 错 （两个不同的对象） a==d 对
+==:用来比较地址（对于对象来说），比较值（对于基本类型）
+</code></pre></div></div> <p><strong>java运行环境的搭建</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JDK：JAVA DEVELOPMENT TOOLKIT //java 开发
+JRE：JAVA RUNTIOME ENVIRONMENT //java 运行环境
+jdk：编译源代码 同时运行class
+jre：运行class文件
+</code></pre></div></div> <p><strong>配置环境变量</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Unix ： PATH：命令搜索路径
+cat .bashrc
+oracle_home :说明了oracle的安装路径
+java_home
+env 查看所有环境变量
+将java_home的bin路径添加到path里面
+unix 用 '：' 分隔路径
+path=$path:$java_home/bin
+
+配置:
+source.bashrc:环境变量立刻生效。
+</code></pre></div></div> <h3 id="java中的类型">java中的类型</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java是强类型语言，在定义变量的时候必须声明变量的类型
+弱类型：声明变量不需要指定的类型语言
+html css js 对于js来说是弱类型语言
+在js里面声明任何一个变量都用变量一个声明 var
+强类型的好处：在编译期进行类型检查，减少程序出错的概率。
+强类型的坏处：灵活性差
+
+1.基本类型
+八种:
+表示整数的： 4个 int（32位），long（64位），short（16位），byte（8位）
+表示小数的（浮点数）： 2个 float，double
+表示布尔类型的：boolean （true|false） 表示判断条件
+便是字符类型：char
+
+2.引用类型
+object 类：任何自定义的类都继承object
+表示字符串的：多个字符
+String 用来声明字符串 （java.long.String）
+
+引用类型：类类型
+类：对现实实体的抽象
+包含属性和方法（函数）
+属性：描述现实的实体
+Person：name gender age
+方法：操纵属性
+</code></pre></div></div> <h3 id="java中的基本数据类型">java中的基本数据类型</h3> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//java中的基本数据类型 .</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PrimitiveTypeTest</span> <span class="o">{</span>
+    <span class="c1">//private static PrimitiveTypeTest primitiveType;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">i1</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getI1</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">i1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">getI2</span><span class="o">()</span><span class="c1">//调用它是因为自动拆箱、装箱，所有不报错</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">i1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">obtainInt</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">i1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * public void initVal()
+     * {
+     * System.out.println("-----------------initVal  int i1:"+i1);
+     * primitiveType=new PrimitiveTypeTest();
+     * }
+     */</span>
+
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">i2</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">getInteger</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">i2</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">byte</span> <span class="n">b1</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nc">Byte</span> <span class="nf">getB1</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">b1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kt">boolean</span> <span class="n">bool</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">getBoolean</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">bool</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kt">short</span> <span class="n">srt</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">short</span> <span class="nf">getShort</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">srt</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kt">long</span> <span class="n">lg</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getLong</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">lg</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kt">float</span> <span class="n">flt</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">float</span> <span class="nf">getFloat</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">flt</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kt">double</span> <span class="n">dble</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">double</span> <span class="nf">getDouble</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">dble</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kt">char</span> <span class="n">cha</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">char</span> <span class="nf">getChar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">cha</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">PrimitiveTypeTest</span> <span class="n">primitiveType</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PrimitiveTypeTest</span><span class="o">();</span>
+        <span class="c1">// byte</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"基本类型：byte 二进制位数："</span> <span class="o">+</span> <span class="nc">Byte</span><span class="o">.</span><span class="na">SIZE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"包装类：java.lang.Byte"</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最小值：Byte.MIN_VALUE="</span> <span class="o">+</span> <span class="nc">Byte</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最大值：Byte.MAX_VALUE="</span> <span class="o">+</span> <span class="nc">Byte</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">);</span>
+        <span class="c1">//Byte b1=new Byte("0");</span>
+        <span class="c1">//System.out.println("Byte默认赋值为："+b1);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"byte默认赋值为："</span> <span class="o">+</span> <span class="n">primitiveType</span><span class="o">.</span><span class="na">getB1</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-----------------------------------"</span><span class="o">);</span>
+
+        <span class="c1">//-------------------short-----------------------</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"基本类型：short 二进制位数："</span> <span class="o">+</span> <span class="nc">Short</span><span class="o">.</span><span class="na">SIZE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"包装类：java.lang.Short"</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最小值：Short.MIN_VALUE="</span> <span class="o">+</span> <span class="nc">Short</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最大值：Short.MAX_VALUE="</span> <span class="o">+</span> <span class="nc">Short</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"short默认赋值为："</span> <span class="o">+</span> <span class="n">primitiveType</span><span class="o">.</span><span class="na">getShort</span><span class="o">());</span>
+        <span class="c1">//Short s1;</span>
+        <span class="c1">//short s2;</span>
+        <span class="c1">//System.out.println("Short默认赋值为："+(s1==0));</span>
+        <span class="c1">//System.out.println("short默认赋值为："+s2);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-----------------------------------"</span><span class="o">);</span>
+        <span class="c1">//-------------------------int-------------------------</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"基本类型：int 二进制位数："</span> <span class="o">+</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">SIZE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"包装类：java.lang.Integer"</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最小值：Integer.MIN_VALUE="</span> <span class="o">+</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最大值：Integer.MAX_VALUE="</span> <span class="o">+</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">);</span>
+        <span class="c1">//Integer i1;</span>
+        <span class="c1">//System.out.println("Integer默认赋值为："+(i1==0));</span>
+        <span class="c1">//只有通过new 了之后才能取到默认值</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"int默认赋值为："</span> <span class="o">+</span> <span class="n">primitiveType</span><span class="o">.</span><span class="na">getI1</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"int默认赋值为："</span> <span class="o">+</span> <span class="n">primitiveType</span><span class="o">.</span><span class="na">getI2</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"int默认赋值为："</span> <span class="o">+</span> <span class="n">primitiveType</span><span class="o">.</span><span class="na">obtainInt</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Integer默认赋值为："</span> <span class="o">+</span> <span class="n">primitiveType</span><span class="o">.</span><span class="na">getInteger</span><span class="o">());</span>
+        <span class="c1">//System.out.println("int默认赋值为："+i1);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-----------------------------------"</span><span class="o">);</span>
+
+        <span class="c1">//--------------------------long-------------------</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"基本类型：long 二进制位数："</span> <span class="o">+</span> <span class="nc">Long</span><span class="o">.</span><span class="na">SIZE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"包装类：java.lang.Long"</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最小值：Long.MIN_VALUE="</span> <span class="o">+</span> <span class="nc">Long</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最大值：Long.MAX_VALUE="</span> <span class="o">+</span> <span class="nc">Long</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"long默认赋值为："</span> <span class="o">+</span> <span class="n">primitiveType</span><span class="o">.</span><span class="na">getLong</span><span class="o">());</span>
+        <span class="c1">//Long l1;</span>
+        <span class="c1">//long l2;</span>
+        <span class="c1">//System.out.println("Long默认赋值为："+(l1==0));</span>
+        <span class="c1">//System.out.println("long默认赋值为："+l2);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-----------------------------------"</span><span class="o">);</span>
+
+        <span class="c1">//------------------------float---------------------------</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"基本类型：float 二进制位数："</span> <span class="o">+</span> <span class="nc">Float</span><span class="o">.</span><span class="na">SIZE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"包装类：java.lang.Float"</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最小值：Float.MIN_VALUE="</span> <span class="o">+</span> <span class="nc">Float</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最大值：Float.MAX_VALUE="</span> <span class="o">+</span> <span class="nc">Float</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"float默认赋值为："</span> <span class="o">+</span> <span class="n">primitiveType</span><span class="o">.</span><span class="na">getFloat</span><span class="o">());</span>
+        <span class="c1">//Float f1;</span>
+        <span class="c1">//float f2;</span>
+        <span class="c1">//System.out.println("Float默认赋值为："+(f1==0));</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-----------------------------------"</span><span class="o">);</span>
+
+        <span class="c1">//-------------------------double------------------------</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"基本类型：double 二进制位数："</span> <span class="o">+</span> <span class="nc">Double</span><span class="o">.</span><span class="na">SIZE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"包装类：java.lang.Double"</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最小值：Double.MIN_VALUE="</span> <span class="o">+</span> <span class="nc">Double</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最大值：Double.MAX_VALUE="</span> <span class="o">+</span> <span class="nc">Double</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"double默认赋值为："</span> <span class="o">+</span> <span class="n">primitiveType</span><span class="o">.</span><span class="na">getDouble</span><span class="o">());</span>
+        <span class="c1">//Double d1;</span>
+        <span class="c1">//double d2;</span>
+        <span class="c1">//System.out.println("Double默认赋值为："+(d1==0));</span>
+        <span class="c1">//System.out.println("double默认赋值为："+d2);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-----------------------------------"</span><span class="o">);</span>
+
+        <span class="c1">//---------------------char----------------------</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"基本类型：char 二进制位数："</span> <span class="o">+</span> <span class="nc">Character</span><span class="o">.</span><span class="na">SIZE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"包装类：java.lang.Character"</span><span class="o">);</span>
+        <span class="c1">// 以数值形式而不是字符形式将Character.MIN_VALUE输出到控制台</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最小值：Character.MIN_VALUE="</span>
+                <span class="o">+</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="nc">Character</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">);</span>
+        <span class="c1">// 以数值形式而不是字符形式将Character.MAX_VALUE输出到控制台</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最大值：Character.MAX_VALUE="</span>
+                <span class="o">+</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="nc">Character</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"char默认赋值为："</span> <span class="o">+</span> <span class="n">primitiveType</span><span class="o">.</span><span class="na">getChar</span><span class="o">());</span>
+        <span class="c1">//Character c1;</span>
+        <span class="c1">//char c2;</span>
+        <span class="c1">//System.out.println("Character默认赋值为："+(c1=='\0'));</span>
+        <span class="c1">//System.out.println("char默认赋值为："+c2);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-----------------------------------"</span><span class="o">);</span>
+
+        <span class="c1">//-----------------------Boolean---------------------</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"包装类：java.lang.Boolean"</span><span class="o">);</span>
+        <span class="nc">Boolean</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Boolean</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"boolean默认赋值为："</span> <span class="o">+</span> <span class="n">primitiveType</span><span class="o">.</span><span class="na">getBoolean</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-----------------------------------"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>修饰符及属性的说明</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//类没有protected和private修饰符</span>
+<span class="c1">//被public 修饰的类，可以被其它包中的类访问</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestA</span>
+<span class="o">{</span>
+    <span class="c1">//private 级别的属性和方法</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">a</span><span class="o">=</span><span class="mi">101</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">printA</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printA方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">a</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//默认级别的属性和方法</span>
+    <span class="kt">int</span> <span class="n">b</span><span class="o">=</span><span class="mi">102</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="nf">printB</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printB方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">b</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//protected级别的属性和方法</span>
+    <span class="kd">protected</span> <span class="kt">int</span> <span class="n">c</span><span class="o">=</span><span class="mi">103</span><span class="o">;</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">printC</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printC方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">c</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//public级别的属性和方法</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">d</span><span class="o">=</span><span class="mi">104</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printD</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printD方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">d</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">//没有被public 修饰的类不能被其它包中的类访问</span>
+<span class="kd">class</span> <span class="nc">TestB</span>
+<span class="o">{</span>
+    <span class="c1">//private 级别的属性和方法</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">a</span><span class="o">=</span><span class="mi">101</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">printA</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printA方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">a</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//默认级别的属性和方法</span>
+    <span class="kt">int</span> <span class="n">b</span><span class="o">=</span><span class="mi">102</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="nf">printB</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printB方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">b</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//protected级别的属性和方法</span>
+    <span class="kd">protected</span> <span class="kt">int</span> <span class="n">c</span><span class="o">=</span><span class="mi">103</span><span class="o">;</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">printC</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printC方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">c</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//public级别的属性和方法</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">d</span><span class="o">=</span><span class="mi">104</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printD</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printD方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">d</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">//被final修饰的类不能被继承</span>
+<span class="kd">final</span> <span class="kd">class</span> <span class="nc">TestC</span>
+<span class="o">{</span>
+    <span class="c1">//private 级别的属性和方法</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">a</span><span class="o">=</span><span class="mi">101</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">printA</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printA方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">a</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//默认级别的属性和方法</span>
+    <span class="kt">int</span> <span class="n">b</span><span class="o">=</span><span class="mi">102</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="nf">printB</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printB方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">b</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//protected级别的属性和方法</span>
+    <span class="kd">protected</span> <span class="kt">int</span> <span class="n">c</span><span class="o">=</span><span class="mi">103</span><span class="o">;</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">printC</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printC方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">c</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//public级别的属性和方法</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">d</span><span class="o">=</span><span class="mi">104</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printD</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printD方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">d</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <h3 id="二进制原码反码补码">二进制：原码、反码、补码</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>对于有符号的数而言(Java中全都是有符号的数)
+
+二进制的最高位是符号位:0表示正数，1表示负数
+正数的原码，反码，补码都一样(直接为此数二进制数表示)
+负数的原码，符号为1，其余各位为此数的二进制表示
+负数的反码=它的原码符号不变，其它位取反(1à0,0à1)
+负数的补码=它的反码+1
+0的反码、补码都是0
+java中没有无符号数，换言之，java中的数都是有符号的
+在计算机运算的时候，都是以补码的方式运算的
+ 
+例：1-2=1+(-2)
+计算[1+(-2)]在计算机中是以补码的方式运算的，首先计算：
+[1的补码]+[(-2)的补码]
+[1的补码]= 【0000000000000000000000000000001】
+[(-2)的原码]=【1000000000000000000000000000010】
+[(-2)的反码]=【1111111111111111111111111111101】
+[(-2)的补码]=【1111111111111111111111111111110】
+[1+(-2)的补码]=[1的补码]+[(-2)的补码]=【1111111111111111111111111111111】
+
+然后，将 [1的补码]+[(-2)的补码]=[(1+(-2))的补码] à [1+(-2)的原码]：
+[1+(-2)的补码 – 1]=【1111111111111111111111111111110】
+[(1-2)原码]= [{1+(-2)的补码 – 1}符号位不变，其它各位取反]=【1000000000000000000000000000001】
+即：[(1-2)原码]=【1000000000000000000000000000001】=-1
+
+位运算符：
+按位与&amp;:两位全为1，结果为1
+按位或|:两位有一个为1,结果为1
+按位异或^:两位一个为0，一个为1，结果为1
+按位取反~:0 à 1,1 à 0
+
+例：
+~-5=4 (在计算机中，取反运算符是给一个数补码取反)
+[(-5)的原码]= 【1000000000000000000000000000101】
+[(-5)的反码]= 【1111111111111111111111111111010】
+[(-5)的补码]= 【1111111111111111111111111111011】
+[{(-5)的补码}按位取反后]=【0000000000000000000000000000100】=4
+</code></pre></div></div> <h3 id="java中的数组">Java中的数组</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>数组：存放相同类型数据的连续的内存空间
+相同类型 连续的内存空间
+地址号连续
+存储数据（基本类型 对象类型）
+集合：collection，List很多子类的实现都是基于数组
+链表：内存地址不连续
+数组和链表的比较：
+
+1.内存开辟：链表开辟内存更容易
+2.对元素的访问：对于数组来说，检索效率高，插入和删除效率低，可能涉及到数组的重新开辟和拷贝
+
+1.声明数组：
+制定数组的类型 [] 数组的引用名 = new 数组的类型[数组的大小] --&gt; 一维数组
+int [] array = new int[30];
+Person array [] = new Person[30];
+
+2.初始化：
+a.在声明的时候进行初始化
+int [] array= new int []{1,2,3,4,5};
+Person array [] = new Person [] {new Person(), new Person()};
+
+b.对数组内的单个元素进行初始化
+数组的索引：用来对数组内的元素进行访问。从0开始
+array[index]:访问数组内的特定元素
+array[4]-&gt;5//访问
+array[4]=10;//修改
+c.可以通过循环进行初始化
+
+for(int i=0;i&lt;array.length;i++){
+    array[i]=i+1;
+}
+
+二维数组
+二维数组：通过两个索引确定一个元素
+数据库中的表的行和列
+
+声明：
+int [][] array=new int [10][10];
+array[i][j];
+
+锯齿数组
+锯齿数组：指定有多少行，但是不指定列数
+int [][] array=new int [10][];
+array[0]=new int [10];
+array[1]=new int [5];
+array[2]=new int [8];
+
+减少内存使用 在程序运行期间确定列数
+tdd：test driven development 测试驱动开发 先写测试代码，再写功能代码
+</code></pre></div></div> <h3 id="数组实例项目">数组实例项目</h3> <p><strong>银行排号系统</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>需求描述：描述程序的基本功能.
+需求分析：1/3时间 收集客户需要的功能并进行抽象——》生成面向对象里面的类
+银行排号系统：取号机：先到显得
+数据结构：队列：先进先出 FIFO
+叫号机：
+</code></pre></div></div> <p><strong>基于数组实现</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Queue</span><span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="o">[]</span> <span class="n">array</span><span class="o">;</span><span class="c1">//存放号码</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">size</span><span class="o">;</span><span class="c1">//存放当前数组里最大的元素的个数</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">maxSize</span><span class="o">;</span><span class="c1">//说明数组的容量</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">value</span><span class="o">;</span><span class="c1">//存放号码值</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">();</span><span class="c1">//添加</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">remove</span><span class="o">();</span><span class="c1">//叫号</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testArray</span><span class="o">()</span><span class="c1">//查看数组容量是否够用,动态开辟 数组的拷贝</span>
+
+    <span class="c1">//取号：始终在队尾插入</span>
+    <span class="c1">//叫好：始终在队首删除</span>
+    <span class="c1">//数组的搬移</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>ch04/Queue.java</strong>* <strong>ch04/QueueTest.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ *排号系统
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Queue</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">array</span><span class="o">;</span><span class="c1">//存放数据的数组</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">size</span><span class="o">;</span><span class="c1">//记录当前队列下一个元素的index</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">maxSize</span><span class="o">;</span><span class="c1">//记录当前队列的最大内容</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">value</span><span class="o">;</span><span class="c1">//下一个号码</span>
+
+    <span class="cm">/**
+     *初始化队列
+     */</span>
+    <span class="kd">public</span> <span class="nf">Queue</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">array</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">20</span><span class="o">];</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">maxSize</span> <span class="o">=</span> <span class="mi">20</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nf">Queue</span><span class="o">(</span><span class="kt">int</span> <span class="n">maxSize</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">maxSize</span> <span class="o">=</span> <span class="n">maxSize</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">array</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">maxSize</span><span class="o">];</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     *取号
+     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">testArray</span><span class="o">();</span>
+        <span class="n">array</span><span class="o">[</span><span class="n">size</span><span class="o">]</span> <span class="o">=</span> <span class="n">value</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+        <span class="n">size</span><span class="o">++;</span>
+        <span class="n">value</span><span class="o">++;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     *叫号
+     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">remove</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">array</span><span class="o">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+        <span class="o">}</span>
+        <span class="n">array</span><span class="o">[</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">size</span><span class="o">--;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     *查询数据 并动态开辟
+     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testArray</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="k">this</span><span class="o">.</span><span class="na">maxSize</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kt">int</span><span class="o">[]</span> <span class="n">newArray</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="k">this</span><span class="o">.</span><span class="na">maxSize</span> <span class="o">+</span> <span class="mi">20</span><span class="o">];</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">arraycopy</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">array</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">newArray</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">size</span><span class="o">);</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">array</span> <span class="o">=</span> <span class="n">newArray</span><span class="o">;</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">maxSize</span> <span class="o">+=</span> <span class="mi">20</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     *查看数组所有元素
+     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">array</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">+</span> <span class="s">"\t"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>队列操作</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">QueueTest</span><span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="n">args</span><span class="o">[]){</span>
+        <span class="nc">Queue</span> <span class="n">queue</span><span class="o">=</span><span class="k">new</span> <span class="nc">Queue</span><span class="o">();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">add</span><span class="o">();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">add</span><span class="o">();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">print</span><span class="o">();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">remove</span><span class="o">();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">print</span><span class="o">();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">remove</span><span class="o">();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">print</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">30</span><span class="o">;</span><span class="n">i</span><span class="o">++){</span>
+            <span class="n">queue</span><span class="o">.</span><span class="na">add</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">print</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">j</span><span class="o">&lt;</span><span class="mi">20</span><span class="o">;</span><span class="n">j</span><span class="o">++){</span>
+            <span class="n">queue</span><span class="o">.</span><span class="na">remove</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">print</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>数组二分查找、排序、输出</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ArraysTest</span><span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="n">args</span><span class="o">[]){</span>
+        <span class="kt">int</span> <span class="o">[]</span> <span class="n">array</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span> <span class="o">[]{</span><span class="mi">10</span><span class="o">,</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">5</span><span class="o">,</span><span class="mi">9</span><span class="o">,</span><span class="mi">8</span><span class="o">,</span><span class="mi">6</span><span class="o">,</span><span class="mi">7</span><span class="o">,</span><span class="mi">4</span><span class="o">,</span><span class="mi">3</span><span class="o">};</span>
+        <span class="kt">int</span> <span class="n">index</span><span class="o">=</span><span class="nc">Arrays</span><span class="o">.</span><span class="na">binarySearch</span><span class="o">(</span><span class="n">array</span><span class="o">,</span><span class="mi">0</span><span class="o">,</span><span class="n">array</span><span class="o">.</span><span class="na">length</span><span class="o">,</span><span class="mi">5</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"6`s index:"</span><span class="o">+</span><span class="n">index</span><span class="o">);</span>
+        <span class="nc">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">array</span><span class="o">);</span><span class="c1">//对整个数组进行排序</span>
+        <span class="n">print</span><span class="o">(</span><span class="n">array</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="kt">int</span> <span class="o">[]</span> <span class="n">array</span><span class="o">){</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">array</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++){</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]+</span><span class="s">"\t"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2011-11-15-java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Java中的基本数据类型 - 知不知&amp;url=/list/docs/java/2011-11-15-java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2011-11-15-java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html&amp;title=Java-Java中的基本数据类型 - 知不知&amp;summary=Java中的基本数据类型&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2011-11-15-java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html&amp;text=Java-Java中的基本数据类型 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2011-11-15-java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html&amp;t=Java-Java中的基本数据类型 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2011-11-15-java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Java中的基本数据类型'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

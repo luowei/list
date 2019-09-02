@@ -1,0 +1,222 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java中创建线程池的实现方案</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="java中创建线程池的实现方案">Java中创建线程池的实现方案</h3> <p><strong>1.建一个如下的Runable子类：</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nc">Runnable</span> <span class="n">runnable</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Runnable</span><span class="o">(){</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">(){</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Run"</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div></div> <p><strong>2.实例化一个Thread来执行这个线程</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">new</span> <span class="nc">Thread</span> <span class="o">(</span><span class="n">runnable</span><span class="o">).</span> <span class="nc">Start</span> <span class="o">();</span>
+</code></pre></div></div> <p>More info see: <a href="https://baptiste-wicht.com/categories/concurrency.html">Java Concurrency Tutorial</a></p> <h3 id="2运用线程池">2.运用线程池</h3> <p><strong>1.示例1，Future存于list中</strong></p> <blockquote> <p>This is very simple and clean, but what if you’ve several long running tasks that you want to load in parralel and then wait for the completion of all the tasks, it’s a little bit harder to code and if you want to get the return value of all the tasks it becomes really difficult to keep a good code. But like for almost any problems, Java has a solution for you, the Executors. This simple class allows you to create thread pools and thread factories.</p> <p>A thread pool is represented by an instance of the class ExecutorService. With an ExecutorService, you can submit task that will be completed in the future. Here are the type of thread pools you can create with the Executors class :</p> <p>§ Single Thread Executor : A thread pool with only one thread. So all the submitted task will be executed sequentially. Method : Executors.newSingleThreadExecutor()</p> <p>§ Cached Thread Pool : A thread pool that create as many threads it needs to execute the task in parralel. The old available threads will be reused for the new tasks. If a thread is not used during 60 seconds, it will be terminated and removed from the pool. Method : Executors.newCachedThreadPool()</p> <p>§ Fixed Thread Pool : A thread pool with a fixed number of threads. If a thread is not available for the task, the task is put in queue waiting for an other task to ends. Method : Executors.newFixedThreadPool()</p> <p>§ Scheduled Thread Pool : A thread pool made to schedule future task. Method :Executors.newScheduledThreadPool()</p> <p>§ Single Thread Scheduled Pool : A thread pool with only one thread to schedule future task. Method :Executors.newSingleThreadScheduledExecutor()</p> <p>Once you have a thread pool, you can submit task to it using the different submit methods. You can submit a Runnable or a Callableto the thread pool. The method return a Future representing the future state of the task. If you submitted a Runnable, the Future object return null once the task finished.</p> </blockquote> <p><img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_91.jpg" alt="callable" /> <br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_92.jpg" alt="callable" /></p> <p><strong>2.示例2,Future存于Map中</strong><br /> 1.创建线程池，使用线程池，如下图：<br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_93.jpg" alt="Future实现" /></p> <p>2.定义Callable实现类</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ttpod</span><span class="o">.</span><span class="na">musicSNS</span><span class="o">.</span><span class="na">job</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.ttpod.musicSNS.service.MusicService</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.ttpod.musicSNS.view.dto.Music</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.concurrent.Callable</span><span class="o">;</span>
+<span class="cm">/**
+ * User: luowei
+ * Date: 12-7-23
+ * Time: 上午10:29
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SetMusicPic</span> <span class="kd">implements</span> <span class="nc">Callable</span><span class="o">&lt;</span><span class="nc">Music</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="nc">MusicService</span> <span class="n">musicService</span><span class="o">;</span>
+    <span class="nc">Music</span> <span class="n">music</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">SetMusicPic</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">SetMusicPic</span><span class="o">(</span><span class="nc">MusicService</span> <span class="n">musicService</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">musicService</span> <span class="o">=</span> <span class="n">musicService</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">SetMusicPic</span><span class="o">(</span><span class="nc">MusicService</span> <span class="n">musicService</span><span class="o">,</span><span class="nc">Music</span> <span class="n">music</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">musicService</span> <span class="o">=</span> <span class="n">musicService</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">music</span> <span class="o">=</span> <span class="n">music</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="cm">/**
+     * 执行线程
+     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Music</span> <span class="nf">call</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+<span class="err">…………</span>
+        <span class="nc">String</span> <span class="n">picUrl</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">musicService</span><span class="o">.</span><span class="na">getPic</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">music</span><span class="o">);</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">picUrl</span><span class="o">==</span><span class="kc">null</span><span class="o">){</span>
+            <span class="n">picUrl</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">music</span><span class="o">.</span><span class="na">setPicUrl</span><span class="o">(</span><span class="n">picUrl</span><span class="o">);</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">music</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <h3 id="线程同步">线程同步</h3> <p><strong>synchronized block 与synchronized method</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_94.jpg" alt="Future实现" /></p> <p><strong>对一个同步代码块锁定同一个对象资源</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_95.jpg" alt="锁定同一个对象资源" /></p> <p><strong>自定义线程安全的list与map</strong></p> <blockquote> <p>Most often I use this to synchronize access to a list or map but I don’t want to block access to all methods of the object.</p> <p>In the following code one thread modifying the list will not block waiting for a thread that is modifying the map. If the methods were synchronized on the object then each method would have to wait even though the modifications they are making would not conflict.</p> </blockquote> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Foo</span><span class="o">&gt;</span> <span class="n">myList</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Foo</span><span class="o">&gt;();</span>
+<span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">Bar</span><span class="o">)</span> <span class="n">myMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">Bar</span><span class="o">&gt;();</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">put</span><span class="o">(</span> <span class="nc">String</span> <span class="n">s</span><span class="o">,</span> <span class="nc">Bar</span> <span class="n">b</span> <span class="o">)</span> <span class="o">{</span>
+<span class="kd">synchronized</span><span class="o">(</span> <span class="n">myMap</span> <span class="o">)</span> <span class="o">{</span>
+        <span class="n">myMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span> <span class="n">s</span><span class="o">,</span><span class="n">b</span> <span class="o">);</span>
+        <span class="c1">// then some thing that may take a while like a database access or RPC or notifying listeners</span>
+        <span class="o">}</span>
+        <span class="o">}</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">hasKey</span><span class="o">(</span> <span class="nc">String</span> <span class="n">s</span><span class="o">,</span> <span class="o">)</span> <span class="o">{</span>
+<span class="kd">synchronized</span><span class="o">(</span> <span class="n">myMap</span> <span class="o">)</span> <span class="o">{</span>
+        <span class="n">myMap</span><span class="o">.</span><span class="na">hasKey</span><span class="o">(</span> <span class="n">s</span> <span class="o">);</span>
+        <span class="o">}</span>
+        <span class="o">}</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">(</span> <span class="nc">Foo</span> <span class="n">f</span> <span class="o">)</span> <span class="o">{</span>
+<span class="kd">synchronized</span><span class="o">(</span> <span class="n">myList</span> <span class="o">)</span> <span class="o">{</span>
+        <span class="n">myList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">f</span> <span class="o">);</span>
+<span class="c1">// then some thing that may take a while like a database access or RPC or notifying listeners</span>
+        <span class="o">}</span>
+        <span class="o">}</span>
+<span class="kd">public</span> <span class="nc">Thing</span> <span class="nf">getMedianFoo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Foo</span> <span class="n">med</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="kd">synchronized</span><span class="o">(</span> <span class="n">myList</span> <span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">myList</span><span class="o">);</span>
+        <span class="n">med</span> <span class="o">=</span> <span class="n">myList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">myList</span><span class="o">.</span><span class="na">size</span><span class="o">()/</span><span class="mi">2</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">med</span><span class="o">;</span>
+        <span class="o">}</span>
+</code></pre></div></div> <p><strong>Callable方法的使用</strong><br /> 使用闭包，实现要执行的任务 multiplyArray(xs,ys,length)</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Callable</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">[][]&gt;</span> <span class="nf">getMultiplierCallable</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span><span class="o">[][]</span> <span class="n">xs</span><span class="o">,</span>
+            <span class="kd">final</span> <span class="kt">int</span><span class="o">[][]</span> <span class="n">ys</span><span class="o">,</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">length</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nc">Callable</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">[][]&gt;()</span> <span class="o">{</span>
+            <span class="kd">public</span> <span class="nc">Integer</span><span class="o">[][]</span> <span class="nf">call</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+                <span class="nc">Integer</span><span class="o">[][]</span> <span class="n">answer</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Integer</span><span class="o">[</span><span class="n">length</span><span class="o">][</span><span class="n">length</span><span class="o">];</span>
+                <span class="n">answer</span> <span class="o">=</span> <span class="n">multiplyArray</span><span class="o">(</span><span class="n">xs</span><span class="o">,</span> <span class="n">ys</span><span class="o">,</span> <span class="n">length</span><span class="o">);</span>
+                <span class="k">return</span> <span class="n">answer</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ExecutionException</span><span class="o">,</span>
+            <span class="nc">InterruptedException</span> <span class="o">{</span>
+                
+        <span class="kd">final</span> <span class="kt">int</span><span class="o">[][]</span> <span class="n">xs</span> <span class="o">=</span> <span class="o">{{</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">},</span> <span class="o">{</span><span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">}};</span>
+        <span class="kd">final</span> <span class="kt">int</span><span class="o">[][]</span> <span class="n">ys</span> <span class="o">=</span> <span class="o">{{</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">},</span> <span class="o">{</span><span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">}};</span>
+                
+        <span class="kd">final</span> <span class="nc">Callable</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">[][]&gt;</span> <span class="n">callable</span> <span class="o">=</span> <span class="n">getMultiplierCallable</span><span class="o">(</span><span class="n">xs</span><span class="o">,</span> <span class="n">ys</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="nc">ExecutorService</span> <span class="n">service</span> <span class="o">=</span> <span class="nc">Executors</span><span class="o">.</span><span class="na">newFixedThreadPool</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="nc">Future</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">[][]&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="na">submit</span><span class="o">(</span><span class="n">callable</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="nc">Integer</span><span class="o">[][]</span> <span class="n">intArray</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kd">final</span> <span class="nc">Integer</span><span class="o">[]</span> <span class="n">element</span> <span class="o">:</span> <span class="n">intArray</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="nc">Arrays</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">element</span><span class="o">));</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div></div> <p><strong>FutureTask的应用</strong></p> <blockquote> <p>I really want to create a subclass of FutureTask that has a default no-arg constructor. In particular, I want my subclass to implement the Callable interface and use itself as the callable. This way, users of MyFutureTask can just subclass MyFutureTask instead of having to implement their own callable and pass it to an instance of FutureTask.</p> <p>Here is a good idear, I really want to create a subclass of FutureTask that has a default no-arg constructor. In particular, I want my subclass to implement the Callable interface and use itself as the callable. This way, users of MyFutureTask can just subclass MyFutureTask instead of having to implement their own callable and pass it to an instance of FutureTask.</p> </blockquote> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.concurrent.Callable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.concurrent.FutureTask</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">MyFutureClass</span><span class="o">&lt;</span><span class="no">V</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="nc">Callable</span><span class="o">&lt;</span><span class="no">V</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">FutureTask</span><span class="o">&lt;</span><span class="no">V</span><span class="o">&gt;</span> <span class="n">futureTask</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">MyFutureClass</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">futureTask</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FutureTask</span><span class="o">&lt;</span><span class="no">V</span><span class="o">&gt;(</span><span class="k">this</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="no">V</span> <span class="nf">call</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">myCall</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">protected</span> <span class="kd">abstract</span> <span class="no">V</span> <span class="nf">myCall</span><span class="o">();</span>
+    <span class="kd">public</span> <span class="nc">FutureTask</span><span class="o">&lt;</span><span class="no">V</span><span class="o">&gt;</span> <span class="nf">getFutureTask</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">futureTask</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>示例2：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">ExecutorService</span> <span class="no">THREAD_POOL</span> <span class="o">=</span> <span class="nc">Executors</span><span class="o">.</span><span class="na">newCachedThreadPool</span><span class="o">();</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="no">T</span> <span class="nf">timedCall</span><span class="o">(</span><span class="nc">FutureTask</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="n">task</span><span class="o">,</span> <span class="kt">long</span> <span class="n">timeout</span><span class="o">,</span> <span class="nc">TimeUnit</span> <span class="n">timeUnit</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span><span class="o">,</span> <span class="nc">ExecutionException</span><span class="o">,</span> <span class="nc">TimeoutException</span> <span class="o">{</span>
+        <span class="no">THREAD_POOL</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">task</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">task</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">timeout</span><span class="o">,</span> <span class="n">timeUnit</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">FutureTask</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">task</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FutureTask</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;(</span><span class="k">new</span> <span class="nc">Callable</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
+                <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">call</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+                    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">1000000</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+                        <span class="k">if</span> <span class="o">(</span><span class="nc">Thread</span><span class="o">.</span><span class="na">interrupted</span><span class="o">())</span> <span class="k">return</span> <span class="mi">1</span><span class="o">;</span>
+                        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Date</span><span class="o">());</span>
+                        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+                    <span class="o">}</span>
+                    <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+            <span class="kt">int</span> <span class="n">returnCode</span> <span class="o">=</span> <span class="n">timedCall</span><span class="o">(</span><span class="n">task</span><span class="o">,</span> <span class="mi">100</span><span class="o">,</span> <span class="nc">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="n">task</span><span class="o">.</span><span class="na">Cancel</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div> <p><strong>使用多线程构建线程链表</strong><br /> Use something like this:</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">executeMultiThread</span><span class="o">(</span><span class="kt">int</span> <span class="n">numThreads</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="nc">Exception</span>
+    <span class="o">{</span>
+        <span class="nc">List</span> <span class="n">threads</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numThreads</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+        <span class="o">{</span>
+            <span class="nc">Thread</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">(</span><span class="k">new</span> <span class="nc">Runnable</span><span class="o">()</span>
+            <span class="o">{</span>
+                <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span>
+                <span class="o">{</span>
+                    <span class="c1">// do your work</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+            <span class="c1">// System.out.println("STARTING: " + t);</span>
+            <span class="n">t</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+            <span class="n">threads</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">t</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">threads</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span>
+        <span class="o">{</span>
+            <span class="c1">// Big number to wait so this can be debugged</span>
+            <span class="c1">// System.out.println("JOINING: " + threads.get(i));</span>
+            <span class="o">((</span><span class="nc">Thread</span><span class="o">)</span><span class="n">threads</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">)).</span><span class="na">join</span><span class="o">(</span><span class="mi">1000000</span><span class="o">);</span>
+        <span class="o">}</span>
+</code></pre></div></div> <p><strong>volatile关键字的应用</strong><br /> volatile关键字修饰的变量是线程安全的。</p> <blockquote> <p>volatile has semantics for memory visibility. Basically, the value of a volatile field becomes visible to all readers (other threads in particular) after a write operation completes on it. Withoutvolatile, readers could see some non-updated value.</p> <p>One common example for using volatile is to use a volatile boolean variable as a flag to terminate a thread. If you’ve started a thread, and you want to be able to safely interrupt it from a different thread, you can have the thread periodically check a flag. To stop it, set the flag to true. By making the flag volatile, you can ensure that the thread that is checking it will see it has been set the next time it checks it without having to even use a synchronized block.</p> </blockquote> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">Thread</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kd">volatile</span> <span class="kt">boolean</span> <span class="n">close</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">while</span><span class="o">(!</span><span class="n">close</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// do work</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">close</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">close</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="c1">// interrupt here if needed</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>Notice how there’s no need for synchronization.<br /> sample 2:</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">jcip</span><span class="o">.</span><span class="na">examples</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">concurrent</span><span class="o">.</span><span class="na">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.math.BigInteger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.concurrent.*</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">net.jcip.annotations.*</span><span class="o">;</span>
+
+<span class="cm">/**
+ * PrimeGenerator
+ * &lt;p/&gt;
+ * Using a volatile field to hold cancellation state
+ *
+ * @author Brian Goetz and Tim Peierls
+ */</span>
+<span class="nd">@ThreadSafe</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PrimeGenerator</span> <span class="kd">implements</span> <span class="nc">Runnable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="nc">ExecutorService</span> <span class="n">exec</span> <span class="o">=</span> <span class="nc">Executors</span><span class="o">.</span><span class="na">newCachedThreadPool</span><span class="o">();</span>
+
+    <span class="nd">@GuardedBy</span><span class="o">(</span><span class="s">"this"</span><span class="o">)</span> <span class="kd">private</span> <span class="kd">final</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">BigInteger</span><span class="o">&gt;</span> <span class="n">primes</span>
+            <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">BigInteger</span><span class="o">&gt;();</span>
+    <span class="kd">private</span> <span class="kd">volatile</span> <span class="kt">boolean</span> <span class="n">cancelled</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">BigInteger</span> <span class="n">p</span> <span class="o">=</span> <span class="nc">BigInteger</span><span class="o">.</span><span class="na">ONE</span><span class="o">;</span>
+        <span class="k">while</span> <span class="o">(!</span><span class="n">cancelled</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">nextProbablePrime</span><span class="o">();</span>
+            <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">primes</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">cancel</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">cancelled</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">BigInteger</span><span class="o">&gt;</span> <span class="nf">get</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">BigInteger</span><span class="o">&gt;(</span><span class="n">primes</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">static</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">BigInteger</span><span class="o">&gt;</span> <span class="nf">aSecondOfPrimes</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="nc">PrimeGenerator</span> <span class="n">generator</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PrimeGenerator</span><span class="o">();</span>
+        <span class="n">exec</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">generator</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="no">SECONDS</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">generator</span><span class="o">.</span><span class="na">cancel</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">generator</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>come from Java Concurrency – <a href="https://baptiste-wicht.com/posts/2010/09/java-concurrency-part-7-executors-and-thread-pools.html">Part 7 : Executors and thread pools</a><br /> more see: <a href="https://www.cnblogs.com/jersey/archive/2011/03/30/2000231.html">Java 线程池学习</a></p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2012-01-18-Java%E4%B8%AD%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Java中创建线程池的实现方案 - 知不知&amp;url=/list/docs/java/2012-01-18-Java%E4%B8%AD%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2012-01-18-Java%E4%B8%AD%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88.html&amp;title=Java-Java中创建线程池的实现方案 - 知不知&amp;summary=Java中创建线程池的实现方案&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2012-01-18-Java%E4%B8%AD%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88.html&amp;text=Java-Java中创建线程池的实现方案 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2012-01-18-Java%E4%B8%AD%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88.html&amp;t=Java-Java中创建线程池的实现方案 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2012-01-18-Java%E4%B8%AD%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Java中创建线程池的实现方案'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

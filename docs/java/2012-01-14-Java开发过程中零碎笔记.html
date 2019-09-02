@@ -1,0 +1,369 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java开发过程中零碎笔记</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>获得当前应用的路径</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"request.getContextPath():"</span><span class="o">+</span><span class="n">request</span><span class="o">.</span><span class="na">getContextPath</span><span class="o">());</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"request.getSession().getServletContext().getContextPath():"</span><span class="o">+</span><span class="n">request</span><span class="o">.</span><span class="na">getSession</span><span class="o">().</span><span class="na">getServletContext</span><span class="o">().</span><span class="na">getContextPath</span><span class="o">());</span>
+</code></pre></div></div> <p><strong>mysql授权</strong></p> <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">grant</span> <span class="k">all</span> <span class="k">PRIVILEGES</span> <span class="k">on</span> <span class="o">*</span><span class="p">.</span><span class="o">*</span> <span class="k">to</span> <span class="n">root</span><span class="o">@</span><span class="s1">'%'</span> <span class="n">IDENTIFIED</span> <span class="k">by</span> <span class="s1">'123'</span>
+</code></pre></div></div> <p>jar 文件搜索: <code class="highlighter-rouge">http://www.jarvana.com/jarvana/</code></p> <p><strong>生成javadoc</strong><br /> 生成javadoc中文乱码，在这里配置：<code class="highlighter-rouge">-encoding UTF-8 -charset UTF-8</code></p> <p><strong>找不到符号</strong><br /> 符号： 类 HttpServletRequest<br /> 解决方案：在项目的build path下添加jar包servlet-api.jar，tomcat带的，jdk中没有。</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="no">YICHA_DOWN_XML_IN</span> <span class="o">=</span> <span class="s">"http://60.28.215.67/mXml/tdel.do?pvt=0&amp;tit={0}&amp;id={1}&amp;key={2}"</span><span class="o">;</span>  <span class="c1">//红色标为占位符</span>
+<span class="nc">YiChaDown</span> <span class="n">yiChaDown</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">yiChaService</span><span class="o">.</span><span class="na">getYiChaDownList</span><span class="o">(</span><span class="nc">Config</span><span class="o">.</span><span class="na">YICHA_DOWN_XML_IN</span><span class="o">,</span> <span class="n">tit</span><span class="o">,</span> <span class="n">yid</span><span class="o">,</span> <span class="s">" "</span><span class="o">);</span>
+
+<span class="c1">// 先从缓存获取本地歌曲下载地址</span>
+<span class="n">downBean</span> <span class="o">=</span> <span class="o">(</span><span class="nc">DownBean</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">commonService</span><span class="o">.</span><span class="na">getMemCache</span><span class="o">(</span><span class="s">"ayyc_localSong"</span><span class="o">+</span> <span class="n">localSongId</span><span class="o">);</span>
+<span class="n">downUrl</span> <span class="o">=</span> <span class="nc">MessageFormat</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">downUrl</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">[]</span> <span class="o">{</span><span class="nc">URLEncoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">tit</span><span class="o">,</span> <span class="s">"UTF-8"</span><span class="o">),</span> <span class="n">id</span><span class="o">,</span><span class="nc">URLEncoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="s">"UTF-8"</span><span class="o">)</span> <span class="o">});</span>
+<span class="n">yiChaDown</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">parseDownXmlByUrl</span><span class="o">(</span><span class="n">downUrl</span><span class="o">);</span>
+</code></pre></div></div> <h3 id="jquery-ui选项卡">jquery UI选项卡</h3> <p><strong>js</strong></p> <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="dl">"</span><span class="s2">text/javascript</span><span class="dl">"</span> <span class="o">&gt;</span>
+    <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#mydialog</span><span class="dl">"</span><span class="p">).</span><span class="nx">dialog</span><span class="p">();</span>
+        <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#select</span><span class="dl">"</span><span class="p">).</span><span class="nx">tabs</span><span class="p">();</span>
+        <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#select</span><span class="dl">"</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#info</span><span class="dl">"</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="dl">"</span><span class="s2">display</span><span class="dl">"</span><span class="p">,</span> <span class="dl">""</span><span class="p">);</span> <span class="p">});</span>
+    <span class="p">});</span>
+<span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span></code></pre></div></div> <p><strong>html</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"select"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;ul&gt;</span>
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"#phonebrands"</span><span class="nt">&gt;</span>品牌信息<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"#phones"</span><span class="nt">&gt;</span>手机信息<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"phonebrands"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div> <p>报错信息：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2012-2-10 17:46:43 org.apache.catalina.core.ApplicationContext log
+严重: StandardWrapper.Throwable
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'musicManageController': Injection of autowired dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Could not autowire field: private com.ttpod.recommend.service.INonLocalService com.ttpod.recommend.view.manage.MusicManageController.nonLocalService; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No matching bean of type [com.ttpod.recommend.service.INonLocalService] found for dependency: expected at least 1 bean which qualifies as autowire candidate for this dependency. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+    at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:285)
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1074)
+
+解决方案：在nonLocalService前面加上：@service ,以便系统在使用到这个service时就注入。
+</code></pre></div></div> <p>jar 文件搜索: <code class="highlighter-rouge">http://www.jarvana.com/jarvana/</code></p> <p><strong>注意在 for 循环中用continue</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="o">(</span><span class="nc">Node</span> <span class="nl">fileTypeNode:</span><span class="n">nodeList</span><span class="o">){</span>
+        <span class="c1">//文件类型：压缩，高质，普通</span>
+        <span class="nc">String</span> <span class="n">fileType</span><span class="o">=</span><span class="n">fileTypeNode</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
+        <span class="nc">Items</span> <span class="n">item</span><span class="o">=</span><span class="n">nonLocalDown</span><span class="o">.</span><span class="na">new</span> <span class="nf">Items</span><span class="o">();</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="s">"压缩"</span><span class="o">)!=-</span><span class="mi">1</span><span class="o">){</span>
+        <span class="n">totalType</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"0"</span><span class="o">);</span>
+        <span class="n">item</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="sc">'['</span><span class="o">)+</span><span class="mi">1</span><span class="o">,</span><span class="n">fileType</span><span class="o">.</span><span class="na">length</span><span class="o">()-</span><span class="mi">1</span><span class="o">));</span>
+        <span class="o">}</span><span class="k">else</span> <span class="k">if</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="s">"清晰"</span><span class="o">)!=-</span><span class="mi">1</span><span class="o">){</span>
+        <span class="n">totalType</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"1"</span><span class="o">);</span>
+        <span class="n">item</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="sc">'['</span><span class="o">)+</span><span class="mi">1</span><span class="o">,</span><span class="n">fileType</span><span class="o">.</span><span class="na">length</span><span class="o">()-</span><span class="mi">1</span><span class="o">));</span>
+        <span class="o">}</span><span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="s">"高音质"</span><span class="o">)!=-</span><span class="mi">1</span><span class="o">){</span>
+        <span class="k">continue</span><span class="o">;</span>
+<span class="c1">//                 totalType.append("3");</span>
+<span class="c1">//                 item.setSize(fileType.substring(fileType.indexOf('[')+1,fileType.length()-1));</span>
+        <span class="o">}</span><span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="s">"保真"</span><span class="o">)!=-</span><span class="mi">1</span><span class="o">){</span>
+        <span class="k">continue</span><span class="o">;</span>
+<span class="c1">//                 totalType.append("4");</span>
+<span class="c1">//                 item.setSize(fileType.substring(fileType.indexOf('[')+1,fileType.length()-1));</span>
+        <span class="o">}</span>
+        <span class="nc">Node</span> <span class="n">itemNode</span><span class="o">=</span><span class="n">fileTypeNode</span><span class="o">.</span><span class="na">getParent</span><span class="o">();</span>
+        <span class="err">…………</span>
+        <span class="n">item</span><span class="o">.</span><span class="na">setFiletype</span><span class="o">(</span><span class="n">fileType</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div> <h3 id="jscss以及html">js、css以及html</h3> <p><strong>获得当前应用的路径</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>System.out.println("request.getContextPath():"+request.getContextPath());
+System.out.println("request.getSession().getServletContext().getContextPath():"+request.getSession().getServletContext().getContextPath());
+</code></pre></div></div> <p><strong>HTML5的figure标签</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div> <p><strong>HTML5的figure标签</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>figure用来代替原来li标签，P标签谁来取代呢？答案就是：figcaption  
+w3c赋予的定义：figure标签规定独立的流内容（图像、图表、照片、代码等等）。figure 元素的内容应该与主内容相关，但如果被删除，则不应对文档流产生影响。  
+</code></pre></div></div> <p><strong>HTML <code class="highlighter-rouge">&lt;label&gt;</code> 标签的 for 属性</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>定义和用法
+for 属性规定 label 与哪个表单元素绑定。
+隐式和显式的联系
+标记通常以下面两种方式中的一种来和表单控件相联系：将表单控件作为标记标签的内容，这样的就是隐式形式，或者为 <span class="nt">&lt;label&gt;</span> 标签下的 for 属性命名一个目标表单 id，这样就是显式形式。
+例如，在 XHTML 中：
+显式的联系：
+<span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"SSN"</span><span class="nt">&gt;</span>Social Security Number:<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"SocSecNum"</span> <span class="na">id=</span><span class="s">"SSn"</span> <span class="nt">/&gt;</span>
+隐式的联系：
+<span class="nt">&lt;label&gt;</span>Date of Birth: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"DofB"</span> <span class="nt">/&gt;&lt;/label&gt;</span>
+第一个标记是以显式形式将文本 "Social Security Number:" 和表单的社会安全号码的文本输入控件 ("SocSecNum") 联系起来，它的 for 属性的值和控件的 id 一样，都是 SSN。第二个标记 ("Date of Birth:") 不需要 for 属性，它的相关控件也不需要 id 属性，它们是通过在 <span class="nt">&lt;label&gt;</span> 标签中放入 <span class="nt">&lt;input&gt;</span> 标签来隐式地连接起来的。
+
+实例
+带有两个输入字段和相关标记的简单 HTML 表单：
+<span class="nt">&lt;form&gt;</span>
+    <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"male"</span><span class="nt">&gt;</span>Male<span class="nt">&lt;/label&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"radio"</span> <span class="na">name=</span><span class="s">"sex"</span> <span class="na">id=</span><span class="s">"male"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"female"</span><span class="nt">&gt;</span>Female<span class="nt">&lt;/label&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"radio"</span> <span class="na">name=</span><span class="s">"sex"</span> <span class="na">id=</span><span class="s">"female"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div></div> <p><strong>jQuery中设置form表单中action值的方法</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>html代码：
+<span class="nt">&lt;form</span> <span class="na">id=</span><span class="s">"myFormId"</span> <span class="na">name=</span><span class="s">"myForm"</span> <span class="na">action=</span><span class="s">""</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">id=</span><span class="s">"inParam"</span> <span class="na">name=</span><span class="s">"inParam"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">id=</span><span class="s">"tstype"</span> <span class="na">name=</span><span class="s">"tstype"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">id=</span><span class="s">"zd"</span> <span class="na">name=</span><span class="s">"zd"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+熟悉JavaScript的朋友一定晓得JS可以动态改变form表单中action的值，写法如下：
+document.myForm.action = "userinfo.shtml";
+//需要注意的是form标签一定要有name属性，光有id没有name不起作用
+document.myForm.attributes["action"].value  = "XXXXXXXX";
+document.all("myFormId").setAttribute("action", "欲赋的action的值");
+上述两种方式在JavaScript中均经过测试。
+下面介绍在jQuery中设置form表单中action的值的方法。
+$("#myFormId").attr("action", "userinfo.shtml");
+【注意】：$("#myFormId").action="XXX";  这种写法是不起作用的!
+</code></pre></div></div> <p><strong>Jquery获取和设置元素value属性</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Jquery提供了获得和设置元素的value的方法。如input， textarea等元素的value值。
+例子：&lt;input name="a" id="a" value="Hello"&gt;
+1. val（）获取元素的值。jquery不能直接使用value属性去操作元素的值。
+错误操作： var myvalue=$("#a").value;
+正确操作： var myvalue=$("#a").val();
+2. val("要设置的值") ： 设置元素的值。
+错误操作： $("#a").value="new value";
+正确操作： $("#a").val("new value");
+那个错误例子是我第一次使用的时候，想当然的使用方法。当然，那是不对的。
+</code></pre></div></div> <p><strong>数组转换成字符串</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">lanuage=</span><span class="s">"javascript"</span><span class="nt">&gt;</span>
+    <span class="kd">var</span> <span class="nx">tt</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="dl">"</span><span class="s2">abc</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">cde</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">ggg</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="nx">tt</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="nx">tt</span><span class="o">+</span><span class="dl">""</span><span class="p">);</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="nx">tt</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="dl">""</span><span class="p">));</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre></div></div> <p>示例：</p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+    <span class="kd">var</span> <span class="nx">dict</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">();</span>
+    <span class="nx">dict</span><span class="p">[</span><span class="dl">"</span><span class="s2">人</span><span class="dl">"</span><span class="p">]</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ren</span><span class="dl">"</span><span class="p">;</span>
+    <span class="nx">dict</span><span class="p">[</span><span class="dl">"</span><span class="s2">口</span><span class="dl">"</span><span class="p">]</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">kou</span><span class="dl">"</span><span class="p">;</span>
+    <span class="nx">dict</span><span class="p">[</span><span class="dl">"</span><span class="s2">手</span><span class="dl">"</span><span class="p">]</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">shou</span><span class="dl">"</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">arr</span><span class="o">=</span><span class="k">new</span> <span class="nb">Array</span><span class="p">();</span>
+    <span class="nx">arr</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="dl">"</span><span class="s2">aaaaaaa</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">arr</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="dl">"</span><span class="s2">bbbbbb</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">arr</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="dl">"</span><span class="s2">cccc</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">arr</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="dl">"</span><span class="s2">ddd</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">dict.toString():</span><span class="dl">"</span><span class="o">+</span><span class="nx">dict</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span> <span class="c1">//输出空串</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">dict.join():</span><span class="dl">"</span><span class="o">+</span><span class="nx">dict</span><span class="p">.</span><span class="nx">join</span><span class="p">());</span> <span class="c1">//输出空串</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">dict.toString():</span><span class="dl">"</span><span class="o">+</span><span class="nx">dict</span><span class="p">[</span><span class="dl">"</span><span class="s2">人</span><span class="dl">"</span><span class="p">]);</span> <span class="c1">//输出 ren</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">arr.toString():</span><span class="dl">"</span><span class="o">+</span><span class="nx">arr</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span> <span class="c1">//输出 aaaaaaa,bbbbbb,cccc,ddd</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre></div></div> <h3 id="后端java">后端Java</h3> <p><strong>spring mvc注解报错信息：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2012-2-10 17:46:43 org.apache.catalina.core.ApplicationContext log
+严重: StandardWrapper.Throwable
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'musicManageController': Injection of autowired dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Could not autowire field: private com.ttpod.recommend.service.INonLocalService com.ttpod.recommend.view.manage.MusicManageController.nonLocalService; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No matching bean of type [com.ttpod.recommend.service.INonLocalService] found for dependency: expected at least 1 bean which qualifies as autowire candidate for this dependency. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+    at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:285)
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1074)
+</code></pre></div></div> <p>解决方案：在nonLocalService前面加上：@service ,以便系统在使用到这个service时就注入。<br /> jar文件搜索: <code class="highlighter-rouge">http://www.jarvana.com/jarvana/</code></p> <p><strong>修改java web 项目名称</strong><br /> 第一种方法：<br /> 打开工程所在目录，找到一个 .mymetadata的文件，用写字板打开，内容大致如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;project-module</span>
+        <span class="na">type=</span><span class="s">"WEB"</span>
+        <span class="na">name=</span><span class="s">"action"</span>
+        <span class="na">id=</span><span class="s">"myeclipse.1242011546906"</span>
+        <span class="na">context-root=</span><span class="s">"/old"</span>
+        <span class="na">j2ee-spec=</span><span class="s">"1.4"</span>
+        <span class="na">archive=</span><span class="s">"old.war"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;attributes&gt;</span>
+        <span class="nt">&lt;attribute</span> <span class="na">name=</span><span class="s">"webrootdir"</span> <span class="na">value=</span><span class="s">"/WebRoot"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/attributes&gt;</span>
+<span class="nt">&lt;/project-module&gt;</span>
+</code></pre></div></div> <p>context-root=”/old” 为发布后的目录名，改为 context-root=”/new” 之后，用eclipse重新发布的目录名就是new了。如果用war的打包方式发布，则将 archive=”old.war”&gt; 改为 archive=”new.war”&gt;。</p> <p>第二种方法更为简单：<br /> 右键点击你的项目，然后选择属性—-&gt;然后点击myeclipse-web选项，修改web context-root名称为你要修改的项目名称和前面重命名的名称一致就可以了。</p> <p><strong>从网络读取图片并保存至本地</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">cn</span><span class="o">.</span><span class="na">cctv</span><span class="o">.</span><span class="na">net</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.ByteArrayOutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileOutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.HttpURLConnection</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.URL</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ImageRequest</span> <span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+    <span class="c1">//new一个URL对象</span>
+        <span class="no">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="no">URL</span><span class="o">(</span><span class="s">"http:    //img.hexun.com/2011-06-21/130726386.jpg"</span><span class="o">);</span>
+    <span class="c1">//打开链接</span>
+        <span class="nc">HttpURLConnection</span> <span class="n">conn</span> <span class="o">=</span> <span class="o">(</span><span class="nc">HttpURLConnection</span><span class="o">)</span><span class="n">url</span><span class="o">.</span><span class="na">openConnection</span><span class="o">();</span>
+    <span class="c1">//设置请求方式为"GET"</span>
+        <span class="n">conn</span><span class="o">.</span><span class="na">setRequestMethod</span><span class="o">(</span><span class="s">"GET"</span><span class="o">);</span>
+    <span class="c1">//超时响应时间为5秒</span>
+        <span class="n">conn</span><span class="o">.</span><span class="na">setConnectTimeout</span><span class="o">(</span><span class="mi">5</span> <span class="o">*</span> <span class="mi">1000</span><span class="o">);</span>
+    <span class="c1">//通过输入流获取图片数据</span>
+        <span class="nc">InputStream</span> <span class="n">inStream</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+    <span class="c1">//得到图片的二进制数据，以二进制封装得到数据，具有通用性</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">data</span> <span class="o">=</span> <span class="n">readInputStream</span><span class="o">(</span><span class="n">inStream</span><span class="o">);</span>
+    <span class="c1">//new一个文件对象用来保存图片，默认保存当前工程根目录</span>
+        <span class="nc">File</span> <span class="n">imageFile</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="s">"BeautyGirl.jpg"</span><span class="o">);</span>
+    <span class="c1">//创建输出流</span>
+        <span class="nc">FileOutputStream</span> <span class="n">outStream</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileOutputStream</span><span class="o">(</span><span class="n">imageFile</span><span class="o">);</span>
+    <span class="c1">//写入数据</span>
+        <span class="n">outStream</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">data</span><span class="o">);</span>
+    <span class="c1">//关闭输出流</span>
+        <span class="n">outStream</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">readInputStream</span><span class="o">(</span><span class="nc">InputStream</span> <span class="n">inStream</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span><span class="o">{</span>
+        <span class="nc">ByteArrayOutputStream</span> <span class="n">outStream</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ByteArrayOutputStream</span><span class="o">();</span>
+    <span class="c1">//创建一个Buffer字符串</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">buffer</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">1024</span><span class="o">];</span>
+    <span class="c1">//每次读取的字符串长度，如果为-1，代表全部读取完毕</span>
+        <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="c1">//使用一个输入流从buffer里把数据读取出来</span>
+        <span class="k">while</span><span class="o">(</span> <span class="o">(</span><span class="n">len</span><span class="o">=</span><span class="n">inStream</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">buffer</span><span class="o">))</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">){</span>
+    <span class="c1">//用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度</span>
+            <span class="n">outStream</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">buffer</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">len</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="c1">//关闭输入流</span>
+        <span class="n">inStream</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="c1">//把outStream里的数据写入内存</span>
+        <span class="k">return</span> <span class="n">outStream</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>java检查音频文件是否有效</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cm">/**
+     * 判断链接是否是mp3文件的链接
+     */</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isMp3Url</span><span class="o">(</span><span class="nc">String</span> <span class="n">url</span><span class="o">){</span>
+        <span class="nc">URLConnection</span> <span class="n">urlCon</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="no">URL</span> <span class="n">urlObj</span><span class="o">=</span><span class="k">new</span> <span class="no">URL</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+            <span class="n">urlCon</span><span class="o">=</span> <span class="n">urlObj</span><span class="o">.</span><span class="na">openConnection</span><span class="o">();</span>
+            <span class="n">urlCon</span><span class="o">.</span><span class="na">connect</span><span class="o">();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">urlCon</span><span class="o">.</span><span class="na">getContentType</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"audio/mpeg"</span><span class="o">)){</span> <span class="c1">//如果不是音频文件</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+            <span class="n">urlCon</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div></div> <p><strong>测试函数运行时间的工具类</strong> <br /> 通常的做法</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestObject</span> <span class="o">{</span>
+    <span class="cm">/**
+     * 一个用来被测试的方法，进行了一个比较耗时的循环
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">testMethod</span><span class="o">(){</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">100000000</span><span class="o">;</span> <span class="n">i</span><span class="o">++){</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="cm">/**
+     * 一个简单的测试方法执行时间的方法
+     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testTime</span><span class="o">(){</span>
+        <span class="kt">long</span> <span class="n">begin</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span><span class="c1">//测试起始时间</span>
+        <span class="n">testMethod</span><span class="o">();</span><span class="c1">//测试方法</span>
+        <span class="kt">long</span> <span class="n">end</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span><span class="c1">//测试结束时间</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"[use time]:"</span> <span class="o">+</span> <span class="o">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">begin</span><span class="o">));</span><span class="c1">//打印使用时间</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">TestObject</span> <span class="n">test</span><span class="o">=</span><span class="k">new</span> <span class="nc">TestObject</span><span class="o">();</span>
+        <span class="n">test</span><span class="o">.</span><span class="na">testTime</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>使用Java回调函数来实现<br /> 首先定一个回调接口,java 代码如下：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">CallBack</span> <span class="o">{</span>
+<span class="c1">//执行回调操作的方法</span>
+    <span class="kt">void</span> <span class="nf">execute</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>然后再写一个工具类,java 代码如下：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Tools</span> <span class="o">{</span>
+    <span class="cm">/**
+     * 测试函数使用时间，通过定义CallBack接口的execute方法
+     * @param callBack
+     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testTime</span><span class="o">(</span><span class="nc">CallBack</span> <span class="n">callBack</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">long</span> <span class="n">begin</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span><span class="c1">//测试起始时间</span>
+        <span class="n">callBack</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span><span class="c1">///进行回调操作</span>
+        <span class="kt">long</span> <span class="n">end</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span><span class="c1">//测试结束时间</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"[use time]:"</span> <span class="o">+</span> <span class="o">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">begin</span><span class="o">));</span><span class="c1">//打印使用时间</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Tools</span> <span class="n">tool</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Tools</span><span class="o">();</span>
+        <span class="n">tool</span><span class="o">.</span><span class="na">testTime</span><span class="o">(</span><span class="k">new</span> <span class="nc">CallBack</span><span class="o">(){</span>
+<span class="c1">//定义execute方法</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(){</span>
+<span class="c1">//这里可以加放一个或多个要测试运行时间的方法</span>
+                <span class="nc">TestObject</span><span class="o">.</span><span class="na">testMethod</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">});</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>java读取字节流</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.net.URL</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.URLConnection</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">sun.security.krb5.internal.crypto.c</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">urlc</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">display</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">byte</span> <span class="n">buf</span><span class="o">[]</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">100</span><span class="o">];</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// System.out.print("请输入文件的URL地址: ");</span>
+            <span class="c1">// // 读取用户输入的URL</span>
+            <span class="c1">// int count = System.in.read(buf);</span>
+            <span class="c1">//</span>
+            <span class="c1">// String addr = new String(buf, 0, count);</span>
+            <span class="c1">// 将用户输入的URL字符串传入URL类对象</span>
+            <span class="no">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="no">URL</span><span class="o">(</span><span class="n">url</span><span class="err">地址</span><span class="o">);</span>
+            <span class="c1">// 创建URLConnection对象，用URL的openConnection方法将连接返回给URLConnection的对象</span>
+            <span class="c1">// 实际上URL的openConnection的返回值就是一个URLConnection</span>
+            <span class="nc">URLConnection</span> <span class="n">c</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="na">openConnection</span><span class="o">();</span>
+            <span class="c1">// 用URLConnection的connect()方法建立连接</span>
+            <span class="n">c</span><span class="o">.</span><span class="na">connect</span><span class="o">();</span>
+            <span class="c1">// 显示该连接的相关信息，这些都是URLConnection的方法</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"内容类型: "</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="na">getContentType</span><span class="o">());</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"内容编码: "</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="na">getContentEncoding</span><span class="o">());</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"内容长度: "</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="na">getContentLength</span><span class="o">());</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"创建日期: "</span> <span class="o">+</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">getDate</span><span class="o">()));</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最后修改日期: "</span> <span class="o">+</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">getLastModified</span><span class="o">()));</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"终止日期: "</span> <span class="o">+</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">getExpiration</span><span class="o">()));</span>
+            <span class="nc">StringBuffer</span> <span class="n">txt</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+            <span class="nc">InputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+            <span class="nc">InputStreamReader</span> <span class="n">inReader</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
+            <span class="nc">BufferedReader</span> <span class="n">reader</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">inReader</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">rdline</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+            <span class="k">while</span> <span class="o">((</span><span class="n">rdline</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="na">readLine</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">txt</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">rdline</span> <span class="o">+</span> <span class="s">"\n"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">reader</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">txt</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">urlc</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">urlc</span><span class="o">();</span>
+        <span class="n">app</span><span class="o">.</span><span class="na">display</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>注意在 for 循环中用continue</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">for</span><span class="o">(</span><span class="nc">Node</span> <span class="nl">fileTypeNode:</span><span class="n">nodeList</span><span class="o">){</span>
+        <span class="c1">//文件类型：压缩，高质，普通</span>
+        <span class="nc">String</span> <span class="n">fileType</span><span class="o">=</span><span class="n">fileTypeNode</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
+        <span class="nc">Items</span> <span class="n">item</span><span class="o">=</span><span class="n">nonLocalDown</span><span class="o">.</span><span class="na">new</span> <span class="nf">Items</span><span class="o">();</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="s">"压缩"</span><span class="o">)!=-</span><span class="mi">1</span><span class="o">){</span>
+            <span class="n">totalType</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"0"</span><span class="o">);</span>
+            <span class="n">item</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="sc">'['</span><span class="o">)+</span><span class="mi">1</span><span class="o">,</span><span class="n">fileType</span><span class="o">.</span><span class="na">length</span><span class="o">()-</span><span class="mi">1</span><span class="o">));</span>
+        <span class="o">}</span><span class="k">else</span> <span class="k">if</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="s">"清晰"</span><span class="o">)!=-</span><span class="mi">1</span><span class="o">){</span>
+            <span class="n">totalType</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"1"</span><span class="o">);</span>
+            <span class="n">item</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="sc">'['</span><span class="o">)+</span><span class="mi">1</span><span class="o">,</span><span class="n">fileType</span><span class="o">.</span><span class="na">length</span><span class="o">()-</span><span class="mi">1</span><span class="o">));</span>
+        <span class="o">}</span><span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="s">"高音质"</span><span class="o">)!=-</span><span class="mi">1</span><span class="o">){</span>
+            <span class="k">continue</span><span class="o">;</span>
+            <span class="c1">// totalType.append("3");</span>
+            <span class="c1">// item.setSize(fileType.substring(fileType.indexOf('[')+1,fileType.length()-1));</span>
+        <span class="o">}</span><span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">fileType</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="s">"保真"</span><span class="o">)!=-</span><span class="mi">1</span><span class="o">){</span>
+            <span class="k">continue</span><span class="o">;</span>
+            <span class="c1">// totalType.append("4");</span>
+            <span class="c1">// item.setSize(fileType.substring(fileType.indexOf('[')+1,fileType.length()-1));</span>
+        <span class="o">}</span>
+        <span class="nc">Node</span> <span class="n">itemNode</span><span class="o">=</span><span class="n">fileTypeNode</span><span class="o">.</span><span class="na">getParent</span><span class="o">();</span>
+        <span class="err">…………</span>
+        <span class="n">item</span><span class="o">.</span><span class="na">setFiletype</span><span class="o">(</span><span class="n">fileType</span><span class="o">);</span>
+    <span class="o">}</span>
+
+</code></pre></div></div> <h3 id="string-jonin的实现">String jonin的实现</h3> <p><strong>String jonin的实现</strong><br /> 实现1：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">static</span> <span class="nc">String</span> <span class="nf">join</span><span class="o">(</span><span class="nc">Collection</span><span class="o">&lt;?&gt;</span> <span class="n">s</span><span class="o">,</span> <span class="nc">String</span> <span class="n">delimiter</span><span class="o">)</span> <span class="o">{</span>
+     <span class="nc">StringBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">();</span>
+     <span class="nc">Iterator</span> <span class="n">iter</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+     <span class="k">while</span> <span class="o">(</span><span class="n">iter</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+         <span class="n">builder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">iter</span><span class="o">.</span><span class="na">next</span><span class="o">());</span>
+         <span class="k">if</span> <span class="o">(!</span><span class="n">iter</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+           <span class="k">break</span><span class="o">;</span>                  
+         <span class="o">}</span>
+         <span class="n">builder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">delimiter</span><span class="o">);</span>
+     <span class="o">}</span>
+     <span class="k">return</span> <span class="n">builder</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+ <span class="o">}</span>
+</code></pre></div></div> <p>实现2：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">com.google.common.base.Joiner</span><span class="o">;</span>
+<span class="nc">Joiner</span><span class="o">.</span><span class="na">on</span><span class="o">(</span><span class="n">separator</span><span class="o">).</span><span class="na">join</span><span class="o">(</span><span class="n">data</span><span class="o">);</span>
+</code></pre></div></div> <p>实现3：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">String</span> <span class="nf">join</span> <span class="o">(</span><span class="nc">String</span> <span class="n">delim</span><span class="o">,</span> <span class="nc">String</span> <span class="o">...</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">();</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">data</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">data</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="n">data</span><span class="o">.</span><span class="na">length</span><span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span><span class="k">break</span><span class="o">;}</span>
+      <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">delim</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+  <span class="o">}</span>
+</code></pre></div></div> <p>实现4：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">String</span> <span class="nf">join</span> <span class="o">(</span><span class="nc">Collection</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">c</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">StringBuilder</span> <span class="n">sb</span><span class="o">=</span><span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">();</span>
+    <span class="k">for</span><span class="o">(</span><span class="nc">String</span> <span class="nl">s:</span> <span class="n">c</span><span class="o">)</span>
+        <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+<span class="o">}</span>
+<span class="k">for</span><span class="o">(</span><span class="nc">String</span> <span class="n">s</span> <span class="o">:</span> <span class="n">joinMe</span><span class="o">)</span>
+    <span class="n">target</span> <span class="o">+=</span> <span class="n">s</span><span class="o">;</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2012-01-14-Java%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%9B%B6%E7%A2%8E%E7%AC%94%E8%AE%B0.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Java开发过程中零碎笔记 - 知不知&amp;url=/list/docs/java/2012-01-14-Java%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%9B%B6%E7%A2%8E%E7%AC%94%E8%AE%B0.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2012-01-14-Java%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%9B%B6%E7%A2%8E%E7%AC%94%E8%AE%B0.html&amp;title=Java-Java开发过程中零碎笔记 - 知不知&amp;summary=Java开发过程中零碎笔记&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2012-01-14-Java%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%9B%B6%E7%A2%8E%E7%AC%94%E8%AE%B0.html&amp;text=Java-Java开发过程中零碎笔记 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2012-01-14-Java%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%9B%B6%E7%A2%8E%E7%AC%94%E8%AE%B0.html&amp;t=Java-Java开发过程中零碎笔记 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2012-01-14-Java%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%9B%B6%E7%A2%8E%E7%AC%94%E8%AE%B0.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Java开发过程中零碎笔记'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

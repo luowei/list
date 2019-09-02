@@ -1,0 +1,479 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-JSTL及EL表达式学习笔记</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>jstl中的if与forEach</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">"${VvvvDown_flag ne null }"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"background:#D2ECED;font-size:16;width:60%;"</span><span class="nt">&gt;</span>其它歌曲<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div&gt;</span>
+        <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;table&gt;</span>
+            <span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">"${nonEasouEntity ne null}"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;tr&gt;&lt;td&gt;</span>歌曲名：<span class="nt">&lt;/td&gt;&lt;td&gt;&lt;b&gt;</span>${nonEasouEntity.song}<span class="nt">&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;</span>
+                <span class="nt">&lt;tr&gt;&lt;td&gt;</span>歌手名：<span class="nt">&lt;/td&gt;&lt;td&gt;&lt;b&gt;</span>${nonEasouEntity.songer}<span class="nt">&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;</span>
+                <span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>下载链接：<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+                <span class="nt">&lt;c:forEach</span> <span class="na">var=</span><span class="s">"items"</span> <span class="na">items=</span><span class="s">"${itemsList}"</span> <span class="na">varStatus=</span><span class="s">"vs"</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"${items.downurl}"</span><span class="nt">&gt;</span>${items.filetype}<span class="nt">&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;</span>
+                <span class="nt">&lt;/c:forEach&gt;</span>
+            <span class="nt">&lt;/c:if&gt;</span>
+            <span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">"${nonEasouEntity eq null}"</span><span class="nt">&gt;&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>暂无资源<span class="nt">&lt;/td&gt;&lt;/tr&gt;&lt;/c:if&gt;</span>
+        <span class="nt">&lt;/table&gt;</span>
+        <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/c:if&gt;</span>
+</code></pre></div></div> <p><strong>比较</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;TD</span> <span class="na">class=</span><span class="s">gridViewItem</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">"${fn:contains(music.picUrl,'upload')}"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;img</span> <span class="na">alt=</span><span class="s">"本地图片"</span> <span class="na">src=</span><span class="s">"${ctx }/${music.picUrl} "</span> <span class="na">height=</span><span class="s">"40:px"</span> <span class="na">width=</span><span class="s">"40:px"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/c:if&gt;</span>
+    <span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">"${fn:contains(music.picUrl,'http')}"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;img</span> <span class="na">alt=</span><span class="s">"本地图片"</span> <span class="na">src=</span><span class="s">"${music.picUrl} "</span> <span class="na">height=</span><span class="s">"40:px"</span> <span class="na">width=</span><span class="s">"40:px"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/c:if&gt;</span>
+    <span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">"${music.picUrl eq ''||music.picUrl==null}"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;img</span> <span class="na">alt=</span><span class="s">"本地图片"</span> <span class="na">src=</span><span class="s">"${ctx }/manage/img/manage_pic.png"</span> <span class="na">height=</span><span class="s">"40:px"</span> <span class="na">width=</span><span class="s">"40:px"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/c:if&gt;</span>
+<span class="nt">&lt;/TD&gt;</span>
+<span class="nt">&lt;TD</span> <span class="na">class=</span><span class="s">gridViewItem</span><span class="nt">&gt;</span>
+    ${music.musicOrder }
+    <span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">"${music.musicStatus!=0}"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"${ctx }/manage/music/changeOrder.do?musicId=${music.id }&amp;type=up&amp;channelId=${channel.id}"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"${ctx }/manage/img/icon_up.gif"</span><span class="nt">&gt;&lt;/img&gt;&lt;/a&gt;</span>
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"${ctx }/manage/music/changeOrder.do?musicId=${music.id }&amp;type=down&amp;channelId=${channel.id}"</span><span class="nt">&gt;&lt;img</span> <span class="na">src=</span><span class="s">"${ctx }/manage/img/icon_down.gif"</span><span class="nt">&gt;&lt;/img&gt;</span> <span class="nt">&lt;/a&gt;</span>
+    <span class="nt">&lt;/c:if&gt;</span>
+<span class="nt">&lt;/TD&gt;</span>
+<span class="nt">&lt;td</span> <span class="na">class=</span><span class="s">gridViewItem</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">"${music.nonEasouSongId == '0'}"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;font</span> <span class="na">color=</span><span class="s">"red"</span><span class="nt">&gt;</span>宜搜<span class="nt">&lt;/font&gt;</span>
+    <span class="nt">&lt;/c:if&gt;</span>
+    <span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">"${music.nonEasouSongId != '0'}"</span><span class="nt">&gt;</span>
+        非宜搜<span class="ni">&amp;nbsp;</span>Id:<span class="nt">&lt;font</span> <span class="na">color=</span><span class="s">"green"</span><span class="nt">&gt;&lt;b&gt;</span>${music.nonEasouSongId}<span class="nt">&lt;/b&gt;&lt;/font&gt;</span>
+    <span class="nt">&lt;/c:if&gt;</span>
+<span class="nt">&lt;/td&gt;</span>
+</code></pre></div></div> <p><strong>selected提交表单</strong> <br /> js</p> <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*提交查询表单*/</span>
+<span class="kd">function</span> <span class="nx">nonEasouIdSubmit</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">searchForm</span><span class="dl">"</span><span class="p">).</span><span class="nx">submit</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>jsp</p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">"nonEasouId"</span> <span class="na">id=</span><span class="s">"nonEasouId"</span> <span class="na">onchange=</span><span class="s">"nonEasouIdSubmit()"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">""</span> <span class="err">&lt;</span><span class="na">c:if</span> <span class="na">test=</span><span class="s">"${nonEasouId==null}"</span><span class="nt">&gt;</span>selected<span class="nt">&lt;/c:if&gt;</span>&gt;
+    请选择
+    <span class="nt">&lt;/option&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"0"</span> <span class="err">&lt;</span><span class="na">c:if</span> <span class="na">test=</span><span class="s">"${nonEasouId==0}"</span><span class="nt">&gt;</span>selected<span class="nt">&lt;/c:if&gt;</span>&gt;
+    宜搜
+    <span class="nt">&lt;/option&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"-1"</span> <span class="err">&lt;</span><span class="na">c:if</span> <span class="na">test=</span><span class="s">"${nonEasouId!=0 &amp;&amp; nonEasouId!=null}"</span><span class="nt">&gt;</span>selected<span class="nt">&lt;/c:if&gt;</span>&gt;
+    非宜搜
+    <span class="nt">&lt;/option&gt;</span>
+<span class="nt">&lt;/select&gt;</span>
+</code></pre></div></div> <h3 id="jstl定义变量">jstl定义变量</h3> <p><strong>whichdown的结构</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">WhichDown</span> <span class="kd">implements</span> <span class="nc">Serializable</span> <span class="o">{</span>
+    <span class="cm">/**
+     * @Fields serialVersionUID
+     */</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">music</span><span class="o">;</span>    <span class="c1">//歌曲名</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">author</span><span class="o">;</span>    <span class="c1">//歌手名</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">source</span><span class="o">;</span>    <span class="c1">//来源</span>
+    <span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Items</span><span class="o">&gt;&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Items</span><span class="o">&gt;&gt;</span> <span class="o">();</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">totalType</span> <span class="o">;</span><span class="c1">// 版本总类型表示 0：压缩 ； 1:普通；2：清晰 ；3：保真</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">whichId</span><span class="o">;</span>    <span class="c1">//来源id</span>
+    <span class="err">…………</span>
+    <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Items</span> <span class="kd">implements</span> <span class="nc">Serializable</span><span class="o">{</span>
+        <span class="kd">private</span> <span class="nc">String</span> <span class="n">filedtype</span><span class="o">;</span>
+        <span class="kd">private</span> <span class="nc">String</span> <span class="n">filedid</span><span class="o">;</span>
+        <span class="kd">private</span> <span class="nc">String</span> <span class="n">downurl</span><span class="o">;</span>
+        <span class="kd">private</span> <span class="nc">String</span> <span class="n">filedtype2</span><span class="o">;</span>
+        <span class="kd">private</span> <span class="nc">String</span> <span class="n">size</span> <span class="o">;</span><span class="c1">//版本歌曲大小</span>
+    <span class="err">…………</span>
+</code></pre></div></div> <p><strong>jsp</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;c:set</span> <span class="na">var=</span><span class="s">"whichDown"</span> <span class="na">value=</span><span class="s">""</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;c:choose&gt;</span>
+    <span class="nt">&lt;c:when</span> <span class="na">test=</span><span class="s">"${vvvvDown ne null }"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;c:set</span> <span class="na">var=</span><span class="s">"whichDown"</span> <span class="na">value=</span><span class="s">"${vvvvDown }"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/c:when&gt;</span>
+    <span class="nt">&lt;c:otherwise&gt;</span>
+        <span class="nt">&lt;c:set</span> <span class="na">var=</span><span class="s">"whichDown"</span> <span class="na">value=</span><span class="s">"${easouDown }"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/c:otherwise&gt;</span>
+<span class="nt">&lt;/c:choose&gt;</span>
+<span class="nt">&lt;c:choose&gt;&lt;c:when</span> <span class="na">test=</span><span class="s">"${whichDown.map['common'] ne null}"</span><span class="nt">&gt;&lt;c:set</span> <span class="na">var=</span><span class="s">"music"</span> <span class="na">value=</span><span class="s">"${whichDown.map['common']}"</span><span class="nt">/&gt;&lt;/c:when&gt;</span>
+    <span class="nt">&lt;c:otherwise&gt;&lt;c:set</span> <span class="na">var=</span><span class="s">"music"</span> <span class="na">value=</span><span class="s">"${whichDown.map['gaochao']}"</span><span class="nt">/&gt;&lt;/c:otherwise&gt;&lt;/c:choose&gt;</span>
+<span class="nt">&lt;nav&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'${ctx }/head/js/imgReady.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;aside&gt;</span>
+        <span class="nt">&lt;b</span> <span class="na">id=</span><span class="s">"speedImg"</span><span class="nt">&gt;&lt;/b&gt;</span>
+    <span class="nt">&lt;/aside&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>
+        <span class="nt">&lt;figure</span> <span class="na">class=</span><span class="s">"fig_marquee"</span><span class="nt">&gt;</span>${whichDown.song}<span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">"${whichDown.songer ne null &amp;&amp; whichDown.songer ne ''}"</span><span class="nt">&gt;</span>-${whichDown.songer}<span class="nt">&lt;/c:if&gt;&lt;/figure&gt;</span>
+        <span class="nt">&lt;script&gt;</span>
+            <span class="kd">var</span> <span class="nx">$</span><span class="o">=</span><span class="kd">function</span><span class="p">(</span><span class="nx">par</span><span class="p">){</span>
+                <span class="k">return</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span><span class="o">==</span><span class="k">typeof</span> <span class="nx">par</span><span class="p">?</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">par</span><span class="p">):</span><span class="nx">par</span><span class="p">;</span>
+            <span class="p">};</span>
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;/nav&gt;</span>
+</code></pre></div></div> <p><strong>js返回</strong> 超链接的点击响应</p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"float: right"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"javascript:history.go(-1)"</span><span class="nt">&gt;</span>返回<span class="nt">&lt;/a&gt;&lt;/div&gt;</span>
+<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"javascript:location.href=encodeURI('${ctx }/manage/verifyPhone/clearAll.do?brandName=&amp;phoneOs=${phoneOs }&amp;phoneStatus=${phoneStatus }')"</span><span class="nt">&gt;</span>清空<span class="nt">&lt;/a&gt;</span>
+</code></pre></div></div> <p><strong>设置表单控件的宽度</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>品牌名:<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">id=</span><span class="s">"brandName"</span> <span class="na">style=</span><span class="s">"max-width:100px"</span> <span class="na">name=</span><span class="s">"brandName"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div> <p><strong>任务计划测试示例</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;style </span><span class="na">type=</span><span class="s">"text/css"</span><span class="nt">&gt;</span>
+    <span class="nc">.STYLE2</span> <span class="p">{</span><span class="nl">font-size</span><span class="p">:</span> <span class="m">13px</span><span class="p">}</span>
+    <span class="nc">.STYLE3</span> <span class="p">{</span><span class="nl">font-size</span><span class="p">:</span> <span class="m">13px</span><span class="p">;</span> <span class="nl">line-height</span><span class="p">:</span><span class="m">2px</span><span class="p">}</span>
+<span class="nt">&lt;/style&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+    <span class="nx">jQuery</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">){</span>
+        <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#startDate1</span><span class="dl">'</span><span class="p">).</span><span class="nx">datepicker</span><span class="p">({</span>
+            <span class="na">yearRange</span><span class="p">:</span> <span class="dl">'</span><span class="s1">1900:2099</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//取值范围.</span>
+            <span class="na">showOn</span><span class="p">:</span> <span class="dl">'</span><span class="s1">both</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//输入框和图片按钮都可以使用日历控件。</span>
+            <span class="na">buttonImage</span><span class="p">:</span> <span class="dl">'</span><span class="s1">../js/date/calendar.gif</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//日历控件的按钮</span>
+            <span class="na">buttonImageOnly</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">showButtonPanel</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">});</span>
+        <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#startDate2</span><span class="dl">'</span><span class="p">).</span><span class="nx">datepicker</span><span class="p">({</span>
+            <span class="na">yearRange</span><span class="p">:</span> <span class="dl">'</span><span class="s1">1900:2099</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//取值范围.</span>
+            <span class="na">showOn</span><span class="p">:</span> <span class="dl">'</span><span class="s1">both</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//输入框和图片按钮都可以使用日历控件。</span>
+            <span class="na">buttonImage</span><span class="p">:</span> <span class="dl">'</span><span class="s1">../js/date/calendar.gif</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//日历控件的按钮</span>
+            <span class="na">buttonImageOnly</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">showButtonPanel</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">});</span>
+    <span class="p">});</span>
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+    <span class="c1">//整个Step3的对象</span>
+    <span class="kd">function</span> <span class="nx">SubStep3</span><span class="p">(</span><span class="nx">startDate</span><span class="p">,</span><span class="nx">startHour</span><span class="p">,</span><span class="nx">startMin</span><span class="p">,</span><span class="nx">intervalDay</span><span class="p">,</span><span class="nx">intervalWeek</span><span class="p">,</span><span class="nx">whichDay</span><span class="p">,</span><span class="nx">whichWeek</span><span class="p">,</span><span class="nx">whichWeekDay</span><span class="p">,</span><span class="nx">whichMonth</span><span class="p">,</span><span class="nx">week</span><span class="p">,</span><span class="nx">month</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">startDate</span><span class="o">=</span><span class="nx">startDate</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">startHour</span><span class="o">=</span><span class="nx">startHour</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">startMin</span><span class="o">=</span><span class="nx">startMin</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">intervalDay</span><span class="o">=</span><span class="nx">intervalDay</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">intervalWeek</span><span class="o">=</span><span class="nx">intervalWeek</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">whichDay</span><span class="o">=</span><span class="nx">whichDay</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">whichWeek</span><span class="o">=</span><span class="nx">whichWeek</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">whichWeekDay</span><span class="o">=</span><span class="nx">whichWeekDay</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">whichMonth</span><span class="o">=</span><span class="nx">whichMonth</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">week</span><span class="o">=</span><span class="p">[</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">];</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">month</span><span class="o">=</span><span class="p">[</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">,</span><span class="kc">false</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="c1">//var Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday;</span>
+    <span class="c1">//var January,February,March,April,May,June,July,August,September,October,November,December;</span>
+    <span class="c1">//var startDate,startHour,startMin,intervalDay,intervalWeek,whichDay,whichWeek,whichMonth;</span>
+    <span class="kd">var</span> <span class="nx">SubStep3</span><span class="o">=</span><span class="k">new</span> <span class="nx">SubStep3</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">step_3</span><span class="o">=</span><span class="k">new</span> <span class="nb">Array</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">step_3_1</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">step_3_2</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">step_3_3</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">step_3_4</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+    <span class="kd">function</span> <span class="nx">divStep_3_1Click</span><span class="p">(){</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">divStep_3_2Click</span><span class="p">(){</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">divStep_3_3Click</span><span class="p">(){</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">divStep_3_4Click</span><span class="p">(){</span>
+    <span class="p">}</span>
+    <span class="c1">//检查是否为数字</span>
+    <span class="kd">function</span> <span class="nx">checkNum</span><span class="p">(){</span>
+        <span class="kd">var</span> <span class="nx">eventcode</span><span class="o">=</span><span class="nx">event</span><span class="p">.</span><span class="nx">keyCode</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">eventcode</span><span class="o">&gt;=</span><span class="mi">48</span> <span class="o">&amp;&amp;</span> <span class="nx">eventcode</span><span class="o">&lt;=</span><span class="mi">57</span><span class="p">)){</span>
+            <span class="nx">event</span><span class="p">.</span><span class="nx">returnValue</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="c1">//检查日期</span>
+    <span class="kd">function</span> <span class="nx">checkStartDate</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">splitDate</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">-</span><span class="dl">"</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">year</span><span class="o">=</span><span class="nb">Number</span><span class="p">(</span><span class="nx">splitDate</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+        <span class="kd">var</span> <span class="nx">month</span><span class="o">=</span><span class="nb">Number</span><span class="p">(</span><span class="nx">splitDate</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="kd">var</span> <span class="nx">day</span><span class="o">=</span><span class="nb">Number</span><span class="p">(</span><span class="nx">splitDate</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+        <span class="nb">Date</span> <span class="nx">date</span><span class="o">=</span><span class="k">new</span> <span class="nb">Date</span><span class="p">();</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">year</span><span class="o">&lt;</span><span class="mi">1970</span> <span class="o">||</span> <span class="nx">year</span><span class="o">&gt;</span><span class="mi">3000</span> <span class="o">||</span> <span class="nx">month</span><span class="o">&gt;</span><span class="mi">12</span> <span class="o">||</span> <span class="nx">month</span><span class="o">&lt;</span><span class="mi">0</span> <span class="o">||</span> <span class="nx">day</span><span class="o">&gt;</span><span class="mi">31</span> <span class="o">||</span><span class="nx">day</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">){</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span><span class="p">{</span>
+            <span class="nx">date</span><span class="p">.</span><span class="nx">setDate</span><span class="p">(</span><span class="nx">year</span><span class="p">).</span><span class="nx">setMonth</span><span class="p">(</span><span class="nx">month</span><span class="p">).</span><span class="nx">setFullYear</span><span class="p">(</span><span class="nx">day</span><span class="p">);</span>
+<span class="c1">//alert(date.toString());</span>
+        <span class="p">}</span>
+        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//检查小时</span>
+    <span class="kd">function</span> <span class="nx">checkStartHour</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">24</span><span class="p">){</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//检查分钟</span>
+    <span class="kd">function</span> <span class="nx">checkStartMin</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">59</span><span class="p">){</span>
+<span class="c1">//alert("_______:"+document.getElementById(fieldId).value);</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//-------------------------------------</span>
+    <span class="c1">//检查间隔天数</span>
+    <span class="kd">function</span> <span class="nx">checkIntervalDay</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">366</span><span class="p">){</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//检查间隔周数</span>
+    <span class="kd">function</span> <span class="nx">checkIntervalWeek</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">52</span><span class="p">){</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">"</span><span class="s2">1</span><span class="dl">"</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//把值设置到对应的div对象属性中</span>
+    <span class="kd">function</span> <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">fieldValue</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">divId</span><span class="o">==</span><span class="dl">"</span><span class="s2">step-3-1</span><span class="dl">"</span><span class="p">){</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setDivValue___fieldValue:</span><span class="dl">"</span><span class="o">+</span><span class="nx">fieldValue</span><span class="p">);</span>
+            <span class="nx">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">divId</span><span class="o">==</span><span class="dl">"</span><span class="s2">step-3-2</span><span class="dl">"</span><span class="p">){</span>
+            <span class="nx">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">divId</span><span class="o">==</span><span class="dl">"</span><span class="s2">step-3-3</span><span class="dl">"</span><span class="p">){</span>
+            <span class="nx">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">divId</span><span class="o">==</span><span class="dl">"</span><span class="s2">step-3-4</span><span class="dl">"</span><span class="p">){</span>
+            <span class="nx">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="c1">//设置对象属性的值</span>
+    <span class="kd">function</span> <span class="nx">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">fieldIdArr</span><span class="o">=</span><span class="p">[</span><span class="dl">"</span><span class="s2">startDate</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">startHour</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">startMin</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">intervalDay</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">intervalWeek</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">whichDay</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">whichWeek</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">whichWeekDay</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">whichMonth</span><span class="dl">"</span><span class="p">];</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___fieldValue:</span><span class="dl">"</span><span class="o">+</span><span class="nx">fieldValue</span><span class="p">);</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">fieldId:</span><span class="dl">"</span><span class="o">+</span><span class="nx">fieldId</span><span class="p">);</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">toString</span><span class="p">());</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
+            <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startDate</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startDate</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">1</span><span class="p">]){</span>
+            <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startHour</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startHour</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">2</span><span class="p">]){</span>
+            <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startMin</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startMin</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">3</span><span class="p">]){</span>
+            <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">intervalDay</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">intervalDay</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">4</span><span class="p">]){</span>
+            <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">intervalWeek</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">intervalWeek</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">5</span><span class="p">]){</span>
+            <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichDay</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichDay</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">6</span><span class="p">]){</span>
+            <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichWeek</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichWeek</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">7</span><span class="p">]){</span>
+            <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichWeekDay</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.whichWeekDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichWeekDay</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">8</span><span class="p">]){</span>
+            <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichMonth</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichMonth</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="c1">//检查第几天</span>
+    <span class="kd">function</span> <span class="nx">checkWhichDay</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">31</span><span class="p">){</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">"</span><span class="s2">1</span><span class="dl">"</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//选择天被点击</span>
+    <span class="kd">function</span> <span class="nx">selWhichDayClick</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId</span><span class="p">,</span><span class="nx">disableFieldId1</span><span class="p">,</span><span class="nx">disableFieldId12</span><span class="p">){</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">enableFieldId</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">disableFieldId1</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">disableFieldId12</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
+        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//选择周被点击</span>
+    <span class="kd">function</span> <span class="nx">selWhichWeekClick</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId1</span><span class="p">,</span><span class="nx">enableFieldId2</span><span class="p">,</span><span class="nx">disableFieldId</span><span class="p">){</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">disableFieldId</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">enableFieldId1</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">enableFieldId2</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
+        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId1</span><span class="p">);</span>
+        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId2</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//当每周的星期被点击</span>
+    <span class="kd">function</span> <span class="nx">weekCheckbox</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldName</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+    <span class="p">}</span>
+    <span class="c1">//当每月的星期被点击</span>
+    <span class="kd">function</span> <span class="nx">monthClick</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldName</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+    <span class="p">}</span>
+<span class="nt">&lt;/script&gt;</span>
+<span class="c">&lt;!-- 每天--&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"step-3-1"</span> <span class="na">onclick=</span><span class="s">"divStep_3_1Click()"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;table</span> <span class="na">class=</span><span class="s">"STYLE3"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td&gt;</span>请选择任务运行的起始时间与日期<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr</span> <span class="na">class=</span><span class="s">"STYLE3"</span><span class="nt">&gt;&lt;td&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;</span>起始时间：<span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"dayStartHour"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">size=</span><span class="s">"3"</span> <span class="na">maxlength=</span><span class="s">"2"</span> <span class="na">vlaue=</span><span class="s">"0"</span> <span class="na">onkeypress=</span><span class="s">"checkNum()"</span> <span class="na">onblur=</span><span class="s">"checkStartHour('step-3-1','dayStartHour')"</span><span class="nt">/&gt;</span>时:
+                <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"dayStartMin"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">size=</span><span class="s">"3"</span> <span class="na">maxlength=</span><span class="s">"2"</span> <span class="na">vlaue=</span><span class="s">"0"</span> <span class="na">onkeypress=</span><span class="s">"checkNum()"</span> <span class="na">onblur=</span><span class="s">"checkStartMin('step-3-1','dayStartMin')"</span><span class="nt">/&gt;</span>分
+            <span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;</span>运行这个任务:<span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;</span>
+                每<span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"intervalDay"</span> <span class="na">type=</span><span class="s">"test"</span> <span class="na">size=</span><span class="s">"4"</span> <span class="na">maxlength=</span><span class="s">"3"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="na">onkeypress=</span><span class="s">"checkNum()"</span> <span class="na">onblur=</span><span class="s">"checkIntervalDay('step-3-1','intervalDay')"</span><span class="nt">/&gt;</span>天
+            <span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;</span>起始日期:<span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;input</span> <span class="na">id=</span><span class="s">"startDate1"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"startDate"</span> <span class="na">id=</span><span class="s">"startDate"</span> <span class="na">value=</span><span class="s">""</span><span class="nt">&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+    <span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="c">&lt;!-- 每周--&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"step-3-2"</span> <span class="na">onclick=</span><span class="s">"divStep_3_2Click()"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;table</span> <span class="na">class=</span><span class="s">"STYLE3"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>请选择任务运行的起始时间与日期<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>起始时间：<span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"weekStartHour"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">size=</span><span class="s">"3"</span> <span class="na">maxlength=</span><span class="s">"2"</span> <span class="na">vlaue=</span><span class="s">"0"</span> <span class="na">onkeypress=</span><span class="s">"checkNum()"</span> <span class="na">onblur=</span><span class="s">"checkStartHour('step-3-2','weekStartHour')"</span><span class="nt">/&gt;</span>时:
+                <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"weekStartMin"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">size=</span><span class="s">"3"</span> <span class="na">maxlength=</span><span class="s">"2"</span> <span class="na">vlaue=</span><span class="s">"0"</span> <span class="na">onkeypress=</span><span class="s">"checkNum()"</span> <span class="na">onblur=</span><span class="s">"checkStartMin('step-3-2','weekStartMin')"</span><span class="nt">/&gt;</span>分
+            <span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>运行这个任务：<span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+                每<span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"intervalWeek"</span> <span class="na">type=</span><span class="s">"test"</span> <span class="na">size=</span><span class="s">"4"</span> <span class="na">maxlength=</span><span class="s">"3"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="na">onkeypress=</span><span class="s">"checkNum()"</span> <span class="na">onblur=</span><span class="s">"checkIntervalWeek('step-3-2','intervalWeek')"</span><span class="nt">/&gt;</span>周
+            <span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>请选择下面日期：<span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">id=</span><span class="s">"Monday"</span> <span class="na">name=</span><span class="s">"week"</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">value=</span><span class="s">"Monday"</span> <span class="na">checked=</span><span class="s">"checked"</span> <span class="na">onclick=</span><span class="s">"weekCheckbox('step-3-2','week','Monday')"</span><span class="nt">/&gt;</span>星期一<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">id=</span><span class="s">"Tuesday"</span> <span class="na">name=</span><span class="s">"week"</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">value=</span><span class="s">"Tuesday"</span> <span class="na">onclick=</span><span class="s">"weekCheckbox('step-3-2','week','Tuesday')"</span><span class="nt">/&gt;</span>星期二<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">id=</span><span class="s">"Wednesday"</span> <span class="na">name=</span><span class="s">"week"</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">value=</span><span class="s">"Wednesday"</span> <span class="na">onclick=</span><span class="s">"weekCheckbox('step-3-2','week','Wednesday')"</span><span class="nt">/&gt;</span>星期三<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">id=</span><span class="s">"Thursday"</span> <span class="na">name=</span><span class="s">"week"</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">value=</span><span class="s">"Thursday"</span> <span class="na">onclick=</span><span class="s">"weekCheckbox('step-3-2','week','Thursday')"</span><span class="nt">/&gt;</span>星期四<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">id=</span><span class="s">"Friday"</span> <span class="na">name=</span><span class="s">"week"</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">value=</span><span class="s">"Friday"</span> <span class="na">onclick=</span><span class="s">"weekCheckbox('step-3-2','week','Friday')"</span><span class="nt">/&gt;</span>星期五<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">id=</span><span class="s">"Saturday"</span> <span class="na">name=</span><span class="s">"week"</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">value=</span><span class="s">"Saturday"</span> <span class="na">onclick=</span><span class="s">"weekCheckbox('step-3-2','week','Saturday')"</span><span class="nt">/&gt;</span>星期六<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">id=</span><span class="s">"Sunday"</span> <span class="na">name=</span><span class="s">"week"</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">value=</span><span class="s">"Sunday"</span> <span class="na">onclick=</span><span class="s">"weekCheckbox('step-3-2','week','Sunday')"</span><span class="nt">/&gt;</span>星期日<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+    <span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="c">&lt;!-- 每月--&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"step-3-3"</span> <span class="na">onclick=</span><span class="s">"divStep_3_3Click()"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;table</span> <span class="na">class=</span><span class="s">"STYLE3"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>请选择任务运行的起始时间与日期<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;td&gt;</span>起始时间：<span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;td&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"monthStartHour"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">size=</span><span class="s">"3"</span> <span class="na">maxlength=</span><span class="s">"2"</span> <span class="na">vlaue=</span><span class="s">"0"</span> <span class="na">onkeypress=</span><span class="s">"checkNum()"</span> <span class="na">onblur=</span><span class="s">"checkStartHour('step-3-3','monthStartHour')"</span><span class="nt">/&gt;</span>时:
+                <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"monthStartMin"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">size=</span><span class="s">"3"</span> <span class="na">maxlength=</span><span class="s">"2"</span> <span class="na">vlaue=</span><span class="s">"0"</span> <span class="na">onkeypress=</span><span class="s">"checkNum()"</span> <span class="na">onblur=</span><span class="s">"checkStartMin('step-3-3','monthStartMin')"</span><span class="nt">/&gt;</span>分
+            <span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>每月：<span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"radio"</span> <span class="na">id=</span><span class="s">"selWhichDay"</span> <span class="na">name =</span><span class="s">"everyMonth"</span> <span class="na">value=</span><span class="s">""</span> <span class="na">onclick=</span><span class="s">"selWhichDayClick('step-3-3','whichDay','whichWeek','whichWeekDay')"</span><span class="nt">/&gt;</span>天<span class="ni">&amp;nbsp;</span>
+                    <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"whichDay"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">size=</span><span class="s">"3"</span> <span class="na">maxlength=</span><span class="s">"2"</span> <span class="na">vlaue=</span><span class="s">"0"</span> <span class="na">onkeypress=</span><span class="s">"checkNum()"</span> <span class="na">onblur=</span><span class="s">"checkWhichDay()"</span><span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;/label&gt;</span>
+            <span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"radio"</span> <span class="na">id=</span><span class="s">"selWhichWeek"</span> <span class="na">name =</span><span class="s">"everyMonth"</span> <span class="na">value=</span><span class="s">""</span> <span class="na">onclick=</span><span class="s">"selWhichWeekClick('step-3-3','whichWeek','whichWeekDay','whichDay')"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"whichWeek"</span> <span class="na">name=</span><span class="s">"whichWeek"</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"firstWeek"</span> <span class="na">selected=</span><span class="s">"selected"</span><span class="nt">&gt;</span>第一个<span class="nt">&lt;/option&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"secondWeek"</span><span class="nt">&gt;</span>第二个<span class="nt">&lt;/option&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"thirdWeek"</span><span class="nt">&gt;</span>第三个<span class="nt">&lt;/option&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"fourthWeek"</span><span class="nt">&gt;</span>第四个<span class="nt">&lt;/option&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"lastWeek"</span><span class="nt">&gt;</span>最后一个<span class="nt">&lt;/option&gt;</span>
+                <span class="nt">&lt;/select&gt;</span>星期<span class="ni">&amp;nbsp;</span>
+            <span class="nt">&lt;/td&gt;</span>
+            <span class="nt">&lt;td&gt;</span>
+                <span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"whichWeekDay"</span> <span class="na">name=</span><span class="s">"whichWeekDay"</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"Monday"</span> <span class="na">selected=</span><span class="s">"selected"</span><span class="nt">&gt;</span>星期一<span class="nt">&lt;/option&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"Tuesday"</span><span class="nt">&gt;</span>星期二<span class="nt">&lt;/option&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"Wednesday"</span><span class="nt">&gt;</span>星期三<span class="nt">&lt;/option&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"Thursday"</span><span class="nt">&gt;</span>星期四<span class="nt">&lt;/option&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"Friday"</span><span class="nt">&gt;</span>星期五<span class="nt">&lt;/option&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"Saturday"</span><span class="nt">&gt;</span>星期六<span class="nt">&lt;/option&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"Sunday"</span><span class="nt">&gt;</span>星期日<span class="nt">&lt;/option&gt;</span>
+                <span class="nt">&lt;/select&gt;</span>
+            <span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;</span>月份：<span class="nt">&lt;/td&gt;</span>
+            <span class="nt">&lt;td&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"January"</span> <span class="na">value=</span><span class="s">"January"</span> <span class="na">checked=</span><span class="s">"checked"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','January')"</span><span class="nt">/&gt;</span>一月<span class="nt">&lt;/label&gt;</span><span class="ni">&amp;nbsp;</span>
+                <span class="nt">&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"February"</span> <span class="na">value=</span><span class="s">"February"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','February')"</span><span class="nt">/&gt;</span>二月<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"March"</span> <span class="na">value=</span><span class="s">"March"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','March')"</span> <span class="nt">/&gt;</span>三月<span class="nt">&lt;/label&gt;</span><span class="ni">&amp;nbsp;&amp;nbsp;</span>
+                <span class="nt">&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"April"</span> <span class="na">value=</span><span class="s">"April"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','April')"</span> <span class="nt">/&gt;</span>四月<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"May"</span> <span class="na">value=</span><span class="s">"May"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','May')"</span> <span class="nt">/&gt;</span>五月<span class="nt">&lt;/label&gt;</span><span class="ni">&amp;nbsp;</span>
+                <span class="nt">&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"June"</span> <span class="na">value=</span><span class="s">"June"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','June')"</span> <span class="nt">/&gt;</span>六月<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"July"</span> <span class="na">value=</span><span class="s">"July"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','July')"</span> <span class="nt">/&gt;</span>七月<span class="nt">&lt;/label&gt;</span><span class="ni">&amp;nbsp;&amp;nbsp;</span>
+                <span class="nt">&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"August"</span> <span class="na">value=</span><span class="s">"August"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','August')"</span> <span class="nt">/&gt;</span>八月<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"September"</span> <span class="na">value=</span><span class="s">"September"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','September')"</span> <span class="nt">/&gt;</span>九月<span class="nt">&lt;/label&gt;</span><span class="ni">&amp;nbsp;</span>
+                <span class="nt">&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"October"</span> <span class="na">value=</span><span class="s">"October"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','October')"</span> <span class="nt">/&gt;</span>十月<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"November"</span> <span class="na">value=</span><span class="s">"November"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','November')"</span> <span class="nt">/&gt;</span>十一月<span class="nt">&lt;/label&gt;</span>
+                <span class="nt">&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"month"</span> <span class="na">id=</span><span class="s">"December"</span> <span class="na">value=</span><span class="s">"December"</span> <span class="na">onclick=</span><span class="s">"monthClick('step-3-3','month','December')"</span> <span class="nt">/&gt;</span>十二月<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+    <span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="c">&lt;!--每次--&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"step-3-4"</span> <span class="na">onclick=</span><span class="s">"divStep_3_4Click()"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;table</span> <span class="na">class=</span><span class="s">"STYLE3"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td&gt;</span>请选择任务运行的起始时间与日期<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;</span>起始时间：<span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"onceStartHour"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">size=</span><span class="s">"3"</span> <span class="na">maxlength=</span><span class="s">"2"</span> <span class="na">vlaue=</span><span class="s">"0"</span> <span class="na">onkeypress=</span><span class="s">"checkNum()"</span> <span class="na">onblur=</span><span class="s">"checkStartHour('step-3-4','onceStartHour')"</span><span class="nt">/&gt;</span>时:
+                <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"onceStartMin"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">size=</span><span class="s">"3"</span> <span class="na">maxlength=</span><span class="s">"2"</span> <span class="na">vlaue=</span><span class="s">"0"</span> <span class="na">onkeypress=</span><span class="s">"checkNum()"</span> <span class="na">onblur=</span><span class="s">"checkStartMin('step-3-4','onceStartMin')"</span><span class="nt">/&gt;</span>分
+            <span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;&lt;td&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;</span>起始日期:<span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;input</span> <span class="na">id=</span><span class="s">"startDate2"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"startDate"</span> <span class="na">id=</span><span class="s">"startDate"</span> <span class="na">value=</span><span class="s">""</span><span class="nt">&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+    <span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2012-01-12-JSTL%E5%8F%8AEL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-JSTL及EL表达式学习笔记 - 知不知&amp;url=/list/docs/java/2012-01-12-JSTL%E5%8F%8AEL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2012-01-12-JSTL%E5%8F%8AEL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;title=Java-JSTL及EL表达式学习笔记 - 知不知&amp;summary=JSTL及EL表达式学习笔记&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2012-01-12-JSTL%E5%8F%8AEL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;text=Java-JSTL及EL表达式学习笔记 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2012-01-12-JSTL%E5%8F%8AEL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;t=Java-JSTL及EL表达式学习笔记 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2012-01-12-JSTL%E5%8F%8AEL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-JSTL及EL表达式学习笔记'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

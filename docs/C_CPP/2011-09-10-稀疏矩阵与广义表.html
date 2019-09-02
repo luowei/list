@@ -1,0 +1,461 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>数据结构-稀疏矩阵与广义表</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="稀疏矩阵">稀疏矩阵</h3> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* 
+设矩阵 A 中有 s 个非零元素，若 s 远远小于矩阵元素的总数，则称 A 为稀疏矩阵。 
+ 
+这里以一维数组顺序存放非零元素的行号、列号和数值，行号 -1 作为结束标志。  
+*/</span> 
+ 
+<span class="cp">#include&lt;stdio.h&gt; 
+#define m    6                //用户可根据需要定义原始矩阵行数  
+#define n    8                //定义原始矩阵列数  
+#define max 50 
+</span> 
+<span class="cm">/*********************************************/</span>  
+<span class="cm">/*            转储稀疏矩阵的算法             */</span> 
+<span class="cm">/*********************************************/</span>  
+<span class="kt">void</span> <span class="nf">CreateMatrix</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">n</span><span class="p">],</span><span class="kt">int</span> <span class="n">B</span><span class="p">[</span><span class="mi">50</span><span class="p">])</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">m</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> 
+        <span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span> 
+            <span class="k">if</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span> 
+            <span class="p">{</span> 
+                <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">i</span><span class="p">;</span><span class="n">k</span><span class="o">++</span><span class="p">;</span> 
+                <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">j</span><span class="p">;</span><span class="n">k</span><span class="o">++</span><span class="p">;</span> 
+                <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">];</span><span class="n">k</span><span class="o">++</span><span class="p">;</span> 
+            <span class="p">}</span> 
+    <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span>    <span class="c1">//非零元素存储的结束  </span>
+<span class="p">}</span>  
+ 
+<span class="cm">/*********************************************/</span>  
+<span class="cm">/*            转储稀疏矩阵的算法             */</span> 
+<span class="cm">/*********************************************/</span>  
+<span class="kt">void</span> <span class="nf">MatrixAdd</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[</span><span class="n">max</span><span class="p">],</span><span class="kt">int</span> <span class="n">B</span><span class="p">[</span><span class="n">max</span><span class="p">],</span><span class="kt">int</span> <span class="n">C</span><span class="p">[</span><span class="n">max</span><span class="p">])</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+    <span class="k">while</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>                <span class="c1">//行相等 </span>
+        <span class="p">{</span> 
+            <span class="k">if</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>        <span class="c1">//且列相等  </span>
+            <span class="p">{</span> 
+                <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> 
+                <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span> 
+                <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">];</span> 
+                <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span> 
+                <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span> 
+                <span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span>     
+            <span class="p">}</span>  
+            <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>    <span class="c1">//A的列小于B的列，将 A 的三个元素直接存入 C 中 </span>
+            <span class="p">{</span> 
+                <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> 
+                <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span> 
+                <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">];</span> 
+                <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span> 
+                <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span>  
+            <span class="p">}</span>  
+            <span class="k">else</span>                    <span class="c1">//B的列小于A的列，将B的三个元素直接存入C中  </span>
+            <span class="p">{</span> 
+                <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">];</span> 
+                <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span> 
+                <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">];</span> 
+                <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span> 
+                <span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span>     
+            <span class="p">}</span> 
+        <span class="p">}</span>  
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&lt;</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>            <span class="c1">//A的行小于B的行，将A的三个元素直接存入C中 </span>
+        <span class="p">{</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">];</span> 
+            <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span> 
+            <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span>  
+        <span class="p">}</span>  
+        <span class="k">else</span>                        <span class="c1">//B的行小于A的行，将B的三个元素直接存入C中  </span>
+        <span class="p">{</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">];</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">];</span> 
+            <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span> 
+            <span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span> 
+        <span class="p">}</span> 
+    <span class="p">}</span>                                <span class="c1">//循环结束  </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==-</span><span class="mi">1</span><span class="p">)</span> 
+        <span class="k">while</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span>                <span class="c1">//A结束B还有元素，将B的所有元素直接存入C中  </span>
+        <span class="p">{</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">];</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">];</span> 
+            <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span> 
+            <span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span>     
+        <span class="p">}</span>  
+    <span class="k">else</span> 
+        <span class="k">while</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span>                <span class="c1">//B结束，A还有元素，将A的所有元素直接存入C中  </span>
+        <span class="p">{</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span> 
+            <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">];</span> 
+            <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span> 
+            <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span>     
+        <span class="p">}</span> 
+    <span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span> 
+<span class="p">}</span>  
+ 
+<span class="cm">/*********************************************/</span>  
+<span class="cm">/*                   主函数                  */</span> 
+<span class="cm">/*********************************************/</span>  
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">E</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">n</span><span class="p">],</span><span class="n">F</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">n</span><span class="p">],</span><span class="n">A</span><span class="p">[</span><span class="n">max</span><span class="p">],</span><span class="n">B</span><span class="p">[</span><span class="n">max</span><span class="p">],</span><span class="n">C</span><span class="p">[</span><span class="n">max</span><span class="p">];</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"输入E矩阵：</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">m</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>                <span class="c1">//输入E矩阵所有元素值 </span>
+        <span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span> 
+            <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"输入F矩阵：</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">m</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>                <span class="c1">//输入F矩阵所有元素值 </span>
+        <span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span> 
+            <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]);</span> 
+    <span class="n">CreateMatrix</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="n">A</span><span class="p">);</span>                <span class="c1">//E矩阵的非零元素存储到一维数组A中 </span>
+    <span class="n">CreateMatrix</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="n">B</span><span class="p">);</span>                <span class="c1">//F矩阵的非零元素存储到一维数组B中  </span>
+    <span class="n">MatrixAdd</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">C</span><span class="p">);</span>                <span class="c1">//A,B相加存入C </span>
+    <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+    <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+    <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"A数组内容如下:</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="k">while</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span>                    <span class="c1">//输出A中内容  </span>
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%5d,%5d,%5d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]);</span> 
+        <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span>     
+    <span class="p">}</span>  
+    <span class="n">printf</span><span class="p">(</span><span class="s">"B数组内容如下;</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="k">while</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%5d,%5d,%5d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">]);</span> 
+        <span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span> 
+    <span class="p">}</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"C数组内容如下;</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="k">while</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%5d,%5d,%5d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="n">C</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">2</span><span class="p">]);</span> 
+        <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span> 
+    <span class="p">}</span> 
+<span class="p">}</span>  
+ 
+<span class="cm">/* 
+测试输入： 
+E矩阵： 
+0 0 3 0 0 0 0 0 
+0 0 0 0 0 0 5 0 
+0 0 0 0 0 0 0 0 
+0 0 0 0 7 0 0 0 
+0 0 0 0 0 0 0 0 
+0 9 0 0 0 0 0 0 
+F矩阵： 
+0 2 0 0 0 0 0 0 
+0 0 0 4 0 0 0 0 
+0 0 0 0 0 6 0 0 
+0 0 0 0 8 0 0 0 
+0 0 1 0 0 0 0 0 
+0 0 0 0 0 0 0 0 
+*/</span> 
+ 
+</code></pre></div></div> <h3 id="广义表运算">广义表运算</h3> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include&lt;stdio.h&gt; 
+#include&lt;stdlib.h&gt; 
+</span> 
+<span class="cm">/*************************/</span>  
+<span class="cm">/*    广义表的存储结构   */</span> 
+<span class="cm">/*************************/</span> 
+<span class="k">typedef</span> <span class="kt">char</span> <span class="n">DataType</span><span class="p">;</span> 
+<span class="k">enum</span><span class="p">{</span><span class="n">fasle</span><span class="p">,</span><span class="nb">true</span><span class="p">};</span> 
+<span class="k">typedef</span> <span class="k">enum</span><span class="p">{</span><span class="n">atom</span><span class="p">,</span><span class="n">list</span><span class="p">}</span><span class="n">NodeTag</span><span class="p">;</span>        <span class="c1">//atom=0,表示原子;list=1,表示子表 </span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">GLnode</span> 
+<span class="p">{</span> 
+    <span class="n">NodeTag</span> <span class="n">tag</span><span class="p">;</span>            <span class="c1">//用以区分原子结点和表结点 </span>
+    <span class="k">union</span> 
+    <span class="p">{</span> 
+        <span class="n">DataType</span> <span class="n">data</span><span class="p">;</span>        <span class="c1">//用以存放原子结点值，其类型由用户自定义 </span>
+        <span class="k">struct</span> <span class="n">GLnode</span> <span class="o">*</span> <span class="n">slink</span><span class="p">;</span>        <span class="c1">//指向子表的指针  </span>
+    <span class="p">};</span> 
+    <span class="k">struct</span> <span class="n">GLnode</span> <span class="o">*</span> <span class="n">link</span><span class="p">;</span>            <span class="c1">//指向下一个表结点  </span>
+<span class="p">}</span><span class="n">GLNode</span><span class="p">,</span><span class="o">*</span><span class="n">Glist</span><span class="p">;</span>            <span class="c1">//广义表结点及广义表类型  </span>
+ 
+ 
+<span class="cm">/*************************/</span>  
+<span class="cm">/*    建立广义表函数     */</span> 
+<span class="cm">/*************************/</span> 
+<span class="c1">//注：C语言中&amp;(如&amp;a)是取变量a的地址;而C++中&amp;(&amp;a)是变量a的引用(即表示变量a的地址),仅仅只是一个标识而已。 </span>
+<span class="kt">void</span> <span class="nf">CreatGList</span><span class="p">(</span><span class="n">Glist</span> <span class="n">GL</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="kt">char</span> <span class="n">ch</span><span class="p">;</span> 
+    <span class="n">scanf</span><span class="p">(</span><span class="s">"%c"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">ch</span><span class="p">);</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">ch</span><span class="o">!=</span><span class="mi">10</span><span class="p">)</span>                    <span class="c1">//如果广义表未结束(10是回车的ASCII码) </span>
+    <span class="p">{</span> 
+         
+        <span class="k">if</span><span class="p">(</span><span class="n">ch</span><span class="o">==</span><span class="sc">'('</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="n">GL</span><span class="o">-&gt;</span><span class="n">tag</span><span class="o">=</span><span class="n">list</span><span class="p">;</span> 
+            <span class="n">GL</span><span class="o">-&gt;</span><span class="n">slink</span><span class="o">=</span><span class="p">(</span><span class="n">GLNode</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">GLNode</span><span class="p">));</span> 
+            <span class="n">CreatGList</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">slink</span><span class="p">);</span>    <span class="c1">//递归调用构造子表  </span>
+        <span class="p">}</span> 
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">ch</span> <span class="o">==</span> <span class="sc">')'</span><span class="p">)</span>   
+            <span class="n">GL</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> 
+        <span class="k">else</span> 
+        <span class="p">{</span> 
+            <span class="c1">//GL=(GLNode *)malloc(sizeof(GLNode)); </span>
+            <span class="c1">//构造原子结点 </span>
+            <span class="n">GL</span><span class="o">-&gt;</span><span class="n">tag</span><span class="o">=</span><span class="n">atom</span><span class="p">;</span> 
+            <span class="n">GL</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">ch</span><span class="p">;</span>  
+        <span class="p">}</span>  
+    <span class="p">}</span>                            <span class="c1">//结束 </span>
+    <span class="k">else</span> 
+        <span class="n">GL</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span> 
+    <span class="n">scanf</span><span class="p">(</span><span class="s">"%c"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">ch</span><span class="p">);</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">ch</span><span class="o">!=</span><span class="mi">10</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="k">if</span><span class="p">(</span><span class="n">ch</span><span class="o">==</span><span class="sc">','</span><span class="p">)</span> 
+            <span class="p">{</span> 
+                <span class="n">GL</span><span class="o">-&gt;</span><span class="n">link</span><span class="o">=</span><span class="p">(</span><span class="n">GLNode</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">GLNode</span><span class="p">));</span> 
+                <span class="n">CreatGList</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">);</span>    <span class="c1">//递归构造后续广义表 </span>
+            <span class="p">}</span> 
+            <span class="k">else</span> 
+                <span class="n">GL</span><span class="o">-&gt;</span><span class="n">link</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>            <span class="c1">//表示遇到 ')'或结束符 ';'时无后续表  </span>
+        <span class="p">}</span> 
+        <span class="k">else</span> 
+            <span class="n">GL</span><span class="o">-&gt;</span><span class="n">link</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span> 
+<span class="p">}</span> 
+ 
+<span class="cm">/*************************************/</span>  
+<span class="cm">/*           输出广义表函数          */</span> 
+<span class="cm">/*************************************/</span> 
+<span class="kt">void</span> <span class="nf">PrintGList</span><span class="p">(</span><span class="n">Glist</span> <span class="n">GL</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">tag</span><span class="o">==</span><span class="n">list</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="n">printf</span><span class="p">(</span><span class="s">"("</span><span class="p">);</span> 
+            <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">slink</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">" "</span><span class="p">);</span> 
+            <span class="k">else</span> <span class="n">PrintGList</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">slink</span><span class="p">);</span>    <span class="c1">//递归调用输出子表  </span>
+        <span class="p">}</span> 
+        <span class="k">else</span> 
+            <span class="n">printf</span><span class="p">(</span><span class="s">"%c"</span><span class="p">,</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>        <span class="c1">//输出结点数据域值 </span>
+        <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">tag</span><span class="o">==</span><span class="n">list</span><span class="p">)</span> 
+            <span class="n">printf</span><span class="p">(</span><span class="s">")"</span><span class="p">);</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">link</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="n">printf</span><span class="p">(</span><span class="s">","</span><span class="p">);</span> 
+            <span class="n">PrintGList</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">);</span>        <span class="c1">//递归调用输出下一个结点  </span>
+        <span class="p">}</span> 
+    <span class="p">}</span> 
+<span class="p">}</span>  
+ 
+<span class="cm">/*************************************/</span>  
+<span class="cm">/*           广义表查找函数          */</span> 
+<span class="cm">/*************************************/</span> 
+<span class="n">Glist</span> <span class="nf">FindGlistX</span><span class="p">(</span><span class="n">Glist</span> <span class="n">GL</span><span class="p">,</span><span class="n">DataType</span> <span class="n">x</span><span class="p">,</span><span class="kt">int</span> <span class="o">*</span><span class="n">mark</span><span class="p">)</span>  
+<span class="p">{</span>    <span class="c1">//调用广义表GL所指向的广义表，mark=false,x为查找的元素， </span>
+    <span class="c1">//若查找成功，mark=true,p为指向数据域为x的结点  </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">tag</span><span class="o">==</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">GL</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">==</span><span class="n">x</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="o">*</span><span class="n">mark</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span>  
+            <span class="k">return</span> <span class="n">GL</span><span class="p">;</span>                          
+        <span class="p">}</span> 
+        <span class="k">else</span> 
+            <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">tag</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span> 
+                <span class="n">FindGlistX</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">slink</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">mark</span><span class="p">);</span> 
+        <span class="n">FindGlistX</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">mark</span><span class="p">);</span> 
+    <span class="p">}</span>  
+    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span> 
+<span class="p">}</span>  
+ 
+<span class="cm">/*************************************/</span>  
+<span class="cm">/*          求广义表表头函数         */</span> 
+<span class="cm">/*************************************/</span> 
+<span class="n">Glist</span> <span class="nf">head</span><span class="p">(</span><span class="n">Glist</span> <span class="n">GL</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="n">Glist</span> <span class="n">p</span><span class="p">;</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">!=</span><span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">GL</span><span class="o">-&gt;</span><span class="n">tag</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span>            <span class="c1">//不为空并且不是原子  </span>
+    <span class="p">{</span> 
+        <span class="n">p</span><span class="o">=</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">slink</span><span class="p">;</span> 
+        <span class="n">p</span><span class="o">-&gt;</span><span class="n">link</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span> 
+        <span class="k">return</span> <span class="n">p</span><span class="p">;</span>                        <span class="c1">//返回GL中指向子表的指针     </span>
+    <span class="p">}</span> 
+    <span class="k">else</span> 
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>  
+<span class="p">}</span>  
+ 
+<span class="cm">/*************************************/</span>  
+<span class="cm">/*          求广义表表尾函数         */</span> 
+<span class="cm">/*************************************/</span> 
+<span class="n">Glist</span> <span class="nf">tail</span><span class="p">(</span><span class="n">Glist</span> <span class="n">GL</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="n">Glist</span> <span class="n">p</span><span class="p">;</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">!=</span><span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">GL</span><span class="o">-&gt;</span><span class="n">tag</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span>            <span class="c1">//表不为空表并且有表尾  </span>
+    <span class="p">{</span> 
+        <span class="n">p</span><span class="o">=</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">slink</span><span class="p">;</span> 
+        <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">;</span>                        <span class="c1">//p指向第二个元素 </span>
+        <span class="n">GL</span><span class="o">-&gt;</span><span class="n">slink</span><span class="o">=</span><span class="n">p</span><span class="p">;</span>                    <span class="c1">//删除广义表第一个元素     </span>
+    <span class="p">}</span> 
+    <span class="k">return</span> <span class="n">p</span><span class="p">;</span>  
+<span class="p">}</span>  
+ 
+<span class="cm">/*************************************/</span>  
+<span class="cm">/*           求广义表深度            */</span> 
+<span class="cm">/*************************************/</span> 
+<span class="kt">void</span> <span class="nf">depth</span><span class="p">(</span><span class="n">Glist</span> <span class="n">GL</span><span class="p">,</span><span class="kt">int</span> <span class="o">*</span><span class="n">maxdh</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">h</span><span class="p">;</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">tag</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> 
+        <span class="n">maxdh</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>                        <span class="c1">//说明广义表为单个元素 </span>
+    <span class="k">else</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">tag</span><span class="o">==</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">GL</span><span class="o">-&gt;</span><span class="n">slink</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> 
+            <span class="o">*</span><span class="n">maxdh</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>                    <span class="c1">//广义表为空表 </span>
+        <span class="k">else</span>                            <span class="c1">//进行递归求解  </span>
+        <span class="p">{</span> 
+            <span class="n">GL</span><span class="o">=</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">slink</span><span class="p">;</span>                <span class="c1">//进入第一层 </span>
+            <span class="o">*</span><span class="n">maxdh</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+            <span class="k">do</span>                <span class="c1">//循环扫描表的第一层的每个结点，对每个结点求其子表深度  </span>
+            <span class="p">{</span> 
+                <span class="n">depth</span><span class="p">(</span><span class="n">GL</span><span class="p">,</span><span class="o">&amp;</span><span class="n">h</span><span class="p">);</span> 
+                <span class="k">if</span><span class="p">(</span><span class="n">h</span><span class="o">&gt;*</span><span class="n">maxdh</span><span class="p">)</span> 
+                    <span class="o">*</span><span class="n">maxdh</span><span class="o">=</span><span class="n">h</span><span class="p">;</span>            <span class="c1">//取最大的子表深度 </span>
+                <span class="n">GL</span><span class="o">=</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">;</span>     
+            <span class="p">}</span><span class="k">while</span><span class="p">(</span><span class="n">GL</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">);</span> 
+            <span class="o">*</span><span class="n">maxdh</span><span class="o">=*</span><span class="n">maxdh</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>                <span class="c1">//子表最大深度加1  </span>
+        <span class="p">}</span>  
+<span class="p">}</span>  
+ 
+<span class="cm">/*************************************/</span>  
+<span class="cm">/*     求广义表的长度(即元素的个数     */</span> 
+<span class="cm">/*************************************/</span> 
+<span class="c1">//注：GL-&gt;slink=NULL 和没有指定空间是不同的。 </span>
+<span class="kt">int</span> <span class="nf">GListLength</span><span class="p">(</span><span class="n">Glist</span> <span class="n">GL</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">GL</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="mi">1</span><span class="o">+</span><span class="n">GListLength</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">);</span> 
+    <span class="k">else</span> 
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> 
+<span class="p">}</span> 
+ 
+<span class="cm">/*************************************/</span>  
+<span class="cm">/*              复制广义表            */</span> 
+<span class="cm">/*************************************/</span> 
+<span class="kt">void</span> <span class="nf">CopyGList</span><span class="p">(</span><span class="n">Glist</span> <span class="n">NList</span><span class="p">,</span><span class="n">Glist</span> <span class="n">GList</span><span class="p">)</span> 
+<span class="p">{</span><span class="c1">//复制广义表要 </span>
+ <span class="c1">//将广义表的标记、原子、子表和下一结点复制 </span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">GList</span><span class="p">)</span><span class="c1">//原广义表为空 </span>
+        <span class="n">NList</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> 
+    <span class="k">else</span> 
+    <span class="p">{</span> 
+        <span class="n">NList</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">=</span> <span class="n">GList</span><span class="o">-&gt;</span><span class="n">tag</span><span class="p">;</span> 
+        <span class="k">if</span> <span class="p">(</span><span class="n">GList</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> 
+            <span class="n">NList</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">GList</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span><span class="c1">//复制广义表的原子结点 </span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">GList</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">NList</span><span class="o">-&gt;</span><span class="n">slink</span> <span class="o">=</span> <span class="p">(</span><span class="n">GLNode</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">GLNode</span><span class="p">))))</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"存储空间分配失败</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+            <span class="n">CopyGList</span><span class="p">(</span><span class="n">NList</span><span class="o">-&gt;</span><span class="n">slink</span><span class="p">,</span><span class="n">GList</span><span class="o">-&gt;</span><span class="n">slink</span><span class="p">);</span><span class="c1">//复制广义表的子表 </span>
+        <span class="p">}</span> 
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">NList</span><span class="o">-&gt;</span><span class="n">link</span> <span class="o">=</span> <span class="p">(</span><span class="n">GLNode</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">GLNode</span><span class="p">))))</span> 
+                    <span class="n">printf</span><span class="p">(</span><span class="s">"存储空间分配失败</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+            <span class="n">CopyGList</span><span class="p">(</span><span class="n">NList</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">,</span><span class="n">GList</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">);</span><span class="c1">//复制广义表的下一结点 </span>
+        <span class="p">}</span> 
+<span class="p">}</span> 
+ 
+<span class="cm">/*************************************/</span>  
+<span class="cm">/*    主函数:广义表基本运算的实现    */</span> 
+<span class="cm">/*************************************/</span> 
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>                             
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">xz</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">mark</span><span class="p">;</span> 
+    <span class="kt">char</span> <span class="n">x</span><span class="p">;</span> 
+    <span class="n">Glist</span> <span class="n">GL</span><span class="o">=</span><span class="p">(</span><span class="n">GLNode</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">GLNode</span><span class="p">));</span> 
+    <span class="n">Glist</span> <span class="n">GL1</span><span class="p">,</span><span class="n">NList</span><span class="p">;</span>  
+    <span class="c1">//void CreatGList(Glist GL),PrintGList(Glist GL),depth(Glist GL,int *maxdh); </span>
+    <span class="c1">//Glist FindGlistX(Glist GL,DataType x,int *mark),head(Glist GL),tail(Glist GL); </span>
+    <span class="k">while</span><span class="p">(</span><span class="n">xz</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*===============================*</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*          广义表的运算         *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*===============================*</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"**********1.建立广义表***********</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"**********2.广义表查找***********</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"**********3.求广义表头***********</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"**********4.求广义表尾***********</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"**********5.求广义表深度*********</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"**********6.求广义表长度*********</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"**********7.输出复制广义表********</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"**********0.退出表的运算*********</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*===============================*</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"            请 选 择：0-5        </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">xz</span><span class="p">);</span> 
+        <span class="n">getchar</span><span class="p">();</span> 
+        <span class="k">switch</span><span class="p">(</span><span class="n">xz</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="k">case</span> <span class="mi">1</span><span class="p">:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"输入广义表："</span><span class="p">);</span> 
+                <span class="n">CreatGList</span><span class="p">(</span><span class="n">GL</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"输出广义表："</span><span class="p">);</span> 
+                <span class="n">PrintGList</span><span class="p">(</span><span class="n">GL</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">2</span><span class="p">:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"输入要查找的数据值(单个字符): "</span><span class="p">);</span> 
+                <span class="n">scanf</span><span class="p">(</span><span class="s">"%c"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">x</span><span class="p">);</span> 
+                <span class="n">mark</span><span class="o">=</span><span class="n">fasle</span><span class="p">;</span> 
+                <span class="n">FindGlistX</span><span class="p">(</span><span class="n">GL</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="o">&amp;</span><span class="n">mark</span><span class="p">);</span> 
+                <span class="k">if</span><span class="p">(</span><span class="n">mark</span><span class="p">)</span> 
+                     <span class="n">printf</span><span class="p">(</span><span class="s">"要查找的数据存在表中！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                 <span class="k">else</span> 
+                     <span class="n">printf</span><span class="p">(</span><span class="s">"要查找的数据不在表中！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                 <span class="k">break</span><span class="p">;</span> 
+             <span class="k">case</span> <span class="mi">3</span><span class="p">:</span> 
+                 <span class="n">printf</span><span class="p">(</span><span class="s">"输入要求表头的广义表："</span><span class="p">);</span> 
+                 <span class="n">CreatGList</span><span class="p">(</span><span class="n">GL</span><span class="p">);</span> 
+                 <span class="n">GL1</span><span class="o">=</span><span class="n">head</span><span class="p">(</span><span class="n">GL</span><span class="p">);</span> 
+                 <span class="n">printf</span><span class="p">(</span><span class="s">"广义表的表头是："</span><span class="p">);</span> 
+                 <span class="n">PrintGList</span><span class="p">(</span><span class="n">GL1</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">4</span><span class="p">:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"输入要求表尾的广义表："</span><span class="p">);</span> 
+                <span class="n">CreatGList</span><span class="p">(</span><span class="n">GL</span><span class="p">);</span> 
+                <span class="n">GL1</span><span class="o">=</span><span class="n">tail</span><span class="p">(</span><span class="n">GL</span><span class="p">);</span> 
+                 <span class="n">printf</span><span class="p">(</span><span class="s">"广义表的表尾是："</span><span class="p">);</span> 
+                 <span class="n">printf</span><span class="p">(</span><span class="s">"("</span><span class="p">);</span> 
+                 <span class="n">PrintGList</span><span class="p">(</span><span class="n">GL1</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">")"</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="n">GL</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">5</span><span class="p">:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"输入要求深度的广义表："</span><span class="p">);</span> 
+                <span class="n">CreatGList</span><span class="p">(</span><span class="n">GL</span><span class="p">);</span> 
+                <span class="n">mark</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+                <span class="n">depth</span><span class="p">(</span><span class="n">GL</span><span class="p">,</span><span class="o">&amp;</span><span class="n">mark</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"广义表的深度是：%5d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">mark</span><span class="p">);</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">6</span><span class="p">:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"输入要求长度的广义表："</span><span class="p">);</span> 
+                <span class="n">CreatGList</span><span class="p">(</span><span class="n">GL</span><span class="p">);</span> 
+                <span class="n">mark</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"广义表的长度是：%5d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">GListLength</span><span class="p">(</span><span class="n">GL</span><span class="o">-&gt;</span><span class="n">slink</span><span class="p">));</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">7</span><span class="p">:</span> 
+                <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">NList</span> <span class="o">=</span> <span class="p">(</span><span class="n">GLNode</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">GLNode</span><span class="p">))))</span> 
+                    <span class="n">printf</span><span class="p">(</span><span class="s">"存储空间分配失败</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="n">CopyGList</span><span class="p">(</span><span class="n">NList</span><span class="p">,</span><span class="n">GL</span><span class="p">);</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"输出复制广义表:"</span><span class="p">);</span> 
+                <span class="n">PrintGList</span><span class="p">(</span><span class="n">NList</span><span class="p">);</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="nl">default:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"再见！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+                <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+        <span class="p">}</span>  
+    <span class="p">}</span>  
+<span class="p">}</span> 
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/C_CPP/2011-09-10-%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E4%B8%8E%E5%B9%BF%E4%B9%89%E8%A1%A8.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=数据结构-稀疏矩阵与广义表 - 知不知&amp;url=/list/docs/C_CPP/2011-09-10-%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E4%B8%8E%E5%B9%BF%E4%B9%89%E8%A1%A8.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/C_CPP/2011-09-10-%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E4%B8%8E%E5%B9%BF%E4%B9%89%E8%A1%A8.html&amp;title=数据结构-稀疏矩阵与广义表 - 知不知&amp;summary=稀疏矩阵与广义表&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/C_CPP/2011-09-10-%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E4%B8%8E%E5%B9%BF%E4%B9%89%E8%A1%A8.html&amp;text=数据结构-稀疏矩阵与广义表 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/C_CPP/2011-09-10-%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E4%B8%8E%E5%B9%BF%E4%B9%89%E8%A1%A8.html&amp;t=数据结构-稀疏矩阵与广义表 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/C_CPP/2011-09-10-%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E4%B8%8E%E5%B9%BF%E4%B9%89%E8%A1%A8.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('数据结构-稀疏矩阵与广义表'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

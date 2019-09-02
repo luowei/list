@@ -1,0 +1,175 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Ubuntu常用的命令与操作</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="ubuntu系统目录结构">Ubuntu系统目录结构</h3> <p>以下为Ubuntu目录的主要目录结构，您稍微了解它们都包含了哪些文件就可以了，不需要记忆。</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/   根目录 
+    │ 
+    ├boot/      启动文件。所有与系统启动有关的文件都保存在这里 
+    │    └grub/   Grub引导器相关的文件 
+    │ 
+    ├dev/       设备文件 
+    ├proc/      内核与进程镜像 
+    │ 
+    ├mnt/      临时挂载 
+    ├media/   挂载媒体设备 
+    │ 
+    ├root/      root用户的$HOME目录 
+    ├home/          
+    │    ├user/   普通用户的$HOME目录 
+    │    └.../ 
+    │ 
+    ├bin/      系统程序 
+    ├sbin/      管理员系统程序 
+    ├lib/      系统程序库文件 
+    ├etc/      系统程序和大部分应用程序的全局配置文件 
+    │   ├init.d/   SystemV风格的启动脚本 
+    │   ├rcX.d/   启动脚本的链接，定义运行级别 
+    │   ├network/   网络配置文件 
+    │   ├X11/      图形界面配置文件 
+    │ 
+    ├usr/       
+    │   ├bin/      应用程序 
+    │   ├sbin/   管理员应用程序 
+    │   ├lib/      应用程序库文件 
+    │   ├share/   应用程序资源文件 
+    │   ├src/      应用程序源代码 
+    │   ├local/       
+    │   │     ├soft/      用户程序       
+    │   │     └.../      通常使用单独文件夹 
+    │   ├X11R6/   图形界面系统 
+    │ 
+    ├var/         动态数据 
+    │ 
+    ├temp/         临时文件 
+    ├lost+found/   磁盘修复文件
+</code></pre></div></div> <h3 id="ubuntu1204启用root用户登录">ubuntu12.04启用root用户登录</h3> <p>Ubuntu 12.04默认是不允许root登录的，在登录窗口只能看到普通用户和访客登录。<br /> 以普通身份登陆Ubuntu后,在终端窗口里面输入: <code class="highlighter-rouge">sudo -s</code>.<br /> 然后输入普通用户登陆的密码，回车即可进入 root用户权限模式。<br /> 然后执行: <code class="highlighter-rouge">vi /etc/lightdm/lightdm.conf</code>.<br /> 增加 <code class="highlighter-rouge">greeter-show-manual-login=true allow-guest=false</code>.</p> <p>修改完后的整个配置文件是</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[SeatDefaults]
+greeter-session=unity-greeter
+user-session=Ubuntu
+greeter-show-manual-login=true #手工输入登陆系统的用户名和密码
+allow-guest=false   #不允许guest登录
+</code></pre></div></div> <p>然后启用root帐号：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo passwd root
+</code></pre></div></div> <p>根据提示输入root帐号密码，重启Ubuntu，登录窗口会有“登录”选项，就可以通过root登录了。</p> <h3 id="ubuntu给用户添加sudo权限">Ubuntu给用户添加sudo权限</h3> <p><strong>方法一：</strong><br /> 要添加新用户到sudo，最简单的方式就是使用 usermod 命令。运行</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$sudo usermod -G admin username 
+</code></pre></div></div> <p>这就你要作的，然而，如果用户已经是其他组的成员，你需要添加 -a 这个选项，象这样</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$sudo usermod -a -G admin username
+</code></pre></div></div> <p><strong>方法二：</strong><br /> 使用visudo命令编辑器修改 <code class="highlighter-rouge">/etc/sudoers</code> 文件：<br /> 添加：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>your_user_name ALL=(ALL) 
+</code></pre></div></div> <p>然后ctrl+w保存文件，ctrl+x退出 <br /> 这样就加入了sudo组，可以使用sudo命令了。 <br /> 如果想用sudo的时候不输入密码输入换成如下内容即可：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>your_user_name ALL=(ALL)NOPASSWD: ALL 
+</code></pre></div></div> <h3 id="ubuntu优化清理无用的包">Ubuntu优化清理无用的包</h3> <p>Ubuntu Linux与Windows系统不同，Ubuntu Linux不会产生无用垃圾文件，但是在升级缓存中，Ubuntu Linux不会自动删除这些文件，今天就来说说这些垃圾文件清理方法。</p> <p>1，非常有用的清理命令：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get autoclean
+sudo apt-get clean
+sudo apt-get autoremove
+</code></pre></div></div> <p>这三个命令主要清理升级缓存以及无用包的。</p> <p>2，清理opera firefox的缓存文件：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ls ~/.opera/cache4
+ls ~/.mozilla/firefox/*.default/Cache
+</code></pre></div></div> <p>3，清理Linux下孤立的包：<br /> 图形界面下我们可以用：<code class="highlighter-rouge">gtkorphan</code></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install gtkorphan -y
+</code></pre></div></div> <p>终端命令下我们可以用：<code class="highlighter-rouge">deborphan</code></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install deborphan -y
+</code></pre></div></div> <p>4，卸载：tracker<br /> 这个东西一般我只要安装Ubuntu就会第一删掉tracker 他不仅会产生大量的cache文件而且还会影响开机速度。所以在新得利里面删掉就行。</p> <p>5，删除多余的内核：一定不要删错哦，切记！<br /> 打开终端敲命令：<code class="highlighter-rouge">dpkg --get-selections|grep linux</code><br /> 有image的就是内核文件<br /> 删除老的内核文件：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get remove 内核文件名 （例如：linux-image-2.6.27-2-generic）
+</code></pre></div></div> <p>内核删除，释放空间了，应该能释放130－140M空间。<br /> 最后不要忘了看看当前内核：<code class="highlighter-rouge">uname -a</code></p> <p><strong>附录：</strong> 包管理的临时文件目录:<br /> 包在 <code class="highlighter-rouge">/var/cache/apt/archives</code><br /> 没有下载完的在 <code class="highlighter-rouge">/var/cache/apt/archives/partial</code></p> <p>apt-get与dpkg等各种安装命令:<a href="http://mintelong.iteye.com/blog/480132">http://mintelong.iteye.com/blog/480132</a></p> <h3 id="创建一个自启动的service适用于ubuntu与centos">创建一个自启动的service(适用于Ubuntu与centOS)</h3> <p><strong>以创建nexus为例</strong><br /> 1.使用以下内容创建文件 <code class="highlighter-rouge">/etc/init.d/nexus</code></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+/usr/bin/nexus <span class="nv">$*</span>
+</code></pre></div></div> <p>并保存文件；</p> <p>2.注册到启动项</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Register nexus at boot time (Ubuntu, 32 bit):
+sudo ln -s $NEXUS_HOME/bin/nexus /usr/bin/nexus
+sudo chmod 755 /etc/init.d/nexus
+sudo update-rc.d nexus defaults
+Register nexus at boot time (RedHat, CentOS, 64 bit):
+sudo ln -s $NEXUS_HOME/bin/nexus /usr/bin/nexus
+sudo chmod 755 /etc/init.d/nexus
+sudo chkconfig --add nexus
+</code></pre></div></div> <h3 id="环境变量的设置">环境变量的设置</h3> <p>一、临时设置</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export ORACLE_DIR=/opt/oracle/product
+</code></pre></div></div> <p>二、当前用户的全局设置<br /> 打开<code class="highlighter-rouge">~/.bashrc</code>，添加行：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export ORACLE_DIR=/opt/oracle/product
+</code></pre></div></div> <p>注销,这样每次以此用户登录Ubuntu，该环境变量都会生效；<br /> 若要产立即生效，终端执行命令：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>test@ubuntu:~$ source .bashrc
+</code></pre></div></div> <p>三、所有用户的全局设置</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vi /etc/profile 
+</code></pre></div></div> <p>在里面加入：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export ORACLE_DIR=/opt/oracle/product
+</code></pre></div></div> <p>若要产立即生效，终端执行命令：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>test@ubuntu:~$ source /etc/profile
+</code></pre></div></div> <p>Bash 在用户登录时从四个文件中读取环境,执行顺序:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/etc/profile -&gt; ~/.bash_profile -&gt; ~/.bashrc -&gt; /etc/bashrc
+</code></pre></div></div> <h3 id="添加用户与组并设置权限">添加用户与组并设置权限</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo groupadd nexus #添加nexus用户组
+sudo useradd -g nexus nexus #添加nexus用户并添加到nexus用户组
+sudo usermod -G root nexus #将nexus用户添加到root组
+sudo gpasswd -d nexus root #从root组中删除nexus
+sudo usermod -G vvvv nexus #将nexus用户添加到vvvv组
+#sudo passwd nexus #给nexus用户创建密码
+sudo usermod -G nexus vvvv #将vvvv用户添加到nexus组
+id #显示当前用户id，群组id
+id vvvv #查看用户vvvv的用户id，以及所属群组id
+groups vvvv #查看用户vvvv的所有群组id
+</code></pre></div></div> <h3 id="ubuntu修改shell提示符修改用户名计算机名">Ubuntu修改SHELL提示符,修改用户名计算机名</h3> <p><strong>Ubuntu修改SHELL提示符</strong><br /> 默认bash shell 的$PS1值：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\u@\h:\w\$
+</code></pre></div></div> <p><strong>Ubuntu设置PS1属性达到SHELL提示符下短路径</strong><br /> 默认情况下，Ubuntu终端会输出完整路径，在路径名很长的时候，提示方式很不友好，通过以下步骤修改PS1变量的设置，可以让终端输出短路径。</p> <p>修改用户目录下的<code class="highlighter-rouge">.bashrc</code>文件</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kay@Vostro-PC:~$ vi .bashrc
+</code></pre></div></div> <p>找到如下代码：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if [ "$color_prompt" = yes ]; then
+   PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\$ ' # Modify1 w-&gt;W
+else
+   PS1='${debian_chroot:+($debian_chroot)}\u@\h:\W\$ ' #Modify2
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1" # Modify3
+    ;;
+*)
+    ;;
+esac
+</code></pre></div></div> <p>以上内容全部修改完成之后，执行：<code class="highlighter-rouge">source .bashrc</code> <br /> 就能看到修改之后的效果了。 <br /> 修改之前为<code class="highlighter-rouge">kay@Vostro-PC:/etc/vim$</code><br /> 修改之后为<code class="highlighter-rouge">kay@Vostro-PC:vim$</code><br /> 相对于直接使用export PS1=””的方式，此种修改方法保留了终端标题栏显示完整路径的功能。 <br /> 如果想要终端颜色丰富一些，我们可以开启~/.bashrc中的<code class="highlighter-rouge">force_color_prompt=yes</code>参数，这样终端会用颜色来区分各种不同的项目，提高可阅读性。</p> <p><strong>ubuntu修改用户名称和计算机名称</strong><br /> 修改用户名称：<br /> 切换到root打开如下两个配置文件<br /> <code class="highlighter-rouge">vi /etc/passwd </code><br /> 把我想改的”xxx”这个用户名改为”cyrec”了,保存并退出 <br /> <code class="highlighter-rouge">vi /etc/shadow </code><br /> 同样把”xxx”改为”cyrec” ,保存并退出</p> <p>重启后名字就变成了cyrec@xxx-dest-top:<br /> 现在要修改计算机名称xxx-dest-top为YYY-ZZZ：<br /> 修改有两步：<br /> [1]修改/etc/hosts：<code class="highlighter-rouge">sudo vi /etc/hosts</code></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1       localhost
+192.168.76.21   YYY-ZZZ
+</code></pre></div></div> <p>The following lines are desirable for IPv6 capable hosts</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>::1     localhost ip6-localhost ip6-loopback  
+fe00::0 ip6-localnet  
+ff00::0 ip6-mcastprefix  
+ff02::1 ip6-allnodes  
+ff02::2 ip6-allrouters  
+ff02::3 ip6-allhosts  
+~    
+</code></pre></div></div> <p>[2]修改<code class="highlighter-rouge">/etc/hostname</code><br /> 内容为: <code class="highlighter-rouge">YYY-ZZZ</code> 保存，退出，重启，就可以了。</p> <h3 id="ubuntu下卸载删除安装软件">ubuntu下卸载删除安装软件</h3> <p><strong>1、通过deb包安装的情况：</strong> <br /> 安装.deb包：<code class="highlighter-rouge">sudo dpkg -i package_file.deb</code></p> <p>反安装.deb包：<code class="highlighter-rouge">sudo dpkg -r package_name</code></p> <p><strong>2、通过apt-get安装的情况：</strong><br /> 安装: <code class="highlighter-rouge">sudo apt-get install package_name</code></p> <p>反安装: <code class="highlighter-rouge">sudo apt-get remove package_name</code></p> <p><strong>3、彻底删除包括关联拓展包(很干净)</strong><br /> <code class="highlighter-rouge">sudo aptitude purge package_name</code></p> <h3 id="环境变量">环境变量</h3> <p><strong>设置环境变量</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo "export JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64/" &gt;&gt; ~/.bashrc
+echo 'export PATH=$PATH:$JAVA_HOME/bin' &gt;&gt; ~/.bashrc
+</code></pre></div></div> <p><strong>会话级的环境变量</strong></p> <blockquote> <p>Environment variable settings that should affect just a particular user (rather than the system as a whole) should be set into:</p> <p><code class="highlighter-rouge">~/.pam_environment</code> - This file is specifically meant for setting a user’s environment. It is not a script file, but rather consists of assignment expressions, one per line.<br /> <code class="highlighter-rouge">PATH DEFAULT=${PATH}:${HOME}/MyPrograms</code></p> <p><strong>Note:</strong> Using .pam_environment requires a re-login in order to initialize the variables. Restarting just the terminal is not sufficient to be able to use the variables.</p> <p>If you are using KDE, see the KDE User-base page on this topic. Not recommended anymore:<br /> <code class="highlighter-rouge">~/.profile</code> - In this file you can also place environment variable assignments, since it gets executed automatically by the DisplayManager during the start-up process desktop session as well as by the login shell when one logs-in from the textual console.</p> <p><code class="highlighter-rouge">~/.bash_profile</code> or<code class="highlighter-rouge"> ~/.bash_login</code> - If one of these file exist, bash executes it rather than “<code class="highlighter-rouge">~/.profile</code>” when it is started as a login shell. (Bash will prefer “<code class="highlighter-rouge">~/.bash_profile</code>” to “<code class="highlighter-rouge">~/.bash_login</code>”). However, these files won’t influence a graphical session by default.</p> <p><code class="highlighter-rouge">~/.bashrc</code> - Because of the way Ubuntu currently sets up the various script files by default, this may be the easiest place to set variables in. The default configuration nearly guarantees that this file will be executed in each and every invocation of bash as well as while logging in to the graphical environment. The performance cost of this will be negligible; the overhead of forking and execing bash will massively dominate the small cost of setting a handful of variables.</p> </blockquote> <p><strong>系统级的环境变量</strong></p> <blockquote> <p>Environment variable settings that affect the system as a whole (rather than just a particular user) should not be placed in any of the many system-level scripts that get executed when the system or the desktop session are loaded, but into</p> <p><code class="highlighter-rouge">/etc/environment</code> - This file is specifically meant for system-wide environment variable settings. It is not a script file, but rather consists of assignment expressions, one per line. Specifically, this file stores the system-wide locale and path settings.</p> <p>Not recommended:</p> <p><code class="highlighter-rouge">/etc/profile</code> - This file gets executed whenever a bash login shell is entered (e.g. when logging in from the console or over ssh), as well as by the DisplayManager when the desktop session loads. This is probably the file you will get referred to when asking veteran UNIX system administrators about environment variables. In Ubuntu, however, this file does little more than invoke the /etc/bash.bashrc file.</p> <p><code class="highlighter-rouge">/etc/bash.bashrc</code> - This is the system-wide version of the ~/.bashrc file. Ubuntu is configured by default to execute this file whenever a user enters a shell or the desktop environment.</p> <p><strong>Note:</strong> Any variables added to these locations will not be reflected when invoking them with a sudo command, as sudo has a default policy of resetting the Environment and setting a secure path (this behavior is defined in /etc/sudoers). As a workaround, you can use “sudo su” that will provide a shell with root privileges but retaining any modified PATH variables.</p> <p><strong>Note:</strong> When dealing with end-user/home desktop systems may be appropriate to place settings in the user’s ~/.pam_environment files discussed above rather than the system-wide ones, since those files do not require one to utilize root privileges in order to edit and are easily moved between systems.</p> <p><strong>Note:</strong> Some systems now use an envvar.sh placed in the /etc/profile.d/ directory to set system wide environment strings.</p> </blockquote> <p>更多详细见: <a href="https://help.ubuntu.com/community/EnvironmentVariables">EnvironmentVariables</a><br /> 让环境变量即时生效: $ <code class="highlighter-rouge">source /etc/environment</code></p> <h3 id="linux让环境变量即时生效">linux让环境变量即时生效</h3> <p>立即生效：使用<code class="highlighter-rouge">source</code>命令！<br /> 例 ： <code class="highlighter-rouge">source .bashrc</code> 就会立即生效了……</p> <p>注释：<br /> source命令用法：<br /> <code class="highlighter-rouge">source FileName</code><br /> 作用:在当前bash环境下读取并执行FileName中的命令。<br /> 注：该命令通常用命令“<code class="highlighter-rouge">.</code>”来替代。<br /> 如：<code class="highlighter-rouge">source .bashrc</code> 与 <code class="highlighter-rouge">. .bashrc</code> 是等效的。</p> <h3 id="临时解决ubuntu解压windows生成的zip文件时乱码问题">临时解决ubuntu解压windows生成的zip文件时乱码问题</h3> <p>有2种方式解决问题：</p> <ol> <li>通过unzip行命令解压，指定字符集 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip -O CP936 xxx.zip (用GBK, GB18030也可以)
+</code></pre></div> </div> <p>有趣的是unzip的manual中并无这个选项的说明, unzip –help对这个参数有一行简单的说明。</p> </li> <li>在环境变量中，指定unzip参数，总是以指定的字符集显示和解压文件 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/etc/environment中加入2行
+UNZIP="-O CP936"
+ZIPINFO="-O CP936"
+</code></pre></div> </div> </li> </ol> <h3 id="批量解压zip文件">批量解压zip文件</h3> <p><strong>解压有乱码的zip文件</strong><br /> 方法一:<br /> <code class="highlighter-rouge">unzip -O GBK mycpmpressfile.zip (用CP936, GB18030也可以)</code></p> <p>方法二:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install p7zip-full convmv
+LANG=C 7z x abc.zip 
+convmv -f cp936 -t utf8 -r --notest * 
+</code></pre></div></div> <p>方法三: <br /> 在环境变量中，指定unzip参数，总是以指定的字符集显示和解压文件/etc/environment中加入2行.</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>UNZIP="-O CP936"
+ZIPINFO="-O CP936"
+</code></pre></div></div> <p>方法四:<br /> 写一个脚本程序,保存成unzipgbk.py. 代码如下:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+</span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+
+<span class="k">print</span> <span class="s">"Processing File "</span> <span class="o">+</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="nb">file</span><span class="o">=</span><span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s">"r"</span><span class="p">);</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">file</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
+ <span class="n">utf8name</span><span class="o">=</span><span class="n">name</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">'gbk'</span><span class="p">)</span>
+ <span class="k">print</span> <span class="s">"Extracting "</span> <span class="o">+</span> <span class="n">utf8name</span>
+ <span class="n">pathname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">utf8name</span><span class="p">)</span>
+ <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pathname</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pathname</span><span class="o">!=</span> <span class="s">""</span><span class="p">:</span>
+ <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">pathname</span><span class="p">)</span>
+ <span class="n">data</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+ <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">utf8name</span><span class="p">):</span>
+ <span class="n">fo</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">utf8name</span><span class="p">,</span> <span class="s">"w"</span><span class="p">)</span>
+ <span class="n">fo</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+ <span class="n">fo</span><span class="o">.</span><span class="n">close</span>
+<span class="nb">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></div> <p><strong>在shell里使用解压工具批量解压zip</strong><br /> 方法一:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for i in *.zip;do unzip $i;done;
+</code></pre></div></div> <p>方法二:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>find -iname "*.zip" -execdir unzip {} +
+find -iname "*.zip" -exec unzip {} \;
+</code></pre></div></div> <p>方法三:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ls *.tar.gz | xargs -n1 tar xzvf
+</code></pre></div></div> <p>方法四:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for i in $(ls *.gz);do tar xvf $i;done;
+</code></pre></div></div> <p>方法五:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tar xvf '*.tar.gz'  //因为tar不支持通配符语法，加上引号让shell解析通配符
+</code></pre></div></div> <p><strong>批量解压并解决文件名乱码</strong><br /> 方法一:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip -O CP936 '*.zip'
+</code></pre></div></div> <p>方法二:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for i in *.zip;do unzip -O CP936 $i;done;
+</code></pre></div></div> <p><strong>查看系统内核版本</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uname -a
+</code></pre></div></div> <h2 id="win7硬盘安装ubuntu1204-lts双系统">win7硬盘安装Ubuntu12.04 LTS双系统</h2> <p>win7系统安装Ubuntu12.04LTS（Ubuntu其他系列亦是如此安装）</p> <p><strong>准备工作</strong><br /> 1,镜像版本下载： <a href="https://www.ubuntu.com/download">Ubuntu downloads</a> , 两个电脑中安装的都是Ubuntu64位的，这样提高了CPU的利用率。版本的选择取决于CPU的性能和运算能力。可用常见的工具软件检测下，如鲁大师等。<br /> 2,引导软件EasyBCD的下载：Click here(http://www.onlinedown.net/soft/58174.htm)。<br /> 3,格式化一个win7逻辑分区硬盘，格式化，然后再“计算机-管理-磁盘管理”下删除此分卷，作为Linux的文件系统。一共安装了两台电脑，一个分了250GB，另外一个分了100GB。这个逻辑分区最好是win7下的最后一个硬盘，若是放在win7中间的逻辑分区，安装过程中磁盘分区的时候，可能会出现不知的错误，影响其他硬盘中的已有数据。<br /> 4,前三步骤完成后，处理镜像文件的放置位置，此步骤有两种方式：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>方式1&gt;将镜像文件放置到准备工作3已经格式好的硬盘中。打开ISO，将文件夹casper下的initrd.lz和vmlinuz解压到当前目录即可。【此种方式没有尝试，一直用的都是方式2】。  
+方式2&gt;将镜像文件放置到win7的系统盘中。同4-1的后半部解压文件。
+</code></pre></div></div> <p><strong>安装</strong><br /> 1,常规安装EasyBCD软件，然后按照图示的流程配置引导文件。 <br /> 按照上图的箭头方向依次点击“Add New Entry”——“NeoGrub”——“Install”，点到“Install”后出面下面的界面，再点“Configure”。</p> <p>2,点击“Configure”后，在menu.list粘贴如下： 内容1:在准备4选择方式1, 如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>title Install Ubuntu 12.04 LTS
+root (hd0,N)
+kernel (hd0,N)/vmlinuz boot=casper iso-scan/filename=/ubuntu-12.04-desktop-amd64.iso ro quiet splash locale=zh_CN.UTF-8
+initrd (hd0,N)/initrd.lz
+</code></pre></div></div> <p>Tips：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hd(0,0), hd(0,1), hd(0,2), hd(0,3)表示主分区，
+(hd0,4)以后的表示逻辑分区，现在我只有一个主分区C盘，则(hd0,0)表示C盘，
+(hd0,4)表示D盘，(hd0,5)表示E盘，(hd0,6)表示F盘，
+</code></pre></div></div> <p>如：我的镜像就是放在F盘里，请把(hd0,6)改成自己对应的分区.<br /> 内容2:在准备步骤选择方式二</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>title Install Ubuntu 12.04 LTS
+root (hd0,0)
+kernel (hd0,0)/vmlinuz boot=casper iso-scan/filename=/ubuntu-12.04-desktop-amd64.iso ro quiet splash locale=zh_CN.UTF-8
+initrd (hd0,0)/initrd.lz
+</code></pre></div></div> <p>3,保存，重新启动计算机即可。</p> <p>4,启动项界面选择NeoGrub Bootloader ,之后回车 在这一步可能遇到的问题。参见可能遇到的问题 2,3,4.</p> <p>5,点击进入install ubuntu进入界面即可，在安装之前，先摁下组合键 <code class="highlighter-rouge">Alt + Ctrl + T</code> 切出终端，输入以下命令：<code class="highlighter-rouge">sudo umount –l /isodevice</code>.</p> <p>6,双击ubuntu桌面上的“安装Ubuntu12.04 LTS”进入安装，在“欢迎”界面中选择你想安装的语言， 接下来的“准备安装ubuntu”选项中最好的是勾选“安装这个第三方软件”；“安装类型”选择“其他选项”，之后就会出现“分区界面”.</p> <p>7,Ubuntu分区，在该界面的最上面会看到 一个 sdaN(空闲）N取决于你准备中的num号码，首先在列表中选择该设备，点击“删除”，执行完毕后，选中点击“添加”即可。<br /> 分区顺序，分区类型，文件格式和空间大小：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'交换分区' 逻辑分区 文件格式：无 空间大小 :（此取决于你计算机物理内存大:，&lt;=512MB的，可以设置为：实际大小*2 , &gt;512MB的，可以直接填写内存的实际物理大小)
+'/home' 逻辑分区 文件格式：ext4 空间大小: 除了'交换分区'和'/'大小之外的剩余分区。
+'/' 主分区 文件格式：ext4 空间大小: 3GB&lt;=Space &lt;=10GB
+</code></pre></div></div> <p>这一步其他地方不要点选，包括做下面的下拉列表。之后点击下一步骤进行安装即可。<br /> 分区方案：对于８０G，建议先逻辑后主分区：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/boot  逻辑分区，开始，２００M
+/swap  逻辑，开始，1000M 
+/home 逻辑 开始36000M, 
+最后/　主分区, 34+，开始
+</code></pre></div></div> <p>8,常规的设置，时间，键盘布局，用户名和密码，之后等待安装完成。之后根据提示点击重启计算机。 安装过程中若询问，是否与win7共享文件等，根据实际需要勾选，我这边没有勾选。</p> <p>9,重启后，你会发现，ubuntu的启动项会默认的排在第一位，根据你的需要来更改双系统的启动顺序。 ubuntu下启动终端，依次输入以下命令即可将win7放在启动项的第一位。</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mv /etc/grub.d/30_os-prober /etc/grub.d/06_os-prober
+sudo update-grub
+</code></pre></div></div> <p>之后重启系统即可。</p> <p>10,之后选择ubuntu系统，进入后，设置网络连接，更新系统软件即可，enjoy yourself。 Ubuntu Linux的安装过程可以详细参见 <a href="http://teliute.org/linux/Ubsetup/lesson21/lesson21.html">Ubuntu12.04 LTS的安装</a>.</p> <p><strong>可能遇到的问题</strong><br /> 1,EasyBCD配置好grub重启计算机后看不到，选择项，还是直接进入win7系统。<br /> 进入win7修改EasyBCD的设置，如图所示，改完重启即可。<br /> 或者在配置menu.list的时候，先检查这个选项。</p> <p>2,显示install ubuntu，回车后出现如下错误：<br /> <code class="highlighter-rouge">Error28：select item cannot fit into memory</code><br /> 意思是：安装文件没有载入内存。<br /> 话说这个问题困扰了很长时间。最终解决方案：<br /> 重启计算机，进入BIOS中：<br /> <code class="highlighter-rouge">Advanced –chipse features ---memory hole at 15M-16M</code> 改为 <code class="highlighter-rouge">memory hole at disabled</code> <br /> 保存退出即可。</p> <p>3,<code class="highlighter-rouge">error15： File not found</code><br /> 这个错误要去检查安装过程的第一步，EasyBCD的配置，主要还是两个地方的原因：<br /> 1&gt;硬盘的顺序号。仔细看看上面的Tips。 <br /> 2&gt;镜像文件的名称是不是和menu.list文件中的名称完全一致。</p> <p>4,<code class="highlighter-rouge">Error19 ：Linux kernel must before initrd</code><br /> 此错误的出现完全就是 menu.list的配置还存在一些错误，好好检查。</p> <p><strong>收尾</strong><br /> 若采取的是安装方式二，完全安装后，可进入win7系统盘将镜像文件以及EasyBCD产生的启动配置文件全部删除掉,为你的C盘腾出空间。</p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/linux/2012-09-17-Ubuntu%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%93%8D%E4%BD%9C.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Ubuntu常用的命令与操作 - 知不知&amp;url=/list/docs/linux/2012-09-17-Ubuntu%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%93%8D%E4%BD%9C.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/linux/2012-09-17-Ubuntu%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%93%8D%E4%BD%9C.html&amp;title=Ubuntu常用的命令与操作 - 知不知&amp;summary=Ubuntu常用的命令与操作&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/linux/2012-09-17-Ubuntu%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%93%8D%E4%BD%9C.html&amp;text=Ubuntu常用的命令与操作 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/linux/2012-09-17-Ubuntu%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%93%8D%E4%BD%9C.html&amp;t=Ubuntu常用的命令与操作 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/linux/2012-09-17-Ubuntu%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%93%8D%E4%BD%9C.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Ubuntu常用的命令与操作'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

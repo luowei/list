@@ -1,0 +1,604 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>linux学习笔记之文件、用户、权限管理</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容：</strong> 包括linux系统下文件特性、文件/目录操作、文件权限、用户增删改查、用户权限、用户组、UMask、ACL等</p> <p><strong>linux简单说明</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>内核：在计算机启动时载入基本内存，管理一些基本的输入输出，管理一些进程的初始化以及进程之间的调
+试。控制硬件的运行。
+Shell:系统的命令解释器，用户进程与kernel的桥梁作用
+终端模拟器(Terminal Emulator):交互操作系统，并得到提示与反馈。
+x window系统：c/s模型提供图形用户接口
+窗口管理器：kde,gnome
+查看Redhat版本的方法:cat /proc/version或者cat /etc/redhat-release或者cat /etc/issue或者uname
+ls / 执行后，深蓝色的文件表示是目录，白色表的文件
+</code></pre></div></div> <h3 id="常用操作">常用操作</h3> <p><strong>运行指令</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>帮助指令
+--help 如：mknod –help    mknod 命令建立一个目录项和一个特殊文件的对应索引节点。
+man 如：man mknod
+info 如：info mknod
+
+操作指令
+拷贝目录 cp –r old new
+重命名 cp test test2    将当前目录下的test文件改名为test2
+rm test2 ./dirtest/test    将当前目录下的test文件移到dirtest目录下，并改名为:test
+
+cd ..    切换路径,这里是返回上一层目录，直接cd 回车，则切换到家目录
+pwd        显示当前目录的路径
+mkdir    创建目录
+rmdir    删除目录
+
+rm –rf aa        强制删除目录aa
+cat         查看文件内容
+more    可以逐行或逐屏查看
+less        逐行查看文件内容
+date        显示当前时间
+cal        显示月历
+
+df        查看系统分区和磁盘的容量
+du        计算文件占用的磁盘大小    //默认以kb为单位输出
+例：du –h test        连同单位也一起输出
+head        显示文件开头10行的内容
+tail        显示文件最后10行的内容
+例：tail –f /var/log/services        显示即时更新，一般用于查看日志文件
+
+按Tab键自动，补全文件名
+</code></pre></div></div> <p><strong>设备文件</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>设备文件存放在 /dev/目录下，有以c开头(字符设备,如：键盘)和b开头(块设备,如：硬盘)的。
+用户身份切换：su luowei     直接这样切换，环境变量不会跟着改变
+env         查看环境变量
+su – luowei    这样切换，会改变当前的用户环境变量
+</code></pre></div></div> <p><strong>/proc目录</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/proc目录是一个虚拟的文件系统，包含了来自正在运行着的核心的信息。  
+用户可以通过cat /proc/下的文件来获得系统的信息。  
+这些信息包括系统硬件、网络设置、内存使用，及其他一引些东西。  
+/proc/sys目录下的文件，允许系统管理员更动，这些变动会直接影响当前核心。  
+</code></pre></div></div> <p>例：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@redhat root]# ls -l /proc/        //查看/proc/目录下的文件
+[root@redhat root]# cat /proc/cpuinfo        //查看cpu的信息
+[root@redhat root]# echo "" &gt; /proc/sys/net/ipv4/icmp_echo_ignore_all        //忽略所有ping消息
+</code></pre></div></div> <p><strong>系统日志存放在 /var/log 目录下</strong><br /> 常用的系统日志：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/var/log/dmesg 核心启动日志
+/var/log/messages 系统报错日志
+/var/log/maillog 邮件系统日志
+</code></pre></div></div> <p>例：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@redhat root]# tail -f /var/log/messages    //查看最近的系统日志
+[root@redhat root]# cat /var/log/maillog        //查看邮件服务信息
+/var/log/xferlog    //FTP服务用日志
+/var/log/secure        //安全信息，系统登录与网络连接的信息
+/var/log/wtmp        //登录记录
+</code></pre></div></div> <p>例：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@redhat root]# last        //显示最近登录的用户
+</code></pre></div></div> <h3 id="安装gcc">安装gcc</h3> <p>在redHat 9的第一个cd中找到四个包，和在第二个cd中找到一个包，分别为：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>binutils-2.13.90.0.18-9.i386.rpm
+cpp-3.2.2-5.i386.rpm
+glibc-devel-2.3.2-11.9.i386.rpm
+glibc-kernheaders-2.4-8.10.i386.rpm
+和
+gcc-3.2.2-5.i386.rpm
+</code></pre></div></div> <hr /> <p><strong>操作如下：</strong> <br /> 插入第一个光盘</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mount /dev/cdrom /mnt/cdrom/
+find -iname binutils*
+rpm -ivh cdrom/RedHat/RPMS/binutils-2.13.90.0.18-9.i386.rpm
+find -iname cpp*
+rpm -ivh cdrom/RedHat/RPMS/cpp-3.2.2-5.i386.rpm
+find -iname glibc-k*
+rpm -ivh cdrom/RedHat/RPMS/glibc-kernheaders-2.4-8.10.i386.rpm
+find -iname glibc-devel*
+rpm -ivh cdrom/RedHat/RPMS/glibc-devel-2.3.2-11.9.i386.rpm
+umount /mnt/cdrom
+</code></pre></div></div> <p>插入第二个光盘</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mount /dev/cdrom /mnt/cdrom/
+find -iname gcc*
+rpm -ivh cdrom/RedHat/RPMS/gcc-3.2.2-5.i386.rpm
+检查gcc是否安装好了
+rpm -qa gcc*
+</code></pre></div></div> <p>命令行乱码问题</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>解决命令行乱码问题
+export LANG="en_US.UTF-8"
+解决命令行中文乱码问题
+export LANG=zh_CN.GB18030
+</code></pre></div></div> <p>或者用以下的方法</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>方法一：
+　　#locale (locale命令用于查看使用语言详细信息，为中文语言)
+　　#export LC_ALL=POSIX (export命令导出修改LC_ALL语言选项)
+　　#locale (再次查看，信息已经改变了)
+　　该方法在用户注销或重启后将失效，要想保存设置，见方法2。
+方法二：
+　　#vi /etc/sysconfig/i18n (利用vi编辑器修改配置文件i18n)
+　　将LC_ALL=POSIX写入i18n配置文件中。注销或重启服务便永久生效。
+</code></pre></div></div> <p><strong>离开系统</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    重启
+Reboot
+Shutdown –r now
+Init 6
+    关机
+Halt
+Shutdown –h now
+Poweroff
+Init 0
+</code></pre></div></div> <h3 id="文件的特性">文件的特性</h3> <p><strong>文件名</strong><br /> 文件名最大为255个字符。开头为.的文件为隐藏文件。<br /> 目录 的详细信息用d标识。目录用 / 分隔。</p> <p><strong>检查文件</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ls –l     以长模式查看文件的详细信息
+file 检查文件类型
+cd 和cd ~ 都是直接回到家
+</code></pre></div></div> <p><strong>文件类型</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>在linux中，所有的东西都被当成文件。
+文件权限前的第一个字母用来标识文件类型
+-：        一般文件
+d:        目录文件
+b:        块设备文件
+c:        字符设备文件
+l:        链接文件，类型windows系统中的快捷方式
+p:        人工管道(管道文件)
+</code></pre></div></div> <p><strong>文件权限</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>对于每一个文件，Linux都提供了一套文件权限系统。
+文件权限系统，将操作文件的用户都分成三类。
+文件的拥有者(u)
+文件所属组的成员(g)
+其他用户(o)
+</code></pre></div></div> <p><strong>文件权限类型</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>读(r):用户是否有权限读取文件
+写(w):用户是否有权限写文件
+执行(x):用户是否有权限执行文件
+
+例：[root@localhost root]# ls -l
+total 32
+- rw- r-- r-- 1 root root 1201 Oct 21 05:37 anaconda-ks.cfg
+d rwx r-x r-x 12 luowei luowei 4096 Oct 22 11:57 httpd-2.2.4
+文件类型 u g o 文件硬连接参数 文件的拥有者 文件的所属群组 文件大小
+</code></pre></div></div> <p><strong>更改文件的权限vv</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>例：
+[root@localhost root]# su - luowei
+[luowei@localhost luowei]$ ls
+dirtest test2
+[luowei@localhost luowei]$ ls -l
+total 8
+drwxrwxr-x 2 luowei luowei 4096 Oct 22 10:34 dirtest
+-rw-rw-r-- 1 luowei luowei 149 Oct 22 10:30 test2
+[luowei@localhost luowei]$ chmod u-w test2    删除拥有者对此文件的写的权限
+[luowei@localhost luowei]$ ls -l
+total 8
+drwxrwxr-x 2 luowei luowei 4096 Oct 22 10:34 dirtest
+-r--rw-r-- 1 luowei luowei 149 Oct 22 10:30 test2
+[luowei@localhost luowei]$ chmod u+w test2    给拥有者添加对此文件写的的权限
+[luowei@localhost luowei]$ ls -l
+total 8
+drwxrwxr-x 2 luowei luowei 4096 Oct 22 10:34 dirtest
+-rw-rw-r-- 1 luowei luowei 149 Oct 22 10:30 test2
+[luowei@localhost luowei]$ chmod g-w test2    删除此群组对此文件的写权限
+[luowei@localhost luowei]$ ls -l
+total 8
+drwxrwxr-x 2 luowei luowei 4096 Oct 22 10:34 dirtest
+-rw-r--r-- 1 luowei luowei 149 Oct 22 10:30 test2
+[luowei@localhost luowei]$ chmod o+w test2    给其他人添加对此文件的写权限
+[luowei@localhost luowei]$ chmod g+x test2    给此群组添加对此文件的执行权限
+[luowei@localhost luowei]$ chmod u=rwx test2 给拥有者设置对此文件读写执行权限
+</code></pre></div></div> <p><strong>通过数字的方式来更改</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>4 读    2 写    1 执行
+[luowei@localhost luowei]$ chmod 644 test2 设置权限
+[luowei@localhost luowei]$ ls -l
+total 8
+drwxrwxr-x 2 luowei luowei 4096 Oct 22 10:34 dirtest
+-rw-r--r-- 1 luowei luowei 149 Oct 22 10:30 test2
+</code></pre></div></div> <p><strong>只有文件的拥有者和root才可以改变文件的权限</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>例2：
+[luowei@redhat luowei]$ su - root
+Password:
+[root@redhat root]# cd /home/luowei
+[root@redhat luowei]# mkdir test
+[root@redhat luowei]# chown luowei:luowei test    修改test文件夹的所属用户及用户组
+[root@redhat luowei]# chmod 677 test        设置它的权限，拥有者只能读和写，不能执行
+[root@redhat luowei]# su - luowei
+[luowei@redhat luowei]$ ls -l
+总用量 4
+-rwxrwxrw- 1 luowei luowei 0 10月 24 19:45 aa
+drw-rwxrwx 2 luowei luowei 4096 10月 24 19:54 test
+[luowei@redhat luowei]$ cd test
+-bash: cd: test: 权限不够
+</code></pre></div></div> <p><strong>硬链接</strong><br /> 语法：ln 源文件 新建链接名.</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>例：
+[luowei@localhost luowei]$ ln /home/luowei/test.txt tom.txt 建立硬链接文件
+[luowei@localhost luowei]$ ls
+dirtest test.txt tom.txt
+[luowei@localhost luowei]$ ls -l
+total 12
+drwxrwxr-x 2 luowei luowei 4096 Oct 22 10:34 dirtest
+-rw-r--r-- 2 luowei luowei 149 Oct 22 10:30 test.txt
+-rw-r--r-- 2 luowei luowei 149 Oct 22 10:30 tom.txt
+[luowei@localhost luowei]$ echo "hello world" &gt;/home/luowei/test.txt 输入内容
+[luowei@localhost luowei]$ cat /home/luowei/test.txt
+hello world
+[luowei@localhost luowei]$ cat tom.txt
+hello world
+[luowei@localhost luowei]$ rm -f /home/luowei/test.txt    删除链接文件
+[luowei@localhost luowei]$ cat tom.txt        打开文件
+hello world
+[luowei@localhost luowei]$
+</code></pre></div></div> <p><strong>软链接</strong><br /> 语法：ln –s 源文件 新建链接名.</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>例：
+[luowei@localhost luowei]$ ls
+dirtest tom.txt
+[luowei@localhost luowei]$ touch /home/luowei/test.txt
+[luowei@localhost luowei]$ echo "hello" &gt;/home/test.txt
+-bash: /home/test.txt: No such file or directory
+[luowei@localhost luowei]$ echo "hello" &gt;/home/luowei/test.txt    //另一个方式向文件中写入文件
+[luowei@localhost luowei]$ ln -s /home/luowei/test.txt jack.txt
+[luowei@localhost luowei]$ ls -l
+total 12
+drwxrwxr-x 2 luowei luowei 4096 Oct 22 10:34 dirtest
+lrwxrwxrwx 1 luowei luowei 21 Oct 22 13:55 jack.txt -&gt; /home/luowei/test.txt
+-rw-rw-r-- 1 luowei luowei 6 Oct 22 13:55 test.txt
+-rw-r--r-- 1 luowei luowei 12 Oct 22 13:49 tom.txt
+[luowei@localhost luowei]$ cat jack.txt
+hello
+[luowei@localhost luowei]$ rm -f /home/luowei/test.txt
+[luowei@localhost luowei]$ cat jack.txt
+cat: jack.txt: No such file or directory
+[luowei@localhost luowei]$
+</code></pre></div></div> <p>注：<code class="highlighter-rouge">硬链接不能给目录做链接，软链接可以给目录做链接。</code></p> <p><strong>ext2/3中文件的构成</strong><br /> 在ext2和ext3文件系统中，文件以inod+block的方式存在。一旦用rm指令删除文件中的inode记录。文件无法被找回。stat 指令可以用来检查文件的block与inode状况。</p> <p><strong>查看目录或文件是哪里的</strong></p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@redhat root]# which <span class="nb">ls        </span>查看ls所在的路径及命名信息
+<span class="nb">alias ls</span><span class="o">=</span><span class="s1">'ls --color=tty'</span>
+/bin/ls
+<span class="o">[</span>root@redhat root]# which ping        查看ping所在的路径信息
+/bin/ping
+<span class="o">[</span>root@redhat root]# <span class="nb">ls</span> <span class="nt">-l</span> /bin/ping
+<span class="nt">-rwsr-xr-x</span> 1 root root 28628 2003-01-25 /bin/ping
+说明其它用户执行ping 时，是用root的权限使用的，因为ping设置了UID,并且拥有者是root
+如果删除ping对root的UID后：
+<span class="o">[</span>luowei@redhat luowei]<span class="nv">$ </span>ping 127.0.0.1
+PING 127.0.0.1 <span class="o">(</span>127.0.0.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+64 bytes from 127.0.0.1: <span class="nv">icmp_seq</span><span class="o">=</span>1 <span class="nv">ttl</span><span class="o">=</span>64 <span class="nb">time</span><span class="o">=</span>0.803 ms
+<span class="nt">---</span> 127.0.0.1 ping statistics <span class="nt">---</span>
+7 packets transmitted, 7 received, 0% packet loss, <span class="nb">time </span>6008ms
+rtt min/avg/max/mdev <span class="o">=</span> 0.053/0.170/0.803/0.259 ms
+<span class="o">[</span>luowei@redhat luowei]<span class="nv">$ </span>su -
+Password:
+<span class="o">[</span>root@redhat root]# <span class="nb">chmod </span>u-s /bin/ping         删除ping文件的UID
+<span class="o">[</span>root@redhat root]# ping 127.0.0.1
+PING 127.0.0.1 <span class="o">(</span>127.0.0.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+64 bytes from 127.0.0.1: <span class="nv">icmp_seq</span><span class="o">=</span>1 <span class="nv">ttl</span><span class="o">=</span>64 <span class="nb">time</span><span class="o">=</span>0.856 ms
+<span class="nt">---</span> 127.0.0.1 ping statistics <span class="nt">---</span>
+2 packets transmitted, 2 received, 0% packet loss, <span class="nb">time </span>1006ms
+rtt min/avg/max/mdev <span class="o">=</span> 0.098/0.477/0.856/0.379 ms
+<span class="o">[</span>root@redhat root]# su - luowei
+<span class="o">[</span>luowei@redhat luowei]<span class="nv">$ </span>ping 127.0.0.1            这将没有权限ping了
+ping: icmp open socket: Operation not permitted
+<span class="o">[</span>luowei@redhat luowei]<span class="nv">$ </span>su -
+Password:
+<span class="o">[</span>root@redhat root]# <span class="nb">chmod </span>u+s /bin/ping             添加ping文件对root的UID
+<span class="o">[</span>root@redhat root]# su - luowei
+<span class="o">[</span>luowei@redhat luowei]<span class="nv">$ </span>ping 127.0.0.1
+PING 127.0.0.1 <span class="o">(</span>127.0.0.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+64 bytes from 127.0.0.1: <span class="nv">icmp_seq</span><span class="o">=</span>1 <span class="nv">ttl</span><span class="o">=</span>64 <span class="nb">time</span><span class="o">=</span>0.058 ms
+</code></pre></div></div> <blockquote> <p>注意：uid只能对文件设定，gid既可以在文件上设定也可以在目录上设定，在目录上可以设定gid与冒险位(sticky)，冒险位(sticky)只能设定在目录上。</p> </blockquote> <p><strong>根目录下的目录</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/bin:存储常用用户指令。
+/boot:存储核心模块映像等启动文件
+/dev:存储设备文件
+/etc:存储系统、服务的配置目录与谁的
+/home:存放个人主目录
+/lib:存放库文件，诸如核心模块、驱动
+/lost+found:存储fsck用的孤儿文件
+/mnt:系统加载文件系统时用的常用挂载点
+/opt:第三方工具使用的安装目录
+/proc:虚拟文件系统，包含系统讯息等资料
+/root:root用户的主目录
+/sbin存储系统管理用指令
+/tmp:临时文件的暂存点
+/usr:存放用户直接相关的文件与目录
+/var:存储在系统运行中可能会更改的数据
+</code></pre></div></div> <hr /> <h3 id="用户权限相关">用户权限相关</h3> <p><strong>创建用户</strong></p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@localhost httpd-2.2.4]# useradd luowei    创建一个luowei用户
+<span class="o">[</span>root@localhost httpd-2.2.4]# passwd luowei    更改密码
+Changing password <span class="k">for </span>user luowei.
+New password: luowei
+BAD PASSWORD: it is based on a dictionary word
+Retype new password: luowei
+passwd: all authentication tokens updated successfully.
+<span class="o">[</span>root@localhost httpd-2.2.4]# passwd root    修改root的密码
+Changing password <span class="k">for </span>user root.
+New password: luowei
+BAD PASSWORD: it is based on a dictionary word
+Retype new password: luowei
+passwd: all authentication tokens updated successfully.
+<span class="o">[</span>root@localhost httpd-2.2.4]# su - luowei
+<span class="o">[</span>luowei@localhost luowei]<span class="nv">$ </span>su - root
+Password:
+<span class="o">[</span>root@localhost root]#
+<span class="o">[</span>root@redhat root]# su - luowei
+<span class="o">[</span>luowei@redhat luowei]<span class="nv">$ </span>su -            这样默认是切换到root用户
+Password:
+<span class="o">[</span>root@redhat root]#
+</code></pre></div></div> <p><strong>所属用户</strong><br /> 每一个文件都有一个拥有者。文件的拥有者可以改变文件的权限。<br /> root 用户可以用chown来改变文件的拥有者。<br /> 例：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@localhost luowei]# useradd xiaowang
+[root@localhost luowei]# chown xiaowang tom.txt
+[root@localhost luowei]# ls -l
+total 8
+drwxrwxr-x 2 luowei luowei 4096 Oct 22 10:34 dirtest
+lrwxrwxrwx 1 luowei luowei 21 Oct 22 13:55 jack.txt -&gt; /home/luowei/test.txt
+-rw-r--r-- 1 root root 0 Oct 22 14:06 test.txt
+-rw-r--r-- 1 xiaowang luowei 12 Oct 22 13:49 tom.txt
+</code></pre></div></div> <p><strong>所属组</strong><br /> 每一个文件只能属于一个指定的组，文件的拥有者与root用户，可以chgrp改变文件所属的组。 <br /> 修改群组，例：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@localhost luowei]# chgrp xiaowang jack.txt        更改jack.txt的群组
+[root@localhost luowei]# ls -l
+total 8
+drwxrwxr-x 2 luowei luowei 4096 Oct 22 10:34 dirtest
+lrwxrwxrwx 1 luowei xiaowang 21 Oct 22 13:55 jack.txt -&gt; /home/luowei/test.txt
+-rw-r--r-- 1 root root 0 Oct 22 14:13 test.txt
+-rw-r--r-- 1 xiaowang luowei 12 Oct 22 13:49 tom.txt
+[root@localhost luowei]# chown root:luowei test.txt    另一种方式更改所属群组
+[root@localhost luowei]# ls -l
+total 8
+drwxrwxr-x 2 luowei luowei 4096 Oct 22 10:34 dirtest
+lrwxrwxrwx 1 luowei xiaowang 21 Oct 22 13:55 jack.txt -&gt; /home/luowei/test.txt
+-rw-r--r-- 1 root luowei 0 Oct 22 14:13 test.txt
+-rw-r--r-- 1 xiaowang luowei 12 Oct 22 13:49 tom.txt
+</code></pre></div></div> <p><strong>操作用户及用户组</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1、建用户：
+adduser phpq //新建phpq用户
+passwd phpq //给phpq用户设置密码
+
+2、建工作组
+groupadd test //新建test工作组
+
+3、新建用户同时增加工作组
+useradd -g test phpq //新建phpq用户并增加到test工作组
+注：：-g 所属组 -d 家目录 -s 所用的SHELL
+
+4、给已有的用户增加工作组
+usermod -G groupname username
+或者：gpasswd -a user group
+
+5、临时关闭：
+在/etc/shadow文件中属于该用户的行的第二个字段（密码）前面加上*就可以了。
+想恢复该用户，去掉*即可。
+或者使用如下命令关闭用户账号：
+passwd peter –l
+重新释放：
+passwd peter –u
+
+6、永久性删除用户账号
+userdel peter
+groupdel peter
+usermod –G peter peter （强制删除该用户的主目录和主目录下的所有文件和子目录）
+
+7、从组中删除用户
+编辑/etc/group 找到GROUP1那一行，删除 A
+或者用命令
+gpasswd -d A GROUP
+
+8、显示用户信息
+id user
+cat /etc/passwd
+</code></pre></div></div> <p><strong>强制位与冒险位</strong></p> <blockquote> <p>除了读写执行权限以外，ext3文件系统还支持强制位（setuid 和setgid)与冒险位(sticky)的特别权限针对u，g，o，分别有set uid，set gid，及sticky。</p> <p>强制位与冒险位添加在执行权限的位置上，如果该位置上原已有执行权限，则强制位与冒险位以小写字母的方式表示，否则，以大写字母表示。</p> <p>强制位set uid与set gid在u和g的x位置上各采用一个s，冒险位(sticky)使用一个t。 在可执行文件上，用户可以添加set uid和set gid，默认情况下，用户执行一个指令，会以该用户的身份来运行进程，因为指令文件上的强制位，可以让用户执行的指令，以指令文件的拥有者或所属组的身份运行进程。</p> <p>Umask 冒险位和强制位,网上也有说成粘着位的. <br /> 所谓的强制位和冒险位都是最最前面那个0的位置来表示,当前面那个位，2和4权限就叫强制位，1的权限就是冒险位,2代表的是GID，4代表的是uid，1代表的是sticky。</p> <p><strong>gid,uid,sticky的作用：</strong><br /> GID的作用：默认情况下，用户建立的文件属于用户当前所在的组，但是设置了GID以后，表示在此目录中，任何人建立的文件，都会属于目录所属的组。注意：GID只能对目录设置. 这个在文件权限和团队使用文件目录很有用处.</p> <p>chmod g+s 文件名 用这个命令也可以给他设置GID. <br /> UID的作用：当一个文件设置了UID，那么所有用户执行这个文件的时候，都是以这个用户的所有者的权限来执行。</p> <p>Sticky:一旦目录上设置了冒险位，则表示在此目录中，只有文件的拥有者、目录的拥有者与系统管理员可以删除文件。这个也是对目录进行设置，我们给目录一个冒险位，最后一个X变成了t.</p> <p>一个例子是/bin/passwd ，要读写/etc/passwd文件需要超级用户权限，但一般用户也需要随时可以改变自己的密码，所以/bin/passwd就设置了suid，当用户改自己密码的时侯就拥有了超级用户权限。</p> <p>要删除一个文件，你不一定要有这个文件的写权限，但你一定要有这个文件的上级目录的写权限。也就是说，你即使没有一个文件的写权限，但你有这个文件的上级目录的写权限，你也可以把这个文件给删除，而如果没有一个目录的写权限，也就不能在这个目录下创建文件。</p> <p>如何才能使一个目录既可以让任何用户写入文件，又不让用户删除这个目录下他人的文件，sticky就是能起到这个作用。stciky一般只用在目录上，用在文件上起不到什么作用。</p> <p>在一个目录上设了sticky位后，（如/home，权限为1777)所有的用户都可以在这个目录下创建文件，但只能删除自己创建的文件(root除外)，这就对所有用户能写的目录下的用户文件启到了保护的作用。</p> <p>默认情况下，如果一个目录上有w和x权限，则任何人可以在此目录中建立与删除文件。 如果目录上设置了冒险位，则表示在此目录中，只有文件的拥有者、目录的拥有者与系统管理员可以删除文件。</p> <p>用户可以用chmod指令来为文件设置强制位与冒险位。<br /> – set uid：chmod u+s 文件名<br /> – set gid：chmod g+s 文件名<br /> – sticky：chmod o+t 文件名</p> <p>强制位与冒险位也可以通过一个数字加和，放在读写执行的三位数字前来指定。<br /> – 4(set uid)<br /> – 2(set gid)<br /> – 1(sticky)</p> </blockquote> <p>设置suid / guid</p> <table> <tbody> <tr> <td>命令</td> <td>结果</td> <td>含义</td> </tr> <tr> <td>chmod 4755</td> <td>-rwsr-xr-x</td> <td>suid、文件属主具有读、写和执行的权限，所有其他用户具有读和执行的权限</td> </tr> <tr> <td>chmod 6711</td> <td>-rws–s–x</td> <td>suid、sgid、文件属主具有读、写和执行的权限，所有其他用户具有执行的权限</td> </tr> <tr> <td>chmod 4511</td> <td>-rwS–x—x</td> <td>suid、文件属主具有读、写的权限，所有其他用户具有执行的权限</td> </tr> </tbody> </table> <blockquote> <p>上面的表中有具有这样权限的文件：rwS –x – x，其中S为大写。它表示相应的执行权限位并未被设置，这是一种没有什么用处的suid设置可以忽略它的存在。</p> </blockquote> <p><strong>umask</strong></p> <blockquote> <p>如果没有掩码的情况下，创建文件的默认权限为 rw- rw- rw- ; 创建目录的默认权限是 rwx rwx rwx 。</p> <p>而在实际的环境中，一般都会受到掩码的作用。用户也可以自主改动umask值，并在改动后建立的文件上得到体现。一般用户的默认umask值为002，系统用户的默认umask值为022 。</p> </blockquote> <p>如：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[luowei@redhat luowei]$ umask
+0002
+[luowei@redhat luowei]$ su -
+Password:
+[root@redhat root]# umask
+0022
+[root@redhat root]#
+</code></pre></div></div> <p><strong>创建后的文件或目录的</strong> <br /> <code class="highlighter-rouge">权限=默认权限-umask</code> 例：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@redhat a]# umask 003        将root的umask值改为003
+[root@redhat a]# mkdir a_dir
+[root@redhat a]# ls -ld a_dir
+drwxrwxr-- 2 root root 4096 10月 25 00:32 a_dir
+[root@redhat a]# umask 022        将root的umask值改回022
+[root@redhat a]# mkdir b_dir
+[root@redhat a]# ls -ld b_dir
+drwxr-xr-x 2 root root 4096 10月 25 00:32 b_dir
+[root@redhat a]#
+</code></pre></div></div> <p><strong>ACL权限操作</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>可以对某个文件设置该文件具体的某些用户的权限,意思就是通过ACL可以对一个文件权限做扩展,  
+可以不同的用户对某个文件有不同的权限。  
+现在我们把redhat用户加上一个RWX的权限:`setfacl -m u:redhat:rwx file`  
+现在我们取消redhat用户的权限:`setfacl -x redhat file`  
+现在我们也取消redhat组的权限:`setfacl -x g:redhat file`  
+用ll看,权限后面有个+就可能是设置了文件权限,所以没必要没个文件都用gefacl 去看。  
+</code></pre></div></div> <p><code class="highlighter-rouge">getfacl &lt;文件名&gt;</code>：获取文件的访问控制信息；</p> <p>setfacl`设置文件的acl</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-m 修改文件的acl 
+-x 取消对文件的设置
+setfacl –m u:用户名:权限   文件名             #加用户权限
+setfacl –m g:组名:权限   文件名            #加组权限
+setfacl –x 用户名 文件名                     #-用户权限
+setfacl –x g:组名 文件名                    #-组权限
+
+注意,撤消ACL操作: 
+对用户直接加用户名字就可以了 
+对组,在前面加g:组名
+</code></pre></div></div> <p><strong>文件及用户权限操作示例：</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@redhat root]# <span class="nb">ls</span> <span class="nt">-l</span> test1.txt
+<span class="nt">-rw-r--r--</span> 1 root root 0 10月 24 20:23 test1.txt
+<span class="o">[</span>root@redhat root]# <span class="nb">id </span>root                显示root用户的详细信息
+<span class="nv">uid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span>,1<span class="o">(</span>bin<span class="o">)</span>,2<span class="o">(</span>daemon<span class="o">)</span>,3<span class="o">(</span>sys<span class="o">)</span>,4<span class="o">(</span>adm<span class="o">)</span>,6<span class="o">(</span>disk<span class="o">)</span>,10<span class="o">(</span>wheel<span class="o">)</span>
+<span class="o">[</span>root@redhat root]# <span class="nb">mkdir test                </span>创建test目录
+<span class="o">[</span>root@redhat root]# <span class="nb">touch test</span>/test.txt        在目录test下建立一个test.txt文件
+<span class="o">[</span>root@redhat root]# <span class="nb">chown </span>root:luowei <span class="nb">test    </span>w修改目录test的所属组
+<span class="o">[</span>root@redhat root]# <span class="nb">ls</span> <span class="nt">-l</span> <span class="nb">test                </span>这样是显示目录test的文件属性
+总用量 0
+<span class="nt">-rw-r--r--</span> 1 root root 0 10月 24 20:25 test.txt
+<span class="o">[</span>root@redhat root]# <span class="nb">ls</span> <span class="nt">-ld</span> <span class="nb">test                </span>显示目录test的目录属性，拥有者是root，所属组是luowei
+drwxr-xr-x 2 root luowei 4096 10月 24 20:25 <span class="nb">test</span>
+<span class="o">[</span>root@redhat root]# <span class="nb">chmod </span>745 <span class="nb">test        </span>修改目录test的权限
+<span class="o">[</span>root@redhat root]# <span class="nb">ls</span> <span class="nt">-ld</span> <span class="nb">test
+</span>drwxr--r-x 2 root luowei 4096 10月 24 20:25 <span class="nb">test</span>
+<span class="o">[</span>root@redhat root]# <span class="nb">chmod </span>g+s <span class="nb">test        </span>在test目录所属组上设置强制位
+<span class="o">[</span>root@redhat root]# <span class="nb">ls</span> <span class="nt">-ld</span> <span class="nb">test
+</span>drwxr-Sr-x 2 root luowei 4096 10月 24 20:25 <span class="nb">test</span>
+<span class="o">[</span>root@redhat root]# <span class="nb">cd test</span>
+<span class="o">[</span>root@redhat <span class="nb">test</span><span class="o">]</span><span class="c"># ls -l</span>
+总用量 0
+<span class="nt">-rw-r--r--</span> 1 root root 0 10月 24 20:25 test.txt
+<span class="o">[</span>root@redhat <span class="nb">test</span><span class="o">]</span><span class="c"># touch test1.txt</span>
+<span class="o">[</span>root@redhat <span class="nb">test</span><span class="o">]</span><span class="c"># chown root:luowei test1.txt    修改test1.txt的所属组</span>
+<span class="o">[</span>root@redhat <span class="nb">test</span><span class="o">]</span><span class="c"># cd /home/luowei</span>
+<span class="o">[</span>root@redhat luowei]# <span class="nb">chmod </span>776 <span class="nb">test            </span>修改test权限
+<span class="o">[</span>root@redhat luowei]# <span class="nb">ls</span> <span class="nt">-ld</span> <span class="nb">test
+</span>drwxrwxrw- 2 luowei luowei 4096 10月 24 19:54 <span class="nb">test</span>
+<span class="o">[</span>root@redhat luowei]# <span class="nb">chown </span>root:luowei <span class="nb">test</span>
+<span class="o">[</span>root@redhat luowei]# <span class="nb">ls</span> <span class="nt">-ld</span> <span class="nb">test
+</span>drwxrwxrw- 2 root luowei 4096 10月 24 19:54 <span class="nb">test</span>
+<span class="o">[</span>root@redhat luowei]# <span class="nb">chmod </span>g+s <span class="nb">test             </span>在test目录所属组上设置强制位
+<span class="o">[</span>root@redhat luowei]# <span class="nb">ls</span> <span class="nt">-ld</span> <span class="nb">test
+</span>drwxrwsrw- 2 root luowei 4096 10月 24 19:54 <span class="nb">test</span>
+<span class="o">[</span>root@redhat luowei]# <span class="nb">cd test</span>
+<span class="o">[</span>root@redhat <span class="nb">test</span><span class="o">]</span><span class="c"># ls</span>
+<span class="o">[</span>root@redhat <span class="nb">test</span><span class="o">]</span><span class="c"># touch test.txt</span>
+<span class="o">[</span>root@redhat <span class="nb">test</span><span class="o">]</span><span class="c"># ls -l test.txt</span>
+<span class="nt">-rw-r--r--</span> 1 root luowei 0 10月 24 21:05 test.txt
+<span class="o">[</span>root@redhat <span class="nb">test</span><span class="o">]</span><span class="c">#</span>
+<span class="o">[</span>root@redhat root]# <span class="nb">cd</span> /home/luowei
+<span class="o">[</span>root@redhat luowei]# <span class="nb">mkdir </span>sticky_test
+<span class="o">[</span>root@redhat luowei]# <span class="nb">chown </span>luowei:luowei sticky_test/
+<span class="o">[</span>root@redhat luowei]# <span class="nb">chmod </span>777 sticky_test/
+<span class="o">[</span>root@redhat luowei]# <span class="nb">chmod </span>o+t sticky_test/         添加冒险位
+<span class="o">[</span>root@redhat luowei]# <span class="nb">cd </span>sticky_test/
+<span class="o">[</span>root@redhat sticky_test]# <span class="nb">touch </span>test.txt
+<span class="o">[</span>root@redhat sticky_test]# <span class="nb">chown </span>root:luowei test.txt
+<span class="o">[</span>root@redhat sticky_test]# <span class="nb">ls</span> <span class="nt">-l</span> test.txt
+<span class="nt">-rw-r--r--</span> 1 root luowei 0 10月 24 22:44 test.txt
+<span class="o">[</span>root@redhat sticky_test]# su - luowei
+<span class="o">[</span>luowei@redhat luowei]<span class="nv">$ </span><span class="nb">cd </span>sticky_test/
+<span class="o">[</span>luowei@redhat sticky_test]<span class="nv">$ </span><span class="nb">touch </span>test2.txt
+<span class="o">[</span>luowei@redhat sticky_test]<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
+总用量 0
+<span class="nt">-rw-rw-r--</span> 1 luowei luowei 0 10月 24 22:46 test2.txt
+<span class="nt">-rw-r--r--</span> 1 root luowei 0 10月 24 22:44 test.txt
+<span class="o">[</span>luowei@redhat sticky_test]<span class="nv">$ </span><span class="nb">rm </span>test.txt
+<span class="nb">rm</span>：是否删除有写保护的一般空文件<span class="s1">'test.txt'</span>? y
+<span class="o">[</span>luowei@redhat sticky_test]<span class="nv">$ </span><span class="nb">cd</span> ..
+<span class="o">[</span>luowei@redhat luowei]<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
+总用量 8
+<span class="nt">-rwxrwxrw-</span> 1 luowei luowei 0 10月 24 19:45 aa
+<span class="o">[</span>luowei@redhat luowei]<span class="nv">$ </span>su - root
+Password:
+<span class="o">[</span>root@redhat root]# groupadd <span class="nb">test             </span>建立一个test用户组
+<span class="o">[</span>root@redhat root]# useradd <span class="nt">-g</span> <span class="nb">test </span>test1     在test用户组下建立一个名为test1的用户
+<span class="o">[</span>root@redhat root]# <span class="nb">id </span>test1                     显示test1的用户信息
+<span class="nv">uid</span><span class="o">=</span>501<span class="o">(</span>test1<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>501<span class="o">(</span><span class="nb">test</span><span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>501<span class="o">(</span><span class="nb">test</span><span class="o">)</span>
+<span class="o">[</span>root@redhat root]# <span class="nb">cd</span> /home/luowei
+<span class="o">[</span>root@redhat luowei]# passwd test1             修改test1的密码
+Changing password <span class="k">for </span>user test1.
+New password:
+BAD PASSWORD: it is based on a dictionary word
+Retype new password:
+passwd: all authentication tokens updated successfully.
+<span class="o">[</span>root@redhat luowei]# su - luowei
+<span class="o">[</span>luowei@redhat luowei]<span class="nv">$ </span>su - test1
+Password:
+<span class="o">[</span>test1@redhat test1]<span class="nv">$ </span><span class="nb">cd</span> /home/luowei
+<span class="nt">-bash</span>: <span class="nb">cd</span>: /home/luowei: 权限不够
+</code></pre></div></div> <h3 id="用户管理">用户管理</h3> <p><strong>检查用户身份</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>who:查询当前登录的用户
+groups:查询用户所属的组
+id:显示当前用户信息
+finger:查询用户信息
+</code></pre></div></div> <p>例：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@redhat root]# groups        //显示当前系统存在的用户组
+[root@redhat root]# id root    //显示root用户的详细信息
+[root@redhat root]# finger luowei        //显示luowei这个用户的详细信息
+[root@redhat root]# whoami        //显示当前的用户
+[root@redhat root]# w            //显示当前用户的详细信息
+</code></pre></div></div> <p><strong>添加用户</strong><br /> 用指令添加命令：<br /> <code class="highlighter-rouge">useradd &lt;username&gt;</code><br /> <code class="highlighter-rouge">passwd &lt;password&gt;</code><br /> 系统添加用户的标准步骤：<br /> 编辑 <code class="highlighter-rouge">/etc/password与 /etc/group</code><br /> 创建用户主目录<br /> 从 /etc/skel拷贝文件与目录<br /> 让新用户获得其主目录与文件的拥有权限<br /> 给新用户一个密码</p> <p><strong>更改/删除用户</strong></p> <blockquote> <p>1.更改用户的资料可以通过：redhat-config-users或kusers之类的图形界面工具来完成，在字符界面下可以使用usermod指令来更改。<br /> 2.系统管理者可以用userdel指令来删除已存在的用户, 参数-r可以帮助系统将一个用户的目录等一并删除。</p> </blockquote> <p><strong>例：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@redhat root]# usermod -c "this is luowei's username" luowei    //修改luowei的全名
+[root@redhat root]# finger luowei
+Login: luowei Name: this is luowei's username
+Directory: /home/luowei Shell: /bin/bash
+Last login Mon Oct 24 17:32 (CST) on :0
+No mail.
+No Plan.
+[root@redhat home]# mkdir tst1
+[root@redhat home]# usermod -d /home/tst1 test1        //将test1的家目录改到tst1
+[root@redhat home]# cd ~test1        //切换到test1的家目录
+[root@redhat tst1]# cd ..        //切换上层目录
+[root@redhat home]# chown test1.test tst1        //修改tst1目录的属主
+[root@redhat home]# chmod 700 tst1        //修改tst1的权限
+[root@redhat tst1]# usermod -e "2012-01-01" test1    //设置test1用户的过期时间为2012-01-01
+[root@redhat tst1]# id test1
+uid=501(test1) gid=501(test) groups=501(test)
+[root@redhat tst1]# usermod -G root test1        //将test1加入到root用户组
+[root@redhat tst1]# id test1
+uid=501(test1) gid=501(test) groups=501(test),0(root)
+[root@redhat tst1]# usermod -g root test1        //修改test1的gid改成root组的
+[root@redhat tst1]# id test1
+uid=501(test1) gid=0(root) groups=0(root)
+[root@redhat tst1]# usermod -g 501 test1        //将test1的gid改成501
+[root@redhat tst1]# id test1
+uid=501(test1) gid=501(test) groups=501(test),0(root)
+[root@redhat tst1]# usermod -s /bin/csh test1    //将test1的默认shell改为csh
+[root@redhat tst1]# usermod -u 504 test1        //修改test1的uid
+[root@redhat tst1]# usermod -p 1234 test1        //将test1的密码设置为1234
+[root@redhat tst1]# usermod -L test1        //锁定test1用户
+[root@redhat tst1]# passwd -S test1        //查看test1用户的状态
+Password locked.
+[root@redhat tst1]# useradd jack            //添加jack用户
+[root@redhat tst1]# ls /home
+jack luowei test1 tst1
+[root@redhat tst1]# userdel jack            //删除jack用户
+[root@redhat tst1]# id jack
+id: jack: No such user
+[root@redhat tst1]# ls /home
+jack luowei test1 tst1
+[root@redhat tst1]# useradd tom
+[root@redhat tst1]# ls /home
+jack luowei test1 tom tst1
+[root@redhat tst1]# userdel -r tom        //删除tom用户及以tom相关的其它信息
+[root@redhat tst1]# ls /home
+jack luowei test1 tst1
+[root@redhat tst1]#
+</code></pre></div></div> <p><strong>/etc/password文件</strong><br /> password文件中记录的是用户的登录信息，每一行代表一个用户。</p> <p>例：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@redhat root]# vi /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+…………
+luowei:x:500:500:this is luowei's username:/home/luowei:/bin/bash
+test1:x:504:501::/home/tst1:/bin/csh
+tom:x:505:505::/home/tom:/bin/bash
+[root@redhat root]# cat /etc/passwd|wc –l        //显示passwd文件中共有多少行
+39
+[root@redhat root]#
+</code></pre></div></div> <p>password文件详细信息(分别表示)：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>login name:登录用户名
+passwd:密码
+uid:用户身份编号
+gid:登录默认所在组编号
+full name:用户全名或注释
+home directory:用户主目录
+shell:用户默认使用shell
+</code></pre></div></div> <blockquote> <p>login.defs中的create home选项决定系统在建立用户的时候是否同时创建其主目录，系统在建立用户主目录时，会将/etc/skel下的内容复制到新目录下，最后系统会使该目录与其下的文件归属于新用户。</p> <p>Red Hat Linux默认将用户密码存储在/etc/shadow文件中，passwd文件默认权限为644，shadow文件默认权限为400，shadow文件支持密码过期设定等功能，shadow文件中每一行表示一个系统用户的密码记录，用　：号分隔。用户可以通过authconfig来设定是否使用shadow文件及md5加密。</p> </blockquote> <p>shadow文件的每一行中的每一项具体来说：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>登录用户名
+用户密码(一般经md5加密)
+从1970年1月1日起到密码上一次被更改的时间
+密码再过几天可以被变更(0表示随时可被变更)
+密码再过几天必须被变更(999999表示永不过期)
+密码过期前几天系统提醒用户(默认为一周)
+密码过期几天后账号会被取消
+从1970年1月1日算起，多少天后帐号失效
+</code></pre></div></div> <p>操作示例：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@redhat root]# groupadd gp1         //添加群组
+[root@redhat root]# groupdel gp1        //删除群组
+[root@redhat root]# groupmod -n jack tom        //将名称为tomr的群组重命名为jack
+[root@redhat root]# cat /etc/group    //查看所有的群组
+[root@redhat root]# groupmod -n tom jack         //将名称改回来
+[root@redhat root]# gpasswd tom        //给tom群组设置密码
+Changing the password for group tom
+New Password:
+Re-enter new password:
+[root@redhat root]# useradd jack        //添加一个jack用户
+[root@redhat root]# passwd jack
+Changing password for user jack.
+New password:
+BAD PASSWORD: it is too short
+Retype new password:
+passwd: all authentication tokens updated successfully.
+[root@redhat root]# groups jack        //添加jack群组
+jack : jack
+[root@redhat root]# gpasswd -a jack tom        //将jack添加到tom群组中
+Adding user jack to group tom
+[root@redhat root]# vi /etc/group
+…………
+luowei:x:500:
+test:x:501:jack        //手动添加jack到test群组
+tom:x:505:jack
+jack:x:506:jack
+"/etc/group" 48L, 659C written
+[root@redhat root]# cat /etc/passwd
+…………
+luowei:x:500:500:this is luowei's username:/home/luowei:/bin/bash
+test1:x:504:501::/home/tst1:/bin/csh
+tom:x:505:505::/home/tom:/bin/bash
+jack:x:506:501::/home/jack:/bin/bash    后边一个501表示初始群组gid
+[root@redhat root]# su - jack
+[jack@redhat home]$ groups        //列出当前用户的群组
+test tom jack
+[jack@redhat home]$ cd
+[jack@redhat jack]$ touch test
+[jack@redhat jack]$ ls -l
+total 0
+-rw-r--r-- 1 jack test 0 Nov 5 17:20 test
+[jack@redhat jack]$ newgrp jack        //修改当前用户的有效群组
+[jack@redhat jack]$ groups
+jack test tom
+[jack@redhat jack]$ touch test1
+[jack@redhat jack]$ ls -l
+total 0
+-rw-r--r-- 1 jack test 0 Nov 5 17:20 test
+-rw-rw-r-- 1 jack jack 0 Nov 5 17:23 test1
+[jack@redhat jack]$ su -
+Password:
+[root@redhat root]# useradd -u 600 -g test -G jack jim    //建立jim用户，并设置其uid为600，初始群组为test,并且还将其加入jack群组中。
+[root@redhat root]# useradd lucy -s /bin/csh        //创建lucy并将它的默认shell改为csh
+[root@redhat root]# useradd -M test2        //创建test2目录但不创建它的家目录
+[root@redhat root]# ls /home
+jack jim lucy luowei test1 tom tst1
+[root@redhat /]# useradd test3 -d /test3        //创建test3并设置它的家目录为 /test3
+[root@redhat /]# finger test3
+Login: test3 Name: (null)
+Directory: /test3 Shell: /bin/bash
+Never logged in.
+[root@redhat root]# useradd -r lucy_sys        //创建一个名为lucy_sys的系统用户
+[root@redhat root]# cat /etc/passwd
+…………
+luowei:x:500:500:this is luowei's username:/home/luowei:/bin/bash
+test1:x:504:501::/home/tst1:/bin/csh
+tom:x:505:505::/home/tom:/bin/bash
+jack:x:506:501::/home/jack:/bin/bash
+jim:x:600:501::/home/jim:/bin/bash
+test2:x:602:602::/home/test2:/bin/bash
+test3:x:603:603::/test3:/bin/bash
+lucy_sys:x:100:101::/home/lucy_sys:/bin/bash
+[root@redhat root]# groupadd -r lucygp_sys        //创建系统群组
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/linux/2011-04-21-linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E6%96%87%E4%BB%B6%E3%80%81%E7%94%A8%E6%88%B7%E3%80%81%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=linux学习笔记之文件、用户、权限管理 - 知不知&amp;url=/list/docs/linux/2011-04-21-linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E6%96%87%E4%BB%B6%E3%80%81%E7%94%A8%E6%88%B7%E3%80%81%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/linux/2011-04-21-linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E6%96%87%E4%BB%B6%E3%80%81%E7%94%A8%E6%88%B7%E3%80%81%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86.html&amp;title=linux学习笔记之文件、用户、权限管理 - 知不知&amp;summary=linux学习笔记之文件、用户、权限管理&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/linux/2011-04-21-linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E6%96%87%E4%BB%B6%E3%80%81%E7%94%A8%E6%88%B7%E3%80%81%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86.html&amp;text=linux学习笔记之文件、用户、权限管理 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/linux/2011-04-21-linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E6%96%87%E4%BB%B6%E3%80%81%E7%94%A8%E6%88%B7%E3%80%81%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86.html&amp;t=linux学习笔记之文件、用户、权限管理 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/linux/2011-04-21-linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E6%96%87%E4%BB%B6%E3%80%81%E7%94%A8%E6%88%B7%E3%80%81%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('linux学习笔记之文件、用户、权限管理'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

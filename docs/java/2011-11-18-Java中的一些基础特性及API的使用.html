@@ -1,0 +1,735 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java中的一些基础特性及API的使用</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java输入/输出编程、网络编程、管道流、文件访问、序列化、Scanner,以及注解、自动装箱拆箱</p> <h3 id="输入输出io">输入/输出(IO)</h3> <p><strong>IO编程步骤</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>三步骤：
+1.制定input &amp; output
+2.对input &amp; output 进行读写
+3.回收input &amp; output 的资源（os级别开辟的资源）
+
+source &amp; idestination:文件 网络
+流：将input output进行连接
+input&amp;output相对程序来说
+字符流：文本文件（人类可识别）(Writer、Reader)
+字节流：二进制文件（视频 音频 图片）(InputStream、OutputStream)
+
+本质上的都是二进制，java默认使用utf-8作为字符的默认编码，一个utf-8字符占用两个字节
+DateInputStream DateOnputStream :专门处理原始类型 readInt() readLong() writeInt() writeLong()
+
+抽象类：InputStream OutputStream
+
+对原始数据的读写，采用流InputStream和OutputStream,对各种基本数据类型和String类型的读写，采用流DataOutputStream和DataInputStream;对象读写采用流ObjectInputStream和ObjectOutputStream。
+
+序列化，将内存中的对象转换为二进制的形式进行存储（java独有） ObjectOutputStream.write
+
+PipedInputStream：线程间的通信
+FileInputStream ifs=new FileInputStream("E：\\a.txt");
+InputStreamReader isr=new InputStreamReader(fis);
+BufferedReader br= new BufferedReader(isr);
+Scanner: 字符输入
+PrintWriter：字符输出 java.util.
+
+输入输出实例(利用PrintWriter与Scanner)
+</code></pre></div></div> <p><strong>对标准输入输出重定向：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>输出：默认情况是终端。
+重定向：System.setIN(InputStream in);
+System.setOut(PrintStream out);
+PrintStream ps=new PrintStream(new File("a.txt"));
+System.setOut(ps);
+System.out.println("HW");HW显示在a.txt中。不显示在终端。
+
+字符编码：在linux平台下。系统默认的编码是utf-8（国际编码 二个字节表示）
+在win平台下，系统默认的编码是GB2312（同GBK）国标码iso-8859-1 latin-1 （表示西欧字符集）
+
+字节流
+阀值：对于字节流的操作：主要通过改变缓冲区大小来提高效率
+
+线程通信：PipedInputStream/PipedOutputStream
+</code></pre></div></div> <p><strong>序列化</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>序列化：ObjectOutputStream
+反序列化：ObjectInputStream
+对于要序列话的对象必须实现java.io.Serializebale
+</code></pre></div></div> <p><strong>两个静态方法：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.将1000个employee放入list中，然后序列化（List）
+2.经list反序列化。然后打印出1000个。
+
+transient：对于要序列化的对象，用它修饰属性的话不会被序列化。
+RandomAccessFiles:随机访问文件 可以访问文件中的任意一个字节
+文件指针：文件指针的位置就是下一次read的开始位置。 java。io
+
+seek(long postition) 0:开始位置
+end：文件的字节总数
+seek(0);read();//读第一个字节内容
+</code></pre></div></div> <h3 id="java网络编程">Java网络编程</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socket:由操作系统来分配和管理
+port:telnet 23
+oracle:1521
+port：1～1024 系统端口
+1～65535 应用端口
+
+七层模型： osi
+TCP：握手， 保证通信的有效性 稳定
+UDP：不保证一定能收到消息 速度上的高效 适合做视频，实时性较高的系统 对网络要求高
+ 
+java里
+TCP：ServerSocket 服务器端
+Socket 客户端
+UDP：DategramSocket 用于通信
+DategramPacket 用于数据（发送和接受网络udp包）
+
+java.net.*
+ServerSocket ss=new ServerSocket(9999);
+Socket socket=ss.accept(); //socket 用来与连接到服务器端的客户端进行通信
+64.135.24.33
+
+客户端
+Scoket socket=new Socket(服务器的ip，服务的端口号);
+InputStream=socket.getInputStream() //获取输入流，用来读取服务器的输出
+OutputStrem=socket.getOutputStream();//获取输出流，用来想服务器发送数据
+</code></pre></div></div> <h3 id="一些基础特性及api">一些基础特性及API</h3> <p><strong>Java的管道流基础</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PipedStreamTest</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">PipedInputStream</span> <span class="n">pis</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PipedInputStream</span><span class="o">();</span>
+        <span class="nc">PipedOutputStream</span> <span class="n">pos</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PipedOutputStream</span><span class="o">();</span>
+        <span class="n">pis</span><span class="o">.</span><span class="na">connect</span><span class="o">(</span><span class="n">pos</span><span class="o">);</span>
+        <span class="k">new</span> <span class="nf">Sender</span><span class="o">(</span><span class="n">pos</span><span class="o">);</span>
+        <span class="k">new</span> <span class="nf">Reciever</span><span class="o">(</span><span class="n">pis</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Sender</span> <span class="kd">implements</span> <span class="nc">Runnable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">PipedOutputStream</span> <span class="n">pos</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Sender</span><span class="o">(</span><span class="nc">PipedOutputStream</span> <span class="n">pos</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">pos</span> <span class="o">=</span> <span class="n">pos</span><span class="o">;</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="k">this</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">BufferedOutputStream</span> <span class="n">bos</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BufferedOutputStream</span><span class="o">(</span><span class="n">pos</span><span class="o">);</span>
+        <span class="nc">DataOutputStream</span> <span class="n">dos</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DataOutputStream</span><span class="o">(</span><span class="n">bos</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">dos</span><span class="o">.</span><span class="na">writeInt</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>    <span class="c1">//向Reciever线程发送</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="nc">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">sleep</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                <span class="o">}</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Send:"</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>
+                <span class="n">dos</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">dos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">bos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Reciever</span> <span class="kd">implements</span> <span class="nc">Runnable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">PipedInputStream</span> <span class="n">pis</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Reciever</span><span class="o">(</span><span class="nc">PipedInputStream</span> <span class="n">pis</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">pis</span> <span class="o">=</span> <span class="n">pis</span><span class="o">;</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="k">this</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">BufferedInputStream</span> <span class="n">bis</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BufferedInputStream</span><span class="o">(</span><span class="n">pis</span><span class="o">);</span>
+        <span class="nc">DataInputStream</span> <span class="n">dis</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DataInputStream</span><span class="o">(</span><span class="n">bis</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">dis</span><span class="o">.</span><span class="na">readInt</span><span class="o">();</span>    <span class="c1">//读取</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Recived:"</span> <span class="o">+</span> <span class="n">result</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">dis</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">bis</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>Java中的随机文件访问</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//byte的所有数字 -128 ~ 127 ,向文件中写入byte类型数据</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RandomAccessFileTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="s">"ch08/raf.db"</span><span class="o">);</span>
+        <span class="nc">RandomAccessFile</span> <span class="n">raf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RandomAccessFile</span><span class="o">(</span><span class="n">file</span><span class="o">,</span> <span class="s">"rw"</span><span class="o">);</span>
+        <span class="c1">//for(int i=-128;i&lt;128;i++)</span>
+        <span class="c1">//for(byte i=-128;i&lt;128;i++)    //这样会死循环</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">byte</span> <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">128</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">127</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">raf</span><span class="o">.</span><span class="na">writeByte</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">126</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">raf</span><span class="o">.</span><span class="na">writeByte</span><span class="o">(</span><span class="mi">127</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">raf</span><span class="o">.</span><span class="na">seek</span><span class="o">(</span><span class="mi">255</span><span class="o">);</span>
+        <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">raf</span><span class="o">.</span><span class="na">readByte</span><span class="o">();</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"File-Pointer Loc:"</span> <span class="o">+</span> <span class="n">raf</span><span class="o">.</span><span class="na">getFilePointer</span><span class="o">());</span>
+        <span class="n">raf</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>序列化</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.io.FileInputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileNotFoundException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileOutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.ObjectInputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.ObjectOutputStream</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SerialTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">fileNameString</span> <span class="o">=</span> <span class="s">"em.ser"</span><span class="o">;</span>
+        <span class="nc">Employee</span> <span class="n">emplpyee</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Employee</span><span class="o">();</span>
+        <span class="n">emplpyee</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="mi">99</span><span class="o">);</span>
+        <span class="n">emplpyee</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"john"</span><span class="o">);</span>
+        <span class="n">emplpyee</span><span class="o">.</span><span class="na">setGender</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">emplpyee</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">fileNameString</span><span class="o">);</span>
+            <span class="n">outEm</span><span class="o">(</span><span class="n">fileNameString</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">outEm</span><span class="o">(</span><span class="nc">String</span> <span class="n">fileName</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">FileInputStream</span> <span class="n">fis</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileInputStream</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+        <span class="nc">ObjectInputStream</span> <span class="n">ois</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectInputStream</span><span class="o">(</span><span class="n">fis</span><span class="o">);</span>
+        <span class="nc">Object</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">ois</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span><span class="cm">/* 反序列化 */</span>
+        <span class="nc">Employee</span> <span class="n">employee</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Employee</span><span class="o">)</span> <span class="n">obj</span><span class="o">;</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"From file em info:"</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Name:"</span> <span class="o">+</span> <span class="n">employee</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Age:"</span> <span class="o">+</span> <span class="n">employee</span><span class="o">.</span><span class="na">getAge</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Gender:"</span>
+                <span class="o">+</span> <span class="o">((</span><span class="n">employee</span><span class="o">.</span><span class="na">getGender</span><span class="o">()</span> <span class="o">==</span> <span class="kc">true</span><span class="o">)</span> <span class="o">?</span> <span class="s">"Male"</span> <span class="o">:</span> <span class="s">"Female"</span><span class="o">));</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Employee</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">gender</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Employee</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nf">Employee</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">int</span> <span class="n">age</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">gender</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="n">gender</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">getGender</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">gender</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setGender</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">gender</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="n">gender</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">getGender</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">save</span><span class="o">(</span><span class="nc">String</span> <span class="n">fileName</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">FileOutputStream</span> <span class="n">fos</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileOutputStream</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+        <span class="nc">ObjectOutputStream</span> <span class="n">oos</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectOutputStream</span><span class="o">(</span><span class="n">fos</span><span class="o">);</span>
+        <span class="n">oos</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="n">oos</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+        <span class="n">oos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="n">fos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>Scanner</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ScannerTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Scanner</span> <span class="n">scanner</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+        <span class="nc">PrintWriter</span> <span class="n">pw</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PrintWriter</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"plz input something:"</span><span class="o">);</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">scanner</span><span class="o">.</span><span class="na">hasNextLine</span><span class="o">())</span> <span class="o">{</span>
+            <span class="nc">String</span> <span class="n">input</span> <span class="o">=</span> <span class="n">scanner</span><span class="o">.</span><span class="na">nextLine</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">input</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"exit"</span><span class="o">))</span> <span class="o">{</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"You just input:"</span> <span class="o">+</span> <span class="n">input</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span> <span class="c1">//刷新，对于支持缓存的流来说，要及时的进行刷新，</span>
+
+        <span class="o">}</span>
+        <span class="n">pw</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>    <span class="c1">//关闭输出流</span>
+        <span class="n">scanner</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>    <span class="c1">//关闭输入流</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>annotation 注解</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>辅助程序运行 在注解中进行程序的配置
+@Override :以@符号开头+注解类
+
+主流框架产品都支持使用注解进行程序配置
+xml文件配置(文本配置)
+(xml,properties文件配置)
+将程序的数据与程序本身分离
+
+将程序的数据分离
+使用注解的配置可验证(通过编译验证)
+public String toString() {
+}
+
+注解：三种
+1. Marker Annotation:标记注解
+@Override
+
+2. Single value Annotation:单值注解
+@Test(input="abc")
+
+3. Muti Value Annotation 多值注解
+@Test(input="abc",output="ABC")
+
+Retention：表示注解的生命周期
+source:只在于源代码中
+class:只存在于class文件中
+
+</code></pre></div></div> <p><strong>注解</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">System</span><span class="o">.</span><span class="na">out</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.lang.annotation.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AnnotationTest</span> <span class="o">{</span>
+    <span class="nd">@RententionTest</span><span class="o">(</span><span class="n">input</span> <span class="o">=</span> <span class="s">"ABC"</span><span class="o">,</span> <span class="n">output</span> <span class="o">=</span> <span class="s">"abc"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="nf">toLowerCase</span><span class="o">(</span><span class="nc">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">str</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
+        <span class="nc">Class</span> <span class="n">clz</span> <span class="o">=</span> <span class="nc">AnnotationTest</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+        <span class="nc">Method</span><span class="o">[]</span> <span class="n">method</span> <span class="o">=</span> <span class="n">clz</span><span class="o">.</span><span class="na">getDeclaredMethods</span><span class="o">();</span>    <span class="c1">//得到类中的所有方法</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">method</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="kt">boolean</span> <span class="n">hasAnnotation</span> <span class="o">=</span> <span class="n">method</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="nc">RententionTest</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">hasAnnotation</span><span class="o">)</span> <span class="o">{</span>
+                <span class="nc">RententionTest</span> <span class="n">test</span> <span class="o">=</span> <span class="o">(</span><span class="nc">RententionTest</span><span class="o">)</span> <span class="n">method</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getAnnotation</span><span class="o">(</span><span class="nc">RententionTest</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>    <span class="c1">//得Annotation</span>
+                <span class="nc">String</span> <span class="n">input</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="na">input</span><span class="o">();</span>    <span class="c1">//拿到Annotation的值</span>
+                <span class="nc">String</span> <span class="n">expectedOutput</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="na">output</span><span class="o">();</span>
+                <span class="nc">String</span> <span class="n">realOutput</span> <span class="o">=</span> <span class="n">toLowerCase</span><span class="o">(</span><span class="n">input</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">expectedOutput</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">realOutput</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Test Successful"</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="k">throw</span> <span class="k">new</span> <span class="nf">AssertionError</span><span class="o">(</span><span class="s">"Test"</span> <span class="o">+</span> <span class="s">"failed!!!"</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AnnotationTest2</span> <span class="o">{</span>
+    <span class="nd">@Test</span><span class="o">(</span><span class="n">input</span> <span class="o">=</span> <span class="s">"ABC"</span><span class="o">,</span> <span class="n">output</span> <span class="o">=</span> <span class="s">"acc"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="nf">toLowerCase</span><span class="o">(</span><span class="nc">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">str</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Class</span> <span class="n">clz</span> <span class="o">=</span> <span class="nc">AnnotationTest</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+        <span class="nc">Method</span><span class="o">[]</span> <span class="n">method</span> <span class="o">=</span> <span class="n">clz</span><span class="o">.</span><span class="na">getDeclaredMethods</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">method</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="kt">boolean</span> <span class="n">hasAnnotation</span> <span class="o">=</span> <span class="n">method</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="nc">Test</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">hasAnnotation</span><span class="o">)</span> <span class="o">{</span>
+                <span class="nc">Test</span> <span class="n">test</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Test</span><span class="o">)</span> <span class="n">method</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getAnnotation</span><span class="o">(</span><span class="nc">Test</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                <span class="nc">String</span> <span class="n">input</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="na">input</span><span class="o">();</span>
+                <span class="nc">String</span> <span class="n">expectedoutput</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="na">output</span><span class="o">();</span>
+                <span class="nc">String</span> <span class="n">realOutput</span> <span class="o">=</span> <span class="n">toLowerCase</span><span class="o">(</span><span class="n">input</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">expectedoutput</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">realOutput</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Test successed!!"</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="k">throw</span> <span class="k">new</span> <span class="nf">AssertionError</span><span class="o">(</span><span class="s">"Test failed!!!"</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">System</span><span class="o">.</span><span class="na">out</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.lang.annotation.*</span><span class="o">;</span>
+
+<span class="nd">@Retention</span><span class="o">(</span><span class="nc">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span>
+<span class="nd">@Target</span><span class="o">(</span><span class="nc">ElementType</span><span class="o">.</span><span class="na">METHOD</span><span class="o">)</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="nc">RententionTest</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="nf">input</span><span class="o">();</span>
+
+    <span class="nc">String</span> <span class="nf">output</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>自动装箱拆箱</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BoxingTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+        <span class="nc">Integer</span> <span class="n">iInteger</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>    <span class="c1">//装箱</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">iInteger</span><span class="o">);</span>
+        <span class="nc">Integer</span> <span class="n">iInteger1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Integer</span><span class="o">(</span><span class="mi">200</span><span class="o">);</span>
+        <span class="kt">int</span> <span class="n">i1</span> <span class="o">=</span> <span class="n">iInteger1</span><span class="o">;</span>    <span class="c1">//拆箱</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">i1</span><span class="o">);</span>
+
+        <span class="nc">Integer</span> <span class="n">i3</span> <span class="o">=</span> <span class="o">-</span><span class="mi">128</span><span class="o">;</span>
+        <span class="nc">Integer</span> <span class="n">i4</span> <span class="o">=</span> <span class="o">-</span><span class="mi">128</span><span class="o">;</span>    <span class="c1">//判断是相等的</span>
+        <span class="c1">//-128 ~ 127 用双等号判断是相等的</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">i3</span> <span class="o">==</span> <span class="n">i4</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Equal!"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"No Equal!"</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>枚举类型</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">System</span><span class="o">.</span><span class="na">out</span><span class="o">;</span>
+
+<span class="kd">enum</span> <span class="nc">Size</span>    <span class="c1">//枚举类</span>
+<span class="o">{</span>
+    <span class="c1">//LARGE,MIDDLE,SMALL    //加个封号，和不加封号都没错,最好加封号</span>
+    <span class="no">LARGE</span><span class="o">(</span><span class="mi">50</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="nc">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="s">"size:large value:"</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">},</span>
+    <span class="no">MIDDLE</span><span class="o">(</span><span class="mi">30</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="nc">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="s">"Size:middle value:"</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">},</span>
+    <span class="no">SMALL</span><span class="o">(</span><span class="mi">20</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="nc">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="s">"Size:small value:"</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">};</span>
+
+    <span class="nc">Size</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="nc">Size</span><span class="o">(</span><span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">value</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">value</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">EnumTest</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Size</span> <span class="n">size</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">EnumTest</span><span class="o">(</span><span class="nc">Size</span> <span class="n">size</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">size</span> <span class="o">=</span> <span class="n">size</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">...</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">EnumTest</span> <span class="n">test</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">EnumTest</span><span class="o">(</span><span class="nc">Size</span><span class="o">.</span><span class="na">LARGE</span><span class="o">);</span>
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">test</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">size</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="k">return</span> <span class="nc">Arrays</span><span class="o">.</span><span class="na">deepToString</span><span class="o">(</span><span class="n">size</span><span class="o">.</span><span class="na">values</span><span class="o">());</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>集合遍历</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ForTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">List</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"abc"</span><span class="o">);</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"xyz"</span><span class="o">);</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"test"</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">Object</span> <span class="n">obj</span> <span class="o">:</span> <span class="n">list</span><span class="o">)</span>    <span class="c1">//遍历list</span>
+        <span class="o">{</span>
+            <span class="nc">String</span> <span class="n">string</span> <span class="o">=</span> <span class="o">(</span><span class="nc">String</span><span class="o">)</span> <span class="n">obj</span><span class="o">;</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">string</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nc">String</span><span class="o">[]</span> <span class="n">strings</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"core java"</span><span class="o">,</span> <span class="s">"sql"</span><span class="o">,</span> <span class="s">"xml"</span><span class="o">,</span> <span class="s">"hibernate"</span><span class="o">};</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-------------------------------"</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">str</span> <span class="o">:</span> <span class="n">strings</span><span class="o">)</span>    <span class="c1">//遍历数组</span>
+        <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-------------------------------"</span><span class="o">);</span>
+        <span class="nc">Set</span> <span class="n">set</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashSet</span><span class="o">();</span>    <span class="c1">//遍历Set</span>
+        <span class="n">set</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"set1"</span><span class="o">);</span>
+        <span class="n">set</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"set2"</span><span class="o">);</span>
+        <span class="n">set</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"set3"</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">Object</span> <span class="n">obj</span> <span class="o">:</span> <span class="n">set</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">String</span> <span class="n">string</span> <span class="o">=</span> <span class="o">(</span><span class="nc">String</span><span class="o">)</span> <span class="n">obj</span><span class="o">;</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">string</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-------------------------------"</span><span class="o">);</span>
+        <span class="nc">Map</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">();</span>    <span class="c1">//遍历Map</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">"map1"</span><span class="o">);</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="s">"map2"</span><span class="o">);</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="s">"map3"</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">Object</span> <span class="n">obj</span> <span class="o">:</span> <span class="n">map</span><span class="o">.</span><span class="na">entrySet</span><span class="o">())</span> <span class="o">{</span>
+            <span class="nc">Map</span><span class="o">.</span><span class="na">Entry</span> <span class="n">entry</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">)</span> <span class="n">obj</span><span class="o">;</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">()</span> <span class="o">+</span> <span class="s">"=&gt;"</span> <span class="o">+</span> <span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>格式化输出</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FormatterTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+        <span class="nc">StringBuffer</span> <span class="n">sb2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+        <span class="nc">StringBuffer</span> <span class="n">sb3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+        <span class="nc">Formatter</span> <span class="n">formatter</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Formatter</span><span class="o">(</span><span class="n">sb</span><span class="o">);</span>
+        <span class="nc">Formatter</span> <span class="n">formatter2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Formatter</span><span class="o">(</span><span class="n">sb2</span><span class="o">);</span>
+        <span class="nc">Formatter</span> <span class="n">formatter3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Formatter</span><span class="o">(</span><span class="n">sb3</span><span class="o">);</span>
+        <span class="c1">//formatter.format("%1$tY",new java.util.Date());</span>
+        <span class="c1">//System.out.println(sb);</span>
+
+        <span class="n">formatter</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"%1$tY-%1$tm-%1$td  %1$tD  %1$tH:%1$tM:%1$tS "</span>
+                <span class="o">+</span> <span class="s">"\n %1$tr \n%1$tF \n %1$tH/%1$tI:%1$tM:%1$tS.%1$tL"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sb</span><span class="o">);</span>
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-------------------------------"</span><span class="o">);</span>
+        <span class="n">formatter2</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"%1$tY-%1$tm-%1$td  %1$tD  %1$tH:%1$tM:%1$tS "</span>
+                <span class="o">+</span> <span class="s">"\n %1$tr \n%1$tF \n %1$tH/%1$tI:%1$tM:%1$tS.%1$tL"</span><span class="o">,</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sb2</span><span class="o">);</span>
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-------------------------------"</span><span class="o">);</span>
+        <span class="n">formatter3</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"%1$tY-%1$tm-%1$td  %1$tD  %1$tH:%1$tM:%1$tS "</span>
+                <span class="o">+</span> <span class="s">"\n %1$tr \n%1$tF \n %1$tH/%1$tI:%1$tM:%1$tS.%1$tL"</span><span class="o">,</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sb3</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PrintfTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">string</span> <span class="o">=</span> <span class="s">"test"</span><span class="o">;</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"%d,%s,%S \n"</span><span class="o">,</span> <span class="n">i</span><span class="o">,</span> <span class="n">string</span><span class="o">,</span> <span class="n">string</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="s">","</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s">","</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="na">toUpperCase</span><span class="o">()</span> <span class="o">+</span> <span class="s">"\n"</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="s">","</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s">","</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="na">toUpperCase</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"%1$d,%2$s,%2$S,%1$d \n"</span><span class="o">,</span> <span class="n">i</span><span class="o">,</span> <span class="n">string</span><span class="o">);</span>
+        <span class="c1">//1$代表第一个参数，2$代表第二个参数</span>
+        <span class="c1">//%d %s 格式符</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>泛型</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">System</span><span class="o">.</span><span class="na">out</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GenericTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">...</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;();</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"string1"</span><span class="o">);</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"string2"</span><span class="o">);</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">((</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Date</span><span class="o">()).</span><span class="na">toString</span><span class="o">());</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">Object</span> <span class="n">obj</span> <span class="o">:</span> <span class="n">list</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">//String string=(String)obj;</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">obj</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"------------------------------"</span><span class="o">);</span>
+        <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;();</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">,</span> <span class="s">"java"</span><span class="o">);</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"World"</span><span class="o">,</span> <span class="s">"sun"</span><span class="o">);</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"HelloWorld"</span><span class="o">,</span> <span class="s">"eclipse"</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">str</span> <span class="o">:</span> <span class="n">map</span><span class="o">.</span><span class="na">keySet</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"key:"</span> <span class="o">+</span> <span class="n">str</span> <span class="o">+</span> <span class="s">"\tvalue:"</span> <span class="o">+</span> <span class="o">(</span><span class="nc">String</span><span class="o">)</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">str</span><span class="o">));</span>
+        <span class="o">}</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"------------------------------"</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">Object</span> <span class="n">obj</span> <span class="o">:</span> <span class="n">map</span><span class="o">.</span><span class="na">entrySet</span><span class="o">())</span> <span class="o">{</span>
+            <span class="nc">Map</span><span class="o">.</span><span class="na">Entry</span> <span class="n">entry</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">)</span> <span class="n">obj</span><span class="o">;</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">()</span> <span class="o">+</span> <span class="s">"=&gt;"</span> <span class="o">+</span> <span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+        <span class="o">}</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"------------------------------"</span><span class="o">);</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Number</span><span class="o">&gt;</span> <span class="n">list1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Number</span><span class="o">&gt;();</span>
+        <span class="n">list1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">5.5f</span><span class="o">);</span>
+        <span class="n">list1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+        <span class="n">sum</span><span class="o">(</span><span class="n">list1</span><span class="o">);</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"------------------------------"</span><span class="o">);</span>
+        <span class="nc">Integer</span><span class="o">[]</span> <span class="n">arrayInt</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Integer</span><span class="o">[]{</span><span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">,</span> <span class="mi">999</span><span class="o">};</span>
+        <span class="nc">String</span><span class="o">[]</span> <span class="n">arayString</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"str1"</span><span class="o">,</span> <span class="s">"str2"</span><span class="o">,</span> <span class="s">"str3"</span><span class="o">};</span>
+        <span class="n">print</span><span class="o">(</span><span class="n">arrayInt</span><span class="o">);</span>
+        <span class="n">print</span><span class="o">(</span><span class="n">arayString</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">sum</span><span class="o">(</span><span class="nc">List</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="nc">Number</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Number</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Float</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">Number</span> <span class="n">num</span> <span class="o">:</span> <span class="n">list</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">//out.println("result.floatValue:"+result.floatValue());</span>
+            <span class="c1">//result=new Float(result.floatValue()+num.floatValue());</span>
+            <span class="c1">//给对象赋值,用new的方式，太浪费空间</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">floatValue</span><span class="o">()</span> <span class="o">+</span> <span class="n">num</span><span class="o">.</span><span class="na">floatValue</span><span class="o">();</span>    <span class="c1">//自动装箱</span>
+            <span class="c1">//out.println("result:"+result.floatValue());</span>
+            <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"result:"</span> <span class="o">+</span> <span class="n">result</span><span class="o">.</span><span class="na">floatValue</span><span class="o">());</span>        <span class="c1">//自动拆箱</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="c1">//add(E element)</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="no">E</span><span class="o">[]</span> <span class="n">array</span><span class="o">)</span>    <span class="c1">//E代表可以传入任意类型,&lt;E&gt; 表示声明E为任意类型</span>
+    <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">Object</span> <span class="n">obj</span> <span class="o">:</span> <span class="n">array</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">obj</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <h3 id="简易聊天室">简易聊天室</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Scanner;
+
+public class ChatServer {
+    private ServerSocket ss;
+    private List list;
+    //private Queue list; //解决并发安全：方法一
+    private Socket socket;
+    private static final int PORT = 9999;
+    private static final String WELCOME_MESSAGE = "@Welcom to chat room !";
+
+    public ChatServer() {
+        try {
+            list = new LinkedList();
+            //list=new ConcurrentLinkedQueue(); 
+            // 方法一：使用ConcurrentLinkedQueue解决并发安全
+            ss = new ServerSocket(PORT);
+            while (true) {
+                socket = ss.accept();
+                add(socket);
+                new Handler(socket); //new一个用户连接句柄
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //内部类，代表着一个用户连接
+    class Handler implements Runnable {
+        private Socket socket;
+
+        public Handler(Socket socket) {
+            this.socket = socket;
+            new Thread(this).start(); //new一个线程，并启动
+        }
+
+        public void run() {
+            InputStream in = null;
+            OutputStream out = null;
+            try {
+                //while(true)
+                //{
+                in = socket.getInputStream();
+                out = socket.getOutputStream();
+                Scanner scanner = new Scanner(in);
+                PrintWriter pw = new PrintWriter(out); //初始化输出对象
+                pw.println(WELCOME_MESSAGE); //输出欢迎信息
+                pw.flush();
+                while (scanner.hasNextLine()) //持续等待用户输入，获得客户的发言信息
+                {
+                    String message = scanner.nextLine();
+                    broadcast(socket.getInetAddress().getHostAddress() + " says:" + message);
+                    //方法二：解决并发安全
+                    //broadcast_1(socket.getInetAddress().getHostAddress()+" says:"+message);
+                    //广播客户的发言
+                }
+                //pw.close();
+                socket.close();
+                //}
+                //scanner.close();
+                //in.close();
+                //out.close();
+                //socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //广播客户的发言(群发)
+    //解决并发安全问题，方法二
+    public void broadcast_1(String message) throws Exception {
+        int size = list.size();
+        for (int i = 0; i &lt; size; i++) {
+            Socket socket = (Socket) list.get(i);
+            if (socket.isClosed()) //判断socket是否被关闭
+            {
+                System.out.println("Socket is closed,the list size is:" + list.size());
+                remove(socket); //如果socket关闭了，就从list中删除
+                System.out.println("after remove,the list size is:" + list.size());
+                break;
+            } else {
+//System.out.println("not close,list size is:"+list.size());
+                OutputStream out = socket.getOutputStream();
+                PrintWriter pw = new PrintWriter(out);
+                pw.println(message); //把消息写到输出流
+                pw.flush();
+            }
+        }
+    }
+
+    //广播客户的发言(群发)(使用迭代器遍历)
+    public void broadcast(String message) throws Exception {
+        Iterator it = list.iterator();
+        while (it.hasNext()) {
+            Socket socket = (Socket) it.next();
+            if (socket.isClosed()) //监听
+            {
+                System.out.println("Socket is closed,the list size is:" + list.size());
+                remove(socket); //如果socket关闭了，就从list中删除
+                System.out.println("after remove,the list size is:" + list.size());
+                break; //解决并发安全，方法三
+            } else {
+                OutputStream out = socket.getOutputStream();
+                PrintWriter pw = new PrintWriter(out);
+                pw.println(message); //把消息写到输出流
+                pw.flush();
+                //pw.close();
+                //out.close();
+            }
+        }
+    }
+
+    //添加用户 上线
+    public void add(Object obj) {
+        list.add(obj);
+    }
+
+    //删除用户 下线
+    public void remove(Object obj) {
+        list.remove(obj);
+    }
+
+    public static void main(String[] args) throws Exception {
+        new ChatServer();
+    }
+}
+//服务端启动后，客户端只需在cmd中用telnet连接到服务端，即可发送聊天信息
+//telnet 127.0.0.1 9999
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2011-11-18-Java%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7%E5%8F%8AAPI%E7%9A%84%E4%BD%BF%E7%94%A8.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Java中的一些基础特性及API的使用 - 知不知&amp;url=/list/docs/java/2011-11-18-Java%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7%E5%8F%8AAPI%E7%9A%84%E4%BD%BF%E7%94%A8.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2011-11-18-Java%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7%E5%8F%8AAPI%E7%9A%84%E4%BD%BF%E7%94%A8.html&amp;title=Java-Java中的一些基础特性及API的使用 - 知不知&amp;summary=Java中的一些基础特性及API的使用，包括：管道流、文件访问、序列化、Scanner,以及注解、自动装箱拆箱&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2011-11-18-Java%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7%E5%8F%8AAPI%E7%9A%84%E4%BD%BF%E7%94%A8.html&amp;text=Java-Java中的一些基础特性及API的使用 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2011-11-18-Java%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7%E5%8F%8AAPI%E7%9A%84%E4%BD%BF%E7%94%A8.html&amp;t=Java-Java中的一些基础特性及API的使用 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2011-11-18-Java%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7%E5%8F%8AAPI%E7%9A%84%E4%BD%BF%E7%94%A8.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Java中的一些基础特性及API的使用'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

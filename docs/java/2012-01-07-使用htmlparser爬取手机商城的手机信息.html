@@ -1,0 +1,188 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-使用htmlparser爬取手机商城的手机信息</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="手机信息抓取解决方案">手机信息抓取解决方案</h3> <p>在spring-mvc项目中引入htmlparser.jar包，抓取中关村的手机品牌信息，示例代码如下：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ackage</span> <span class="n">com</span><span class="o">.</span><span class="na">luowei</span><span class="o">.</span><span class="na">common</span><span class="o">.</span><span class="na">service</span><span class="o">.</span><span class="na">imp</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.annotation.Resource</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.htmlparser.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.htmlparser.filters.StringFilter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.htmlparser.nodes.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.htmlparser.util.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.htmlparser.tags.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Service</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.luowei.common.dao.TPhonebrandDAO</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.luowei.common.model.Action</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.luowei.common.model.TPhonebrand</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.luowei.common.service.BaseService</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.luowei.common.service.ITPhonebrandService</span><span class="o">;</span>
+    <span class="cm">/**
+     * @className:TPhonebrandManageService.java
+     * @classDescription:手机品牌Service
+     * @author:luowei
+     * @createTime:2012-1-12
+     */</span>
+    <span class="nd">@Service</span>
+    <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TPhonebrandManageService</span> <span class="kd">extends</span> <span class="nc">BaseService</span><span class="o">&lt;</span><span class="nc">TPhonebrand</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="nc">ITPhonebrandService</span>
+    <span class="o">{</span>
+        <span class="nd">@Resource</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">"TPhonebrandDAO"</span><span class="o">)</span>
+        <span class="kd">private</span> <span class="nc">TPhonebrandDAO</span> <span class="n">tPhonebrandDAO</span><span class="o">;</span>
+        <span class="kd">public</span> <span class="nc">TPhonebrandDAO</span> <span class="nf">gettPhonebrandDAO</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">tPhonebrandDAO</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">settPhonebrandDAO</span><span class="o">(</span><span class="nc">TPhonebrandDAO</span> <span class="n">tPhonebrandDAO</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">tPhonebrandDAO</span> <span class="o">=</span> <span class="n">tPhonebrandDAO</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="cm">/**
+         * 品牌类别过滤器
+         * @author luowei
+         * @createTime 2012-1-13
+         * @param
+         * @return
+         */</span>
+        <span class="kd">class</span> <span class="nc">BrandFilter</span> <span class="kd">extends</span> <span class="nc">StringFilter</span>
+        <span class="o">{</span>
+            <span class="kd">public</span> <span class="nf">BrandFilter</span><span class="o">(</span><span class="nc">String</span> <span class="n">pattern</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="kd">super</span><span class="o">(</span><span class="n">pattern</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">accept</span><span class="o">(</span><span class="nc">Node</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">node</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+                <span class="o">{</span>
+                    <span class="k">if</span><span class="o">(</span><span class="n">node</span> <span class="k">instanceof</span> <span class="nc">TagNode</span><span class="o">)</span>
+                    <span class="o">{</span>
+                        <span class="nc">TagNode</span> <span class="n">tn</span><span class="o">=(</span><span class="nc">TagNode</span><span class="o">)</span><span class="n">node</span><span class="o">;</span>
+                        <span class="nc">String</span> <span class="n">vl</span><span class="o">=</span><span class="n">tn</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">"class"</span><span class="o">);</span>
+                        <span class="k">if</span><span class="o">(</span><span class="n">vl</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;</span><span class="n">vl</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">getPattern</span><span class="o">()))</span>
+                        <span class="o">{</span>
+                            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="cm">/**
+         * 从中关村抓取品牌信息
+         * @author luowei
+         * @createTime 2012-1-13
+         * @param
+         * @return
+         */</span>
+        <span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">TPhonebrand</span><span class="o">&gt;</span> <span class="nf">getInforFromZOL</span><span class="o">()</span>
+        <span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+<span class="c1">//初始两个页面解析器</span>
+                <span class="nc">Parser</span> <span class="n">parser1</span><span class="o">=</span><span class="k">new</span> <span class="nc">Parser</span><span class="o">(</span><span class="s">"http://detail.zol.com.cn/category/57.html"</span><span class="o">);</span>
+                <span class="nc">Parser</span> <span class="n">parser2</span><span class="o">=</span><span class="k">new</span> <span class="nc">Parser</span><span class="o">(</span><span class="s">"http://detail.zol.com.cn/category/57.html"</span><span class="o">);</span>
+                <span class="nc">List</span><span class="o">&lt;</span><span class="nc">TPhonebrand</span><span class="o">&gt;</span> <span class="n">tPhonebrandList</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">TPhonebrand</span><span class="o">&gt;();</span>
+                <span class="nc">String</span><span class="o">[]</span> <span class="n">manu</span><span class="o">={</span><span class="s">"manu normal"</span><span class="o">,</span><span class="s">"manu txt"</span><span class="o">};</span>
+<span class="c1">//获取普通品牌</span>
+                <span class="n">tPhonebrandList</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">findNormalBrand</span><span class="o">(</span><span class="n">parser1</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="k">new</span> <span class="nc">BrandFilter</span><span class="o">((</span><span class="n">manu</span><span class="o">[</span><span class="mi">0</span><span class="o">])))));</span>
+<span class="c1">//获取其它品牌</span>
+                <span class="n">tPhonebrandList</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">findOtherBrand</span><span class="o">(</span><span class="n">parser2</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="k">new</span> <span class="nc">BrandFilter</span><span class="o">(</span><span class="n">manu</span><span class="o">[</span><span class="mi">1</span><span class="o">]))));</span>
+                <span class="k">return</span> <span class="n">tPhonebrandList</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="cm">/**
+         * 获取普通品牌(class=manu nomal)的品牌
+         * manu nomal 下的li子标签如下结构：
+         * &lt;li&gt;
+         * &lt;a href="/cell_phone_index/subcate57_98_list_1.html"&gt;
+         * &lt;img alt="Samsung（三星） 手机" src="http://2c.zol-img.com.cn/manu_photo/98_.jpg"&gt;
+         * &lt;/a&gt;
+         * &lt;br&gt;
+         * &lt;a title="Samsung（三星） 手机" href="/cell_phone_index/subcate57_98_list_1.html"&gt;Samsung（三星）&lt;/a&gt;
+         * &lt;/li&gt;
+         * @author luowei
+         * @createTime 2012-1-13
+         * @param
+         * @return
+         */</span>
+        <span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">TPhonebrand</span><span class="o">&gt;</span> <span class="nf">findNormalBrand</span><span class="o">(</span><span class="nc">NodeList</span> <span class="n">nl1</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="nc">List</span><span class="o">&lt;</span><span class="nc">TPhonebrand</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">=</span><span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">TPhonebrand</span><span class="o">&gt;();</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">nl1</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>
+            <span class="o">{</span>
+                <span class="nc">Node</span> <span class="n">n1</span><span class="o">=</span><span class="n">nl1</span><span class="o">.</span><span class="na">elementAt</span><span class="o">(</span><span class="n">i</span><span class="o">);</span> <span class="c1">//获取第i个class=manu normal的结点</span>
+                <span class="nc">NodeList</span> <span class="n">nl2</span><span class="o">=</span><span class="n">n1</span><span class="o">.</span><span class="na">getChildren</span><span class="o">();</span>
+                <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">nl2</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">j</span><span class="o">++)</span>
+                <span class="o">{</span>
+                    <span class="nc">Node</span> <span class="n">n2</span><span class="o">=</span><span class="n">nl2</span><span class="o">.</span><span class="na">elementAt</span><span class="o">(</span><span class="n">j</span><span class="o">);</span> <span class="c1">//获取li的结点</span>
+                    <span class="nc">LinkTag</span> <span class="n">_a</span><span class="o">=(</span><span class="nc">LinkTag</span><span class="o">)</span><span class="n">n2</span><span class="o">.</span><span class="na">getFirstChild</span><span class="o">();</span> <span class="c1">//获取嵌套了图片标签的a标签结点</span>
+                    <span class="c1">// if(n2.getFirstChild().getFirstChild() instanceof org.htmlparser.nodes.TextNode )</span>
+                    <span class="c1">// {</span>
+                    <span class="c1">// System.out.println("-----------"+(n2.getFirstChild()).getClass().toString());</span>
+                    <span class="c1">// String textNode=n2.getFirstChild().getFirstChild().getText();</span>
+                    <span class="c1">// System.out.println("-----------"+textNode);</span>
+                    <span class="c1">// }</span>
+                    <span class="nc">ImageTag</span> <span class="n">_img</span><span class="o">=(</span><span class="nc">ImageTag</span><span class="o">)</span><span class="n">n2</span><span class="o">.</span><span class="na">getFirstChild</span><span class="o">().</span><span class="na">getFirstChild</span><span class="o">();</span> <span class="c1">//获取图片标签结点</span>
+                    <span class="nc">LinkTag</span> <span class="n">_an</span><span class="o">=(</span><span class="nc">LinkTag</span><span class="o">)</span><span class="n">n2</span><span class="o">.</span><span class="na">getLastChild</span><span class="o">();</span> <span class="c1">//获取品牌链接</span>
+                    <span class="c1">//LinkTag _an=(LinkTag)_a.getNextSibling();</span>
+                    <span class="nc">String</span> <span class="n">name</span><span class="o">=</span><span class="n">_an</span><span class="o">.</span><span class="na">getLinkText</span><span class="o">();</span> <span class="c1">//得到品牌名称</span>
+                    <span class="nc">String</span> <span class="n">imgpath</span><span class="o">=</span><span class="n">_img</span><span class="o">.</span><span class="na">getImageURL</span><span class="o">();</span> <span class="c1">//得到图片地址</span>
+                    <span class="nc">String</span> <span class="n">url</span><span class="o">=</span><span class="n">_a</span><span class="o">.</span><span class="na">getLink</span><span class="o">();</span> <span class="c1">//得到图链接地址</span>
+                    <span class="nc">TPhonebrand</span> <span class="n">tphonebrand</span><span class="o">=</span><span class="k">new</span> <span class="nc">TPhonebrand</span><span class="o">();</span>
+                    <span class="n">tphonebrand</span><span class="o">.</span><span class="na">setPhonebrandName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span> <span class="c1">//保存品牌名称到tphonebrand对象</span>
+                    <span class="n">tphonebrand</span><span class="o">.</span><span class="na">setPhonebrandImage</span><span class="o">(</span><span class="n">imgpath</span><span class="o">);</span>
+                    <span class="n">tphonebrand</span><span class="o">.</span><span class="na">setRelateURL</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+                    <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">tphonebrand</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">list</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="cm">/**
+         * 获取其它品牌(class=manu txt)的品牌
+         * manu txt 下的li子标签如下结构：
+         * &lt;li&gt;
+         * &lt;a title="BlackBerry（黑莓） 手机" href="/cell_phone_index/subcate57_12772_list_1.html"&gt;BlackBerry（黑莓）手机&lt;/a&gt;
+         * &lt;/li&gt;
+         * @author luowei
+         * @createTime 2012-1-12
+         * @param
+         * @return
+         */</span>
+        <span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">TPhonebrand</span><span class="o">&gt;</span> <span class="nf">findOtherBrand</span><span class="o">(</span><span class="nc">NodeList</span> <span class="n">nl1</span><span class="o">)</span> <span class="c1">//</span>
+        <span class="o">{</span>
+            <span class="nc">List</span><span class="o">&lt;</span><span class="nc">TPhonebrand</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">=</span><span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">TPhonebrand</span><span class="o">&gt;();</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">nl1</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>
+            <span class="o">{</span>
+                <span class="nc">Node</span> <span class="n">n1</span><span class="o">=</span><span class="n">nl1</span><span class="o">.</span><span class="na">elementAt</span><span class="o">(</span><span class="n">i</span><span class="o">);</span> <span class="c1">//定位到第i个class=manu txt的结点</span>
+                <span class="nc">NodeList</span> <span class="n">nl2</span><span class="o">=</span><span class="n">n1</span><span class="o">.</span><span class="na">getChildren</span><span class="o">();</span>
+                <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">nl2</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">j</span><span class="o">++)</span> <span class="c1">//遍历manu txt结点下的li结点</span>
+                <span class="o">{</span>
+                    <span class="nc">Node</span> <span class="n">n2</span><span class="o">=</span><span class="n">nl2</span><span class="o">.</span><span class="na">elementAt</span><span class="o">(</span><span class="n">j</span><span class="o">);</span> <span class="c1">//定位到第j个li的结点</span>
+                    <span class="nc">TPhonebrand</span> <span class="n">tphonebrand</span><span class="o">=</span><span class="k">new</span> <span class="nc">TPhonebrand</span><span class="o">();</span>
+                    <span class="nc">LinkTag</span> <span class="n">_an</span><span class="o">=(</span><span class="nc">LinkTag</span><span class="o">)</span><span class="n">n2</span><span class="o">.</span><span class="na">getFirstChild</span><span class="o">();</span><span class="c1">//获取品牌链接</span>
+                    <span class="nc">String</span> <span class="n">name</span><span class="o">=</span><span class="n">_an</span><span class="o">.</span><span class="na">getLinkText</span><span class="o">().</span><span class="na">replace</span><span class="o">(</span><span class="s">"手机"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+                    <span class="nc">String</span> <span class="n">url</span><span class="o">=</span><span class="n">_an</span><span class="o">.</span><span class="na">getLink</span><span class="o">();</span>
+                    <span class="n">tphonebrand</span><span class="o">.</span><span class="na">setPhonebrandName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+                    <span class="n">tphonebrand</span><span class="o">.</span><span class="na">setRelateURL</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+                    <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">tphonebrand</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">list</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">alter</span><span class="o">(</span><span class="nc">Action</span> <span class="n">obj</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">delete</span><span class="o">(</span><span class="nc">Action</span> <span class="n">obj</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">save</span><span class="o">(</span><span class="nc">Action</span> <span class="n">obj</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">TPhonebrandManageService</span> <span class="n">tPhonebrandManageService</span><span class="o">=</span><span class="k">new</span> <span class="nc">TPhonebrandManageService</span><span class="o">();</span>
+            <span class="nc">List</span><span class="o">&lt;</span><span class="nc">TPhonebrand</span><span class="o">&gt;</span> <span class="n">tPhjonebrandList</span><span class="o">=</span><span class="n">tPhonebrandManageService</span><span class="o">.</span><span class="na">getInforFromZOL</span><span class="o">();</span>
+            <span class="k">for</span><span class="o">(</span><span class="nc">TPhonebrand</span> <span class="nl">tPhonebrand:</span><span class="n">tPhjonebrandList</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">tPhonebrand</span><span class="o">.</span><span class="na">getPhonebrandName</span><span class="o">()</span>
+                        <span class="o">+</span><span class="s">"\n"</span><span class="o">+</span><span class="n">tPhonebrand</span><span class="o">.</span><span class="na">getRelateURL</span><span class="o">()+</span><span class="s">"\n----------"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2012-01-07-%E4%BD%BF%E7%94%A8htmlparser%E7%88%AC%E5%8F%96%E6%89%8B%E6%9C%BA%E5%95%86%E5%9F%8E%E7%9A%84%E6%89%8B%E6%9C%BA%E4%BF%A1%E6%81%AF.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-使用htmlparser爬取手机商城的手机信息 - 知不知&amp;url=/list/docs/java/2012-01-07-%E4%BD%BF%E7%94%A8htmlparser%E7%88%AC%E5%8F%96%E6%89%8B%E6%9C%BA%E5%95%86%E5%9F%8E%E7%9A%84%E6%89%8B%E6%9C%BA%E4%BF%A1%E6%81%AF.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2012-01-07-%E4%BD%BF%E7%94%A8htmlparser%E7%88%AC%E5%8F%96%E6%89%8B%E6%9C%BA%E5%95%86%E5%9F%8E%E7%9A%84%E6%89%8B%E6%9C%BA%E4%BF%A1%E6%81%AF.html&amp;title=Java-使用htmlparser爬取手机商城的手机信息 - 知不知&amp;summary=使用htmlparser爬取手机商城的手机信息&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2012-01-07-%E4%BD%BF%E7%94%A8htmlparser%E7%88%AC%E5%8F%96%E6%89%8B%E6%9C%BA%E5%95%86%E5%9F%8E%E7%9A%84%E6%89%8B%E6%9C%BA%E4%BF%A1%E6%81%AF.html&amp;text=Java-使用htmlparser爬取手机商城的手机信息 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2012-01-07-%E4%BD%BF%E7%94%A8htmlparser%E7%88%AC%E5%8F%96%E6%89%8B%E6%9C%BA%E5%95%86%E5%9F%8E%E7%9A%84%E6%89%8B%E6%9C%BA%E4%BF%A1%E6%81%AF.html&amp;t=Java-使用htmlparser爬取手机商城的手机信息 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2012-01-07-%E4%BD%BF%E7%94%A8htmlparser%E7%88%AC%E5%8F%96%E6%89%8B%E6%9C%BA%E5%95%86%E5%9F%8E%E7%9A%84%E6%89%8B%E6%9C%BA%E4%BF%A1%E6%81%AF.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-使用htmlparser爬取手机商城的手机信息'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

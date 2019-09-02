@@ -1,0 +1,193 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Apache服务器的配置</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容：</strong>Windows上Apache虚拟主机的配置、Linux上Https的配置、Apache站点的配置、静态站的配置、Tomcat站点的配置、PHP站点的配置、PythonWeb站点的配置以及域名代理、资源重定位的配置。</p> <h2 id="windows配置apache">Windows配置Apache</h2> <h3 id="编辑httpdconf文件">编辑httpd.conf文件</h3> <p><strong>方式一：配置虚拟主机</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost localhost&gt;
+  #ServerAdmin luowei010101@gmail.com
+  DocumentRoot "D:/javascript/js_projects"
+  #ServerName vvvv.com
+  ErrorLog "D:/javascript/js_projects/error.log"
+  
+  &lt;Directory "D:/javascript/js_projects"&gt;
+     Options Indexes FollowSymLinks
+     AllowOverride None
+     Order allow,deny
+     Allow from all
+  &lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+</code></pre></div></div> <p><strong>方式二：配置目录别名</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Alias /js_test/  "D:/javascript/js_projects/test/"
+&lt;Directory  "D:/javascript/js_projects/test"&gt;
+   Options Indexes MultiViews 
+   AllowOverride None 
+   Order allow,deny 
+   Allow from all 
+&lt;/Directory&gt;
+</code></pre></div></div> <h2 id="unbuntu上配置apache">Unbuntu上配置Apache</h2> <p>在<code class="highlighter-rouge">/etc/apache2/sites-available</code> 添加xxx.conf,比如如下配置：</p> <p><strong>(https配置) webluowei.com</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt; 
+     ServerAdmin luowei@webluowei.com
+     ServerName webluowei.com
+     ServerAlias www.webluowei.com
+     DocumentRoot /var/www/webluowei.com
+     ErrorLog ${APACHE_LOG_DIR}/error.log 
+     CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+#     RewriteEngine on
+#     RewriteCond %{SERVER_NAME} =webluowei.com [OR]
+#     RewriteCond %{SERVER_NAME} =www.webluowei.com
+#     RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+
+#     &lt;FilesMatch "\.(htaccess|php)$"&gt;
+#        Order allow,deny
+#        allow from all
+#        ForceType text/plain
+#     &lt;/FilesMatch&gt;
+
+     Alias /webdav /var/www/webdav
+     &lt;Directory /var/www/webdav&gt;
+        DAV On
+    AuthType Digest
+        AuthName "webdav"
+        AuthUserFile /etc/apache2/users.password
+        Require valid-user
+
+        &lt;Limit GET PUT DELETE PROPFIND PROPPATCH MKCOL COPY MOVE LOCK UNLOCK&gt;
+        Require user luowei
+        &lt;/Limit&gt;
+    AuthDigestDomain / http://webluowei.com/webdav/
+        AuthDigestProvider file
+    php_value engine off 
+        RewriteEngine off
+     &lt;/Directory&gt;
+
+&lt;/VirtualHost&gt;
+
+
+&lt;IfModule mod_ssl.c&gt;
+&lt;VirtualHost *:443&gt;
+
+        ServerAdmin webmaster@localhost
+        ServerName webluowei.com
+        DocumentRoot /var/www/webluowei.com
+
+        #   SSL Engine Switch:
+        #   Enable/Disable SSL for this virtual host.
+        SSLEngine on
+
+        #   A self-signed (snakeoil) certificate can be created by installing
+        #   the ssl-cert package. See
+        #   /usr/share/doc/apache2.2-common/README.Debian.gz for more info.
+        #   If both key and certificate are stored in the same file, only the
+        #   SSLCertificateFile directive is needed.
+        
+    SSLCertificateFile      /etc/apache2/ssl/apache.crt
+    SSLCertificateKeyFile  /etc/apache2/ssl/apache.key
+
+    #SSLCertificateFile /etc/letsencrypt/live/webluowei.com/cert.pem
+    #SSLCertificateFile /etc/letsencrypt/live/webluowei.com/fullchain.pem
+    #SSLCertificateKeyFile  /etc/letsencrypt/live/webluowei.com/privkey.pem
+    #SSLCertificateChainFile    /etc/letsencrypt/live/webluowei.com/chain.pem
+
+
+     Alias /webdav /var/www/webdav
+     &lt;Directory /var/www/webdav&gt;
+        DAV On
+        AuthType Digest
+        AuthName "webdav"
+        AuthUserFile /etc/apache2/users.password
+        Require valid-user
+
+        &lt;Limit GET PUT DELETE PROPFIND PROPPATCH MKCOL COPY MOVE LOCK UNLOCK&gt;
+            Require user luowei
+        &lt;/Limit&gt;
+        AuthDigestDomain / http://webluowei.com/webdav/
+        AuthDigestProvider file
+        php_value engine off
+        RewriteEngine off
+     &lt;/Directory&gt;
+
+
+&lt;/VirtualHost&gt;
+
+&lt;/IfModule&gt;
+</code></pre></div></div> <p><strong>(Tomcat端口转发) my.webluowei.com.conf</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;   
+    ServerName my.webluowei.com 
+    ProxyIOBufferSize 8192  
+    ProxyRequests Off   
+    ProxyVia Full   
+    ProxyPass / http://webluowei.com:8080/ smax=5 max=20 ttl=120 retry=300   
+    ProxyPassReverse / http://webluowei.com:8080/
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+&lt;/VirtualHost&gt;  
+</code></pre></div></div> <p><strong>(域名代理) app.webluowei.com.conf</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;   
+    ServerName mybrowser.webluowei.com 
+    ProxyIOBufferSize 8192  
+    ProxyRequests Off   
+    ProxyVia Full   
+    ProxyPass / http://app.webluowei.com/ smax=5 max=20 ttl=120 retry=300   
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+&lt;/VirtualHost&gt;
+</code></pre></div></div> <p><strong>(资源目录重定位) life.webluowei.com.conf</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;
+    ServerAdmin abc@rootls.com
+    ServerName life.webluowei.com
+    ServerAlias life.webluowei.com pua.webluowei.com
+    
+    DocumentRoot /var/www/life.webluowei.com
+    &lt;Directory "/var/www/life.webluowei.com"&gt;
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+    &lt;/Directory&gt;
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+&lt;/VirtualHost&gt;
+</code></pre></div></div> <p><strong>(图片资源) img.webluowei.com.conf</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;
+    ServerAdmin luowei@webluowei.com
+    ServerName img.webluowei.com 
+    ServerAlias img.webluowei.com
+
+    # 指定资源目录
+    DocumentRoot /var/www/img.webluowei.com
+    # 允许跨域访问
+    Header set Access-Control-Allow-Origin "*"
+
+    # 配置防盗链
+    RewriteEngine on
+    RewriteCond %{HTTP_REFERER} !^$ [NC]
+    RewriteCond %{HTTP_REFERER} !webluowei.com [NC]
+    RewriteCond %{HTTP_REFERER} !rootls.com [NC]
+    RewriteCond %{HTTP_REFERER} !baidu.com [NC]
+    RewriteCond %{HTTP_REFERER} !google.cn [NC]
+    RewriteCond %{HTTP_REFERER} !google.com [NC]
+    RewriteRule .*.(js|css|json|txt|doc|pdf|mp3|mp4|zip|rar|bmp|png|jpg|gif)$ http://webluowei.com [R,NC,L]
+
+    # 配置日志生成目录
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+&lt;/VirtualHost&gt;
+</code></pre></div></div> <p><strong>(Python WSGI) user.webluowei.com.conf</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;
+        ServerName user.webluowei.com
+        WSGIScriptAlias / /var/www/user.webluowei.com/flaskapp.wsgi
+        &lt;Directory /var/www/user.webluowei.com/app/&gt;
+            Order allow,deny
+            Allow from all
+        &lt;/Directory&gt;
+        Alias /static /var/www/user.webluowei.com/app/static
+        &lt;Directory /var/www/user.webluowei.com/app/static/&gt;
+            Order allow,deny
+            Allow from all
+        &lt;/Directory&gt;
+        ErrorLog ${APACHE_LOG_DIR}/error_user.webluowei.com.log
+        LogLevel warn
+        CustomLog ${APACHE_LOG_DIR}/access_user.webluowei.com.log combined
+&lt;/VirtualHost&gt;
+</code></pre></div></div> <p><strong>(PHP bbs) bbs.webluowei.com</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt; 
+     ServerAdmin webmaster@example.com
+     ServerName bbs.webluowei.com
+     ServerAlias bbs.webluowei.com
+     DocumentRoot /var/www/bbs.webluowei.com
+     ErrorLog ${APACHE_LOG_DIR}/error.log 
+     CustomLog ${APACHE_LOG_DIR}/access.log combined
+&lt;/VirtualHost&gt;
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/linux/2012-10-30-Apache%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%85%8D%E7%BD%AE.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Apache服务器的配置 - 知不知&amp;url=/list/docs/linux/2012-10-30-Apache%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%85%8D%E7%BD%AE.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/linux/2012-10-30-Apache%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%85%8D%E7%BD%AE.html&amp;title=Apache服务器的配置 - 知不知&amp;summary=Apache服务器的配置&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/linux/2012-10-30-Apache%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%85%8D%E7%BD%AE.html&amp;text=Apache服务器的配置 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/linux/2012-10-30-Apache%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%85%8D%E7%BD%AE.html&amp;t=Apache服务器的配置 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/linux/2012-10-30-Apache%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%85%8D%E7%BD%AE.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Apache服务器的配置'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

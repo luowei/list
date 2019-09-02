@@ -1,0 +1,423 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础09之Java网络编程的应用</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java网络编程的应用，创建一个基于socket连接的客户端程序，可以连接服务器端，并接收与发送信息，分别实现半双工通信与全双工通信。</p> <h3 id="文件结构">文件结构</h3> <p><img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_28.jpg" alt="文件结构" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_29.jpg" alt="文件结构" /></p> <p><strong>Java网络编程_netTest1Client/com.test1/MyClient1.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 这是一个客户端程序，可以连接服务器端
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClient1</span> <span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="nc">MyClient1</span> <span class="n">mc1</span><span class="o">=</span><span class="k">new</span> <span class="nc">MyClient1</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">MyClient1</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//Socket()就是去连接某个服务器端，127.0.0.1表示服务器的IP</span>
+            <span class="c1">//9999就是端口号</span>
+            <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="k">new</span> <span class="nc">Socket</span><span class="o">(</span><span class="s">"127.0.0.1"</span><span class="o">,</span><span class="mi">9999</span><span class="o">);</span>
+            <span class="c1">//如果s连接成功，就可以发送数据给服务器</span>
+            <span class="c1">//通过pw,向s写数据，true表示即时刷新</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="k">new</span> <span class="nc">PrintWriter</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">(),</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"你好吗？我是客户端"</span><span class="o">);</span>
+            <span class="c1">//客户端接收</span>
+            <span class="nc">InputStreamReader</span> <span class="n">isr</span><span class="o">=</span><span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+            <span class="nc">BufferedReader</span> <span class="n">br</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">isr</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">response</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"我是客户端!\n我收到了服务器回复的信息:"</span><span class="o">+</span><span class="n">response</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>Java网络编程_netTest1Client/com.test1/MyServer1.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 这是第一个服务器端程序，让它在9999端口监听
+ * 可以接收从客户端发来的信息
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyServer1</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="o">[]</span><span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">MyServer1</span> <span class="n">ms1</span><span class="o">=</span><span class="k">new</span> <span class="nc">MyServer1</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">MyServer1</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//在9999号端口监听</span>
+            <span class="nc">ServerSocket</span> <span class="n">ss</span><span class="o">=</span><span class="k">new</span> <span class="nc">ServerSocket</span><span class="o">(</span><span class="mi">9999</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"我是服务器，在9999端口监听..."</span><span class="o">);</span>
+            <span class="c1">//等待某个客户端来连接,该函数会返回一个Scoket连接</span>
+            <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="n">ss</span><span class="o">.</span><span class="na">accept</span><span class="o">();</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"有客户端连接"</span><span class="o">);</span>
+            <span class="c1">//要读取取s中传递的数据</span>
+            <span class="nc">InputStreamReader</span> <span class="n">isr</span><span class="o">=</span><span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+            <span class="nc">BufferedReader</span> <span class="n">br</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">isr</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">info</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span> <span class="c1">//读</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"服务器接收到："</span><span class="o">+</span><span class="n">info</span><span class="o">);</span>
+            <span class="c1">//服务器回复一句话</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="k">new</span> <span class="nc">PrintWriter</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">(),</span><span class="kc">true</span><span class="o">);</span><span class="c1">//true表示即时刷新</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"我是服务器，客户端你也好！"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>Java网络编程_netTest2Client/com.test1/MyClient2.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 半双工通信
+ * 功能：客户端
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClient2</span> <span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="nc">MyClient2</span> <span class="n">mc2</span><span class="o">=</span><span class="k">new</span> <span class="nc">MyClient2</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">MyClient2</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//连接服务器端</span>
+            <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="k">new</span> <span class="nc">Socket</span><span class="o">(</span><span class="s">"127.0.0.1"</span><span class="o">,</span><span class="mi">9999</span><span class="o">);</span>
+            <span class="c1">//向s写入数据</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="k">new</span> <span class="nc">PrintWriter</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">(),</span><span class="kc">true</span><span class="o">);</span>
+            <span class="c1">//先接收从控制台输入的信息</span>
+            <span class="nc">InputStreamReader</span> <span class="n">isr</span><span class="o">=</span><span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+            <span class="nc">BufferedReader</span> <span class="n">br</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">isr</span><span class="o">);</span>
+            <span class="c1">//接收从服务器端发送过来的信息</span>
+            <span class="nc">InputStreamReader</span> <span class="n">isr2</span><span class="o">=</span><span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+            <span class="nc">BufferedReader</span> <span class="n">br2</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">isr2</span><span class="o">);</span>
+            <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入你想对服务器说的话："</span><span class="o">);</span>
+                <span class="c1">//客户端先从控制台接收</span>
+                <span class="nc">String</span> <span class="n">info</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+                <span class="c1">//然后把从控制台输入的信息发送给服务器</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">info</span><span class="o">);</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">info</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"bye"</span><span class="o">))</span>
+                <span class="o">{</span>
+                    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"对话结束"</span><span class="o">);</span>
+                    <span class="n">s</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                    <span class="k">break</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="c1">//接收从服务器发来的话</span>
+                <span class="nc">String</span> <span class="n">res</span><span class="o">=</span><span class="n">br2</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"服务器说："</span><span class="o">+</span><span class="n">res</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>Java网络编程_netTest2Client/com.test1/ MyServer2.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 半双工通信
+ * 功能：一个服务器端，在9999端口上监听
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyServer2</span> <span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="nc">MyServer2</span> <span class="n">ms2</span><span class="o">=</span><span class="k">new</span> <span class="nc">MyServer2</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">MyServer2</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//在9999端口监听</span>
+            <span class="nc">ServerSocket</span> <span class="n">ss</span><span class="o">=</span><span class="k">new</span> <span class="nc">ServerSocket</span><span class="o">(</span><span class="mi">9999</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"服务器在9999监听..."</span><span class="o">);</span>
+            <span class="c1">//等待连接</span>
+            <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="n">ss</span><span class="o">.</span><span class="na">accept</span><span class="o">();</span>
+            <span class="c1">//向s中写信息</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="k">new</span> <span class="nc">PrintWriter</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">(),</span><span class="kc">true</span><span class="o">);</span>
+            <span class="c1">//先接收客户端发来的信息(Socket上的)</span>
+            <span class="nc">InputStreamReader</span> <span class="n">isr</span><span class="o">=</span><span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+            <span class="nc">BufferedReader</span> <span class="n">br</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">isr</span><span class="o">);</span>
+            <span class="c1">//接收从控制台输入的信息</span>
+            <span class="nc">InputStreamReader</span> <span class="n">isr2</span><span class="o">=</span><span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+            <span class="nc">BufferedReader</span> <span class="n">br2</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">isr2</span><span class="o">);</span>
+            <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="nc">String</span> <span class="n">infoFromClient</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"客户端发来："</span><span class="o">+</span><span class="n">infoFromClient</span><span class="o">);</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">infoFromClient</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"bye"</span><span class="o">))</span>
+                <span class="o">{</span>
+                    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"对话结束！"</span><span class="o">);</span>
+                    <span class="n">s</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                    <span class="k">break</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="c1">//接收从控制台输入的信息</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"输入你希望对客户端说的话："</span><span class="o">);</span>
+                <span class="nc">String</span> <span class="n">response</span><span class="o">=</span><span class="n">br2</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+                <span class="c1">//把从控制台接受的信息送给客户端</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">response</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>Java网络编程_netTest3Client/com.test1/MyClient3.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 全双工通信
+ * 客户
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.ActionEvent</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.ActionListener</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClient3</span> <span class="kd">extends</span> <span class="nc">JFrame</span> <span class="kd">implements</span> <span class="nc">ActionListener</span><span class="o">{</span>
+    <span class="nc">JTextArea</span> <span class="n">jta</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="nc">JTextField</span> <span class="n">jtf</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="nc">JButton</span> <span class="n">jb</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="nc">JScrollPane</span> <span class="n">jsp</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="nc">JPanel</span> <span class="n">jp1</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="c1">//把信息发给客户端的对象</span>
+    <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="nc">MyClient3</span> <span class="n">ms</span><span class="o">=</span><span class="k">new</span> <span class="nc">MyClient3</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">MyClient3</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="n">jta</span><span class="o">=</span><span class="k">new</span> <span class="nc">JTextArea</span><span class="o">();</span>
+        <span class="n">jsp</span><span class="o">=</span><span class="k">new</span> <span class="nc">JScrollPane</span><span class="o">(</span><span class="n">jta</span><span class="o">);</span>
+        <span class="n">jtf</span><span class="o">=</span><span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+        <span class="n">jb</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"发送"</span><span class="o">);</span>
+        <span class="n">jb</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="n">jp1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+        <span class="n">jp1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jtf</span><span class="o">);</span>
+        <span class="n">jp1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jb</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jsp</span><span class="o">,</span><span class="s">"Center"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp1</span><span class="o">,</span><span class="s">"South"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">300</span><span class="o">,</span><span class="mi">200</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"QQ简易聊天-客户端"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setDefaultCloseOperation</span><span class="o">(</span><span class="nc">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="k">new</span> <span class="nc">Socket</span><span class="o">(</span><span class="s">"127.0.0.1"</span><span class="o">,</span><span class="mi">9988</span><span class="o">);</span>
+            <span class="nc">InputStreamReader</span> <span class="n">isr</span><span class="o">=</span><span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+            <span class="nc">BufferedReader</span> <span class="n">br</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">isr</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">=</span><span class="k">new</span> <span class="nc">PrintWriter</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">(),</span><span class="kc">true</span><span class="o">);</span>
+            <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">//不停的读取从服务器发来的信息</span>
+                <span class="nc">String</span> <span class="n">info</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+                <span class="n">jta</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"服务器端对客户端说： "</span><span class="o">+</span><span class="n">info</span><span class="o">+</span><span class="s">"\r\n"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="nc">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//如果用户按下发送信息的按钮</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getSource</span><span class="o">()==</span><span class="n">jb</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="c1">//把服务器在jtf写的内容发送给客户端</span>
+            <span class="nc">String</span> <span class="n">info</span><span class="o">=</span><span class="n">jtf</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
+            <span class="c1">//把客户端显示的信息加到jta</span>
+            <span class="n">jta</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"客户端对服务器说： "</span><span class="o">+</span><span class="n">info</span><span class="o">+</span><span class="s">"\r\n"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">info</span><span class="o">);</span>
+            <span class="c1">//清空jtf中的内容</span>
+            <span class="n">jtf</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">""</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>Java网络编程_netTest3Client/com.test1/ MyServer3.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 全双工通信
+ * 服务器端
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.ActionEvent</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.ActionListener</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyServer3</span> <span class="kd">extends</span> <span class="nc">JFrame</span> <span class="kd">implements</span> <span class="nc">ActionListener</span><span class="o">{</span>
+    <span class="nc">JTextArea</span> <span class="n">jta</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="nc">JTextField</span> <span class="n">jtf</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="nc">JButton</span> <span class="n">jb</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="nc">JScrollPane</span> <span class="n">jsp</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="nc">JPanel</span> <span class="n">jp1</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="c1">//把信息发给客户端的对象</span>
+    <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="nc">MyServer3</span> <span class="n">ms</span><span class="o">=</span><span class="k">new</span> <span class="nc">MyServer3</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">MyServer3</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="n">jta</span><span class="o">=</span><span class="k">new</span> <span class="nc">JTextArea</span><span class="o">();</span>
+        <span class="n">jsp</span><span class="o">=</span><span class="k">new</span> <span class="nc">JScrollPane</span><span class="o">(</span><span class="n">jta</span><span class="o">);</span>
+        <span class="n">jtf</span><span class="o">=</span><span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+        <span class="n">jb</span><span class="o">=</span><span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"发送"</span><span class="o">);</span>
+        <span class="n">jb</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="n">jp1</span><span class="o">=</span><span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+        <span class="n">jp1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jtf</span><span class="o">);</span>
+        <span class="n">jp1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jb</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jsp</span><span class="o">,</span><span class="s">"Center"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">jp1</span><span class="o">,</span><span class="s">"South"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">300</span><span class="o">,</span><span class="mi">200</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"QQ简易聊天-服务器端"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setDefaultCloseOperation</span><span class="o">(</span><span class="nc">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//服务器监听</span>
+            <span class="nc">ServerSocket</span> <span class="n">ss</span><span class="o">=</span><span class="k">new</span> <span class="nc">ServerSocket</span><span class="o">(</span><span class="mi">9988</span><span class="o">);</span>
+            <span class="c1">//等待客户端连接</span>
+            <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="n">ss</span><span class="o">.</span><span class="na">accept</span><span class="o">();</span>
+            <span class="c1">//System.out.println("服务器端在9988监听！");</span>
+            <span class="nc">InputStreamReader</span> <span class="n">isr</span><span class="o">=</span><span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+            <span class="nc">BufferedReader</span> <span class="n">br</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">isr</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">=</span><span class="k">new</span> <span class="nc">PrintWriter</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">(),</span><span class="kc">true</span><span class="o">);</span>
+            <span class="c1">//读取从客户端发来的信息</span>
+            <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">//读取从客户端发来的信息</span>
+                <span class="nc">String</span> <span class="n">info</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+                <span class="c1">//把信息显示加到文本域中(以追加的形式)</span>
+                <span class="n">jta</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"客户端对服务器说： "</span><span class="o">+</span><span class="n">info</span><span class="o">+</span><span class="s">"\r\n"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="nc">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//如果用户按下发送信息的按钮</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getSource</span><span class="o">()==</span><span class="n">jb</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="c1">//把服务器在jtf写的内容发送给客户端</span>
+            <span class="nc">String</span> <span class="n">info</span><span class="o">=</span><span class="n">jtf</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
+            <span class="n">jta</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"服务器端对客户端说： "</span><span class="o">+</span><span class="n">info</span><span class="o">+</span><span class="s">"\r\n"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">info</span><span class="o">);</span>
+            <span class="c1">//清空jtf中的内容</span>
+            <span class="n">jtf</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">""</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>Java网络编程_netTestClient/com.test1/MyServer.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 功能：网络这间利用 对象流
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.common.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyServer</span> <span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="nc">MyServer</span> <span class="n">ms</span><span class="o">=</span><span class="k">new</span> <span class="nc">MyServer</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">MyServer</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">ServerSocket</span> <span class="n">ss</span><span class="o">=</span><span class="k">new</span> <span class="nc">ServerSocket</span><span class="o">(</span><span class="mi">3456</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"服务器在3456端口监听..."</span><span class="o">);</span>
+            <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="n">ss</span><span class="o">.</span><span class="na">accept</span><span class="o">();</span>
+            <span class="c1">//以对象流方式读取(假设客户端发送的是User的一个对象)</span>
+            <span class="nc">ObjectInputStream</span> <span class="n">ois</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectInputStream</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+            <span class="nc">User</span> <span class="n">u</span><span class="o">=(</span><span class="nc">User</span><span class="o">)</span><span class="n">ois</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span><span class="c1">//读取对象</span>
+            <span class="c1">//输出</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"从客户端接收到："</span><span class="o">+</span><span class="n">u</span><span class="o">.</span><span class="na">getName</span><span class="o">()+</span><span class="s">" "</span><span class="o">+</span><span class="n">u</span><span class="o">.</span><span class="na">getPass</span><span class="o">());</span>
+            <span class="n">s</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>Java网络编程_netTestClient/com.common/User.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">common</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span><span class="o">{</span>
+    <span class="c1">//将这个类实现序列化</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">pass</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getPass</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">pass</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setPass</span><span class="o">(</span><span class="nc">String</span> <span class="n">pass</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">pass</span> <span class="o">=</span> <span class="n">pass</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>Java网络编程_netTestClient/com.test1/MyClient.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.common.User</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.test1.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClient</span> <span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//</span>
+        <span class="nc">MyClient</span> <span class="n">mc</span><span class="o">=</span><span class="k">new</span> <span class="nc">MyClient</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">MyClient</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="k">new</span> <span class="nc">Socket</span><span class="o">(</span><span class="s">"127.0.0.1"</span><span class="o">,</span><span class="mi">3456</span><span class="o">);</span>
+            <span class="c1">//通过ObjectOutputStream给服务器传送对象</span>
+            <span class="nc">ObjectOutputStream</span> <span class="n">oos</span><span class="o">=</span><span class="k">new</span> <span class="nc">ObjectOutputStream</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span>
+            <span class="nc">User</span> <span class="n">u</span><span class="o">=</span><span class="k">new</span> <span class="nc">User</span><span class="o">();</span>
+            <span class="n">u</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"维唯为为"</span><span class="o">);</span>
+            <span class="n">u</span><span class="o">.</span><span class="na">setPass</span><span class="o">(</span><span class="s">"123456"</span><span class="o">);</span>
+            <span class="n">oos</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">u</span><span class="o">);</span> <span class="c1">//写入对象流</span>
+            <span class="c1">//如果希望一个对象在网络上传输，则需要把这个对象序列化</span>
+            <span class="c1">//System.out.println("ok");</span>
+            <span class="n">s</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>Java网络编程_netTestClient/com.common/User.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">common</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span><span class="o">{</span>
+    <span class="c1">//将这个类实现序列化</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">pass</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getPass</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">pass</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setPass</span><span class="o">(</span><span class="nc">String</span> <span class="n">pass</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">pass</span> <span class="o">=</span> <span class="n">pass</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2011-06-14-Java%E5%9F%BA%E7%A1%8009%E4%B9%8BJava%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9A%84%E5%BA%94%E7%94%A8.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Java基础09之Java网络编程的应用 - 知不知&amp;url=/list/docs/java/2011-06-14-Java%E5%9F%BA%E7%A1%8009%E4%B9%8BJava%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9A%84%E5%BA%94%E7%94%A8.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2011-06-14-Java%E5%9F%BA%E7%A1%8009%E4%B9%8BJava%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9A%84%E5%BA%94%E7%94%A8.html&amp;title=Java-Java基础09之Java网络编程的应用 - 知不知&amp;summary=Java网络编程的应用，创建一个基于socket连接的客户端程序，可以连接服务器端，并接收与发送信息，分别实现半双工通信与全双工通信&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2011-06-14-Java%E5%9F%BA%E7%A1%8009%E4%B9%8BJava%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9A%84%E5%BA%94%E7%94%A8.html&amp;text=Java-Java基础09之Java网络编程的应用 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2011-06-14-Java%E5%9F%BA%E7%A1%8009%E4%B9%8BJava%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9A%84%E5%BA%94%E7%94%A8.html&amp;t=Java-Java基础09之Java网络编程的应用 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2011-06-14-Java%E5%9F%BA%E7%A1%8009%E4%B9%8BJava%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9A%84%E5%BA%94%E7%94%A8.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Java基础09之Java网络编程的应用'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

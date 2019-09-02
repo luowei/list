@@ -1,0 +1,674 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Logback学习笔记</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="logback介绍">Logback介绍</h3> <p>目前，logback 分为三个模块：Core、Classic 和 Access。Core模块是其他两个模块的基础。 Classic模块扩展了core模块。 Classic模块相当于log4j的显著改进版。Logback-classic 直接实现了 SLF4J API，因此你可以在 logback 与其他记录系统如 log4j和 java.util.logging (JUL)之间轻松互相切换。Access 模块与 Servlet 容器集成，提供 HTTP 访问记录功能。</p> <p><strong>引入logback的必要条件</strong><br /> Logback-classic依赖slf4j-api.jar和logback-core.jar，并把它们添加到class path. 简单示例1.1：Basic template for logging (logback-examples/src/main/java/chapters/introduction/HelloWorld1.java)</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ttpod</span><span class="o">.</span><span class="na">chapters</span><span class="o">.</span><span class="na">introduction</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorld1</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">//调用LoggerFactory 类的静态方法getLogger取得一个Logger实例,</span>
+<span class="c1">//这个logger被命名为以chapters.introduction.HelloWorld1</span>
+    <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">"chapters.introduction.HelloWorld1"</span><span class="o">);</span>
+    <span class="c1">//定义一个级别为DEBUG的、包含Hello world消息的记录语句</span>
+<span class="n">logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"Hello world."</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p>运行结果：18:20:42.125 [main] DEBUG chapters.introduction.HelloWorld1 - Hello world.<br /> HelloWorld1类导入了org.slf4j包里的Logger类和LoggerFactory类。</p> <p>Logback 可以通过内置的状态系统来报告其内部状态。通过 StatusManager 组件可以访问 logback 生命期内发生的重要事件。目前，我们调用 StatusPrinter 类的 print()方法来打印 logback 的内部状态。</p> <p>示例1.2：Printing Logger Status (logback-examples/src/main/java/chapters/introduction/HelloWorld2.java)</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ttpod</span><span class="o">.</span><span class="na">chapters</span><span class="o">.</span><span class="na">introduction</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.classic.LoggerContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.core.util.StatusPrinter</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorld2</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">"chapters.introduction.HelloWorld2"</span><span class="o">);</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"Hello world."</span><span class="o">);</span>
+<span class="c1">//通过getILoggerFactory()方法得到logger上下文件环境(logger的内部状态)</span>
+        <span class="nc">LoggerContext</span> <span class="n">lc</span> <span class="o">=</span> <span class="o">(</span><span class="nc">LoggerContext</span><span class="o">)</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getILoggerFactory</span><span class="o">();</span>
+        <span class="nc">StatusPrinter</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">lc</span><span class="o">);</span>        <span class="c1">//打印内部状态</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>Appender 包含许多不同类型的目的地，包括控制台、文件、Syslog、TCP 套接字、JMS 和其他，当发生错误时，logback 将自动在控制台上打印其内部状态。<br /> An Appender is a class that can be seen as an output destination. 一个Appender是一个类,可以被看作是一个输出目的地。</p> <p>在应程序里启用记录的三个必需步骤如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.  配置 logback 环境。
+2.  在每个需要执行记录的类里，调用 org.slf4j.LoggerFactory 类的 getLogger()方法获
+取一个 Logger 实例，以当前类名或类本身作为参数。 
+3.  调用取得的 logger 实例的打印方法，即 debug()、info()、warn()和 error()，把记录
+输出到配置里的各 appender。
+</code></pre></div></div> <h3 id="logback的配置">Logback的配置</h3> <p><strong>Logger、Appender和 Layout</strong></p> <p>Logback建立于三个主要类之上：Logger、Appender 和 Layout。Logger类是logback-classic模块的一部分，而Appender和Layout接口来自logback-core。作为一个多用途模块，logback-core 不包含任何 logger。</p> <p>Logger作为日志的记录器，把它关联到应用的对应的context上后，主要用于存放日志对象，也可以定义日志类型、级别。Appender主要用于指定日志输出的目的地，目的地可以是控制台、文件、远程套接字服务器、 MySQL、 PostreSQL、 Oracle和其他数据库、 JMS和远程UNIX Syslog守护进程等。Layout 负责把事件转换成字符串，格式化的日志信息的输出。</p> <p><strong>Logger context</strong></p> <p>各个logger 都被关联到一个 LoggerContext，LoggerContext负责制造logger，也负责以树结构排列各 logger。</p> <p>如果 logger的名称带上一个点号后是另外一个 logger的名称的前缀，那么，前者就被称为后者的祖先。如果 logger与其后代 logger之间没有其他祖先，那么，前者就被称为子logger 之父。比如，名为 “com.foo”“的 logger 是名为”com.foo.Bar”之父。root logger 位于 logger 等级的最顶端，root logger 可以通过其名称取得，如下所示：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Logger</span> <span class="n">rootLogger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">slf4j</span><span class="o">.</span><span class="na">Logger</span><span class="o">.</span><span class="na">ROOT_LOGGER_NAME</span><span class="o">);</span>
+</code></pre></div></div> <p>其他所有logger也通过org.slf4j.LoggerFactory 类的静态方法getLogger取得。 getLogger方法以 logger 名称为参数。用同一名字调用LoggerFactory.getLogger 方法所得到的永远都是同一个logger对象的引用。</p> <p><strong>有效级别与级别继承</strong></p> <p>Logger 可以被分配级别。级别包括：TRACE、DEBUG、INFO、WARN 和 ERROR，定义于 ch.qos.logback.classic.Level类。如果 logger没有被分配级别，那么它将从有被分配级别的最近的祖先那里继承级别。root logger 默认级别是 DEBUG。</p> <p><strong>打印方法与基本选择规则</strong></p> <p>打印方法决定记录请求的级别。例如，如果 L 是一个 logger 实例，那么，语句 L.info(“..”)是一条级别为 INFO 的记录语句。记录请求的级别在高于或等于其 logger 的有效级别时被称为被启用，否则，称为被禁用。</p> <p>记录请求级别为 p，其 logger的有效级别为 q， 只有则当 p&gt;=q时， 该请求才会被执行。 该规则是 logback 的核心。级别排序为： TRACE &lt; DEBUG &lt; INFO &lt; WARN &lt; ERROR。</p> <p><strong>Logger、Appenders及layouts的关系</strong></p> <p>一个 logger 可以被关联多个 appender。 方法 addAppender() 为指定的 logger 添加一个 appender。 对于 logger 的每个启用了的记录请求，都将被发送到 logger 里的全部 appender 及更高等级的 appender。换句话说，appender叠加性地继承了 logger 的层次等级。</p> <p><strong>configuration结构图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_59.jpg" alt="configuration结构图" /></p> <p>Logger L的记录语句的输出会发送给 L及其祖先的全部 appender。如果 logger L的某个祖先 P设置叠加性标识为 false，那么，L的输出会发送给L 与 P之间（含P）的所有 appender，但不会发送给P的任何祖先的appender。</p> <p>Logger 的叠加性默认为 true。如果希望定制输出格式。这时为 appender 关联一个 layout 即可。Layout 负责根据用户意愿对记录请求进行格式化，appender 负责将格式化化后的输出发送到目的地。</p> <p><strong>Appender结构图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_59.jpg" alt="Appender结构图" /></p> <p>例如，转换模式”%-4relative [%thread] %-5level %logger{32} - %msg%n”在 PatternLayout里会输出形如：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>176 [main] DEBUG manual.architecture.HelloWorld2 - Hello world.
+</code></pre></div></div> <p>第一个字段是自程序启动以来的逝去时间，单位是毫秒。 第二个地段发出记录请求的线程。 第三个字段是记录请求的级别。 第四个字段是与记录请求关联的 logger 的名称。 “-“之后是请求的消息文字。</p> <h3 id="logback的默认配置">Logback的默认配置</h3> <p>如果配置文件 logback-test.xml 和 logback.xml 都不存在，那么 logback 默认地会调用BasicConfigurator ，创建一个最小化配置。最小化配置由一个关联到根 logger 的ConsoleAppender 组成。输出用模式为%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n 的 PatternLayoutEncoder 进行格式化。root logger 默认级别是 DEBUG。</p> <p><strong>logback配置文件</strong></p> <p>Logback 配置文件的语法非常灵活。正因为灵活，所以无法用 DTD 或 XML schema 进行定义。尽管如此，可以这样描述配置文件的基本结构：以<configuration>开头，后面有零个或多个<appender>元素，有零个或多个<logger>元素，有最多一个<root>元素。</root></logger></appender></configuration></p> <p><strong>Logback默认配置的采用的步骤</strong></p> <ol> <li>尝试在 classpath 下查找文件 logback-test.xml；</li> <li>如果文件不存在，则查找文件 logback.xml；</li> <li>如果两个文件都不存在，logback 用 Bas icConfigurator 自动对自己进行配置，这会导致记录输出到控制台。</li> </ol> <p>假设配置文件 logback-test.xml 和 logback.xml 都不存在，那么 logback 默认地会调用BasicConfigurator ，创建一个最小化配置。最小化配置由一个关联到根 logger 的ConsoleAppender 组成。输出用模式为%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n 的 PatternLayoutEncoder 进行格式化。还有，根 logger 默认级别是 DEBUG。</p> <p>最简单的配置方法就是使用默认配置。 以下是logback用BasicConfigurator 配置的简单例子：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ttpod</span><span class="o">.</span><span class="na">chapters</span><span class="o">.</span><span class="na">configuration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApp1</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="kd">static</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">MyApp1</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Entering application."</span><span class="o">);</span>    <span class="c1">//进行另一个application中</span>
+        <span class="nc">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span>
+        <span class="n">foo</span><span class="o">.</span><span class="na">doIt</span><span class="o">();</span>        <span class="c1">//执行其它中的日志输出方法</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Exiting application."</span><span class="o">);</span>    <span class="c1">//退出另一个application</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>该类定义了一个静态变量 logger，然后实例化一个 Foo 对象。Foo 类如下</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ttpod</span><span class="o">.</span><span class="na">chapters</span><span class="o">.</span><span class="na">configuration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doIt</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"Did it again!"</span><span class="o">);</span>    <span class="c1">//定义一个debug级别的日志输出</span>
+    <span class="o">}</span>
+    <span class="err">…………</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>自动打印警告和错误消息</strong></p> <p>当解析配置文件有警告或出错时，logback 会在控制台上自动打印状态数据。如果没有警告或错误，还是想检查 logback 的内部状态的话， 可以调用 StatusPrinter 的 print()方法。示例如下：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">final</span> <span class="kd">static</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">MyApp2</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+<span class="c1">// 在当前环境中假设 SLF4J 已经被绑定到logback</span>
+        <span class="nc">LoggerContext</span> <span class="n">lc</span> <span class="o">=</span> <span class="o">(</span><span class="nc">LoggerContext</span><span class="o">)</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getILoggerFactory</span><span class="o">();</span>
+<span class="c1">// 打印logback的内部状态</span>
+        <span class="nc">StatusPrinter</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">lc</span><span class="o">);</span>
+        <span class="err">…………</span>
+        <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>对应的配置文件：</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span>
+<span class="nt">&lt;configuration&gt;</span>
+<span class="c">&lt;!--定义一个名为STDOUT的appender，并将其关联到ch.qos.logback.core.ConsoleAppender--&gt;</span>
+<span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"STDOUT"</span>
+<span class="na">class=</span><span class="s">"ch.qos.logback.core.ConsoleAppender"</span><span class="nt">&gt;</span>
+<span class="c">&lt;!-- encoders 作用是将logger事件转换成字节数组，并将字节数组写入到输出流--&gt;</span>
+<span class="nt">&lt;encoder&gt;</span>
+<span class="c">&lt;!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度
+        %msg：日志消息，%n是换行符--&gt;</span>
+<span class="nt">&lt;pattern&gt;</span>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n<span class="nt">&lt;/pattern&gt;</span>
+<span class="nt">&lt;/encoder&gt;</span>
+<span class="nt">&lt;/appender&gt;</span>
+<span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"debug"</span><span class="nt">&gt;</span>    <span class="c">&lt;!-- root logger，定义级别为debug--&gt;</span>
+<span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"STDOUT"</span> <span class="nt">/&gt;</span>    <span class="c">&lt;!--将名为STDOUT的appender添加到root logger下--&gt;</span>
+<span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div> <p>控制台输出结果如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
+20:12:33,359 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.groovy]
+20:12:33,359 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+20:12:33,359 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [file:/D:/Workspaces/MyEclipse%208.5/logback_test/WebRoot/WEB-INF/classes/logback.xml]
+20:12:33,484 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+20:12:33,484 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [STDOUT]
+20:12:33,500 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+20:12:33,593 |-INFO in ch.qos.logback.classic.joran.action.RootLoggerAction - Setting level of ROOT logger to DEBUG
+20:12:33,593 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [STDOUT] to Logger[ROOT]
+20:12:33,593 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - End of configuration.
+20:12:33,593 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@cb6009 - Registering current configuration as safe fallback point
+…………
+</code></pre></div></div> <h3 id="logback自定义配置">Logback自定义配置</h3> <p><strong>配置root logger</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;root&gt;元素配置根 logger。该元素有一个 level属性。没有 name 属性，因为已经被命名为"ROOT"。   
+Level 属性的值大小写无关，其值为下面其中一个字符串：TRACE、DEBUG、INFO、WARN、ERROR、ALL和 OFF。    
+注意不能设置为"INHERITED" 或"NULL"。   
+&lt;logger&gt;元素可以包含零个或多个&lt;appender-ref&gt;元素。    
+与&lt;logger&gt;元素类似，声明&lt;root&gt;元素后，会先关闭然后移除全部当前 appender，只引用声明了的 appender。    
+如果 root 元素没有引用任何 appender，就会失去所有 appender。   
+</code></pre></div></div> <p>假设我们不想看到”com.ttpod.file”包里的任何组件的任何 DEBUG 信息，可以设置如下：</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span>
+<span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"STDOUT"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.ConsoleAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            <span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="c">&lt;!-- 设置configuration下的logger的级别为INFO，默认是继承root logger的debug级别 --&gt;</span>
+    <span class="nt">&lt;logger</span> <span class="na">name=</span><span class="s">"chapters.configuration"</span> <span class="na">level=</span><span class="s">"INFO"</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- 严格来说, root logger 的level属性没有必要设置，因为 --&gt;</span>
+    <span class="c">&lt;!-- root logger的级别被默认设置为DEBUG --&gt;</span>
+    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"DEBUG"</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!--
+         在root标签内没有引入chapters.configuration，所有在此包下不会
+        显示任何组件的任何 DEBUG 信息
+        --&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"STDOUT"</span> <span class="nt">/&gt;</span>    <span class="c">&lt;!-- 将appender引入到root logger --&gt;</span>
+    <span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div> <p>注意：由名为”chapters.configuration.Foo”的 logger 生成的 DEBUG 级别的信息都被屏蔽了.同样，也可以为任意数量的 logger 设置级别。</p> <p><strong>配置 Appenders</strong></p> <p>Appender 用<appender>元素配置，该元素必要属性 name 和 class。 name 属性指定 appender 的名称，class 属性指定 appender 类的全限定名。 <appender>元素可以包含零个或多个<layout>元素、零个或多个<encoder>元素和零个或多个<filter>元素。除了这三个常用元素之外，还可以包含 appender 类的任意数量的 javabean 属性。下图演示了常用结构，注意对 javabean 属性的支持在图中不可见。</filter></encoder></layout></appender></appender></p> <p><strong>Appender类层次图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_61.jpg" alt="Appender类层次图" /></p> <p>记录输出到多个 appender 很简单，先定义各种 appender，然后在 logger 里进行引用，就行了。如下面的配置文件所示：</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"FILE"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.FileAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;file&gt;</span>myApp.log<span class="nt">&lt;/file&gt;</span>
+        <span class="c">&lt;!-- encoders are assigned by default the type
+        ch.qos.logback.classic.encoder.PatternLayoutEncoder --&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>%date %level [%thread] %logger{10} [%file:%line] %msg%n<span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"STDOUT"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.ConsoleAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>%msg%n<span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"debug"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"FILE"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"STDOUT"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div> <p>该配置文件定义了两个 appender，分别是”FILE”和”STDOUT”。 “FILE” 这个 appender 把记录输 出到文件 “myapp.log “ ，它的 encoder 是PatternLayoutEncoder，输出了日期、级别、线程名、logger 名、文件名及记录请求的行号、消息和行分隔符。 “STDOUT”这个 appender 把记录输出到控制台，它的 encoder 只是输出消息和行分隔符。 myApp.log文件内容如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2011-12-25 16:56:48,593 INFO [main] c.t.c.c.MyApp3 [MyApp3.java:48] Entering application.
+2011-12-25 16:56:48,593 DEBUG [main] c.t.c.c.Foo [Foo.java:24] Did it again!
+2011-12-25 16:56:48,593 INFO [main] c.t.c.c.MyApp3 [MyApp3.java:52] Exiting application.
+</code></pre></div></div> <p>注意每个 appender 都有自己的 encoder。Encoder 通常不能被多个 appender 共享，layout也是。所以，logback 的配置文件里没有共享 encoder 或 layout 的语法。</p> <p><strong>Appender累积</strong></p> <p>默认情况下，appender 是可累积的：logger 会把记录输出到它自身的 appender 和它所有祖先的 appender。因此，把同一 appender 关联到多个 logger 会导致重复输出，如下面的配置文件会导致重复的输出：</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"STDOUT"</span>
+              <span class="na">class=</span><span class="s">"ch.qos.logback.core.ConsoleAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            <span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="nt">&lt;logger</span> <span class="na">name=</span><span class="s">"chapters.configuration"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"STDOUT"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/logger&gt;</span>
+    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"debug"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"STDOUT"</span> <span class="nt">/&gt;</span> <span class="cp">&lt;!—这会导致重复输出--&gt;</span>
+    <span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div> <p>输出结果如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>20:53:29.328 [main] INFO c.t.chapters.configuration.MyApp2 - Entering application.
+20:53:29.328 [main] INFO c.t.chapters.configuration.MyApp2 - Entering application.
+20:53:29.328 [main] DEBUG com.ttpod.chapters.configuration.Foo - Did it again!
+20:53:29.328 [main] DEBUG com.ttpod.chapters.configuration.Foo - Did it again!
+20:53:29.328 [main] INFO c.t.chapters.configuration.MyApp2 - Exiting application.
+20:53:29.328 [main] INFO c.t.chapters.configuration.MyApp2 - Exiting application.
+</code></pre></div></div> <p><strong>覆盖默认的累积行为</strong></p> <p>如果你觉得默认的累积行为不合适，可以设置叠加性标识为 false 以关闭它。 这样的话，logger 树里的某个分支可以输出到与其他 logger 不同的 appender。 示例：叠加性标识</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;configuration&gt;</span>
+    …………
+    <span class="nt">&lt;logger</span> <span class="na">name=</span><span class="s">"com.ttpod.chapters.configuration.Foo"</span> <span class="na">additivity=</span><span class="s">"false"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"FILE"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/logger&gt;</span>
+    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"debug"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"STDOUT"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div> <p>输出结果：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Entering application.
+Exiting application.
+</code></pre></div></div> <p>此例中，logger”chapters.configuration.Foo”关联 appender”FILE”，它的叠加性标记为false，这样它的记录输出仅会被发送到 appender”FILE”，不会被发送到更高 logger 等级关联的 appender。其他 logger 不受此影响。 用 additivityFlag.xml 配置 MyApp3 ， 运 行 后 ， 控 制 台 上 由 输 出 由”chapters.configuration.MyApp3”产生的记录。而 logger” chapters.configuration.Foo”将且仅仅将输出到文件 foo.log。</p> <h3 id="layout格式化输出日志">Layout格式化输出日志</h3> <p><strong>配置自定义 layout</strong> 配置自定义layout与配置其他layout是一样的。 FileAppender和其子类需要一个encoder。如链接中的例子：http://logback.qos.ch/xref/chapters/layouts/MySampleLayout.html</p> <p>此类中定义了一个处理格式的输出类，为了满足自定义的格式化的输出，把包裹了 MySampleLayout 的 LayoutWrappingEncoder 实例传递给FileAppender。下面是配置文件：</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;configuration</span> <span class="na">debug=</span><span class="s">"true"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"STDOUT"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.ConsoleAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;encoder</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.encoder.LayoutWrappingEncoder"</span><span class="nt">&gt;</span>
+            <span class="cp">&lt;!—自定义的格式化输出处理类--&gt;</span>
+            <span class="nt">&lt;layout</span> <span class="na">class=</span><span class="s">"com.ttpod.chapters.layouts.MySampleLayout"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"DEBUG"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"STDOUT"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div> <p>输出结果如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>250 DEBUG [main] com.ttpod.chapters.introduction.HelloWorld1 - Hello world.
+</code></pre></div></div> <p><strong>layout转换符</strong></p> <p>它和C语言的printf方法非常类似。格式转换由普通字符和转换字符组合而成。转换字符由%开始，紧跟着的是可选的格式修饰符和转换字符标示。使用%前缀的表示符号将被转换到实际的内容。如name, level, date, thread name.可用的转换符有：</p> <table> <thead> <tr> <th>转换符</th> <th>描述</th> </tr> </thead> <tbody> <tr> <td>c</td> <td>调用日志事件的所在记录器的名字，如一个logger的名字是my.test.bbb.ccc，调用的是WARN级别的日志输出，那么输出的是输出my.test.bbb.ccc，可以在其右边指定了精度，如%c{2}那么输出的是bbb.ccc</td> </tr> <tr> <td>C</td> <td>调用日志事件的所在的类名，和c转换符一样，可以在右边指定宽度，如%C{2}输出%C{2}</td> </tr> <tr> <td>d</td> <td>日志调用所发生的时间，日期格式在其后跟着的大括号内的格式指定如%d{yyyy-MM-dd HH:mm:ss}，我现在输出的结果是2011-07-11 21:05:22，推荐使用的是log4j本身提供的日期格式，如%d{ISO8601}，%d{ABSOLUTE}，%d{DATE}</td> </tr> <tr> <td>F</td> <td>所处所在文件名，如上面说C转换符的例子，输出结果是LayoutTest.java</td> </tr> <tr> <td>l</td> <td>是的日志事件发生的位置信息，这个和虚拟机的实现有点关系，一般境况下能得到类，方法，行数源文件等信息，</td> </tr> <tr> <td>L</td> <td>只是输出触发日志事件代码所在的行号，性能损耗会小很多。</td> </tr> <tr> <td>m</td> <td>显示应用给日志提供的其他信息，如消息。logger.warn(“Message 2”);那么%m将得到的是Message 2</td> </tr> <tr> <td>M</td> <td>输出调用者所在的方法名</td> </tr> <tr> <td>n</td> <td>换行，和\r \r\n有相同功能，能识别系统的换行符，自动转换成\r或者\r\n，log4j推荐使用这个转换符，而不是\r或者\r\n</td> </tr> <tr> <td>p</td> <td>输出调用的日志的级别，如我是调用logger.debug方法，那么级别就是debug</td> </tr> <tr> <td>r</td> <td>输出自应用启动后第一次调用logger的日志输出方法，到输出该log信息耗费的毫秒数</td> </tr> <tr> <td>t</td> <td>输出所在线程的名字</td> </tr> <tr> <td>x</td> <td>输出产生的日志事件的线程的NDC（嵌套诊断上下文）</td> </tr> <tr> <td>X</td> <td>输出与生成的日志事件的线程关联的MDC（映射诊断上下文）。X转换符括号之间放置了一个key，就像在％X {clientNumber}中的clientNumberkey 一样。在MDC correspondingvalue将被输出。</td> </tr> <tr> <td>%</td> <td>写上%%后将直接输出一个%符号</td> </tr> </tbody> </table> <p><strong>layout格式修饰符</strong></p> <p>如给定的一个格式：%-5p [%t]: %m%n中，并没有明确的分隔转换字符和普通文本的字符存在。PatternLayout能自己区分普通文本和转换字符。其中%-5p是日志的调用级别。事件是左对齐的，5个字符宽度。</p> <p>格式修饰符，放在%和转换符之间。 第一个可选的格式修饰符是左对齐(-)；第二个可选的格式修饰符是字段最小宽度。一个整数。表示输出的最小字符数。如果数据未达到指定最小大小，那么它将以左填充（默认）或者右填充方式（左对齐情况下只能使用右填充了）。用空格填充，直到达到最小宽度。如果大于指定最小宽度，不会被截断 。当然可以指定最大字符数，使用.符号加数字表示最大字符数。如果大于指定长度，多余的字符会被删除。它是从前面删除，而不是从后面删除的。如最大字符是8个，数据有10个字符，那么前面两个字符会被删除。</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%20c 右对齐，最少20字符，没有左边用空格填充 
+%-20c 左对齐，最少20字符，没有右边用空格填充 
+%.30c 右对齐，最多30字符，超过左边的截取掉 
+%20.30c 右对齐，最少20字符，最多30字符，填充或截取规则略
+%-20.30c 左对齐，最少20字符，最多30字符，填充或截取规则略 
+</code></pre></div></div> <h3 id="在程序里启用logback记录">在程序里启用logback记录</h3> <p>三个必须步骤：</p> <ol> <li>配置 logback 环境。</li> <li>在每个需要执行记录的类里，调用 org.slf4j.LoggerFactory 类的 getLogger()方法获取一个 Logger 实例，以当前类名或类本身作为参数。</li> <li>调用取得的 logger 实例的打印方法，即 debug()、info()、warn()和 error()，把记录输出到配置里的各 appender。</li> </ol> <p><strong>直接调用JoranConfigurator</strong></p> <p>Logback 依赖Joran，Joran是 logback-core 的一部分，是个配置类库。Logback 的默认配置机制是调用JoranConfigurator对classpath上的默认配置文件进行处理。 不管出于什么理由，如果你想重新实现 logback 的默认配置机制的话，你可以直接调用 JoranConfigurator。下面程序 MyApp1 就调用了 JoranConfigurator 对作为参数传入的配置文件进行处理。</p> <p>示例1(com/ttpod/file/ MyApp1.java)</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ttpod</span><span class="o">.</span><span class="na">file</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>                <span class="c1">//用于声明Logger</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>     <span class="c1">//用于获取Logger以及LoggerContext</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.classic.LoggerContext</span><span class="o">;</span>         <span class="c1">//用于声明LoggerContext</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.classic.joran.JoranConfigurator</span><span class="o">;</span> <span class="c1">//用于定义Logback的配置机制</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.core.joran.spi.JoranException</span><span class="o">;</span> <span class="c1">//用于定义JoranException</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.core.util.StatusPrinter</span><span class="o">;</span> <span class="c1">//用于打印logback的内部状态</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApp1</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="kd">static</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">MyApp1</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>    <span class="c1">//定义一个全局的记录器，通过LoggerFactory获取</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//通过getILoggerFactory()方法得到logger上下文件环境，logback默认获得当前应用的logger context</span>
+        <span class="nc">LoggerContext</span> <span class="n">context</span> <span class="o">=</span> <span class="o">(</span><span class="nc">LoggerContext</span><span class="o">)</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getILoggerFactory</span><span class="o">();</span>    <span class="c1">//得到当前应用中logger上下文</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">JoranConfigurator</span> <span class="n">configurator</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JoranConfigurator</span><span class="o">();</span>    <span class="c1">//定义一个(JoranConfigurator)配置器</span>
+            <span class="n">configurator</span><span class="o">.</span><span class="na">setContext</span><span class="o">(</span><span class="n">context</span><span class="o">);</span>    <span class="c1">//将当前应用的logger context的关联到到configurator对象</span>
+            <span class="n">context</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>                        <span class="c1">//清除以前的配置器中的所有内容</span>
+<span class="c1">//configurator.doConfigure(args[0]);    //接收从命令行传入的参数，加载配置文件，并设置到配置器</span>
+            <span class="n">configurator</span><span class="o">.</span><span class="na">doConfigure</span><span class="o">(</span><span class="s">"src/com/ttpod/file/MyApp1Config.xml"</span><span class="o">);</span>
+<span class="c1">//配置文件的路径：src/com/ttpod/file/MyApp1Config.xml</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">JoranException</span> <span class="n">je</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"JoranException occur at:"</span><span class="o">+</span><span class="n">je</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>    <span class="c1">//将此处异常也记录到日志</span>
+            <span class="n">je</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>    <span class="c1">//在控制打印出异常跟踪信息</span>
+        <span class="o">}</span>
+<span class="c1">//打印出logger context中的error和供气ing,在此处作用相当于catch中的je.printStackTrace（）;</span>
+        <span class="nc">StatusPrinter</span><span class="o">.</span><span class="na">printInCaseOfErrorsOrWarnings</span><span class="o">(</span><span class="n">context</span><span class="o">);</span>
+<span class="c1">//流程进入有日志生成的类中</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Entering application.demo class Foo &gt;&gt;&gt;"</span><span class="o">);</span>
+        <span class="nc">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span>
+        <span class="n">foo</span><span class="o">.</span><span class="na">doIt</span><span class="o">();</span>    <span class="c1">//执行foo中的一个生成了日志的方法，输出日志</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Exiting application. demo class Foo &lt;&lt;&lt;"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>其它类Foo类，代码如下：(com/ttpod/file/ Foo.java)</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ttpod</span><span class="o">.</span><span class="na">file</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doIt</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"test logger in other class!"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">createLoggingRequest</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">subMethodToCreateRequest</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="c1">//这个方法执行后创建一条异常信息</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">subMethodToCreateRequest</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"error-level request"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Exception</span><span class="o">(</span><span class="s">"test exception"</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>此程序通过参数传配置文件的名字，对程序的日志输出配置，本例如下：(com/ttpod/file/ MyApp1Config.xml)</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;configuration&gt;</span>
+    <span class="c">&lt;!-- 指定属性文件路径 --&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">file=</span><span class="s">"src/com/ttpod/file/variables.properties"</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- 指定日志输出到文件--&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"FILE"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.FileAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;file&gt;</span>${destination}<span class="nt">&lt;/file&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span>
+            <span class="c">&lt;!-- %msg表示日志信息，%n表示换行 --&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>%msg%n<span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"debug"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"FILE"</span> <span class="nt">/&gt;</span><span class="cp">&lt;!—添加到根logger--&gt;</span>
+    <span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div> <p>对应的properties文件，嵌套的设置了日志文件的输出路径及文件名，如下：(com/ttpod/file/ variables.properties)</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#指定USER_HOME目录
+USER_HOME=./log
+#指定日志文件名
+fileName=myApp.log
+#生成日志文件的目的地
+destination=${USER_HOME}/${fileName}
+</code></pre></div></div> <p>配置好后，右键MyApp3 -&gt; run as… -&gt; run configurations -&gt; 选择MyApp3,及arguments -&gt; 配置program Aguments：src/com/ttpod/MyApp1Config.xml,以指定配置文件，然后运行即可，即可在当前就应用的/log文件夹下生成myApp.log ,输出如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Entering application.demo class Foo &gt;&gt;&gt;
+test logger in other class!
+Exiting application. demo class Foo &lt;&lt;&lt;
+</code></pre></div></div> <h3 id="运用滚动策略与触发策略">运用滚动策略与触发策略</h3> <p>RollingFileAppender 继承 FileAppender，能够滚动记录文件。例如，RollingFileAppender能先记录到文件”log.txt”，然后当符合某个条件时，变成记录到其他文件。 RollingFileAppender 有两个与之互动的重要子组件。第一个是RollingPolicy，负责滚动。第二个是 TriggeringPolicy，决定是否以及何时进行滚动。所以，RollingPolicy 负责”什么”， TriggeringPolicy 负责”何时”。</p> <p>要想 RollingFileAppender 起作用，必须同时设置 RollingPolicy 和 TriggeringPolicy。不过，如果 RollingPolicy 也实现了 TriggeringPolicy 接口，那么只需要设置 RollingPolicy。</p> <p><strong>示例2</strong></p> <p>如下测试程序应用滚动与触发策略，来处理日志文件。（com/ttpod/file/MyApp2.java）</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ttpod</span><span class="o">.</span><span class="na">file</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApp2</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="nc">Timer</span> <span class="n">t</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 调用LoggerFactory 类的静态方法getLogger取得一个Logger实例,</span>
+        <span class="kd">final</span> <span class="nc">Logger</span> <span class="n">logOut</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">"SystemOut"</span><span class="o">);</span> <span class="c1">// 定义一个名为SystemOut的logger</span>
+        <span class="kd">final</span> <span class="nc">Logger</span> <span class="n">logErr</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">"SystemErr"</span><span class="o">);</span> <span class="c1">// 定义一个名为SystemErr的logger</span>
+        <span class="nc">LoggerContext</span> <span class="n">lc</span> <span class="o">=</span> <span class="o">(</span><span class="nc">LoggerContext</span><span class="o">)</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getILoggerFactory</span><span class="o">();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">JoranConfigurator</span> <span class="n">configurator</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JoranConfigurator</span><span class="o">();</span>
+            <span class="n">configurator</span><span class="o">.</span><span class="na">setContext</span><span class="o">(</span><span class="n">lc</span><span class="o">);</span>
+            <span class="n">lc</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+            <span class="c1">//configurator.doConfigure(args[0]);</span>
+            <span class="n">configurator</span><span class="o">.</span><span class="na">doConfigure</span><span class="o">(</span><span class="s">"src/com/ttpod/file/logback.xml"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">JoranException</span> <span class="n">je</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">je</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="c1">// 打印logback的内部状态</span>
+        <span class="nc">StatusPrinter</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">lc</span><span class="o">);</span>    <span class="c1">//固定部分</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Timer</span><span class="o">();</span> <span class="c1">// 定义一个定时器</span>
+        <span class="nc">TimerTask</span> <span class="n">tt</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TimerTask</span><span class="o">()</span> <span class="o">{</span> <span class="c1">// 用定义器执行计划(schedule)，并定义一个继承了TimerTask的匿名内部类</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+                    <span class="c1">// Timer t=null;</span>
+                    <span class="nc">MyApp2</span><span class="o">.</span><span class="na">t</span><span class="o">.</span><span class="na">cancel</span><span class="o">();</span>
+                    <span class="n">logOut</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试Logback日志的使用"</span><span class="o">);</span> <span class="c1">// 定义了一个info级别的日志消息</span>
+                    <span class="n">logErr</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"发生错误"</span><span class="o">);</span> <span class="c1">// 定义了一个error级别的日志消息</span>
+                <span class="o">}</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"~~~~~~~~~~~~~ "</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+        <span class="n">t</span><span class="o">.</span><span class="na">schedule</span><span class="o">(</span><span class="n">tt</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">(),</span> <span class="mi">50</span><span class="o">);</span> <span class="c1">// 从当前系统时间开始，每50毫秒执行一次计划</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// 没有自定义它的logback所需的配置文件，程序启动时会自动加载classpath目录下的查找</span>
+<span class="c1">// logback-test.xml；如果没找到则logback-test.xml,则继续在classpath下查找lobback.xml。</span>
+</code></pre></div></div> <p>此测试类，在定时器中定义了一个执行计划，按照执行计划生成日志文件。在file包中添加相的logback配置文件，如下：(com/ttpod/file/logback.xml)</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span>
+<span class="cp">&lt;!DOCTYPE configuration&gt;</span>
+<span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;jmxConfigurator</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- 配置文件路径 --&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">file=</span><span class="s">"src/com/ttpod/file/variables.properties"</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!--logback的版本必须是0.9.21以上才支持--&gt;</span>
+    <span class="nt">&lt;timestamp</span> <span class="na">key=</span><span class="s">"byDay"</span> <span class="na">datePattern=</span><span class="s">"yyyyMMdd"</span><span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- 控制台输出日志 --&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"STDOUT"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.ConsoleAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;layout</span> <span class="na">class=</span><span class="s">"ch.qos.logback.classic.PatternLayout"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n<span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/layout&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="c">&lt;!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件压缩(.zip)备份)--&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"FILE"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.RollingFileAppender"</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!-- 文件的路径及文件名 --&gt;</span>
+        <span class="nt">&lt;File&gt;</span>${USER_HOME}/SystemOut.log<span class="nt">&lt;/File&gt;</span>
+        <span class="c">&lt;!-- 定义窗口滚动策略 --&gt;</span>
+        <span class="nt">&lt;rollingPolicy</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.FixedWindowRollingPolicy"</span><span class="nt">&gt;</span>
+            <span class="c">&lt;!-- 每触发一次，自动压缩日志文件，%i在1-3之间循环变化 --&gt;</span>
+            <span class="nt">&lt;FileNamePattern&gt;</span>${USER_HOME}/SystemOut_%i.log.zip<span class="nt">&lt;/FileNamePattern&gt;</span>
+            <span class="nt">&lt;MinIndex&gt;</span>1<span class="nt">&lt;/MinIndex&gt;</span> <span class="c">&lt;!-- %i的最小值为1--&gt;</span>
+            <span class="nt">&lt;MaxIndex&gt;</span>3<span class="nt">&lt;/MaxIndex&gt;</span> <span class="c">&lt;!-- %i的最大值为3--&gt;</span>
+        <span class="nt">&lt;/rollingPolicy&gt;</span>
+        <span class="c">&lt;!-- 触发策略，通常rollingPolicy与triggeringPolicy联合使用 --&gt;</span>
+        <span class="nt">&lt;triggeringPolicy</span>
+                <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;MaxFileSize&gt;</span>10KB<span class="nt">&lt;/MaxFileSize&gt;</span>
+        <span class="nt">&lt;/triggeringPolicy&gt;</span>
+        <span class="c">&lt;!-- 格式化输出 --&gt;</span>
+        <span class="c">&lt;!-- %d表示日期,格式为：yyyy-MM-dd HH:mm:ss.SSS ;%thread：线程名;
+            %-5level:从左边以5个字符的宽度显示级别; %logger:显示logger名;%msg:日志消息;%n:换行 
+        &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
+        &lt;Pattern&gt;%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern&gt;
+        &lt;/layout&gt;
+        --&gt;</span>
+        <span class="c">&lt;!-- 或者用下面的形式格式(推荐)--&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>%d{yyyy-MM-dd HH:mm:ss.SSS}%relative%thread%mdc%level%logger%msg<span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+        <span class="c">&lt;!-- 以html文件输出 --&gt;</span>
+        <span class="c">&lt;!--
+        &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"&gt;
+            &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
+                    &lt;pattern&gt;%d{yyyy-MM-dd HH:mm:ss.SSS}%relative%thread%mdc%level%logger%msg&lt;/pattern&gt;
+                &lt;/layout&gt;
+                &lt;/encoder&gt;
+        --&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="c">&lt;!-- 输出ERROR级别的日志到文件(同样采用文件大小策略进行文件输出，超过指定大小对文件压缩(.zip)备份) --&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"FILE-ERROR"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.RollingFileAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;filter</span> <span class="na">class=</span><span class="s">"ch.qos.logback.classic.filter.LevelFilter"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;level&gt;</span>ERROR<span class="nt">&lt;/level&gt;</span> <span class="c">&lt;!-- 指定要对级别为ERROR日志信息过滤 --&gt;</span>
+            <span class="nt">&lt;OnMismatch&gt;</span>DENY<span class="nt">&lt;/OnMismatch&gt;</span>     <span class="c">&lt;!-- 如果不匹配，则拒绝处理 --&gt;</span>
+            <span class="nt">&lt;OnMatch&gt;</span>ACCEPT<span class="nt">&lt;/OnMatch&gt;</span>         <span class="c">&lt;!-- 如果匹配，则立即处理 --&gt;</span>
+        <span class="nt">&lt;/filter&gt;</span>
+        <span class="nt">&lt;File&gt;</span>${USER_HOME}/SystemErr.log<span class="nt">&lt;/File&gt;</span> <span class="c">&lt;!-- 文件名即路径 --&gt;</span>
+        <span class="nt">&lt;rollingPolicy</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.FixedWindowRollingPolicy"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;FileNamePattern&gt;</span>${USER_HOME}/SystemErr_%i.log.zip<span class="nt">&lt;/FileNamePattern&gt;</span>
+            <span class="nt">&lt;MinIndex&gt;</span>1<span class="nt">&lt;/MinIndex&gt;</span>
+            <span class="nt">&lt;MaxIndex&gt;</span>3<span class="nt">&lt;/MaxIndex&gt;</span>
+        <span class="nt">&lt;/rollingPolicy&gt;</span>
+        <span class="nt">&lt;triggeringPolicy</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;MaxFileSize&gt;</span>10KB<span class="nt">&lt;/MaxFileSize&gt;</span>
+        <span class="nt">&lt;/triggeringPolicy&gt;</span>
+        <span class="c">&lt;!-- 格式化输出 --&gt;</span>
+        <span class="c">&lt;!--
+        &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
+        &lt;Pattern&gt;%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern&gt;
+        &lt;/layout&gt;
+        --&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>%d{yyyy-MM-dd HH:mm:ss.SSS}%relative%thread%mdc%level%logger%msg<span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="c">&lt;!--这里指定logger name 是为jmx设置日志级别做铺垫 --&gt;</span>
+    <span class="c">&lt;!-- 分别将STDOUT与FILE appender都添加到自定义的logger中，否则将不会输出到appender指定的 目的地--&gt;</span>
+    <span class="nt">&lt;logger</span> <span class="na">name=</span><span class="s">"SystemOut"</span> <span class="na">level=</span><span class="s">"INFO"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"STDOUT"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"FILE"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/logger&gt;</span>
+    <span class="nt">&lt;logger</span> <span class="na">name=</span><span class="s">"SystemErr"</span> <span class="na">level=</span><span class="s">"INFO"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"STDOUT"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"FILE-ERROR"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/logger&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div> <p>执行以上程序，在控制台也会不断的输出以下日志信息：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>14:42:34.875 [Timer-0] INFO SystemOut - 测试Logback日志的使用
+14:42:34.875 [Timer-0] ERROR SystemErr - 发生错误
+14:42:34.937 [Timer-0] INFO SystemOut - 测试Logback日志的使用
+14:42:34.937 [Timer-0] ERROR SystemErr - 发生错误
+14:42:35.000 [Timer-0] INFO SystemOut - 测试Logback日志的使用
+14:42:35.000 [Timer-0] ERROR SystemErr - 发生错误
+14:42:35.062 [Timer-0] INFO SystemOut - 测试Logback日志的使用
+14:42:35.062 [Timer-0] ERROR SystemErr - 发生错误
+</code></pre></div></div> <p><strong>FixedWindowRollingPolicy</strong>当发生滚动时，FixedWindowRollingPolicy 根据如下固定窗口（window）算法重命名文件。 选项”fileNamePattern”代表归档（滚动）记录文件的文件名模式。该选项是必需的，且必需在模式的某处包含标志”%i”。如示例3中的MyApp3-RollingFixedWindow.xml 。</p> <p><strong>TimeBasedRollingPolicy</strong> 或许是最受流行的滚动策略。它根据时间来制定滚动策略，例如根据日或月。TimeBasedRollingPolicy 既负责滚动也负责触发滚动。实际上，TimeBasedRollingPolicy 同时实现了 RollingPolicy 接口和 TriggeringPolicy 接口。和 FixedWindowRollingPolicy一样，TimeBasedRollingPolicy 也支持自动压缩文件。如果”fileNamePattern”选项以”.gz”或”.zip”结尾，就表示需要压缩。如示例3中的MyApp3-RollingTimeBased.xml 。</p> <p><strong>SizeAndTimeBasedFNATP</strong>按照日期进行归档的同时限制每个记录文件的大小，特别是当后处理工具对记录文件大小有限制时。Logback 为此提供了 SizeAndTimeBasedFNATP ，它是TimeBasedRollingPolicy 的子组件，FNATP 代表”FNATP stands for File Naming And Triggering Policy”。 下面的例子MyApp3-sizeAndTime.xml演示了基于大小和时间的记录文件归档。</p> <p><strong>示例3(com/ttpod/file/MyApp3.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ttpod</span><span class="o">.</span><span class="na">file</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.MDC</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.classic.LoggerContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.classic.joran.JoranConfigurator</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.core.joran.spi.JoranException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.core.util.StatusPrinter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.ttpod.file.Foo</span><span class="o">;;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApp3</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Logger</span><span class="o">)</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">MyApp3</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="nc">LoggerContext</span> <span class="n">lc</span> <span class="o">=</span> <span class="o">(</span><span class="nc">LoggerContext</span><span class="o">)</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getILoggerFactory</span><span class="o">();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">JoranConfigurator</span> <span class="n">configurator</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JoranConfigurator</span><span class="o">();</span>
+            <span class="n">configurator</span><span class="o">.</span><span class="na">setContext</span><span class="o">(</span><span class="n">lc</span><span class="o">);</span>
+            <span class="n">lc</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+            <span class="n">configurator</span><span class="o">.</span><span class="na">doConfigure</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">JoranException</span> <span class="n">je</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">je</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>    <span class="c1">//固定部分</span>
+<span class="c1">//打印logback的内部状态</span>
+        <span class="nc">StatusPrinter</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">lc</span><span class="o">);</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"**Hello {}"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">());</span>
+<span class="c1">//客户端的每个记录请求添加唯一戳（uniquely stamp）,运用MDC(Mapped Diagnostic Context)</span>
+<span class="c1">//在分布式应用程序中，可以区分并处理不同客户端的记录输出，而不增加logger的开销</span>
+        <span class="no">MDC</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"testKey"</span><span class="o">,</span> <span class="s">"testValueFromMDC"</span><span class="o">);</span>        <span class="c1">//在appender中用%X{testKey}，可以输出MDC中test对应的值</span>
+        <span class="no">MDC</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"testKey2"</span><span class="o">,</span> <span class="s">"value2"</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"logging statement "</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>
+            <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nc">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span>
+        <span class="n">foo</span><span class="o">.</span><span class="na">createLoggingRequest</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>配置文件：(com/ttpod/file/MyApp3-RollingFixedWindow.xml)</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;configuration&gt;</span>
+    <span class="c">&lt;!-- 指定属性文件路径 --&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">file=</span><span class="s">"src/com/ttpod/file/variables.properties"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"FILE"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.RollingFileAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;file&gt;</span>${USER_HOME}/testFile.log<span class="nt">&lt;/file&gt;</span>
+        <span class="c">&lt;!--滚动策略--&gt;</span>
+        <span class="nt">&lt;rollingPolicy</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.FixedWindowRollingPolicy"</span><span class="nt">&gt;</span>
+            <span class="cp">&lt;!—自动压缩备份--&gt;</span>
+            <span class="nt">&lt;fileNamePattern&gt;</span>${USER_HOME}/testFile.%i.log.zip<span class="nt">&lt;/fileNamePattern&gt;</span>
+            <span class="nt">&lt;minIndex&gt;</span>1<span class="nt">&lt;/minIndex&gt;</span>
+            <span class="nt">&lt;maxIndex&gt;</span>3<span class="nt">&lt;/maxIndex&gt;</span><span class="c">&lt;!--%i在1-3之间循环变化--&gt;</span>
+        <span class="nt">&lt;/rollingPolicy&gt;</span>
+        <span class="cp">&lt;!—触发策略--&gt;</span>
+        <span class="nt">&lt;triggeringPolicy</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"</span><span class="nt">&gt;</span>
+            <span class="c">&lt;!--日志文件大小限制在5kB以内，否则就触发滚动--&gt;</span>
+            <span class="nt">&lt;maxFileSize&gt;</span>5kB<span class="nt">&lt;/maxFileSize&gt;</span>
+        <span class="nt">&lt;/triggeringPolicy&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span><span class="c">&lt;!--格式化输出--&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>%-4relative [%thread] %-5level %logger{35} - %msg%n<span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"DEBUG"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"FILE"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div> <p>多次运行MyApp3,logback配置参数传入MyApp3-RollingFixedWindow.xml，即可发现在当前应用的log目录下生成了如：testFile.1.log.zip、testFile.2.log.zip、testFile.3.log.zip，testFile.log文件。备份的压缩文件中的日志文件的文件名默认后缀跟了归档日期。 (com/ttpod/file/MyApp3-RollingTimeBased.xml)</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;configuration&gt;</span>
+    <span class="c">&lt;!-- 指定属性文件路径 --&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">file=</span><span class="s">"src/com/ttpod/file/variables.properties"</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- 基于时间的滚动策略 --&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"FILE"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.RollingFileAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;file&gt;</span>${USER_HOME}/logFile.log<span class="nt">&lt;/file&gt;</span>
+        <span class="nt">&lt;rollingPolicy</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span><span class="nt">&gt;</span>
+            <span class="c">&lt;!-- 每天滚动
+            &lt;fileNamePattern&gt;logFile.%d{yyyy-MM-dd}.log&lt;/fileNamePattern&gt;
+            --&gt;</span>
+            <span class="c">&lt;!-- 每分钟滚动 --&gt;</span>
+            <span class="nt">&lt;fileNamePattern&gt;</span>${USER_HOME}/logFile.%d{yyyy-MM-dd_HH-mm}.log<span class="nt">&lt;/fileNamePattern&gt;</span>
+            <span class="c">&lt;!-- 限制文件最大保存时间为30天--&gt;</span>
+            <span class="nt">&lt;maxHistory&gt;</span>30<span class="nt">&lt;/maxHistory&gt;</span>
+        <span class="nt">&lt;/rollingPolicy&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>%-4relative [%thread] %-5level %logger{35} - %msg%n<span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"DEBUG"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"FILE"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+        <span class="c">&lt;!--
+        运行：
+        java chapters.appenders.ConfigurationTester
+        src/com/ttpod/chapters/appenders/conf/logback-RollingTimeBased.xml
+        --&gt;</span>
+</code></pre></div></div> <p>多次运行MyApp3,logback配置参数传入MyApp3-RollingTimeBased.xml，若设置一个执行计谋，程序不停止，则每分钟可触发一次日志备份，即可发现在当前应用的log目录下生成了按配置的格式的文件，如：(com/ttpod/file/MyApp3-sizeAndTime.xml)</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;configuration&gt;</span>
+    <span class="c">&lt;!-- 基于时间与大小的归档 --&gt;</span>
+    <span class="nt">&lt;statusListener</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.status.OnConsoleStatusListener"</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- 指定属性文件路径 --&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">file=</span><span class="s">"src/com/ttpod/file/variables.properties"</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- 基于时间与大小的归档 --&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"ROLLING"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.RollingFileAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;file&gt;</span>${USER_HOME}/mylog.txt<span class="nt">&lt;/file&gt;</span>
+        <span class="nt">&lt;rollingPolicy</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span><span class="nt">&gt;</span>
+            <span class="c">&lt;!-- 每天滚动
+            &lt;fileNamePattern&gt;${USER_HOME}/mylog-%d{yyyy-MM-dd}.%i.txt&lt;/fileNamePattern&gt;
+            --&gt;</span>
+            <span class="nt">&lt;minIndex&gt;</span>1<span class="nt">&lt;/minIndex&gt;</span>
+            <span class="nt">&lt;maxIndex&gt;</span>3<span class="nt">&lt;/maxIndex&gt;</span>
+            <span class="c">&lt;!-- 每分钟滚动 --&gt;</span>
+            <span class="nt">&lt;fileNamePattern&gt;</span>${USER_HOME}/mylog-%d{yyyy-MM-dd_HH-mm}.%i.txt<span class="nt">&lt;/fileNamePattern&gt;</span>
+            <span class="c">&lt;!-- 限制文件最大保存时间为30天--&gt;</span>
+            <span class="nt">&lt;maxHistory&gt;</span>30<span class="nt">&lt;/maxHistory&gt;</span>
+            <span class="nt">&lt;timeBasedFileNamingAndTriggeringPolicy</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"</span><span class="nt">&gt;</span>
+                <span class="c">&lt;!-- 当文件大小超过5kB时触发滚动,这里设置5kb只是便于测试 --&gt;</span>
+                <span class="nt">&lt;maxFileSize&gt;</span>5kB<span class="nt">&lt;/maxFileSize&gt;</span>
+            <span class="nt">&lt;/timeBasedFileNamingAndTriggeringPolicy&gt;</span>
+        <span class="nt">&lt;/rollingPolicy&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>%msg%n<span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"debug"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"ROLLING"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div> <p>运行时，logback配置参数传入src/com/ttpod/file/MyApp3-sizeAndTime.xml即可。当日志文件超过5kB时，或到另一天时，程序又被执行了，则会触发滚动，按照此前配置规则备原来的文件。</p> <p><strong>以网页形式输出日志文件</strong></p> <p>HTMLLayout 与 logback-classic 里的 HTMLLayout 相似。 默认情况下，PatternLayout 创建包含下列数据的表格：远程IP；日期；请求的URL；状态吗；Content Length 。</p> <p>以下有个示例，演示以HTMLLayout格式化后，以htm文件输出日志。如下：示例4：(com/ttpod/html/HTMLTest1.java)</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ttpod</span><span class="o">.</span><span class="na">html</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.classic.LoggerContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.classic.joran.JoranConfigurator</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.core.joran.spi.JoranException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.core.util.StatusPrinter</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HtmlTest1</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">HtmlTest1</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="nc">LoggerContext</span> <span class="n">lc</span> <span class="o">=</span> <span class="o">(</span><span class="nc">LoggerContext</span><span class="o">)</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getILoggerFactory</span><span class="o">();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">JoranConfigurator</span> <span class="n">configurator</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JoranConfigurator</span><span class="o">();</span>
+            <span class="n">configurator</span><span class="o">.</span><span class="na">setContext</span><span class="o">(</span><span class="n">lc</span><span class="o">);</span>
+            <span class="n">lc</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+            <span class="n">configurator</span><span class="o">.</span><span class="na">doConfigure</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
+<span class="c1">//configurator.doConfigure("./src/com/ttpod/html/htmlLayoutConfig1.xml");</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">JoranException</span> <span class="n">je</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">je</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>    <span class="c1">//固定部分</span>
+        <span class="o">}</span>
+        <span class="nc">StatusPrinter</span><span class="o">.</span><span class="na">printInCaseOfErrorsOrWarnings</span><span class="o">(</span><span class="n">lc</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">logger</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"a warning message "</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>    <span class="c1">//声明一条warn级别的日志消息</span>
+                <span class="c1">//logger.info("a warning message " + i);</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="n">logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"hello world number"</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"Finish off with fireworks"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Exception</span><span class="o">(</span><span class="s">"Just testing"</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>用以下配置文件格式化输出到properties文件指向的目的地。(com/ttpod/html/htmlLayoutConfig1.xml)</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;configuration&gt;</span>
+    <span class="c">&lt;!-- 指定属性文件路径 --&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">file=</span><span class="s">"src/com/ttpod/html/variables.properties"</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- 指定日志输出到文件--&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"FILE"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.FileAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;encoder</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.encoder.LayoutWrappingEncoder"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;layout</span> <span class="na">class=</span><span class="s">"ch.qos.logback.classic.html.HTMLLayout"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;pattern&gt;</span>%relative%thread%mdc%level%logger%msg<span class="nt">&lt;/pattern&gt;</span>
+            <span class="nt">&lt;/layout&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+        <span class="nt">&lt;file&gt;</span>${destination}<span class="nt">&lt;/file&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"DEBUG"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"FILE"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+        <span class="c">&lt;!-- 以以下方式运行
+        java com.ttpod.html.HtmlTest1 src/com/ttpod/html/htmlLayoutConfig1.xml
+        --&gt;</span>
+</code></pre></div></div> <p>属性文件内容如下：(com/ttpod/html/ variables.properties)</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#指定USER_HOME目录
+USER_HOME=./log
+#指定日志文件名
+fileName=htmlTest.htm
+#生成日志文件的目的地
+destination=${USER_HOME}/${fileName}
+</code></pre></div></div> <p>运行html/HTMLTest1，并传入配置参数：src/com/ttpod/html/htmlLayoutConfig1.xml,可以发现在在当前应用的/log目录下生成一个htmlTest.htm日志文件。</p> <p><strong>以邮件形式输出日志</strong><br /> 以邮件形式输出日志，依赖于SMTPAppender ，SMTPAppender在固定大小的缓冲里积累记录时间，当用户指定的事件发生后，就通过email发出这些事件。默认情况下，email发送是由级别为 ERROR 或更高级别的记录事件触发的。</p> <p>下面的演示程序 chapters.appenders.mail.EMail，生成大量记录消息，然后生成一个错误消息。该程序有两个参数，第一个是需要生成的记录消息的数量，第二个是 logback 配置文件。该程序生成的最后一条记录事件，即 ERROR 级别的事件，将触发 email的发送。</p> <p><strong>示例5 (com/ttpod/mail/Email.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ttpod</span><span class="o">.</span><span class="na">mail</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.classic.LoggerContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.classic.joran.JoranConfigurator</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">ch.qos.logback.core.util.StatusPrinter</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">EMail</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">length</span> <span class="o">!=</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">usage</span><span class="o">(</span><span class="s">"Wrong number of arguments."</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="kt">int</span> <span class="n">runLength</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
+        <span class="nc">String</span> <span class="n">configFile</span> <span class="o">=</span> <span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">];</span>
+        <span class="c1">//int runLength = Integer.parseInt("300");</span>
+        <span class="c1">//String configFile="src/com/ttpod/mail/gmailSSL.xml";</span>
+        <span class="c1">//String configFile = "src/com/ttpod/mail/gmailSTARTTLS.xml";</span>
+        <span class="c1">//自定义配置文件，得到日志固定格式</span>
+        <span class="nc">LoggerContext</span> <span class="n">lc</span> <span class="o">=</span> <span class="o">(</span><span class="nc">LoggerContext</span><span class="o">)</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getILoggerFactory</span><span class="o">();</span>
+        <span class="nc">JoranConfigurator</span> <span class="n">configurator</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JoranConfigurator</span><span class="o">();</span>
+        <span class="n">lc</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="n">configurator</span><span class="o">.</span><span class="na">setContext</span><span class="o">(</span><span class="n">lc</span><span class="o">);</span>
+        <span class="n">configurator</span><span class="o">.</span><span class="na">doConfigure</span><span class="o">(</span><span class="n">configFile</span><span class="o">);</span>
+        <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">EMail</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">runLength</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">((</span><span class="n">i</span> <span class="o">%</span> <span class="mi">10</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"This is a debug message. Message number: "</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="n">logger</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"This is a warning message. Message number: "</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="c1">//定义一条error级别的日志输出</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"At last an error."</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Exception</span><span class="o">(</span><span class="s">"Just testing"</span><span class="o">));</span>
+        <span class="c1">//打印logger内部状态</span>
+        <span class="nc">StatusPrinter</span><span class="o">.</span><span class="na">printInCaseOfErrorsOrWarnings</span><span class="o">(</span><span class="n">lc</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">static</span> <span class="kt">void</span> <span class="nf">usage</span><span class="o">(</span><span class="nc">String</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>    <span class="c1">//当参数传入错误时，提供的处理惯例</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">msg</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Usage: java "</span> <span class="o">+</span> <span class="nc">EMail</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span>
+                <span class="s">" runLength configFile\n"</span> <span class="o">+</span>
+                <span class="s">" runLength (integer) the number of logs to generate\n"</span> <span class="o">+</span>
+                <span class="s">" configFile a logback configuration file in XML format."</span> <span class="o">+</span>
+                <span class="s">" XML files must have a '.xml' extension."</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>    <span class="c1">//退出程序</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>如下配置文件从属性文件中读取发送邮件定义的属性，配置由邮件输出日志，如下：</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;configuration&gt;</span>
+    <span class="c">&lt;!-- 指定属性文件的位置 --&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">file=</span><span class="s">"src/com/ttpod/mail/gmailSSL.properties"</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- 目的指定向email的appender --&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"EMAIL"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.classic.net.SMTPAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;SMTPHost&gt;</span>${SMTPHOST}<span class="nt">&lt;/SMTPHost&gt;</span><span class="c">&lt;!-- 邮件服务器地址 --&gt;</span>
+        <span class="nt">&lt;SMTPPort&gt;</span>${SMTPPORT}<span class="nt">&lt;/SMTPPort&gt;</span><span class="c">&lt;!--SMTPPORT端口--&gt;</span>
+        <span class="nt">&lt;SSL&gt;</span>true<span class="nt">&lt;/SSL&gt;</span>
+        <span class="nt">&lt;Username&gt;</span>${EMAIL_USERNAME}<span class="nt">&lt;/Username&gt;</span><span class="c">&lt;!-- 用户名 --&gt;</span>
+        <span class="nt">&lt;Password&gt;</span>${EMAIL_PASSWORD}<span class="nt">&lt;/Password&gt;</span><span class="c">&lt;!-- 密码 --&gt;</span>
+        <span class="nt">&lt;To&gt;</span>${EMAIL-DESTINATION}<span class="nt">&lt;/To&gt;</span><span class="c">&lt;!-- 目标接收人 --&gt;</span>
+        <span class="nt">&lt;To&gt;</span>${ANOTHER_EMAIL_DESTINATION}<span class="nt">&lt;/To&gt;</span> <span class="c">&lt;!-- additional destinations are possible --&gt;</span>
+        <span class="nt">&lt;From&gt;</span>${EMAIL_USERNAME}<span class="nt">&lt;/From&gt;</span><span class="c">&lt;!-- 发件人 --&gt;</span>
+        <span class="nt">&lt;Subject&gt;</span>TESTING: %logger{20} - %m<span class="nt">&lt;/Subject&gt;</span><span class="c">&lt;!-- 主题 --&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span><span class="c">&lt;!-- 一般采用这种方式格式化输出 --&gt;</span>
+            <span class="nt">&lt;layout</span> <span class="na">class=</span><span class="s">"ch.qos.logback.classic.html.HTMLLayout"</span><span class="nt">&gt;</span>
+                <span class="c">&lt;!-- 采用什么渲染方式，这采取的是HTML方式 --&gt;</span>
+                <span class="nt">&lt;Pattern&gt;</span>%date %-5level %logger - %message%n<span class="nt">&lt;/Pattern&gt;</span>
+            <span class="nt">&lt;/layout&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+        <span class="c">&lt;!--
+        &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
+        &lt;Pattern&gt;%date %-5level %logger - %message%n&lt;/Pattern&gt;
+        &lt;/layout&gt;
+        --&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="c">&lt;!-- 输出到控制台，以便将日志也打印到控制台--&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"STDOUT"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.ConsoleAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            <span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="c">&lt;!-- 输出到文件，将日志记录到本地文件--&gt;</span>
+    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">"FILE"</span> <span class="na">class=</span><span class="s">"ch.qos.logback.core.FileAppender"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;file&gt;</span>./log/mailtest.log<span class="nt">&lt;/file&gt;</span>
+        <span class="nt">&lt;encoder&gt;</span>
+            <span class="c">&lt;!-- %msg表示日志信息，%n表示换行 --&gt;</span>
+            <span class="nt">&lt;pattern&gt;</span>%msg%n<span class="nt">&lt;/pattern&gt;</span>
+        <span class="nt">&lt;/encoder&gt;</span>
+    <span class="nt">&lt;/appender&gt;</span>
+    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">"debug"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"EMAIL"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"STDOUT"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">"FILE"</span><span class="nt">&gt;&lt;/appender-ref&gt;</span>
+    <span class="nt">&lt;/root&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div> <p>属性文件如下设置，以供自定的logback配置文件读取。</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SMTPHOST=smtp.gmail.com
+SMTPPORT=465
+EMAIL_USERNAME = someone123@gmail.com
+EMAIL_PASSWORD = password123
+EMAIL-DESTINATION = someone456@ttpod.com
+ANOTHER_EMAIL_DESTINATION = some456@126.com
+</code></pre></div></div> <p>传入配置文件参数，运行，当出现也error级别以及以上级别的日志时，就会触发日志发送到邮件，但目前此测试例子，可能由于本地tomcat服务器缓存邮件，以致邮件无法发送到外网服务器，所以在这里没给出具体发送成功的结果。但可以通过它生成对应的HTML文件，可以看到邮件内容。</p> <p>如果未指定选项”Evaluator”，则 SMTPAppender 被默认分配一个 OnErrorEveluator（ch.qos.logback.classic.boolex.OnErrorEvaluator）实例，当遇到级别为 ERROR 或更高级别的事件后，触发 email 传输。此处最后一条消息是一个error级别的记录，触发了邮件的发送。</p> <p>另外，还可以将日志写入数据库要把记录事件写入数据库，依赖于DBAppender ，DBAppender把记录事件写入数据库的三张表。三张表分别是 logging_event、logging_event_property 和 logging_event_exception。在使用 DBAppender 之前，这三张表必须已经被创建。关于将日志记录写入到数据库中，更多可参考logback手册中的DBAppender。</p> <p>编写此文档参考了的以下的网站、博客。相关的chm api和参考文档上传在服务器\192.168.1.201上。</p> <p>Logback官方网站：<a href="http://logback.qos.ch/">http://logback.qos.ch/</a> Slf4j官方网站：<a href="http://www.slf4j.org/">http://www.slf4j.org/</a></p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2012-01-04-Logback%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Logback学习笔记 - 知不知&amp;url=/list/docs/java/2012-01-04-Logback%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2012-01-04-Logback%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;title=Java-Logback学习笔记 - 知不知&amp;summary=Logback学习笔记,包括logback的配置，日志输出，输出级别&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2012-01-04-Logback%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;text=Java-Logback学习笔记 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2012-01-04-Logback%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html&amp;t=Java-Logback学习笔记 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2012-01-04-Logback%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Logback学习笔记'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>数据结构-串模式匹配与文本检索</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="串模式匹配算法的设计与实现">串模式匹配算法的设计与实现</h3> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define MaxStrSize 256            //根据用户需要自己定义大小  
+</span><span class="k">typedef</span> <span class="k">struct</span> 
+<span class="p">{</span> 
+    <span class="kt">char</span> <span class="n">ch</span><span class="p">[</span><span class="n">MaxStrSize</span><span class="p">];</span>        <span class="c1">//ch是一个可容纳256个字符的字符数组 </span>
+    <span class="kt">int</span> <span class="n">length</span><span class="p">;</span>  
+<span class="p">}</span> <span class="n">SString</span><span class="p">;</span>                        <span class="c1">//定义顺序串类型  </span>
+ 
+<span class="cp">#include&lt;stdio.h&gt; 
+#include&lt;string.h&gt; 
+</span> 
+ 
+<span class="cm">/**********************************/</span> 
+<span class="cm">/*         朴素模式匹配            */</span> 
+<span class="cm">/**********************************/</span> 
+<span class="kt">int</span> <span class="nf">Index</span><span class="p">(</span><span class="n">SString</span> <span class="n">S</span><span class="p">,</span><span class="n">SString</span> <span class="n">T</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="c1">//求子串T在主串S中首次出现的位置 </span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">n</span><span class="p">;</span> 
+    <span class="n">m</span><span class="o">=</span><span class="n">T</span><span class="p">.</span><span class="n">length</span><span class="p">;</span>                    <span class="c1">//模式串长度赋m </span>
+    <span class="n">n</span><span class="o">=</span><span class="n">S</span><span class="p">.</span><span class="n">length</span><span class="p">;</span>                    <span class="c1">//目标串长度赋n </span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="o">-</span><span class="n">m</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+        <span class="n">k</span><span class="o">=</span><span class="n">i</span><span class="p">;</span>                    <span class="c1">//目标串起始位置i送入k </span>
+        <span class="k">while</span><span class="p">(</span><span class="n">j</span><span class="o">&lt;=</span><span class="n">m</span> <span class="o">&amp;&amp;</span> <span class="n">S</span><span class="p">.</span><span class="n">ch</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">==</span><span class="n">T</span><span class="p">.</span><span class="n">ch</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> 
+        <span class="p">{</span> 
+            <span class="n">k</span><span class="o">++</span><span class="p">;</span> 
+            <span class="n">j</span><span class="o">++</span><span class="p">;</span>                <span class="c1">//继续下一个子符的比较  </span>
+        <span class="p">}</span>  
+        <span class="k">if</span><span class="p">(</span><span class="n">j</span><span class="o">==</span><span class="n">m</span><span class="p">)</span>                <span class="c1">//若相等，则说明找到匹配的子串，返回匹配位置i </span>
+            <span class="k">return</span> <span class="n">i</span><span class="p">;</span>            <span class="c1">//否则从下一个位置重新开始比较  </span>
+    <span class="p">}</span>  
+    <span class="k">return</span>  <span class="o">-</span><span class="mi">1</span><span class="p">;</span>  
+<span class="p">}</span>  
+ 
+<span class="cm">/**********************************/</span> 
+<span class="cm">/*      给定位置的串匹配          */</span> 
+<span class="cm">/**********************************/</span> 
+<span class="kt">int</span> <span class="nf">PartPosition</span><span class="p">(</span><span class="n">SString</span> <span class="n">s1</span><span class="p">,</span><span class="n">SString</span> <span class="n">s2</span><span class="p">,</span><span class="kt">int</span> <span class="n">k</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">;</span> 
+    <span class="n">i</span><span class="o">=</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>                <span class="c1">//扫描s1的下标，因为c中数组下标是从0开始，串中序号相差1  </span>
+    <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>                <span class="c1">//扫描s2的开始下标 </span>
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="n">s1</span><span class="p">.</span><span class="n">length</span> <span class="o">&amp;&amp;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">s2</span><span class="p">.</span><span class="n">length</span><span class="p">)</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">s1</span><span class="p">.</span><span class="n">ch</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">s2</span><span class="p">.</span><span class="n">ch</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> 
+        <span class="p">{</span> 
+            <span class="n">i</span><span class="o">++</span><span class="p">;</span> 
+            <span class="n">j</span><span class="o">++</span><span class="p">;</span>        <span class="c1">//继续使下标移向下一个字符位置  </span>
+        <span class="p">}</span> 
+        <span class="k">else</span> 
+        <span class="p">{</span> 
+            <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>    <span class="c1">//使i下标回溯到原位置的下一个位置  </span>
+            <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>        <span class="c1">//使j指向s2的第一个字符，再重新比较  </span>
+        <span class="p">}</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">j</span><span class="o">&gt;=</span><span class="n">s2</span><span class="p">.</span><span class="n">length</span><span class="p">)</span> 
+            <span class="k">return</span> <span class="n">i</span><span class="o">-</span><span class="n">s2</span><span class="p">.</span><span class="n">length</span><span class="p">;</span>    <span class="c1">//表示s1中存在s2，返回其起始位置 </span>
+        <span class="k">else</span> 
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>            <span class="c1">//表示s1中不存在s2,返回-1  </span>
+<span class="p">}</span>  
+ 
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">;</span> 
+    <span class="n">SString</span> <span class="n">S1</span><span class="p">,</span><span class="n">T1</span><span class="p">;</span> 
+    <span class="kt">int</span> <span class="n">wz</span><span class="p">[</span><span class="mi">80</span><span class="p">];</span>                    <span class="c1">//记录子串出现的位置 </span>
+    <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>                        <span class="c1">//计数器清零 </span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"请输入主字符串："</span><span class="p">);</span> 
+    <span class="n">gets</span><span class="p">(</span><span class="n">S1</span><span class="p">.</span><span class="n">ch</span><span class="p">);</span>                <span class="c1">//读入主串 </span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"请输入模式串："</span><span class="p">);</span> 
+    <span class="n">gets</span><span class="p">(</span><span class="n">T1</span><span class="p">.</span><span class="n">ch</span><span class="p">);</span>                <span class="c1">//读入子串 </span>
+    <span class="n">S1</span><span class="p">.</span><span class="n">length</span><span class="o">=</span><span class="n">strlen</span><span class="p">(</span><span class="n">S1</span><span class="p">.</span><span class="n">ch</span><span class="p">);</span> 
+    <span class="n">T1</span><span class="p">.</span><span class="n">length</span><span class="o">=</span><span class="n">strlen</span><span class="p">(</span><span class="n">T1</span><span class="p">.</span><span class="n">ch</span><span class="p">);</span> 
+    <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>                        <span class="c1">//初始化开始检索位置 </span>
+    <span class="k">while</span><span class="p">(</span><span class="n">k</span><span class="o">&lt;</span><span class="n">S1</span><span class="p">.</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>        <span class="c1">//检索整个主串S1 </span>
+    <span class="p">{</span> 
+        <span class="n">j</span><span class="o">=</span><span class="n">PartPosition</span><span class="p">(</span><span class="n">S1</span><span class="p">,</span><span class="n">T1</span><span class="p">,</span><span class="n">k</span><span class="p">);</span><span class="c1">//调用串匹配算法 </span>
+        <span class="k">if</span><span class="p">(</span><span class="n">j</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="n">printf</span><span class="p">(</span><span class="s">"没有检索到需要的子串</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+            <span class="k">break</span><span class="p">;</span>  
+        <span class="p">}</span> 
+        <span class="k">else</span> 
+        <span class="p">{</span> 
+            <span class="n">i</span><span class="o">++</span><span class="p">;</span>                <span class="c1">//计数器加1  </span>
+            <span class="n">wz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">j</span><span class="p">;</span>  
+            <span class="n">k</span><span class="o">=</span><span class="n">j</span><span class="o">+</span><span class="n">T1</span><span class="p">.</span><span class="n">length</span><span class="p">;</span>        <span class="c1">//继续下一个子串的检索  </span>
+        <span class="p">}</span> 
+    <span class="p">}</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"子串%s出现在主串中的次数为%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">T1</span><span class="p">.</span><span class="n">ch</span><span class="p">,</span><span class="n">i</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d次匹配位置分别为："</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span> 
+    <span class="k">for</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">k</span><span class="o">&lt;=</span><span class="n">i</span><span class="p">;</span><span class="n">k</span><span class="o">++</span><span class="p">)</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%4d"</span><span class="p">,</span><span class="n">wz</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+<span class="p">}</span> 
+</code></pre></div></div> <h3 id="文本文件单词的检索与计数">文本文件单词的检索与计数</h3> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include&lt;stdio.h&gt; 
+#include&lt;string.h&gt; 
+</span> 
+<span class="cp">#define MaxStrSize 256            //根据用户需要自己定义大小  
+</span><span class="k">typedef</span> <span class="k">struct</span> 
+<span class="p">{</span> 
+    <span class="kt">char</span> <span class="n">ch</span><span class="p">[</span><span class="n">MaxStrSize</span><span class="p">];</span>        <span class="c1">//ch是一个可容纳256个字符的字符数组 </span>
+    <span class="kt">int</span> <span class="n">length</span><span class="p">;</span>  
+<span class="p">}</span> <span class="n">SString</span><span class="p">;</span>                        <span class="c1">//定义顺序串类型  </span>
+ 
+ 
+<span class="cm">/**********************************/</span> 
+<span class="cm">/*      给定位置的串匹配          */</span> 
+<span class="cm">/**********************************/</span> 
+<span class="kt">int</span> <span class="nf">PartPosition</span><span class="p">(</span><span class="n">SString</span> <span class="n">s1</span><span class="p">,</span><span class="n">SString</span> <span class="n">s2</span><span class="p">,</span><span class="kt">int</span> <span class="n">k</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">;</span> 
+    <span class="n">i</span><span class="o">=</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>                <span class="c1">//扫描s1的下标，因为c中数组下标是从0开始，串中序号相差1  </span>
+    <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>                <span class="c1">//扫描s2的开始下标 </span>
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="n">s1</span><span class="p">.</span><span class="n">length</span> <span class="o">&amp;&amp;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">s2</span><span class="p">.</span><span class="n">length</span><span class="p">)</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">s1</span><span class="p">.</span><span class="n">ch</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">s2</span><span class="p">.</span><span class="n">ch</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> 
+        <span class="p">{</span> 
+            <span class="n">i</span><span class="o">++</span><span class="p">;</span> 
+            <span class="n">j</span><span class="o">++</span><span class="p">;</span>        <span class="c1">//继续使下标移向下一个字符位置  </span>
+        <span class="p">}</span> 
+        <span class="k">else</span> 
+        <span class="p">{</span> 
+            <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>    <span class="c1">//使i下标回溯到原位置的下一个位置  </span>
+            <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>        <span class="c1">//使j指向s2的第一个字符，再重新比较  </span>
+        <span class="p">}</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">j</span><span class="o">&gt;=</span><span class="n">s2</span><span class="p">.</span><span class="n">length</span><span class="p">)</span> 
+            <span class="k">return</span> <span class="n">i</span><span class="o">-</span><span class="n">s2</span><span class="p">.</span><span class="n">length</span><span class="p">;</span>    <span class="c1">//表示s1中存在s2，返回其起始位置 </span>
+        <span class="k">else</span> 
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>            <span class="c1">//表示s1中不存在s2,返回-1  </span>
+<span class="p">}</span>  
+ 
+<span class="cm">/**********************************/</span> 
+<span class="cm">/*      建立文本文件函数          */</span> 
+<span class="cm">/**********************************/</span> 
+<span class="kt">void</span> <span class="nf">CreateTextFile</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="n">SString</span> <span class="n">S</span><span class="p">;</span> 
+    <span class="kt">char</span> <span class="n">fname</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span><span class="n">yn</span><span class="p">;</span> 
+    <span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"输入要建立的文件名："</span><span class="p">);</span> 
+    <span class="n">scanf</span><span class="p">(</span><span class="s">" %s"</span><span class="p">,</span><span class="n">fname</span><span class="p">);</span> 
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>                <span class="c1">//清理缓存  </span>
+    <span class="n">fp</span><span class="o">=</span><span class="n">fopen</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="s">"w"</span><span class="p">);</span> 
+    <span class="n">yn</span><span class="o">=</span><span class="sc">'n'</span><span class="p">;</span>                            <span class="c1">//输入结束标志初值 </span>
+    <span class="k">while</span><span class="p">(</span><span class="n">yn</span><span class="o">==</span><span class="sc">'n'</span><span class="o">||</span><span class="n">yn</span><span class="o">==</span><span class="sc">'N'</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"输入一行文本："</span><span class="p">);</span> 
+        <span class="n">gets</span><span class="p">(</span><span class="n">S</span><span class="p">.</span><span class="n">ch</span><span class="p">);</span> 
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>                <span class="c1">//清理缓存  </span>
+        <span class="n">S</span><span class="p">.</span><span class="n">length</span><span class="o">=</span><span class="n">strlen</span><span class="p">(</span><span class="n">S</span><span class="p">.</span><span class="n">ch</span><span class="p">);</span> 
+        <span class="n">fwrite</span><span class="p">(</span><span class="o">&amp;</span><span class="n">S</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">SString</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">fp</span><span class="p">);</span> 
+<span class="c1">//        fputc('\n',fp);                //写入换行符  </span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"结束输入吗? y or n:"</span><span class="p">);</span> 
+        <span class="n">yn</span><span class="o">=</span><span class="n">getchar</span><span class="p">();</span>  
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>                <span class="c1">//清理缓存 </span>
+    <span class="p">}</span>  
+    <span class="n">fclose</span><span class="p">(</span><span class="n">fp</span><span class="p">);</span>                        <span class="c1">//关闭文件; </span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"建立文件结束！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+<span class="p">}</span>  
+ 
+<span class="cm">/**********************************/</span> 
+<span class="cm">/*      文本文件单词计数函数      */</span> 
+<span class="cm">/**********************************/</span> 
+<span class="kt">void</span> <span class="nf">SubStrCount</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">;</span> 
+    <span class="n">SString</span> <span class="n">S</span><span class="p">,</span><span class="n">T</span><span class="p">;</span>                    <span class="c1">//定义两个变量 </span>
+    <span class="kt">char</span> <span class="n">fname</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"输入文本文件名："</span><span class="p">);</span> 
+    <span class="n">scanf</span><span class="p">(</span><span class="s">" %s"</span><span class="p">,</span><span class="n">fname</span><span class="p">);</span> 
+    <span class="n">fp</span><span class="o">=</span><span class="n">fopen</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="s">"r"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"输入要统计计数的单词："</span><span class="p">);</span> 
+    <span class="n">scanf</span><span class="p">(</span><span class="s">" %s"</span><span class="p">,</span><span class="n">T</span><span class="p">.</span><span class="n">ch</span><span class="p">);</span> 
+    <span class="n">T</span><span class="p">.</span><span class="n">length</span><span class="o">=</span><span class="n">strlen</span><span class="p">(</span><span class="n">T</span><span class="p">.</span><span class="n">ch</span><span class="p">);</span> 
+    <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">feof</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span>                <span class="c1">//扫描整个文本文件  </span>
+    <span class="p">{</span> 
+        <span class="n">fread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">S</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">SString</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">fp</span><span class="p">);</span>    <span class="c1">//读入一行文本 </span>
+        <span class="c1">//printf("读取的内容为：%s",S.ch); </span>
+        <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>                        <span class="c1">//初始化开始检索位置 </span>
+        <span class="k">while</span><span class="p">(</span><span class="n">k</span><span class="o">&lt;</span><span class="n">S</span><span class="p">.</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>            <span class="c1">//检索整个主串S </span>
+        <span class="p">{</span> 
+            <span class="n">j</span><span class="o">=</span><span class="n">PartPosition</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">k</span><span class="p">);</span>    <span class="c1">//调用串匹配函数 </span>
+            <span class="k">if</span><span class="p">(</span><span class="n">j</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">else</span> 
+            <span class="p">{</span> 
+                <span class="n">i</span><span class="o">++</span><span class="p">;</span>                <span class="c1">//单词计数器加1 </span>
+                <span class="n">k</span><span class="o">=</span><span class="n">j</span><span class="o">+</span><span class="n">T</span><span class="p">.</span><span class="n">length</span><span class="p">;</span>        <span class="c1">//继续下一个子串的检索  </span>
+            <span class="p">}</span> 
+        <span class="p">}</span>  
+    <span class="p">}</span>  
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">单词%s在文本文件%s中共出现%d次</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">T</span><span class="p">.</span><span class="n">ch</span><span class="p">,</span><span class="n">fname</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>  
+<span class="p">}</span> 
+ 
+<span class="cm">/**********************************************************/</span> 
+<span class="cm">/*检索单词出现在文本文件中的行号、位置及在该行中出现的次数*/</span> 
+<span class="cm">/**********************************************************/</span> 
+<span class="kt">void</span> <span class="nf">SubStrInd</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">;</span> 
+    <span class="n">SString</span> <span class="n">S</span><span class="p">,</span><span class="n">T</span><span class="p">;</span>                    <span class="c1">//定义两个变量 </span>
+    <span class="kt">char</span> <span class="n">fname</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">m</span><span class="p">;</span> 
+    <span class="kt">int</span> <span class="n">wz</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>                        <span class="c1">//存放一行中子串匹配的多个位置 </span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"输入文本文件名："</span><span class="p">);</span> 
+    <span class="n">scanf</span><span class="p">(</span><span class="s">" %s"</span><span class="p">,</span><span class="n">fname</span><span class="p">);</span> 
+    <span class="n">fp</span><span class="o">=</span><span class="n">fopen</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="s">"r"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"输入需要检索的单词："</span><span class="p">);</span> 
+    <span class="n">scanf</span><span class="p">(</span><span class="s">" %s"</span><span class="p">,</span><span class="n">T</span><span class="p">.</span><span class="n">ch</span><span class="p">);</span> 
+    <span class="n">T</span><span class="p">.</span><span class="n">length</span><span class="o">=</span><span class="n">strlen</span><span class="p">(</span><span class="n">T</span><span class="p">.</span><span class="n">ch</span><span class="p">);</span> 
+    <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>                            <span class="c1">//行计数器置0 </span>
+    <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">feof</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span>                <span class="c1">//扫描整个文本文件  </span>
+    <span class="p">{</span> 
+        <span class="n">fread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">S</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">S</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">fp</span><span class="p">);</span>    <span class="c1">//读入一行文本 </span>
+        <span class="n">l</span><span class="o">++</span><span class="p">;</span>                        <span class="c1">//行计数器自增1 </span>
+        <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>                        <span class="c1">//初始化开始检索位置 </span>
+        <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>                        <span class="c1">//初始化单词记数器 </span>
+        <span class="k">while</span><span class="p">(</span><span class="n">k</span><span class="o">&lt;</span><span class="n">S</span><span class="p">.</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>            <span class="c1">//检索整个主串S  </span>
+        <span class="p">{</span> 
+            <span class="n">j</span><span class="o">=</span><span class="n">PartPosition</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">k</span><span class="p">);</span>    <span class="c1">//调用串匹配函数 </span>
+            <span class="k">if</span><span class="p">(</span><span class="n">j</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span> 
+            <span class="k">else</span> 
+            <span class="p">{</span> 
+                <span class="n">i</span><span class="o">++</span><span class="p">;</span>                <span class="c1">//单词计数器加1 </span>
+                <span class="n">wz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">j</span><span class="p">;</span>            <span class="c1">//记录匹配单词位置 </span>
+                <span class="n">k</span><span class="o">=</span><span class="n">j</span><span class="o">+</span><span class="n">T</span><span class="p">.</span><span class="n">length</span><span class="p">;</span>        <span class="c1">//继续下一个子串的检索  </span>
+            <span class="p">}</span>     
+        <span class="p">}</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> 
+            <span class="n">printf</span><span class="p">(</span><span class="s">"行号：%d，次数：%d，位置分别为："</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>  
+        <span class="k">for</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">m</span><span class="o">&lt;=</span><span class="n">i</span><span class="p">;</span><span class="n">m</span><span class="o">++</span><span class="p">)</span> 
+            <span class="n">printf</span><span class="p">(</span><span class="s">"%4d"</span><span class="p">,</span><span class="n">wz</span><span class="p">[</span><span class="n">m</span><span class="p">]);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="p">}</span>  
+<span class="p">}</span>  
+ 
+<span class="cm">/**********************************/</span> 
+<span class="cm">/*         主控菜单程序           */</span> 
+<span class="cm">/**********************************/</span> 
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="kt">void</span> <span class="n">CreateTextFile</span><span class="p">(),</span><span class="n">SubStrCount</span><span class="p">(),</span><span class="n">SubStrInd</span><span class="p">();</span> <span class="c1">//函数声明  </span>
+    <span class="kt">int</span> <span class="n">xz</span><span class="p">;</span> 
+    <span class="k">do</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"* 文本文件的检索、子串的统计及定位  *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*          1.建立文本文件           *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*          2.单词子串的计数         *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*          3.单词子串的定位         *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*          4.退出整个程序           *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*************************************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"*            请选择：(1-4)          *</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+        <span class="n">scanf</span><span class="p">(</span><span class="s">" %d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">xz</span><span class="p">);</span> 
+        <span class="k">switch</span><span class="p">(</span><span class="n">xz</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="k">case</span> <span class="mi">1</span><span class="p">:</span> 
+                <span class="n">CreateTextFile</span><span class="p">();</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">2</span><span class="p">:</span> 
+                <span class="n">SubStrCount</span><span class="p">();</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">3</span><span class="p">:</span> 
+                <span class="n">SubStrInd</span><span class="p">();</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="mi">4</span><span class="p">:</span> 
+                <span class="k">return</span><span class="p">;</span> 
+            <span class="nl">default:</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="s">"选择错误！，重新选</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+        <span class="p">}</span> 
+    <span class="p">}</span> <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> 
+<span class="p">}</span> 
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/C_CPP/2011-09-09-%E4%B8%B2%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E4%B8%8E%E6%96%87%E6%9C%AC%E6%A3%80%E7%B4%A2.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=数据结构-串模式匹配与文本检索 - 知不知&amp;url=/list/docs/C_CPP/2011-09-09-%E4%B8%B2%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E4%B8%8E%E6%96%87%E6%9C%AC%E6%A3%80%E7%B4%A2.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/C_CPP/2011-09-09-%E4%B8%B2%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E4%B8%8E%E6%96%87%E6%9C%AC%E6%A3%80%E7%B4%A2.html&amp;title=数据结构-串模式匹配与文本检索 - 知不知&amp;summary=串模式匹配与文本检索&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/C_CPP/2011-09-09-%E4%B8%B2%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E4%B8%8E%E6%96%87%E6%9C%AC%E6%A3%80%E7%B4%A2.html&amp;text=数据结构-串模式匹配与文本检索 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/C_CPP/2011-09-09-%E4%B8%B2%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E4%B8%8E%E6%96%87%E6%9C%AC%E6%A3%80%E7%B4%A2.html&amp;t=数据结构-串模式匹配与文本检索 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/C_CPP/2011-09-09-%E4%B8%B2%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E4%B8%8E%E6%96%87%E6%9C%AC%E6%A3%80%E7%B4%A2.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('数据结构-串模式匹配与文本检索'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

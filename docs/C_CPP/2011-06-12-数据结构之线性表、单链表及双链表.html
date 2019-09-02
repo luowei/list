@@ -1,0 +1,510 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>数据结构-线性表、单链表及双链表</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="线性表">线性表</h3> <p><strong>list.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//list.h   </span>
+    
+<span class="cp">#ifndef _LIST_H   
+#define _LIST_H //条件编译语句   
+</span>    
+<span class="cp">#define LIST_INIT_SIZE  10  //线性表初始大小   
+#define LIST_INCREMENT  10  //递增大小   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span>  
+<span class="p">{</span>   
+    <span class="n">ElemType</span> <span class="o">*</span> <span class="n">elem</span><span class="p">;</span>    <span class="c1">//线性表首地址   </span>
+    <span class="kt">int</span> <span class="n">length</span><span class="p">;</span>         <span class="c1">//线性表当前使用长度   </span>
+    <span class="kt">int</span> <span class="n">size</span><span class="p">;</span>           <span class="c1">//线性表当前最大长度   </span>
+<span class="p">}</span><span class="n">LIST</span><span class="p">;</span>   
+    
+<span class="n">LIST</span> <span class="o">*</span><span class="nf">InitList</span><span class="p">();</span>       <span class="c1">//初始化   </span>
+<span class="kt">void</span> <span class="nf">FreeList</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">InsertList</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">DeleteList</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">i</span><span class="p">);</span>   
+    
+<span class="cp">#endif 
+</span></code></pre></div></div> <p><strong>list.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//list.c   </span>
+<span class="cp">#include &lt;stdio.h&gt;   
+#include&lt;stdlib.h&gt;   
+#include "stu.h"   
+#include "list.h"   
+</span>    
+<span class="c1">//初始线性表函数   </span>
+<span class="n">LIST</span> <span class="o">*</span> <span class="nf">InitList</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="o">=</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">LIST</span><span class="p">));</span>    
+    <span class="c1">//在堆中动态定义一个线性表结构指针   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+    <span class="p">}</span>   
+    
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">elem</span><span class="o">=</span><span class="p">(</span><span class="n">ElemType</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">LIST_INIT_SIZE</span><span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ElemType</span><span class="p">));</span>   
+    <span class="c1">//在堆中动态开辟数据空间   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">elem</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">free</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>   
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+    <span class="p">}</span>   
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>   
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">=</span><span class="n">LIST_INIT_SIZE</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="n">l</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">FreeList</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="n">free</span><span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">elem</span><span class="p">);</span>  <span class="c1">//释放线性表的成员空间   </span>
+    <span class="n">free</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>    <span class="c1">//释放线性表本身   </span>
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">InsertList</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="n">ElemType</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">,</span><span class="o">*</span><span class="n">q</span><span class="o">=</span><span class="nb">NULL</span><span class="p">,</span><span class="o">*</span><span class="n">newElem</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">e</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">||</span><span class="n">i</span><span class="o">&gt;</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="o">&gt;=</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">newElem</span><span class="o">=</span><span class="n">realloc</span><span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">elem</span><span class="p">,</span>   
+            <span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">+</span><span class="n">LIST_INCREMENT</span><span class="p">)</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ElemType</span><span class="p">));</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">newElem</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+        <span class="n">l</span><span class="o">-&gt;</span><span class="n">elem</span><span class="o">=</span><span class="n">newElem</span><span class="p">;</span>   
+        <span class="n">l</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">+=</span><span class="n">LIST_INCREMENT</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    
+    <span class="n">q</span><span class="o">=&amp;</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">elem</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span> <span class="c1">//要插入的位置   </span>
+    <span class="k">for</span><span class="p">(</span><span class="n">p</span><span class="o">=&amp;</span><span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">elem</span><span class="p">[</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">]);</span><span class="n">p</span><span class="o">&gt;=</span><span class="n">q</span><span class="p">;</span><span class="n">p</span><span class="o">--</span><span class="p">)</span>   
+        <span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">=*</span><span class="n">p</span><span class="p">;</span> <span class="c1">//将p往后移一位   </span>
+    <span class="o">*</span><span class="n">q</span><span class="o">=*</span><span class="n">e</span><span class="p">;</span> <span class="c1">//插入   </span>
+    <span class="o">++</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">DeleteList</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="n">ElemType</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">,</span><span class="o">*</span><span class="n">q</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">||</span><span class="n">i</span><span class="o">&gt;</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">p</span><span class="o">=&amp;</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">elem</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>   
+    <span class="n">q</span><span class="o">=&amp;</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">elem</span><span class="p">[</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>   
+    <span class="k">for</span><span class="p">(;</span><span class="n">p</span><span class="o">&lt;</span><span class="n">q</span><span class="p">;</span><span class="n">p</span><span class="o">++</span><span class="p">)</span>   
+        <span class="o">*</span><span class="n">p</span><span class="o">=*</span><span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span><span class="c1">//将后面的元素向前移   </span>
+    <span class="o">--</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span> 
+</code></pre></div></div> <p><strong>stu.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//stu.h   </span>
+    
+<span class="cp">#ifndef _STU_H   
+#define _STU_H   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span>  <span class="c1">//定义一个学生的结构体   </span>
+<span class="p">{</span>   
+    <span class="kt">char</span> <span class="n">sno</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>   
+    <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="mi">21</span><span class="p">];</span>   
+    <span class="kt">char</span> <span class="n">sex</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>   
+    <span class="kt">int</span> <span class="n">score</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">ElemType</span><span class="p">;</span>   
+    
+<span class="cp">#endif 
+</span></code></pre></div></div> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+<span class="cp">#include &lt;stdio.h&gt;   
+#include "stu.h"   
+#include "list.h"   
+</span>    
+<span class="n">ElemType</span> <span class="n">stu</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="p">{</span>   
+    <span class="p">{</span><span class="s">"s010"</span><span class="p">,</span><span class="s">"张三"</span><span class="p">,</span><span class="s">"男"</span><span class="p">,</span><span class="mi">80</span><span class="p">},</span>   
+    <span class="p">{</span><span class="s">"s011"</span><span class="p">,</span><span class="s">"张四"</span><span class="p">,</span><span class="s">"男"</span><span class="p">,</span><span class="mi">81</span><span class="p">},</span>   
+    <span class="p">{</span><span class="s">"s012"</span><span class="p">,</span><span class="s">"张五"</span><span class="p">,</span><span class="s">"男"</span><span class="p">,</span><span class="mi">82</span><span class="p">}</span>   
+<span class="p">};</span>   
+    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="c1">//定义一个线性性表指针   </span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>   
+    <span class="n">LIST</span><span class="o">*</span> <span class="n">list</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="n">list</span><span class="o">=</span><span class="n">InitList</span><span class="p">();</span>    <span class="c1">//初始化线性表   </span>
+         
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>   
+        <span class="n">InsertList</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">&amp;</span><span class="n">stu</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>   
+    <span class="n">DeleteList</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>   
+    
+    <span class="n">FreeList</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>   
+<span class="p">}</span> 
+</code></pre></div></div> <h3 id="单链表">单链表</h3> <p><strong>list.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//list.h   </span>
+    
+<span class="cp">#ifndef _LIST_H   
+#define _LIST_H   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">_node</span>   
+<span class="p">{</span>   <span class="c1">//结点类型定义   </span>
+    <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span> <span class="c1">//结点的数据域   </span>
+    <span class="k">struct</span> <span class="n">_node</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span> <span class="c1">//结点的指针域   </span>
+<span class="p">}</span><span class="n">NODE</span><span class="p">;</span>   
+    
+<span class="k">typedef</span> <span class="k">struct</span>  
+<span class="p">{</span>   <span class="c1">//链表类型定义   </span>
+    <span class="n">NODE</span> <span class="o">*</span> <span class="n">head</span><span class="p">;</span><span class="c1">//头结点   </span>
+    <span class="n">NODE</span> <span class="o">*</span> <span class="n">last</span><span class="p">;</span><span class="c1">//尾结点   </span>
+    <span class="kt">int</span> <span class="n">length</span><span class="p">;</span><span class="c1">//链表长度   </span>
+<span class="p">}</span><span class="n">LIST</span><span class="p">;</span>   
+    
+<span class="n">LIST</span><span class="o">*</span> <span class="nf">InitList</span><span class="p">();</span>   
+<span class="kt">int</span> <span class="nf">AddNode</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="kt">int</span> <span class="n">size</span><span class="p">);</span>   
+<span class="n">NODE</span><span class="o">*</span> <span class="nf">FindNodeByKey</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span>   
+                    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">compare</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="cm">/*函数指针*/</span><span class="p">);</span>   
+<span class="n">NODE</span><span class="o">*</span> <span class="nf">FindNode</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span>   
+                    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">compare</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="cm">/*函数指针*/</span><span class="p">,</span><span class="n">NODE</span> <span class="o">**</span><span class="n">pre</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">DeleteListByKey</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="p">,</span><span class="kt">void</span><span class="o">*</span> <span class="n">Key</span><span class="p">,</span><span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">compare</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="kt">void</span><span class="o">*</span><span class="p">));</span>   
+    
+<span class="cp">#endif 
+</span></code></pre></div></div> <p><strong>list.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//list.c   </span>
+    
+<span class="cp">#include &lt;stdio.h&gt;   
+#include &lt;stdlib.h&gt;   
+#include &lt;string.h&gt;   
+#include "list.h"   
+</span>    
+<span class="n">LIST</span><span class="o">*</span> <span class="nf">InitList</span><span class="p">()</span>   
+<span class="p">{</span>   
+        <span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="o">=</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">LIST</span><span class="p">));</span> <span class="c1">//创建一个链表   </span>
+        <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+        <span class="n">memset</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">LIST</span><span class="p">));</span><span class="c1">//将链表清零   </span>
+        <span class="k">return</span> <span class="n">l</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">AddNode</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="c1">//添加结点   </span>
+<span class="p">{</span>   
+    <span class="c1">//在调试中可以这样看结点的值(struct STU*)l-&gt;head-&gt;data,(struct STU*)l-&gt;last-&gt;data   </span>
+    <span class="n">NODE</span> <span class="o">*</span><span class="n">n</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">data</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">n</span><span class="o">=</span><span class="p">(</span><span class="n">NODE</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">NODE</span><span class="p">));</span> <span class="c1">//创建一个结点   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">n</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">;</span>   
+    <span class="n">n</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">malloc</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">free</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">size</span><span class="p">);</span><span class="c1">//把数据拷到目标结点中去   </span>
+    
+    <span class="cm">/*//方法一  
+    if(l-&gt;head==NULL)  
+    {  
+        l-&gt;head=n;  
+        l-&gt;last=n;  
+        l-&gt;length=1;  
+    }  
+    else  
+    {  
+        l-&gt;last-&gt;next=n;//挂在尾结点后面  
+        l-&gt;last=n; //改变尾结点的指向  
+        l-&gt;length++;  
+    }  
+    */</span>  
+    <span class="c1">//方法二   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">=</span><span class="n">n</span><span class="p">;</span>   
+    <span class="k">else</span>  
+        <span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">n</span><span class="p">;</span>   
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="o">=</span><span class="n">n</span><span class="p">;</span>   
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="o">++</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="n">NODE</span><span class="o">*</span> <span class="nf">FindNodeByKey</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span>   
+                    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">compare</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="cm">/*函数指针*/</span><span class="p">)</span>   
+<span class="p">{</span>   <span class="c1">//查找结点   </span>
+    <span class="n">NODE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">key</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">compare</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+    <span class="n">p</span><span class="o">=</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span><span class="c1">//让p指向第一个结点   </span>
+    <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">compare</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="n">key</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span><span class="c1">//如果返回为1说明找到了   </span>
+            <span class="k">return</span> <span class="n">p</span><span class="p">;</span>   
+        <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//否则继续往下找   </span>
+    <span class="p">}</span>   
+    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span><span class="c1">//都没找到，返回空   </span>
+<span class="p">}</span>   
+    
+    
+<span class="n">NODE</span><span class="o">*</span> <span class="nf">FindNode</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span>   
+                    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">compare</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="cm">/*函数指针*/</span><span class="p">,</span><span class="n">NODE</span> <span class="o">**</span><span class="n">pre</span><span class="p">)</span>   
+<span class="p">{</span>   <span class="c1">//查找结点,并传入前一个结点的参数   </span>
+    <span class="n">NODE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">key</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">compare</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">pre</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+    <span class="n">p</span><span class="o">=</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span><span class="c1">//让p指向第一个结点   </span>
+    <span class="o">*</span><span class="n">pre</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">compare</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="n">key</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span><span class="c1">//如果返回为1说明找到了   </span>
+            <span class="k">return</span> <span class="n">p</span><span class="p">;</span>   
+        <span class="o">*</span><span class="n">pre</span><span class="o">=</span><span class="n">p</span><span class="p">;</span><span class="c1">//找到的结点的前一个结点   </span>
+        <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//否则继续往下找   </span>
+    <span class="p">}</span>   
+    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span><span class="c1">//都没找到，返回空   </span>
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">DeleteListByKey</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="p">,</span><span class="kt">void</span><span class="o">*</span> <span class="n">key</span><span class="p">,</span><span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">compare</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="kt">void</span><span class="o">*</span><span class="p">))</span>   
+<span class="p">{</span>   <span class="c1">//删除结点   </span>
+    <span class="n">NODE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">,</span><span class="o">*</span><span class="n">q</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="n">p</span><span class="o">=</span><span class="n">FindNode</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">key</span><span class="p">,</span><span class="n">compare</span><span class="p">,</span><span class="o">&amp;</span><span class="n">q</span><span class="cm">/*前一个结点的地址*/</span><span class="p">);</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//如果前一个结点为空   </span>
+        <span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//那么将头指针指向要删除的结点的后一个结点   </span>
+    <span class="k">else</span>  
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">==</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="p">)</span>   
+            <span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="o">=</span><span class="n">q</span><span class="p">;</span>   
+        <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>   
+        <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>   
+        <span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="o">--</span><span class="p">;</span>   
+        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>  
+</code></pre></div></div> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+    
+<span class="cp">#include&lt;string.h&gt;   
+#include&lt;stdio.h&gt;   
+#include "list.h"   
+</span>    
+<span class="k">struct</span> <span class="n">STU</span>   
+<span class="p">{</span>   
+    <span class="kt">char</span> <span class="n">sno</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>   
+    <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="mi">21</span><span class="p">];</span>   
+    <span class="kt">int</span> <span class="n">age</span><span class="p">;</span>   
+    <span class="kt">float</span> <span class="n">score</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="p">{</span>   
+    <span class="p">{</span><span class="s">"s001"</span><span class="p">,</span><span class="s">"lin wu"</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">90</span><span class="p">},</span>   
+    <span class="p">{</span><span class="s">"s002"</span><span class="p">,</span><span class="s">"xiao ming"</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">91</span><span class="p">},</span>   
+    <span class="p">{</span><span class="s">"s003"</span><span class="p">,</span><span class="s">"wang wu"</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">100</span><span class="p">}</span>   
+<span class="p">};</span>   
+    
+<span class="kt">int</span> <span class="nf">CompareByName</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">info</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="k">struct</span> <span class="n">STU</span><span class="o">*</span> <span class="n">stu</span><span class="o">=</span><span class="p">(</span><span class="k">struct</span> <span class="n">STU</span><span class="o">*</span><span class="p">)</span><span class="n">info</span><span class="p">;</span>   
+    <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="o">=</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">key</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="n">strcmp</span><span class="p">(</span><span class="n">stu</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">,</span><span class="n">name</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="o">?</span><span class="mi">1</span><span class="o">:</span><span class="mi">0</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">CompareBySno</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">info</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="k">struct</span> <span class="n">STU</span><span class="o">*</span> <span class="n">stu</span><span class="o">=</span><span class="p">(</span><span class="k">struct</span> <span class="n">STU</span><span class="o">*</span><span class="p">)</span><span class="n">info</span><span class="p">;</span>   
+    <span class="kt">char</span> <span class="o">*</span><span class="n">sno</span><span class="o">=</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">key</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="n">strcmp</span><span class="p">(</span><span class="n">stu</span><span class="o">-&gt;</span><span class="n">sno</span><span class="p">,</span><span class="n">sno</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="o">?</span><span class="mi">1</span><span class="o">:</span><span class="mi">0</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>   
+    <span class="n">NODE</span> <span class="o">*</span><span class="n">res</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span><span class="c1">//存放找到的结果   </span>
+    <span class="kt">char</span> <span class="n">name</span><span class="p">[]</span><span class="o">=</span><span class="s">"xiao ming"</span><span class="p">,</span><span class="n">sno</span><span class="p">[]</span><span class="o">=</span><span class="s">"s001"</span><span class="p">;</span>   
+    <span class="n">LIST</span><span class="o">*</span> <span class="n">list</span><span class="o">=</span><span class="n">InitList</span><span class="p">();</span>   
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>   
+        <span class="n">AddNode</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="o">&amp;</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="k">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span>   
+    
+    <span class="n">res</span><span class="o">=</span><span class="n">FindNodeByKey</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">CompareByName</span><span class="p">);</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">res</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"NOT Find</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="k">else</span>  
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Find it</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    
+    <span class="k">if</span><span class="p">(</span><span class="n">DeleteListByKey</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="n">sno</span><span class="p">,</span><span class="n">CompareBySno</span><span class="p">))</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"delete success</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="c1">//在调试中可以这样看结点的值(struct STU*)list-&gt;head-&gt;data,(struct STU*)list-&gt;last-&gt;data   </span>
+    <span class="k">else</span>  
+        <span class="n">printf</span><span class="p">(</span><span class="s">"delete fail</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="双链表">双链表</h3> <p><strong>list.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//list.h   </span>
+    
+<span class="cp">#ifndef _LIST_H   
+#define _LIST_H   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">_node</span>   
+<span class="p">{</span>   
+    <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>   
+    <span class="k">struct</span> <span class="n">_node</span> <span class="o">*</span><span class="n">pior</span><span class="p">;</span>   
+    <span class="k">struct</span> <span class="n">_node</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">NODE</span><span class="p">;</span>   
+    
+<span class="k">typedef</span> <span class="k">struct</span>  
+<span class="p">{</span>   
+    <span class="n">NODE</span> <span class="o">*</span><span class="n">head</span><span class="p">;</span>   
+    <span class="n">NODE</span> <span class="o">*</span><span class="n">last</span><span class="p">;</span>   
+    <span class="kt">int</span> <span class="n">length</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">LIST</span><span class="p">;</span>   
+    
+<span class="n">LIST</span> <span class="o">*</span><span class="nf">InitList</span><span class="p">();</span>   
+<span class="kt">int</span> <span class="nf">InsertNode</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="kt">int</span> <span class="n">size</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">DeletNode</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">n</span><span class="p">);</span>   
+<span class="kt">void</span> <span class="nf">PrintList</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">page</span><span class="p">,</span><span class="kt">int</span> <span class="n">perp</span><span class="p">,</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="n">printNode</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">));</span>   
+<span class="kt">void</span> <span class="nf">ClearList</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="p">);</span>   
+<span class="kt">void</span> <span class="nf">DestroyList</span><span class="p">(</span><span class="n">LIST</span> <span class="o">**</span><span class="n">l</span><span class="p">);</span>   
+    
+    
+<span class="cp">#endif 
+</span></code></pre></div></div> <p><strong>list.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//list.c   </span>
+    
+<span class="cp">#include &lt;stdio.h&gt;   
+#include &lt;stdlib.h&gt;   
+#include &lt;string.h&gt;   
+#include "list.h"   
+</span>    
+<span class="n">LIST</span> <span class="o">*</span><span class="nf">InitList</span><span class="p">()</span><span class="c1">//初始化链表   </span>
+<span class="p">{</span>   
+    <span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="o">=</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">LIST</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">=</span><span class="p">(</span><span class="n">NODE</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">NODE</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+    <span class="n">memset</span><span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">NODE</span><span class="p">));</span>   
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="o">=</span><span class="p">(</span><span class="n">NODE</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">NODE</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+    <span class="n">memset</span><span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">NODE</span><span class="p">));</span>   
+    
+    <span class="c1">//l-&gt;head-&gt;pior==NULL;   </span>
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="p">;</span><span class="c1">//将头结点的后续指向尾结点   </span>
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="o">-&gt;</span><span class="n">pior</span><span class="o">=</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span><span class="c1">//将尾结点的前驱指向头结点   </span>
+    
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="n">l</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">InsertNode</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="c1">//插入结点   </span>
+<span class="p">{</span>   
+    <span class="n">NODE</span> <span class="o">*</span><span class="n">n</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span> <span class="c1">//定义一个空结点   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">data</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">size</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">)</span><span class="c1">//判断传入的参数是否合法   </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">n</span><span class="o">=</span><span class="p">(</span><span class="n">NODE</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">NODE</span><span class="p">));</span><span class="c1">//为结点分配空间   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>    
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">n</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">malloc</span><span class="p">(</span><span class="n">size</span><span class="p">);</span><span class="c1">//为结点的数据域分配空间   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">free</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">size</span><span class="p">);</span><span class="c1">//将传入的数据拷贝到结点的数据域当中   </span>
+    <span class="n">n</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="p">;</span>        <span class="c1">//它的后继指针指向尾结点   </span>
+    <span class="n">n</span><span class="o">-&gt;</span><span class="n">pior</span><span class="o">=</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="o">-&gt;</span><span class="n">pior</span><span class="p">;</span>  <span class="c1">//它的前驱指针指向尾结点的前一个   </span>
+    
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="o">-&gt;</span><span class="n">pior</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">n</span><span class="p">;</span>  <span class="c1">//把尾结点的前一个的后继指针指向它   </span>
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">last</span><span class="o">-&gt;</span><span class="n">pior</span><span class="o">=</span><span class="n">n</span><span class="p">;</span>        <span class="c1">//把尾结点前驱指针指向它   </span>
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="o">++</span><span class="p">;</span>            <span class="c1">//链表的长度加1   </span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">DeletNode</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="c1">//删除结点   </span>
+<span class="p">{</span>   
+    <span class="n">NODE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">n</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">||</span><span class="n">n</span><span class="o">&gt;</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="p">)</span><span class="c1">//判断传入的参数是否合法   </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">p</span><span class="o">=</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//将p指向头结点的下一个   </span>
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="p">)</span><span class="c1">//查找第n个结点   </span>
+    <span class="p">{</span>   
+        <span class="n">i</span><span class="o">++</span><span class="p">;</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">==</span><span class="n">n</span><span class="p">)</span>   
+            <span class="k">break</span><span class="p">;</span>   
+        <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">pior</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//将p的前一个的后继指针指向p的后一个   </span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">-&gt;</span><span class="n">pior</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">pior</span><span class="p">;</span><span class="c1">//将p的后一个的前驱指针指向p的前一个   </span>
+    <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span><span class="c1">//释放p结点的数据域   </span>
+    <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="p">);</span><span class="c1">//释放p结点   </span>
+    <span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="o">--</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">PrintList</span><span class="p">(</span><span class="n">LIST</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">page</span><span class="p">,</span><span class="kt">int</span> <span class="n">perP</span><span class="p">,</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="n">printNode</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">))</span><span class="c1">//分布打印链表中的数据   </span>
+<span class="p">{</span>   <span class="c1">//page为页的编号，perP为每页的结点数   </span>
+    <span class="kt">int</span> <span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">i</span><span class="p">;</span>   
+    <span class="n">NODE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">printNode</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//判断传入的参数是否有效   </span>
+        <span class="k">return</span><span class="p">;</span>   
+    <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="n">page</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">perP</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span><span class="c1">//将在某页面第一条要打印的数据所对映的结点所在链表中的位置   </span>
+    <span class="n">end</span><span class="o">=</span><span class="n">page</span><span class="o">*</span><span class="n">perP</span><span class="p">;</span><span class="c1">//将在某页面最后一条要打印的数据所对映的结点所在链表中的位置   </span>
+    <span class="n">p</span><span class="o">=</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//将p指向第一个数据结点   </span>
+    <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>   
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span> <span class="o">&amp;&amp;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">i</span><span class="o">++</span><span class="p">;</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">==</span><span class="n">start</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span><span class="c1">//定位到某页面的第一条要打印的数据   </span>
+        <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="k">for</span><span class="p">(;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">end</span> <span class="o">&amp;&amp;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="c1">//打印某一页面的数据，直到最后一条   </span>
+    <span class="p">{</span>   
+        <span class="n">printNode</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>   
+        <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+    <span class="p">}</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">ClearList</span><span class="p">(</span><span class="n">LIST</span><span class="o">*</span> <span class="n">l</span><span class="p">)</span><span class="c1">//清空链表   </span>
+<span class="p">{</span>   
+    <span class="n">NODE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span><span class="p">;</span>   
+    <span class="cm">/*  
+    //方法一  
+    while(l-&gt;length)  
+        DeleteNode(l,1);  
+    */</span>  
+    
+    <span class="c1">//方法二   </span>
+    <span class="k">while</span><span class="p">(</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">p</span><span class="o">=</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//把p指向第一数据结点   </span>
+        <span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//把头结点的前驱指针指向p的下一个(第一个数据结点)   </span>
+        <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">-&gt;</span><span class="n">pior</span><span class="o">=</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span><span class="c1">//把p的下一个的前驱指针指向头结点   </span>
+        <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span><span class="c1">//释放p指向的结点的数据域   </span>
+        <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="p">);</span><span class="c1">//释放p结点   </span>
+        <span class="n">l</span><span class="o">-&gt;</span><span class="n">length</span><span class="o">--</span><span class="p">;</span><span class="c1">//链表长度减1   </span>
+    <span class="p">}</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">DestroyList</span><span class="p">(</span><span class="n">LIST</span> <span class="o">**</span><span class="n">l</span><span class="p">)</span><span class="c1">//删除链表   </span>
+<span class="p">{</span>   
+    <span class="n">LIST</span> <span class="o">*</span><span class="n">p</span><span class="o">=*</span><span class="n">l</span><span class="p">;</span>   
+    <span class="c1">//定义一个指向链表l的p指针,并将传入的指向链表的指针变量的值*l,即(*&amp;list)赋给它   </span>
+    <span class="c1">//这里指向链表的指针变量的值*l是链表的地址   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>   
+    <span class="n">ClearList</span><span class="p">(</span><span class="n">p</span><span class="p">);</span><span class="c1">//清空链表   </span>
+    <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">);</span><span class="c1">//释放头结点   </span>
+    <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">last</span><span class="p">);</span><span class="c1">//释放尾结点   </span>
+    <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="p">);</span><span class="c1">//释放指针变量   </span>
+    <span class="c1">//p=NULL;   </span>
+    <span class="o">*</span><span class="n">l</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span><span class="c1">//将指向链表的指针的值赋成空值，即将指向已经销毁了的链表的指针指向空值   </span>
+<span class="p">}</span> 
+</code></pre></div></div> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+    
+<span class="cp">#include&lt;stdio.h&gt;   
+#include "list.h"   
+</span>    
+<span class="kt">double</span> <span class="n">d</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="mi">10</span><span class="p">.</span><span class="mi">23</span><span class="p">,</span><span class="mi">34</span><span class="p">.</span><span class="mi">23</span><span class="p">,</span><span class="mi">54</span><span class="p">.</span><span class="mi">65</span><span class="p">,</span><span class="mi">122</span><span class="p">,</span><span class="mi">35</span><span class="p">.</span><span class="mi">5</span><span class="p">};</span>   
+    
+<span class="kt">void</span> <span class="nf">PrintData</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span><span class="c1">//打印数据   </span>
+<span class="p">{</span>   
+    <span class="kt">double</span> <span class="o">*</span><span class="n">d</span><span class="o">=</span><span class="p">(</span><span class="kt">double</span><span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">;</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"d=%lf</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="o">*</span><span class="n">d</span><span class="p">);</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>   
+    <span class="n">LIST</span> <span class="o">*</span><span class="n">list</span><span class="o">=</span><span class="n">InitList</span><span class="p">();</span>   
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>   
+        <span class="n">InsertNode</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="o">&amp;</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="k">sizeof</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span>   
+    <span class="n">PrintList</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">PrintData</span><span class="p">);</span>   
+    
+    <span class="n">DestroyList</span><span class="p">(</span><span class="o">&amp;</span><span class="n">list</span><span class="p">);</span><span class="c1">//删除链表   </span>
+    <span class="c1">//&amp;list 传递指向链表的指针变量地址给DestroyList函数   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">list</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"list is NULL</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="k">else</span>  
+        <span class="n">printf</span><span class="p">(</span><span class="s">"list is not NULL</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+<span class="p">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/C_CPP/2011-06-12-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E7%BA%BF%E6%80%A7%E8%A1%A8%E3%80%81%E5%8D%95%E9%93%BE%E8%A1%A8%E5%8F%8A%E5%8F%8C%E9%93%BE%E8%A1%A8.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=数据结构-线性表、单链表及双链表 - 知不知&amp;url=/list/docs/C_CPP/2011-06-12-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E7%BA%BF%E6%80%A7%E8%A1%A8%E3%80%81%E5%8D%95%E9%93%BE%E8%A1%A8%E5%8F%8A%E5%8F%8C%E9%93%BE%E8%A1%A8.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/C_CPP/2011-06-12-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E7%BA%BF%E6%80%A7%E8%A1%A8%E3%80%81%E5%8D%95%E9%93%BE%E8%A1%A8%E5%8F%8A%E5%8F%8C%E9%93%BE%E8%A1%A8.html&amp;title=数据结构-线性表、单链表及双链表 - 知不知&amp;summary=数据结构之线性表、单链表及双链表&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/C_CPP/2011-06-12-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E7%BA%BF%E6%80%A7%E8%A1%A8%E3%80%81%E5%8D%95%E9%93%BE%E8%A1%A8%E5%8F%8A%E5%8F%8C%E9%93%BE%E8%A1%A8.html&amp;text=数据结构-线性表、单链表及双链表 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/C_CPP/2011-06-12-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E7%BA%BF%E6%80%A7%E8%A1%A8%E3%80%81%E5%8D%95%E9%93%BE%E8%A1%A8%E5%8F%8A%E5%8F%8C%E9%93%BE%E8%A1%A8.html&amp;t=数据结构-线性表、单链表及双链表 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/C_CPP/2011-06-12-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E7%BA%BF%E6%80%A7%E8%A1%A8%E3%80%81%E5%8D%95%E9%93%BE%E8%A1%A8%E5%8F%8A%E5%8F%8C%E9%93%BE%E8%A1%A8.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('数据结构-线性表、单链表及双链表'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

@@ -1,0 +1,675 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>数据结构-栈、队列及迷宫求解的应用</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="栈">栈</h3> <p><strong>stack.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//stack.h   </span>
+    
+<span class="cp">#ifndef _STACK_H   
+#define _STACK_H   
+</span>    
+<span class="cp">#include "stack.h"   
+#include "data.h"   
+</span>    
+<span class="cp">#define ElemType TREE*   
+</span>    
+<span class="cp">#define STACK_INIT_SIZE 10   
+#define STACK_INCREME 10   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span>  
+<span class="p">{</span>   
+    <span class="n">ElemType</span> <span class="o">*</span><span class="n">base</span><span class="p">;</span>   
+    <span class="n">ElemType</span> <span class="o">*</span><span class="n">top</span><span class="p">;</span>   
+    <span class="kt">int</span> <span class="n">size</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">STACK</span><span class="p">;</span>   
+    
+<span class="n">STACK</span> <span class="o">*</span><span class="nf">InitStack</span><span class="p">();</span>   
+<span class="kt">void</span> <span class="nf">DestroyStack</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">Push</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">Pop</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">IsEmpty</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">);</span>   
+    
+<span class="cp">#endif
+</span></code></pre></div></div> <p><strong>stack.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//stack.c   </span>
+    
+<span class="cp">#include&lt;stdio.h&gt;   
+#include&lt;stdlib.h&gt;   
+#include "stack.h"   
+</span>    
+<span class="n">STACK</span> <span class="o">*</span> <span class="nf">InitStack</span><span class="p">()</span> <span class="c1">//初始化一个栈   </span>
+<span class="p">{</span>   
+    <span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="o">=</span><span class="p">(</span><span class="n">STACK</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">STACK</span><span class="p">));</span><span class="c1">//初始化一个栈   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">=</span><span class="p">(</span><span class="n">ElemType</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">STACK_INIT_SIZE</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ElemType</span><span class="p">));</span><span class="c1">//为栈分配一个初始大小   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//如果栈底指针指向空   </span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="p">;</span> <span class="c1">//空栈，使栈底与栈顶指针相同   </span>
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">=</span><span class="n">STACK_INIT_SIZE</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="n">s</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">DestroyStack</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="c1">//销毁一个栈   </span>
+<span class="p">{</span>   
+    <span class="n">free</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="p">);</span>   
+    <span class="n">free</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">Push</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="c1">//压栈   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">e</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//判断传入的参数是否合法   </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">-</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">&gt;=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">)</span><span class="c1">//如果满栈   </span>
+    <span class="p">{</span>   
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">=</span><span class="p">(</span><span class="n">ElemType</span><span class="o">*</span><span class="p">)</span><span class="n">realloc</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="p">,</span>   
+            <span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">+</span><span class="n">STACK_INCREME</span><span class="p">)</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ElemType</span><span class="p">));</span><span class="c1">//重新分配栈的大小   </span>
+        <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//如果分配失败，返回零   </span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">+</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span><span class="c1">//重置栈顶指针   </span>
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">+</span><span class="n">STACK_INCREME</span><span class="p">;</span><span class="c1">//重置栈大小   </span>
+    <span class="p">}</span>   
+    <span class="cm">/*  
+    //写法一  
+    *s-&gt;top=*e;//将数据存到栈顶  
+    s-&gt;top++; //栈顶上移  
+    */</span>  
+    <span class="c1">//写法二   </span>
+    <span class="o">*</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">++=*</span><span class="n">e</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">Pop</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="c1">//出栈   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">e</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//判断传入的参数是否合法   </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">==</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">//如果是空栈，返回   </span>
+    <span class="o">*</span><span class="n">e</span><span class="o">=</span> <span class="o">*--</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">;</span> <span class="c1">//将栈顶元素存到*e中   </span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">IsEmpty</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="c1">//判断栈是否为空   </span>
+<span class="p">{</span>   
+    <span class="k">return</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">==</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span> <span class="o">?</span> <span class="mi">1</span><span class="o">:</span><span class="mi">0</span><span class="p">;</span>   
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>data.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//data.h   </span>
+    
+<span class="cp">#ifndef _DATA_H   
+#define _STACK_H   
+</span>    
+<span class="k">typedef</span> <span class="kt">int</span> <span class="n">ElemType</span><span class="p">;</span> <span class="c1">//定义一个ElemType类型   </span>
+    
+<span class="cp">#endif 
+</span></code></pre></div></div> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+<span class="c1">//将十进制数转换成八进制数   </span>
+<span class="cp">#include &lt;stdio.h&gt;   
+#include "stack.h"   
+</span>    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">num</span><span class="o">=</span><span class="mi">1348</span><span class="p">,</span><span class="n">temp</span><span class="p">;</span>   
+    <span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="o">=</span> <span class="n">InitStack</span><span class="p">();</span>   
+    <span class="k">while</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">temp</span><span class="o">=</span><span class="n">num</span> <span class="o">%</span> <span class="mi">8</span><span class="p">;</span>   
+        <span class="n">Push</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">);</span>   
+        <span class="n">num</span><span class="o">/=</span><span class="mi">8</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"result is:"</span><span class="p">);</span>   
+    <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>   
+    <span class="p">{</span>   
+        <span class="n">Pop</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">);</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="n">temp</span><span class="p">);</span>   
+    <span class="p">}</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="n">DestroyStack</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>   
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="迷宫求解栈的应用">迷宫求解——栈的应用</h3> <p><strong>stack.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//stack.h   </span>
+    
+<span class="cp">#ifndef _STACK_H   
+#define _STACK_H   
+</span>    
+<span class="cp">#include "data.h"   
+</span>    
+<span class="cp">#define STACK_INIT_SIZE 10   
+#define STACK_INCREME 10   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span>  
+<span class="p">{</span>   
+    <span class="n">ElemType</span> <span class="o">*</span><span class="n">base</span><span class="p">;</span>   
+    <span class="n">ElemType</span> <span class="o">*</span><span class="n">top</span><span class="p">;</span>   
+    <span class="kt">int</span> <span class="n">size</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">STACK</span><span class="p">;</span>   
+    
+<span class="n">STACK</span> <span class="o">*</span><span class="nf">InitStack</span><span class="p">();</span>   
+<span class="kt">void</span> <span class="nf">DestroyStack</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">Push</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">Pop</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">IsEmpty</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">);</span>   
+    
+<span class="cp">#endif  
+</span></code></pre></div></div> <p><strong>stack.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//stack.c   </span>
+    
+<span class="cp">#include&lt;stdio.h&gt;   
+#include&lt;stdlib.h&gt;   
+#include "stack.h"   
+</span>    
+<span class="n">STACK</span> <span class="o">*</span> <span class="nf">InitStack</span><span class="p">()</span> <span class="c1">//初始化一个栈   </span>
+<span class="p">{</span>   
+    <span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="o">=</span><span class="p">(</span><span class="n">STACK</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">STACK</span><span class="p">));</span><span class="c1">//初始化一个栈   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">=</span><span class="p">(</span><span class="n">ElemType</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">STACK_INIT_SIZE</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ElemType</span><span class="p">));</span><span class="c1">//为栈分配一个初始大小   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//如果栈底指针指向空   </span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="p">;</span> <span class="c1">//空栈，使栈底与栈顶指针相同   </span>
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">=</span><span class="n">STACK_INIT_SIZE</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="n">s</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">DestroyStack</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="c1">//销毁一个栈   </span>
+<span class="p">{</span>   
+    <span class="n">free</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="p">);</span>   
+    <span class="n">free</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">Push</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="c1">//压栈   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">e</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//判断传入的参数是否合法   </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">-</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">&gt;=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">)</span><span class="c1">//如果满栈   </span>
+    <span class="p">{</span>   
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">=</span><span class="p">(</span><span class="n">ElemType</span><span class="o">*</span><span class="p">)</span><span class="n">realloc</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="p">,</span>   
+            <span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">+</span><span class="n">STACK_INCREME</span><span class="p">)</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ElemType</span><span class="p">));</span><span class="c1">//重新分配栈的大小   </span>
+        <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//如果分配失败，返回零   </span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">+</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span><span class="c1">//重置栈顶指针   </span>
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">+</span><span class="n">STACK_INCREME</span><span class="p">;</span><span class="c1">//重置栈大小   </span>
+    <span class="p">}</span>   
+    <span class="cm">/*  
+    //写法一  
+    *s-&gt;top=*e;//将数据存到栈顶  
+    s-&gt;top++; //栈顶上移  
+    */</span>  
+    <span class="c1">//写法二   </span>
+    <span class="o">*</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">++=*</span><span class="n">e</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">Pop</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="c1">//出栈   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">e</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//判断传入的参数是否合法   </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">==</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">//如果是空栈，返回   </span>
+    <span class="o">*</span><span class="n">e</span><span class="o">=</span> <span class="o">*--</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">;</span> <span class="c1">//将栈顶元素存到*e中   </span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">IsEmpty</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="c1">//判断栈是否为空   </span>
+<span class="p">{</span>   
+    <span class="k">return</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">==</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span> <span class="o">?</span> <span class="mi">1</span><span class="o">:</span><span class="mi">0</span><span class="p">;</span>   
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>data.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//data.h   </span>
+    
+<span class="cp">#ifndef _DATA_H   
+#define _DATA_H   
+</span>    
+<span class="cp">#include "stack.h"   
+#include&lt;stdio.h&gt;   
+</span>    
+<span class="c1">//typedef int ElemType;   </span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="c1">//位置   </span>
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">x</span><span class="p">;</span>   
+    <span class="kt">int</span> <span class="n">y</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">POS</span><span class="p">;</span>    
+    
+<span class="k">typedef</span> <span class="k">struct</span> <span class="c1">//要存放在栈中的元素的类型   </span>
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">sno</span><span class="p">;</span> <span class="c1">//编号   </span>
+    <span class="n">POS</span> <span class="n">seat</span><span class="p">;</span> <span class="c1">//位置   </span>
+    <span class="kt">int</span> <span class="n">di</span><span class="p">;</span> <span class="c1">//朝向   </span>
+<span class="p">}</span><span class="n">ElemType</span><span class="p">;</span>   
+    
+<span class="cp">#endif 
+</span></code></pre></div></div> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+    
+<span class="cp">#include "stack.h"   
+#include "data.h"   
+#include &lt;stdio.h&gt;   
+#include &lt;conio.h&gt;   
+#include &lt;stdlib.h&gt;   
+</span>    
+<span class="kt">int</span> <span class="n">item</span><span class="p">[</span><span class="mi">10</span><span class="p">][</span><span class="mi">10</span><span class="p">]</span><span class="o">=</span><span class="p">{</span>   
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>   
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>   
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>   
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>   
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>   
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>   
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>   
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>   
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>   
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span>   
+<span class="p">};</span>   
+<span class="k">static</span> <span class="k">const</span> <span class="n">POS</span> <span class="n">inPos</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span><span class="n">outPos</span><span class="o">=</span><span class="p">{</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">};</span>   
+<span class="c1">//入口(开始位置)与出口(结束位置)   </span>
+<span class="kt">int</span> <span class="nf">IsPass</span><span class="p">(</span><span class="n">POS</span> <span class="n">curP</span><span class="p">)</span> <span class="c1">//是否可通，为0可通，为1不可通   </span>
+<span class="p">{</span>   
+    <span class="k">return</span> <span class="n">item</span><span class="p">[</span><span class="n">curP</span><span class="p">.</span><span class="n">y</span><span class="p">][</span><span class="n">curP</span><span class="p">.</span><span class="n">x</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span> <span class="o">?</span> <span class="mi">1</span><span class="o">:</span><span class="mi">0</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="n">POS</span> <span class="nf">NextPos</span><span class="p">(</span><span class="n">POS</span> <span class="n">curP</span><span class="p">,</span><span class="kt">int</span> <span class="n">di</span><span class="p">)</span><span class="c1">//指向下一个位置,di表示方向   </span>
+<span class="p">{</span>   
+    <span class="n">POS</span> <span class="n">p</span><span class="o">=</span><span class="n">curP</span><span class="p">;</span>   
+    <span class="k">switch</span><span class="p">(</span><span class="n">di</span><span class="p">)</span>   
+    <span class="p">{</span>   
+    <span class="k">case</span> <span class="mi">0</span><span class="p">:</span> <span class="c1">//向右边   </span>
+        <span class="n">p</span><span class="p">.</span><span class="n">x</span><span class="o">++</span><span class="p">;</span>   
+        <span class="k">break</span><span class="p">;</span>   
+    <span class="k">case</span> <span class="mi">1</span><span class="p">:</span> <span class="c1">//向下边   </span>
+        <span class="n">p</span><span class="p">.</span><span class="n">y</span><span class="o">++</span><span class="p">;</span>   
+        <span class="k">break</span><span class="p">;</span>   
+    <span class="k">case</span> <span class="mi">2</span><span class="p">:</span> <span class="c1">//向右边   </span>
+        <span class="n">p</span><span class="p">.</span><span class="n">x</span><span class="o">--</span><span class="p">;</span>   
+        <span class="k">break</span><span class="p">;</span>   
+    <span class="k">case</span> <span class="mi">3</span><span class="p">:</span> <span class="c1">//指向上一个   </span>
+        <span class="n">p</span><span class="p">.</span><span class="n">y</span><span class="o">--</span><span class="p">;</span>   
+        <span class="k">break</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="k">return</span> <span class="n">p</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">PrintItem</span><span class="p">(</span><span class="n">POS</span> <span class="n">curP</span><span class="p">)</span> <span class="c1">//打印迷宫   </span>
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">;</span>   
+    <span class="n">system</span><span class="p">(</span><span class="s">"cls"</span><span class="p">);</span> <span class="c1">//清空屏幕   </span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">==</span><span class="n">curP</span><span class="p">.</span><span class="n">y</span> <span class="o">&amp;&amp;</span> <span class="n">j</span><span class="o">==</span><span class="n">curP</span><span class="p">.</span><span class="n">x</span><span class="p">)</span> <span class="c1">//如果是开始位置   </span>
+            <span class="p">{</span>   
+                <span class="n">printf</span><span class="p">(</span><span class="s">"⊙"</span><span class="p">);</span>   
+                <span class="k">continue</span><span class="p">;</span>   
+            <span class="p">}</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span> <span class="c1">//如果不可通   </span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"■"</span><span class="p">);</span>   
+            <span class="k">else</span>            <span class="c1">//可通   </span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"　"</span><span class="p">);</span>   
+        <span class="p">}</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="p">}</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="n">ElemType</span> <span class="n">e</span><span class="p">;</span> <span class="c1">//用于存放于栈中的元素结点   </span>
+    <span class="kt">int</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> <span class="c1">//位置计数，第几步   </span>
+    <span class="n">POS</span> <span class="n">curPos</span><span class="o">=</span><span class="n">inPos</span><span class="p">;</span> <span class="c1">//当前位置   </span>
+    <span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="o">=</span><span class="n">InitStack</span><span class="p">();</span><span class="c1">//初始化栈   </span>
+    <span class="n">PrintItem</span><span class="p">(</span><span class="n">inPos</span><span class="p">);</span> <span class="c1">//打印入口点，开始位置   </span>
+    <span class="n">getch</span><span class="p">();</span> <span class="c1">//等待读入字符，暂停作用   </span>
+    <span class="k">do</span>  
+    <span class="p">{</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">IsPass</span><span class="p">(</span><span class="n">curPos</span><span class="p">))</span> <span class="c1">//如果是当前位置可通   </span>
+        <span class="p">{</span>   
+            <span class="n">e</span><span class="p">.</span><span class="n">sno</span><span class="o">=</span><span class="n">step</span><span class="p">;</span> <span class="c1">//当前计数赋给结点的编号   </span>
+            <span class="n">e</span><span class="p">.</span><span class="n">di</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="c1">//朝向，默认向左   </span>
+            <span class="n">e</span><span class="p">.</span><span class="n">seat</span><span class="o">=</span><span class="n">curPos</span><span class="p">;</span>  <span class="c1">//当前位置   </span>
+            <span class="n">Push</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="o">&amp;</span><span class="n">e</span><span class="p">);</span> <span class="c1">//把当前位置压入栈顶   </span>
+            <span class="n">item</span><span class="p">[</span><span class="n">curPos</span><span class="p">.</span><span class="n">y</span><span class="p">][</span><span class="n">curPos</span><span class="p">.</span><span class="n">x</span><span class="p">]</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span><span class="c1">//修改item中的值，保存足迹   </span>
+            <span class="k">if</span><span class="p">(</span><span class="n">curPos</span><span class="p">.</span><span class="n">y</span><span class="o">==</span><span class="n">outPos</span><span class="p">.</span><span class="n">y</span> <span class="o">&amp;&amp;</span> <span class="n">curPos</span><span class="p">.</span><span class="n">x</span><span class="o">==</span><span class="n">outPos</span><span class="p">.</span><span class="n">x</span><span class="p">)</span> <span class="c1">//如果是出口   </span>
+            <span class="p">{</span>   
+                <span class="n">PrintItem</span><span class="p">(</span><span class="n">curPos</span><span class="p">);</span> <span class="c1">//打印当前位置   </span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"OK!迷宫走完！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> <span class="c1">//完成   </span>
+                <span class="k">break</span><span class="p">;</span>   
+            <span class="p">}</span>   
+            <span class="n">PrintItem</span><span class="p">(</span><span class="n">curPos</span><span class="p">);</span> <span class="c1">//打印当前位置   </span>
+            <span class="n">getch</span><span class="p">();</span> <span class="c1">//等待读入字符，暂停作用   </span>
+            <span class="n">curPos</span><span class="o">=</span><span class="n">NextPos</span><span class="p">(</span><span class="n">curPos</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span> <span class="c1">//将栈顶位置指向栈顶位置左边的方块   </span>
+            <span class="n">step</span><span class="o">++</span><span class="p">;</span> <span class="c1">//位置计数器加1   </span>
+        <span class="p">}</span>   
+        <span class="k">else</span>    <span class="c1">//当前位置不可通，则   </span>
+        <span class="p">{</span>   
+            <span class="n">Pop</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="o">&amp;</span><span class="n">e</span><span class="p">);</span><span class="c1">//取出栈顶结点   </span>
+            <span class="k">while</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">di</span><span class="o">==</span><span class="mi">4</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span><span class="c1">//若栈不为空且栈顶方块位置的四周都不可通   </span>
+            <span class="p">{</span>   
+                <span class="n">item</span><span class="p">[</span><span class="n">curPos</span><span class="p">.</span><span class="n">y</span><span class="p">][</span><span class="n">curPos</span><span class="p">.</span><span class="n">x</span><span class="p">]</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span> <span class="c1">//修改item的值，把不可通的位置，保存不可通的足迹   </span>
+                <span class="n">Pop</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="o">&amp;</span><span class="n">e</span><span class="p">);</span> <span class="c1">//出栈，删去栈顶位置   </span>
+            <span class="p">}</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">di</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">)</span> <span class="c1">//若栈不为空且还有其他方向未经探索   </span>
+            <span class="p">{</span>   
+                <span class="n">e</span><span class="p">.</span><span class="n">di</span><span class="o">++</span><span class="p">;</span> <span class="c1">//改变方向   </span>
+                <span class="n">Push</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="o">&amp;</span><span class="n">e</span><span class="p">);</span> <span class="c1">//把出栈的结点重新压入栈   </span>
+                <span class="n">curPos</span><span class="o">=</span><span class="n">NextPos</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">seat</span><span class="p">,</span><span class="n">e</span><span class="p">.</span><span class="n">di</span><span class="p">);</span> <span class="c1">//以新的方向往下找   </span>
+            <span class="p">}</span>   
+        <span class="p">}</span>   
+    <span class="p">}</span><span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">s</span><span class="p">));</span>   
+    <span class="n">getch</span><span class="p">();</span> <span class="c1">//等待读入字符，暂停作用   </span>
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="简单队列">简单队列</h3> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+    
+<span class="c1">//利用数组创建队列   </span>
+    
+<span class="cp">#include &lt;stdio.h&gt;   
+</span>    
+<span class="cp">#define MAX_SIZE 10   
+</span>    
+<span class="kt">int</span> <span class="n">queue</span><span class="p">[</span><span class="n">MAX_SIZE</span><span class="p">];</span> <span class="c1">//   </span>
+    
+<span class="kt">int</span> <span class="n">rear</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="c1">//队尾   </span>
+<span class="kt">int</span> <span class="n">front</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="c1">//队头   </span>
+    
+<span class="kt">int</span> <span class="nf">InQueue</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span><span class="c1">//进队列   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">rear</span><span class="o">&gt;=</span><span class="n">MAX_SIZE</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">rear</span><span class="o">++</span><span class="p">;</span>   
+    <span class="n">queue</span><span class="p">[</span><span class="n">rear</span><span class="p">]</span><span class="o">=</span><span class="n">value</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">OutQueue</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">value</span><span class="p">)</span><span class="c1">//出队列   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">front</span> <span class="o">==</span> <span class="n">rear</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">front</span><span class="o">++</span><span class="p">;</span>   
+    <span class="o">*</span><span class="n">value</span><span class="o">=</span><span class="n">queue</span><span class="p">[</span><span class="n">front</span><span class="p">];</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">temp</span><span class="p">;</span>   
+    
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"1:存入；2：读取；=》："</span><span class="p">);</span>   
+        <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">);</span>   
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">temp</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="n">printf</span><span class="p">(</span><span class="s">"请输入要存入的值："</span><span class="p">);</span>   
+            <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">);</span>   
+            <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">InQueue</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>   
+                <span class="n">printf</span><span class="p">(</span><span class="s">"插入队列成功</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+            <span class="k">else</span>  
+                <span class="n">printf</span><span class="p">(</span><span class="s">"队列已满！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+        <span class="p">}</span>   
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">temp</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">OutQueue</span><span class="p">(</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">))</span>   
+            <span class="p">{</span>   
+                <span class="n">printf</span><span class="p">(</span><span class="s">"读取队列的值为：%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">temp</span><span class="p">);</span>   
+            <span class="p">}</span>   
+            <span class="k">else</span>  
+            <span class="p">{</span>   
+                <span class="n">printf</span><span class="p">(</span><span class="s">"队列为空!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+            <span class="p">}</span>   
+        <span class="p">}</span>   
+        <span class="k">else</span>  
+            <span class="k">break</span><span class="p">;</span>   
+    <span class="p">}</span>   
+<span class="p">}</span> 
+</code></pre></div></div> <h3 id="循环队列">循环队列</h3> <p><strong>mian.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+    
+<span class="c1">//利用数组创建队列   </span>
+    
+<span class="cp">#include &lt;stdio.h&gt;   
+</span>    
+<span class="cp">#define MAX_SIZE 10   
+</span>    
+<span class="kt">int</span> <span class="n">queue</span><span class="p">[</span><span class="n">MAX_SIZE</span><span class="p">];</span> <span class="c1">//   </span>
+    
+<span class="kt">int</span> <span class="n">rear</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="c1">//队尾   </span>
+<span class="kt">int</span> <span class="n">front</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="c1">//队头   </span>
+    
+<span class="kt">int</span> <span class="nf">InQueue</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span><span class="c1">//进队列   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">front</span><span class="o">==-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">rear</span><span class="o">==</span><span class="n">MAX_SIZE</span><span class="o">-</span><span class="mi">1</span><span class="o">||</span><span class="n">rear</span><span class="o">+</span><span class="mi">1</span><span class="o">==</span><span class="n">front</span><span class="p">)</span><span class="c1">//判断队列是否已满   </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">rear</span><span class="o">++</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">rear</span><span class="o">==</span><span class="n">MAX_SIZE</span><span class="p">)</span>  <span class="n">rear</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>   
+    <span class="n">queue</span><span class="p">[</span><span class="n">rear</span><span class="p">]</span><span class="o">=</span><span class="n">value</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">OutQueue</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">value</span><span class="p">)</span><span class="c1">//出队列   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">rear</span><span class="o">==</span><span class="n">front</span><span class="p">)</span><span class="c1">//判断队列是否为空   </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">front</span><span class="o">++</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">front</span><span class="o">==</span><span class="n">MAX_SIZE</span><span class="p">)</span> <span class="n">front</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>   
+    <span class="o">*</span><span class="n">value</span><span class="o">=</span><span class="n">queue</span><span class="p">[</span><span class="n">front</span><span class="p">];</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">temp</span><span class="p">;</span>   
+    
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"1:存入；2：读取；=》："</span><span class="p">);</span>   
+        <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">);</span>   
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">temp</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="n">printf</span><span class="p">(</span><span class="s">"请输入要存入的值："</span><span class="p">);</span>   
+            <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">);</span>   
+            <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">InQueue</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>   
+                <span class="n">printf</span><span class="p">(</span><span class="s">"插入队列成功</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+            <span class="k">else</span>  
+                <span class="n">printf</span><span class="p">(</span><span class="s">"队列已满！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+        <span class="p">}</span>   
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">temp</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">OutQueue</span><span class="p">(</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">))</span>   
+            <span class="p">{</span>   
+                <span class="n">printf</span><span class="p">(</span><span class="s">"读取队列的值为：%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">temp</span><span class="p">);</span>   
+            <span class="p">}</span>   
+            <span class="k">else</span>  
+            <span class="p">{</span>   
+                <span class="n">printf</span><span class="p">(</span><span class="s">"队列为空!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+            <span class="p">}</span>   
+        <span class="p">}</span>   
+        <span class="k">else</span>  
+            <span class="k">break</span><span class="p">;</span>   
+    <span class="p">}</span>   
+<span class="p">}</span> 
+</code></pre></div></div> <h3 id="双队列示例1">双队列——示例1</h3> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+    
+<span class="c1">//双队列   </span>
+    
+<span class="cp">#include&lt;stdio.h&gt;   
+#include&lt;stdlib.h&gt;   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">_queue</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>   
+    <span class="k">struct</span> <span class="n">_queue</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">QUEUE</span><span class="p">;</span>   
+    
+<span class="n">QUEUE</span> <span class="o">*</span> <span class="n">rear</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+<span class="n">QUEUE</span> <span class="o">*</span> <span class="n">front</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    
+<span class="c1">//输入限制型双队列   </span>
+<span class="kt">int</span> <span class="nf">InQueue</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="n">QUEUE</span> <span class="o">*</span> <span class="n">q</span><span class="o">=</span><span class="p">(</span><span class="n">QUEUE</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">QUEUE</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">value</span><span class="p">;</span>   
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">front</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="n">front</span><span class="o">=</span><span class="n">q</span><span class="p">;</span>   
+    <span class="k">else</span>  
+        <span class="n">rear</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">q</span><span class="p">;</span>   
+    <span class="n">rear</span><span class="o">=</span><span class="n">q</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">OutQueueByFront</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">value</span><span class="p">)</span> <span class="c1">//从队头取数据   </span>
+<span class="p">{</span>   
+    <span class="n">QUEUE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">front</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">p</span><span class="o">=</span><span class="n">front</span><span class="p">;</span>   
+    <span class="n">front</span><span class="o">=</span><span class="n">front</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+    <span class="o">*</span><span class="n">value</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>   
+    <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">OutQueueByRear</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">value</span><span class="p">)</span> <span class="c1">//从队尾取数据   </span>
+<span class="p">{</span>   
+    <span class="n">QUEUE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">rear</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//如果队列为空   </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">rear</span><span class="o">==</span><span class="n">front</span><span class="p">)</span> <span class="c1">//如果队列中只有一个数据   </span>
+    <span class="p">{</span>   
+        <span class="o">*</span><span class="n">value</span><span class="o">=</span><span class="n">rear</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>   
+        <span class="n">free</span><span class="p">(</span><span class="n">rear</span><span class="p">);</span>   
+        <span class="n">rear</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+        <span class="n">front</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="k">else</span> <span class="c1">//   </span>
+    <span class="p">{</span>   
+        <span class="n">p</span><span class="o">=</span><span class="n">front</span><span class="p">;</span>   
+        <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">!=</span><span class="n">rear</span><span class="p">)</span><span class="c1">//当p不等于最后一个的前一个   </span>
+            <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+        <span class="o">*</span><span class="n">value</span><span class="o">=</span><span class="n">rear</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>   
+        <span class="n">free</span><span class="p">(</span><span class="n">rear</span><span class="p">);</span>   
+        <span class="n">rear</span><span class="o">=</span><span class="n">p</span><span class="p">;</span>   
+        <span class="n">rear</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">res</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">arr</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">};</span>   
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>   
+        <span class="n">InQueue</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>   
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"1:从队头取出；2：从队尾取出；3：退出=&gt;"</span><span class="p">);</span>   
+        <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">res</span><span class="p">);</span>   
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">res</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">OutQueueByFront</span><span class="p">(</span><span class="o">&amp;</span><span class="n">res</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>   
+                <span class="n">printf</span><span class="p">(</span><span class="s">"取出的值为：%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">res</span><span class="p">);</span>   
+            <span class="k">else</span>  
+                <span class="n">printf</span><span class="p">(</span><span class="s">"队列为空！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+        <span class="p">}</span>   
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">res</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">OutQueueByRear</span><span class="p">(</span><span class="o">&amp;</span><span class="n">res</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>   
+                <span class="n">printf</span><span class="p">(</span><span class="s">"取出的值为：%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">res</span><span class="p">);</span>   
+            <span class="k">else</span>  
+                <span class="n">printf</span><span class="p">(</span><span class="s">"队列为空！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+        <span class="p">}</span>   
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">res</span><span class="o">==</span><span class="mi">3</span><span class="p">)</span>   
+            <span class="k">break</span><span class="p">;</span>   
+    <span class="p">}</span>   
+<span class="p">}</span>  
+</code></pre></div></div> <h3 id="双队列示例2">双队列——示例2</h3> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+    
+<span class="c1">//输出限制型双队列   </span>
+    
+<span class="cp">#include&lt;stdio.h&gt;   
+#include&lt;stdlib.h&gt;   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">_queue</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>   
+    <span class="k">struct</span> <span class="n">_queue</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">QUEUE</span><span class="p">;</span>   
+    
+<span class="n">QUEUE</span> <span class="o">*</span> <span class="n">rear</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+<span class="n">QUEUE</span> <span class="o">*</span> <span class="n">front</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    
+<span class="c1">//输出限制型双队列   </span>
+<span class="kt">int</span> <span class="nf">OutQueue</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">value</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="n">QUEUE</span> <span class="o">*</span> <span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">front</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">p</span><span class="o">=</span><span class="n">front</span><span class="p">;</span>   
+    <span class="n">front</span><span class="o">=</span><span class="n">front</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+    <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>   
+    <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">InQueueByRear</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="n">QUEUE</span> <span class="o">*</span><span class="n">q</span><span class="o">=</span><span class="p">(</span><span class="n">QUEUE</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">QUEUE</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">value</span><span class="p">;</span>   
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">rear</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="n">front</span><span class="o">=</span><span class="n">q</span><span class="p">;</span>   
+    <span class="k">else</span>  
+        <span class="n">rear</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">q</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">InQueueByFront</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="n">QUEUE</span> <span class="o">*</span><span class="n">q</span><span class="o">=</span><span class="p">(</span><span class="n">QUEUE</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">QUEUE</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">value</span><span class="p">;</span>   
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">front</span><span class="p">;</span>   
+    <span class="n">front</span> <span class="o">=</span> <span class="n">q</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">rear</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="n">rear</span><span class="o">=</span><span class="n">q</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">PrintQueue</span><span class="p">()</span> <span class="c1">//打印   </span>
+<span class="p">{</span>   
+    <span class="n">QUEUE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="n">front</span><span class="p">;</span>   
+    <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%5d"</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>   
+        <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+<span class="p">}</span>   
+    
+    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">res</span><span class="p">;</span>   
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"1:从队头存入；2：从队尾存入；3：退出 =》"</span><span class="p">);</span>   
+        <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">res</span><span class="p">);</span>   
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">res</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="n">printf</span><span class="p">(</span><span class="s">"请输入要存入的值："</span><span class="p">);</span>   
+            <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">res</span><span class="p">);</span>   
+            <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">InQueueByFront</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>   
+            <span class="p">{</span>   
+                <span class="n">PrintQueue</span><span class="p">();</span>   
+            <span class="p">}</span>   
+            <span class="k">else</span>  
+                <span class="n">printf</span><span class="p">(</span><span class="s">"存入失败！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+        <span class="p">}</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">res</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="n">printf</span><span class="p">(</span><span class="s">"请输入要存入的值："</span><span class="p">);</span>   
+            <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">res</span><span class="p">);</span>   
+            <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">InQueueByRear</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>   
+            <span class="p">{</span>   
+                <span class="n">PrintQueue</span><span class="p">();</span>   
+            <span class="p">}</span>   
+            <span class="k">else</span>  
+                <span class="n">printf</span><span class="p">(</span><span class="s">"存入失败！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+        <span class="p">}</span>   
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">res</span><span class="o">==</span><span class="mi">3</span><span class="p">)</span>   
+            <span class="k">break</span><span class="p">;</span>   
+    <span class="p">}</span>   
+<span class="p">}</span> 
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/C_CPP/2011-06-27-%E6%A0%88%E3%80%81%E9%98%9F%E5%88%97%E5%8F%8A%E8%BF%B7%E5%AE%AB%E9%97%AE%E9%A2%98%E7%9A%84%E5%BA%94%E7%94%A8.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=数据结构-栈、队列及迷宫求解的应用 - 知不知&amp;url=/list/docs/C_CPP/2011-06-27-%E6%A0%88%E3%80%81%E9%98%9F%E5%88%97%E5%8F%8A%E8%BF%B7%E5%AE%AB%E9%97%AE%E9%A2%98%E7%9A%84%E5%BA%94%E7%94%A8.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/C_CPP/2011-06-27-%E6%A0%88%E3%80%81%E9%98%9F%E5%88%97%E5%8F%8A%E8%BF%B7%E5%AE%AB%E9%97%AE%E9%A2%98%E7%9A%84%E5%BA%94%E7%94%A8.html&amp;title=数据结构-栈、队列及迷宫求解的应用 - 知不知&amp;summary=栈、队列及迷宫求解的应用&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/C_CPP/2011-06-27-%E6%A0%88%E3%80%81%E9%98%9F%E5%88%97%E5%8F%8A%E8%BF%B7%E5%AE%AB%E9%97%AE%E9%A2%98%E7%9A%84%E5%BA%94%E7%94%A8.html&amp;text=数据结构-栈、队列及迷宫求解的应用 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/C_CPP/2011-06-27-%E6%A0%88%E3%80%81%E9%98%9F%E5%88%97%E5%8F%8A%E8%BF%B7%E5%AE%AB%E9%97%AE%E9%A2%98%E7%9A%84%E5%BA%94%E7%94%A8.html&amp;t=数据结构-栈、队列及迷宫求解的应用 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/C_CPP/2011-06-27-%E6%A0%88%E3%80%81%E9%98%9F%E5%88%97%E5%8F%8A%E8%BF%B7%E5%AE%AB%E9%97%AE%E9%A2%98%E7%9A%84%E5%BA%94%E7%94%A8.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('数据结构-栈、队列及迷宫求解的应用'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

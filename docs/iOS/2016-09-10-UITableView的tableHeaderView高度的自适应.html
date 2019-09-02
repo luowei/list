@@ -1,0 +1,46 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>UITableView的tableHeaderView高度的自适应</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p>　　前段时间碰到一个要求对UITableHeaderView的高度随内容高度自适应的需求。讲到根据内容自适应，在Autolayout到来后越来越容易了。</p> <h2 id="apple对自适应的支持">Apple对自适应的支持</h2> <p>　　之所以UIlabel，UIButton, UIImageView能根据内容自适应，是因为有一个IntrinsicContentSize。有了它就可以自己根据内容调整大小，再也不用量宽和高了。对IntrinsicContentSize的支持Apple也给了一个表：</p> <blockquote> <table> <thead> <tr> <th>View</th> <th>Intrinsic Content Size</th> </tr> </thead> <tbody> <tr> <td>View And NSView</td> <td>No intrinsic content size.</td> </tr> <tr> <td>Sliders</td> <td>Defines Only The Width.</td> </tr> <tr> <td>Labels,buttons,switches,and text fields</td> <td>Define both the height and the width.</td> </tr> <tr> <td>Text views and Image views</td> <td>intrinsic content size can vary.</td> </tr> </tbody> </table> </blockquote> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>* UIView和NSView是没有IntrinsicContentSize的。
+* Sliders只有with有这个属性。 Sliders只能定义width。Sliders的height拥有IntrinsicContentSize(感谢@凸小布，发现了这个问题)
+* Labels, buttons, switches, text fields比较棒，属性完美支持
+* Text views和image views也挺好，在有内容的时候支持，没有内容的时候不支持。
+</code></pre></div></div> <p>　　虽然UIView没有IntrinsicContentSize，但如果我们自定义一个View，又想要他拥有默认宽高，只需要重写IntrinsicContentSize方法，便可让其拥有默认的宽高。在storyboard/xib中的Size Inspector也有争对这一块的设置。（比如UIImage放在UIScrollView中，当没有给UIImage设置图片时，storyboard会有约束警告，在Size Inspector中设置placeHolder的宽高即可）。<br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/iOS/intrinsic_size.png" alt="Intrinsic size" /></p> <h2 id="tableheaderview高度自适应">tableHeaderView高度自适应</h2> <p><strong>这里自定义的tableHeader的结构如下图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/iOS/UITableHeaderView.png" alt="UITableHeaderView" /></p> <p>　　因为iOS并没有提供像给UITableViewCell设置自适应高度的方法</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -&gt; CGFloat {
+        return UITableViewAutomaticDimension
+}
+</code></pre></div></div> <p>　　所以tableHeaderView的高度还是要根据内容来计算，只是这个计算过程可以充分利用其子视图的intrinsic特点来自动给我们算出来，这里通过给UITableView扩展一个方法来做，如下</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extension UITableView {
+
+    func setAndLayoutTableHeaderView(header: UIView) {
+        self.tableHeaderView = header
+        //Tip:这里要先计算子视图的高度后，再去更新tableHeaderView的布局
+        for view in header.subviews {
+            guard let label = view as? UILabel where label.numberOfLines == 0 else { continue }
+            //设置子视图的preferredMaxLayoutWidth
+            label.preferredMaxLayoutWidth = CGRectGetWidth(label.frame)
+        }
+        //更新tableHeaderView的布局
+        header.setNeedsLayout()
+        header.layoutIfNeeded()
+        var frame = header.frame
+
+//        let height = header.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
+//        //let height = header.systemLayoutSizeFittingSize(UILayoutFittingExpandedSize).height
+//        frame.size.height = height
+
+        let size = header.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize)
+        frame.size = size
+
+        header.frame = frame
+        self.tableHeaderView = header
+    }
+
+}
+</code></pre></div></div> <p>　　最后调用再这样简单调用一下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    override func viewDidLoad() {
+        super.viewDidLoad()
+        //tableHeaderView指定为storyboard中自定义的headerView
+        self.tableView.tableHeaderView = headerView
+        //设置tableHeaderView高度自
+        self.tableView.setAndLayoutTableHeaderView(headerView)
+
+        self.tableView.tableFooterView = footerView
+        //self.tableView.sectionHeaderHeight = UITableViewAutomaticDimension;
+        //self.tableView.estimatedSectionHeaderHeight = 1;
+    }
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/iOS/2016-09-10-UITableView%E7%9A%84tableHeaderView%E9%AB%98%E5%BA%A6%E7%9A%84%E8%87%AA%E9%80%82%E5%BA%94.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=UITableView的tableHeaderView高度的自适应 - 知不知&amp;url=/list/docs/iOS/2016-09-10-UITableView%E7%9A%84tableHeaderView%E9%AB%98%E5%BA%A6%E7%9A%84%E8%87%AA%E9%80%82%E5%BA%94.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/iOS/2016-09-10-UITableView%E7%9A%84tableHeaderView%E9%AB%98%E5%BA%A6%E7%9A%84%E8%87%AA%E9%80%82%E5%BA%94.html&amp;title=UITableView的tableHeaderView高度的自适应 - 知不知&amp;summary=UITableView的tableHeaderView高度的自适应&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/iOS/2016-09-10-UITableView%E7%9A%84tableHeaderView%E9%AB%98%E5%BA%A6%E7%9A%84%E8%87%AA%E9%80%82%E5%BA%94.html&amp;text=UITableView的tableHeaderView高度的自适应 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/iOS/2016-09-10-UITableView%E7%9A%84tableHeaderView%E9%AB%98%E5%BA%A6%E7%9A%84%E8%87%AA%E9%80%82%E5%BA%94.html&amp;t=UITableView的tableHeaderView高度的自适应 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/iOS/2016-09-10-UITableView%E7%9A%84tableHeaderView%E9%AB%98%E5%BA%A6%E7%9A%84%E8%87%AA%E9%80%82%E5%BA%94.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('UITableView的tableHeaderView高度的自适应'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

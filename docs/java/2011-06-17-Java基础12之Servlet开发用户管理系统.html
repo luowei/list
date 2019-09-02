@@ -1,0 +1,1591 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础12之Servlet开发用户管理系统</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java Servlet的应用，开发一个用户管理系统。</p> <p><strong>文件结构——(纯servlet开发网页)</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_41.jpg" alt="文件结构" /></p> <p><strong>tomcat配置数据源</strong></p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!--将数据源的配置加入到server.xml文件中的Host树枝下--&gt;</span>
+<span class="nt">&lt;Context</span> <span class="na">path=</span><span class="s">"/myWebSite"</span> <span class="na">docBase=</span><span class="s">"D:/Workspace/servlet/myWebSite"</span> <span class="na">debug=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!--name:给数据源设置名字(jndi) auth:表示该数据源是谁管理 type:类型--&gt;</span>
+    <span class="nt">&lt;Resource</span> <span class="na">name=</span><span class="s">"luowei"</span> <span class="na">auth=</span><span class="s">"Container"</span> <span class="na">type=</span><span class="s">"javax.sql.DataSource"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;ResourceParams</span> <span class="na">name=</span><span class="s">"shunping"</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!--工厂设置--&gt;</span>
+        <span class="nt">&lt;parameter&gt;</span>
+            <span class="nt">&lt;name&gt;</span>factory<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>org.apache.commons.dbcp.BasicDataSourceFactory<span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/parameter&gt;</span>
+        <span class="c">&lt;!--驱动设置--&gt;</span>
+        <span class="nt">&lt;parameter&gt;</span>
+            <span class="nt">&lt;name&gt;</span>driverClassName<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>com.microsoft.jdbc.sqlserver.SQLServerDriver<span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/parameter&gt;</span>
+        <span class="c">&lt;!--设置url--&gt;</span>
+        <span class="nt">&lt;parameter&gt;</span>
+            <span class="nt">&lt;name&gt;</span>url<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>jdbc:microsoft:sqlserver://127.0.0.1:1433;DatabaseName=test_user<span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/parameter&gt;</span>
+        <span class="c">&lt;!--设置连接数据库的用户名--&gt;</span>
+        <span class="nt">&lt;parameter&gt;</span>
+            <span class="nt">&lt;name&gt;</span>username<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>sa<span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/parameter&gt;</span>
+        <span class="c">&lt;!--设置连接数据库的密码--&gt;</span>
+        <span class="nt">&lt;parameter&gt;</span>
+            <span class="nt">&lt;name&gt;</span>password<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>luowei<span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/parameter&gt;</span>
+        <span class="c">&lt;!--设置连接池中最大的激活连接数--&gt;</span>
+        <span class="nt">&lt;parameter&gt;</span>
+            <span class="nt">&lt;name&gt;</span>maxActive<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>200<span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/parameter&gt;</span>
+        <span class="c">&lt;!--设置连接池中最大的保留(空闲)连接数--&gt;</span>
+        <span class="nt">&lt;parameter&gt;</span>
+            <span class="nt">&lt;name&gt;</span>maxIdle<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>10<span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/parameter&gt;</span>
+        <span class="c">&lt;!--客户端在队列池中最大等待时间,按秒计算;当设置为-1时，表示一直等待--&gt;</span>
+        <span class="nt">&lt;parameter&gt;</span>
+            <span class="nt">&lt;name&gt;</span>maxIdle<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>10<span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/parameter&gt;</span>
+    <span class="nt">&lt;/ResourceParams&gt;</span>
+<span class="nt">&lt;/Context&gt;</span>
+<span class="c">&lt;!--
+    如果使用连接池的方式来连接数据库，那么就要这样：
+    Context ctt=new javax.naming.InitalContext();
+    DataSource ds=(DataSource)ctt.lookup("java:comp/env/数据源的名字");
+    ct=ds.getConnection();
+--&gt;</span>
+</code></pre></div></div> <p><strong>ServletContext介绍</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_42.jpg" alt="ServletContext介绍" /></p> <h3 id="开发servlet的三种方法">开发servlet的三种方法：</h3> <p><strong>1.实现servlet接口(Hello.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
+* 第一个Servlet,使用实现servlet接口的方式来开发
+*
+*/</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.Servlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Hello</span> <span class="kd">implements</span> <span class="nc">Servlet</span> <span class="o">{</span>
+    <span class="c1">//该函数用于初始化该servlet(类似于类的构造函数)</span>
+    <span class="c1">//该函数只会被调用一次(当用户第一次访问该servlet时被调用)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="nc">ServletConfig</span> <span class="n">arg0</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ServletException</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"init it"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="c1">//这个函数用于处理业务逻辑</span>
+    <span class="c1">//程序员应当把业务逻辑代码写在这里</span>
+    <span class="c1">//当用户每访问该servlet时，都会被调用</span>
+    <span class="c1">//req：用于获得客户端(浏览器)的信息，res:用于向客户端(浏览器)返回信息</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">service</span><span class="o">(</span><span class="nc">ServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="nc">ServletResponse</span> <span class="n">res</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="nc">ServletException</span><span class="o">,</span> <span class="nc">IOException</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"service it"</span><span class="o">);</span><span class="c1">//向控制台打印</span>
+        <span class="c1">//从res中得到PrintWriter(向浏览器打印)</span>
+        <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+        <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"hello,world"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="c1">//该函数用于得到servlet配置文件</span>
+    <span class="kd">public</span> <span class="nc">ServletConfig</span> <span class="nf">getServletConfig</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getServletInfo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//销毁servlet实例(释放内存),以下情况该函数被调用</span>
+    <span class="c1">//1.reload 该servlet(webApps)</span>
+    <span class="c1">//2.关闭tomcat</span>
+    <span class="c1">//3.关机</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"destroy!"</span><span class="o">);</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>2. 继承GenericServlet(HelloGen.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//这是第二种开发servlet的方法(继承GenericServlet开发)</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test2</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.GenericServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloGen</span> <span class="kd">extends</span> <span class="nc">GenericServlet</span>
+<span class="o">{</span>
+    <span class="c1">//重写service方法即可</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">service</span><span class="o">(</span><span class="nc">ServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="nc">ServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//返回hello,world!generic</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"hello,world! generic"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>3. 通过继承HttpServlet(HelloHttp.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//这是第三种开发servlet的方法(通过继承HttpServlet)</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test3</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloHttp</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"hello,HttpServlet"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <h3 id="用户管理系统model1开发">用户管理系统model1开发</h3> <p><strong>用户表设计</strong></p> <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--run:</span>
+<span class="c1">--sqlcmd -U sa -P luowei -d master</span>
+<span class="k">create</span> <span class="k">database</span> <span class="n">test_user</span><span class="p">;</span>
+<span class="n">use</span> <span class="n">test_user</span><span class="p">;</span>
+<span class="k">create</span> <span class="k">table</span> <span class="n">users</span><span class="p">(</span>
+  <span class="n">useId</span> <span class="nb">int</span> <span class="k">primary</span> <span class="k">key</span> <span class="k">identity</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="c1">--用户id号</span>
+  <span class="n">username</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+  <span class="n">passwd</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+  <span class="n">email</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
+  <span class="n">grade</span> <span class="nb">int</span> <span class="c1">--用户的级别</span>
+<span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">users</span><span class="p">(</span><span class="n">username</span><span class="p">,</span><span class="n">passwd</span><span class="p">,</span><span class="n">email</span><span class="p">,</span><span class="n">grade</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="nv">"admin"</span><span class="p">,</span><span class="nv">"admin"</span><span class="p">,</span><span class="nv">"admin@sohu.com"</span><span class="p">,</span><span class="nv">"1"</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">users</span><span class="p">(</span><span class="n">username</span><span class="p">,</span><span class="n">passwd</span><span class="p">,</span><span class="n">email</span><span class="p">,</span><span class="n">grade</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="nv">"luowei"</span><span class="p">,</span><span class="nv">"luowei"</span><span class="p">,</span><span class="nv">"luowei@163.com"</span><span class="p">,</span><span class="nv">"1"</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">users</span><span class="p">(</span><span class="n">username</span><span class="p">,</span><span class="n">passwd</span><span class="p">,</span><span class="n">email</span><span class="p">,</span><span class="n">grade</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="nv">"test1"</span><span class="p">,</span><span class="nv">"test1"</span><span class="p">,</span><span class="nv">"test1@sina.com"</span><span class="p">,</span><span class="nv">"5"</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">users</span><span class="p">(</span><span class="n">username</span><span class="p">,</span><span class="n">passwd</span><span class="p">,</span><span class="n">email</span><span class="p">,</span><span class="n">grade</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="nv">"test2"</span><span class="p">,</span><span class="nv">"test2"</span><span class="p">,</span><span class="nv">"test2@sina.com"</span><span class="p">,</span><span class="nv">"5"</span><span class="p">);</span>
+<span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">users</span><span class="p">;</span>
+</code></pre></div></div> <p><strong>1. 登录界面(Login.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//登录界面</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">usermanage</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Login</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//解决中文乱码</span>
+            <span class="n">res</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/html;charset=GB2312"</span><span class="o">);</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="c1">//返回登录界面</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;html&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;body&gt;&lt;center&gt;"</span><span class="o">);</span>
+            <span class="c1">//得到error信息</span>
+            <span class="nc">String</span> <span class="n">info</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"info"</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">info</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;h2&gt;你的用户名或密码出错&lt;/h2&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;h1&gt;登录界面&lt;/h1&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;form action=loginCl method=post&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"用户名：&lt;input type=text name=username height=30 weight=200&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" 密码： &lt;input type=password name=passwd height=30 weight=220&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;input type=checkbox name=keep value=2&gt;两周内不再登录&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;input type=submit value=login&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/form&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/center&gt;&lt;/body&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/html&gt;"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息(向浏览器请求信息)</span>
+    <span class="c1">//res:用于向浏览器返回的信息(向浏览器发送信息)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>2. 登录处理界面(LoginCl.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//用户验证</span>
+<span class="cm">/**
+ *同一用户的不同页面共享数据(四种方式)：
+ *    1.通过sendRedirect("welcome?uname=name&amp;passwd=password),
+ 其中welcome表示要跳转到的页面，uname,passwd表示要传递的参数，
+ 当有多个参数时要用 &amp; 符号隔开，name和password表示参数的值
+ 2.利用隐藏表单
+ &lt;form action=login&gt;
+ &lt;input type=hidden name=a value=b&gt;
+ &lt;/form&gt;
+ 3.通过服务器端为浏览器分配的Session空间
+ 1.得到session
+ HttpSession hs=request.getSession(true);
+ 2.向session添加属性
+ hs.setAttribute(String name,Object val);
+ 3.从session得到某个属性
+ String name=hs.getAttribute(String name);
+ 4.从session删除某个属性
+ hs.removeAttribute(String name);
+ 4.利用cookie
+ 1.在服务器端创建:Cookie c=new Cookie(String name,String val);
+ 2.添加到客户端：response.addCookie(c)
+ 3.从客户端读到服务器:requestCookies();
+ */</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">usermanage</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LoginCl</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">Statement</span> <span class="n">sm</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="c1">//接收用户用户名和密码</span>
+            <span class="nc">String</span> <span class="n">u</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"username"</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">p</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"passwd"</span><span class="o">);</span>
+            <span class="c1">//PrintWriter pw=res.getWriter();</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"username="</span><span class="o">+</span><span class="n">u</span><span class="o">+</span><span class="s">" passwd="</span><span class="o">+</span><span class="n">p</span><span class="o">);</span>
+            <span class="c1">//连接数据库</span>
+            <span class="c1">// Class.forName("com.microsoft.jdbc.sqlserver.SQLServerDriver");</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"org.gjt.mm.mysql.Driver"</span><span class="o">).</span><span class="na">newInstance</span><span class="o">();</span>
+            <span class="c1">// 得到连接</span>
+            <span class="c1">// ct=DriverManager.getConnection(</span>
+            <span class="c1">// "jdbc:microsoft:sqlserver://127.0.0.1:1433;databaseName=test_user",</span>
+            <span class="c1">// "sa","luowei");</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:mysql://localhost:3306/test_user"</span><span class="o">,</span>
+                    <span class="s">"root"</span><span class="o">,</span><span class="s">"root"</span><span class="o">);</span>
+            <span class="c1">// 创建Statement</span>
+            <span class="n">sm</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">createStatement</span><span class="o">();</span>
+            <span class="c1">// rs=sm.executeQuery("select top 1 * from users where username='"</span>
+            <span class="c1">// +u+"' and passwd='"+p+"'");</span>
+            <span class="n">rs</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">(</span><span class="s">"select username,passwd from users where username='"</span>
+                    <span class="o">+</span><span class="n">u</span><span class="o">+</span><span class="s">"' and passwd='"</span><span class="o">+</span><span class="n">p</span><span class="o">+</span><span class="s">"'"</span><span class="o">);</span>
+            <span class="c1">//验证</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="c1">//说明用户是存在的(合法)</span>
+                <span class="nc">String</span> <span class="n">dbPasswd</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">dbPasswd</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">p</span><span class="o">))</span> <span class="c1">//这样可以消除注入漏洞</span>
+                <span class="o">{</span>
+                    <span class="nc">String</span> <span class="n">keep</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"keep"</span><span class="o">);</span>
+                    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"keep="</span><span class="o">+</span><span class="n">keep</span><span class="o">);</span>
+                    <span class="k">if</span><span class="o">(</span><span class="n">keep</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span><span class="c1">//是否选中了checkbox</span>
+                    <span class="o">{</span>
+                        <span class="c1">//将用户名和密码保存在客户端</span>
+                        <span class="c1">//创建cookie</span>
+                        <span class="nc">Cookie</span> <span class="n">name</span><span class="o">=</span><span class="k">new</span> <span class="nc">Cookie</span><span class="o">(</span><span class="s">"myname"</span><span class="o">,</span><span class="n">u</span><span class="o">);</span>
+                        <span class="nc">Cookie</span> <span class="n">pass</span><span class="o">=</span><span class="k">new</span> <span class="nc">Cookie</span><span class="o">(</span><span class="s">"mypasswd"</span><span class="o">,</span><span class="n">p</span><span class="o">);</span>
+                        <span class="c1">//设置时间</span>
+                        <span class="n">name</span><span class="o">.</span><span class="na">setMaxAge</span><span class="o">(</span><span class="mi">14</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">3600</span><span class="o">);</span>
+                        <span class="n">pass</span><span class="o">.</span><span class="na">setMaxAge</span><span class="o">(</span><span class="mi">14</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">3600</span><span class="o">);</span>
+                        <span class="c1">//回写到客户端</span>
+                        <span class="n">res</span><span class="o">.</span><span class="na">addCookie</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+                        <span class="n">res</span><span class="o">.</span><span class="na">addCookie</span><span class="o">(</span><span class="n">pass</span><span class="o">);</span>
+                    <span class="o">}</span>
+                    <span class="c1">//将验证成功的信息，写入session</span>
+                    <span class="c1">//得到session</span>
+                    <span class="nc">HttpSession</span> <span class="n">hs</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getSession</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                    <span class="c1">//修改session的存在时间(这里改成20秒)</span>
+                    <span class="n">hs</span><span class="o">.</span><span class="na">setMaxInactiveInterval</span><span class="o">(</span><span class="mi">20</span><span class="o">);</span>
+                    <span class="c1">//向session添加属性</span>
+                    <span class="n">hs</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"pass"</span><span class="o">,</span><span class="s">"ok"</span><span class="o">);</span>
+                    <span class="c1">//将用户名传到welcome页面(可以在浏览器中看到值)</span>
+                    <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"welcome?uname="</span><span class="o">+</span><span class="n">u</span><span class="o">+</span><span class="s">"&amp;passwd="</span><span class="o">+</span><span class="n">p</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">else</span>
+            <span class="o">{</span>
+                <span class="c1">//不合法</span>
+                <span class="c1">//跳转</span>
+                <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"login?info=error1"</span><span class="o">);</span><span class="c1">//写要跳转到的servlet的url</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="k">if</span><span class="o">(</span><span class="kc">null</span><span class="o">!=</span><span class="n">rs</span><span class="o">)</span> <span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="k">if</span><span class="o">(</span><span class="kc">null</span><span class="o">!=</span><span class="n">sm</span><span class="o">)</span> <span class="n">sm</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="k">if</span><span class="o">(</span><span class="kc">null</span><span class="o">!=</span><span class="n">ct</span><span class="o">)</span> <span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+<span class="cm">/*             //验证
+            if(p.equals("123"))
+            {
+                //合法
+                //将验证成功的信息，写入session
+                //得到session
+                HttpSession hs=req.getSession(true);
+                //修改session的存在时间(这里改成40秒)
+                hs.setMaxInactiveInterval(40);
+                //向session添加属性
+                hs.setAttribute("pass","ok");
+                //将用户名传到welcome页面(可以在浏览器中看到值)
+                res.sendRedirect("welcome?uname="+u+"&amp;passwd="+p);
+            }
+            else
+            {
+                //不合法
+                //跳转
+                res.sendRedirect("login?info=error1");//写要跳转到的servlet的url
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        } */</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>3. 欢迎界面(Wel.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//欢迎界面</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">usermanage</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Wel</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">PreparedStatement</span> <span class="n">ps</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//得到session</span>
+            <span class="nc">HttpSession</span> <span class="n">hs</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getSession</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">val</span><span class="o">=(</span><span class="nc">String</span><span class="o">)</span><span class="n">hs</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">"pass"</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">val</span><span class="o">==</span><span class="kc">null</span><span class="o">)</span><span class="c1">//判断</span>
+            <span class="o">{</span>
+                <span class="c1">//如果客户端session中没有用户信息，再看有没有cookie信息</span>
+                <span class="c1">//客户端得到所有cookie信息</span>
+                <span class="nc">Cookie</span> <span class="o">[]</span> <span class="n">allCookies</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getCookies</span><span class="o">();</span>
+                <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>
+                <span class="nc">String</span> <span class="n">name</span><span class="o">=</span><span class="s">""</span><span class="o">;</span>
+                <span class="nc">String</span> <span class="n">passwd</span><span class="o">=</span><span class="s">""</span><span class="o">;</span>
+                <span class="c1">//如果allCookies不为空</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">allCookies</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+                <span class="o">{</span>
+                    <span class="c1">//从中取出cookie</span>
+                    <span class="k">for</span><span class="o">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">allCookies</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+                    <span class="o">{</span>
+                        <span class="c1">//依次取出</span>
+                        <span class="nc">Cookie</span> <span class="n">temp</span><span class="o">=</span><span class="n">allCookies</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+                        <span class="k">if</span><span class="o">(</span><span class="n">temp</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"myname"</span><span class="o">))</span>
+                        <span class="o">{</span>
+                            <span class="n">name</span><span class="o">=</span><span class="n">temp</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span><span class="c1">//得到cookie的值</span>
+                        <span class="o">}</span>
+                        <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">temp</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"mypasswd"</span><span class="o">))</span>
+                        <span class="o">{</span>
+                            <span class="n">passwd</span><span class="o">=</span><span class="n">temp</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span><span class="c1">//得到cookie的值</span>
+                            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"passwd="</span><span class="o">+</span><span class="n">passwd</span><span class="o">);</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                    <span class="c1">//System.out.println("myname="+name+" passwd="+passwd);</span>
+                    <span class="k">if</span><span class="o">(!</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">""</span><span class="o">)&amp;&amp;!</span><span class="n">passwd</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">""</span><span class="o">))</span>
+                    <span class="o">{</span>
+                        <span class="c1">//到logincl去验证</span>
+                        <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"loginCl?username="</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">"&amp;passwd="</span><span class="o">+</span><span class="n">passwd</span><span class="o">);</span>
+                        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"myname="</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">" passwd="</span><span class="o">+</span><span class="n">passwd</span><span class="o">);</span>
+                        <span class="k">return</span><span class="o">;</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+                <span class="c1">//非法登录,跳转到登录界面并提示出错</span>
+                <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"login?info=error1"</span><span class="o">);</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="c1">//解决中文乱码</span>
+            <span class="n">res</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/html;charset=GB2312"</span><span class="o">);</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;body&gt;&lt;center&gt;"</span><span class="o">);</span>
+            <span class="c1">//=====================分页的功能=============================</span>
+            <span class="kt">int</span> <span class="n">pageSize</span><span class="o">=</span><span class="mi">5</span><span class="o">;</span>        <span class="c1">//一页显示几条记录</span>
+            <span class="kt">int</span> <span class="n">pageNow</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span>        <span class="c1">//希望显示第几页</span>
+            <span class="kt">int</span> <span class="n">rowCount</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>        <span class="c1">//共有几条记录(查表)</span>
+            <span class="kt">int</span> <span class="n">pageCount</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>    <span class="c1">//一共有几页(计算)</span>
+            <span class="c1">//动态接收pageNow</span>
+            <span class="nc">String</span> <span class="n">sPageNow</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"pageNow"</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">sPageNow</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">//用户不是第一次进入welcome页面</span>
+                <span class="n">pageNow</span><span class="o">=</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">sPageNow</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="c1">//得到rowCount</span>
+            <span class="c1">//加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"org.gjt.mm.mysql.Driver"</span><span class="o">).</span><span class="na">newInstance</span><span class="o">();</span>
+            <span class="c1">// 得到连接</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:mysql://localhost:3306/test_user"</span><span class="o">,</span>
+                    <span class="s">"root"</span><span class="o">,</span><span class="s">"root"</span><span class="o">);</span>
+            <span class="n">ps</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="s">"select count(*) from users"</span><span class="o">);</span>
+            <span class="n">rs</span><span class="o">=</span><span class="n">ps</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="n">rowCount</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="c1">//计算pageCount</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">rowCount</span><span class="o">%</span><span class="n">pageSize</span><span class="o">==</span><span class="mi">0</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">pageCount</span><span class="o">=</span><span class="n">rowCount</span><span class="o">/</span><span class="n">pageSize</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">else</span>
+            <span class="o">{</span>
+                <span class="n">pageCount</span><span class="o">=</span><span class="n">rowCount</span><span class="o">/</span><span class="n">pageSize</span><span class="o">+</span><span class="mi">1</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">ps</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="s">"select * from users limit "</span><span class="o">+</span><span class="n">pageSize</span><span class="o">*(</span><span class="n">pageNow</span><span class="o">-</span><span class="mi">1</span><span class="o">)</span>
+                    <span class="o">+</span><span class="s">","</span><span class="o">+</span><span class="n">pageSize</span><span class="o">);</span>
+            <span class="c1">//给?赋值</span>
+            <span class="c1">//ps.setInt(1,pageSize*(pageNow-1));</span>
+            <span class="c1">//ps.setInt(2,pageSize);</span>
+            <span class="n">rs</span><span class="o">=</span><span class="n">ps</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+            <span class="c1">//表头</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;table border=1&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;tr&gt;&lt;th&gt;id&lt;/th&gt;&lt;th&gt;name&lt;/th&gt;&lt;th&gt;passwd&lt;/th&gt;"</span>
+                    <span class="o">+</span><span class="s">"&lt;th&gt;email&lt;/th&gt;&lt;th&gt;grade&lt;/th&gt;&lt;tr&gt;"</span><span class="o">);</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;tr&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="mi">1</span><span class="o">)+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">)+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">3</span><span class="o">)+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">4</span><span class="o">)+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="mi">5</span><span class="o">)+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/tr&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/table&gt;"</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="mi">1</span><span class="o">!=</span><span class="n">pageNow</span><span class="o">)</span><span class="c1">//上一页</span>
+            <span class="o">{</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=welcome?pageNow="</span><span class="o">+(</span><span class="n">pageNow</span><span class="o">-</span><span class="mi">1</span><span class="o">)+</span><span class="s">"&gt;上一页&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="c1">//显示超链接(页面)</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="n">pageNow</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">pageNow</span><span class="o">+</span><span class="n">pageSize</span><span class="o">&amp;&amp;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">pageCount</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+            <span class="o">{</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=welcome?pageNow="</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="s">"&gt;"</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="s">"&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">pageCount</span><span class="o">!=</span><span class="n">pageNow</span><span class="o">)</span><span class="c1">//下一页</span>
+            <span class="o">{</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=welcome?pageNow="</span><span class="o">+(</span><span class="n">pageNow</span><span class="o">+</span><span class="mi">1</span><span class="o">)+</span><span class="s">"&gt;下一页&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;br&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=welcome?pageNow="</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="s">"&gt;第一页&lt;/a&gt; "</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=welcome?pageNow="</span><span class="o">+(</span><span class="n">pageCount</span><span class="o">-</span><span class="n">pageSize</span><span class="o">)+</span><span class="s">"&gt;最后页&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;br&gt;"</span><span class="o">);</span>
+            <span class="c1">//得到从loginCl传递的 用户名</span>
+            <span class="nc">String</span> <span class="n">u</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"uname"</span><span class="o">);</span>
+            <span class="c1">//得到从loginCl传递的 密码</span>
+            <span class="nc">String</span> <span class="n">p</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"passwd"</span><span class="o">);</span>
+            <span class="c1">//在servlet中显示图片</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/1.gif&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"welcome,hello!"</span><span class="o">+</span><span class="n">u</span><span class="o">+</span><span class="s">" password="</span><span class="o">+</span><span class="n">p</span><span class="o">+</span><span class="s">"&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=login&gt;返回重新登录&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/center&gt;&lt;/body&gt;"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>servlet用户管理系统模型图</strong> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_43.jpg" alt="servlet用户管理系统模型图" /></p> <h3 id="model2模式开发servlet用户管理系统">Model2模式开发servlet用户管理系统</h3> <p><strong>WEB-INF下的配置文件(web.xml)</strong></p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="gb2312"?&gt;</span>
+<span class="nt">&lt;web-app</span> <span class="na">xmlns=</span><span class="s">"http://java.sun.com/xml/ns/javaee"</span>
+         <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"</span>
+         <span class="na">version=</span><span class="s">"2.5"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;display-name&gt;</span>Welcome to myWebSite<span class="nt">&lt;/display-name&gt;</span>
+    <span class="nt">&lt;description&gt;</span>
+        Welcome to myWebSite
+    <span class="nt">&lt;/description&gt;</span>
+    <span class="c">&lt;!-- JSPC servlet mappings start --&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>Hello<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.test1.Hello<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>Hello<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/servlet/Hello<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>hellogen<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.test2.HelloGen<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>hellogen<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/hellogen<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>hellohttp<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.test3.HelloHttp<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>hellohttp<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/hellohttp<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>login<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.user_mng.Login<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>login<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/login<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>loginCl<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.user_mng.LoginCl<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>loginCl<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/loginCl<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>main<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.user_mng.Main<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>main<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/main<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>wel<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.user_mng.Wel<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>wel<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/welcome<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>delUserCl<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.user_mng.DelUserCl<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>delUserCl<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/delUserCl<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>ok<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.user_mng.Ok<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>ok<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/ok<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>err<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.user_mng.Err<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>err<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/err<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>update<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.user_mng.Update<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>update<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/update<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>updateCl<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>com.user_mng.UpdateCl<span class="nt">&lt;/servlet-class&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>updateCl<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/updateCl<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+    <span class="c">&lt;!-- JSPC servlet mappings end --&gt;</span>
+<span class="nt">&lt;/web-app&gt;</span>
+</code></pre></div></div> <p><strong>界面层_登录界面(Login.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//登录界面</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Login</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//解决中文乱码</span>
+            <span class="n">res</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/html;charset=GB2312"</span><span class="o">);</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="c1">//返回登录界面</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;html&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;body bgcolor=#CEDEFF &gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;center&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/1.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="c1">//得到error信息</span>
+            <span class="nc">String</span> <span class="n">info</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"info"</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">info</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;h2&gt;你的用户名或密码出错&lt;/h2&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;h1&gt;登录界面&lt;/h1&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;form action=loginCl method=post&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"用户名：&lt;input type=text name=username height=30 width=160&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" 密码： &lt;input type=password name=passwd height=30 width=160&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;input type=checkbox name=keep value=2&gt;两周内不再登录&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;input type=submit value=login&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/form&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/center&gt;&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/logo.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/body&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/html&gt;"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息(向浏览器请求信息)</span>
+    <span class="c1">//res:用于向浏览器返回的信息(向浏览器发送信息)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>界面层_验证用户(LoginCl.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//用户验证</span>
+<span class="cm">/**
+ *同一用户的不同页面共享数据(四种方式)：
+ *    1.通过sendRedirect("welcome?uname=name&amp;passwd=password),
+ 其中welcome表示要跳转到的页面，uname,passwd表示要传递的参数，
+ 当有多个参数时要用 &amp; 符号隔开，name和password表示参数的值
+ 2.利用隐藏表单
+ &lt;form action=login&gt;
+ &lt;input type=hidden name=a value=b&gt;
+ &lt;/form&gt;
+ 3.通过服务器端为浏览器分配的Session空间
+ 1.得到session
+ HttpSession hs=request.getSession(true);
+ 2.向session添加属性
+ hs.setAttribute(String name,Object val);
+ 3.从session得到某个属性
+ String name=hs.getAttribute(String name);
+ 4.从session删除某个属性
+ hs.removeAttribute(String name);
+ 4.利用cookie
+ 1.在服务器端创建:Cookie c=new Cookie(String name,String val);
+ 2.添加到客户端：response.addCookie(c)
+ 3.从客户端读到服务器:requestCookies();
+ */</span>
+<span class="cm">/*
+*多个用户共享同一数据：
+    1.利用ServletContext,它是在服务器端分配供多个用户共享的数据区域
+    2.得到ServletContext实例：this.getServletContext();
+    3.可以把它想像成一张表，和session非常相似，每一行是一个属性：
+        1.添加属性：setAttribute(String name,Object ob)
+        2.得到值：getAttribute(String name) 返回Object
+        3.删除属性：removeAttribute(String name)
+    4.生命周期：从创建开始，到服务器关闭而结束
+*/</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LoginCl</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//添加网页访问次数的功能</span>
+    <span class="c1">//重写init函数(init函数会在访问这个servlet文件时，会被调用一次)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//这个函数只会被调用一次</span>
+            <span class="c1">//从文件中读取次数</span>
+            <span class="nc">FileReader</span> <span class="n">fr</span><span class="o">=</span><span class="k">new</span> <span class="nc">FileReader</span><span class="o">(</span><span class="s">"f:/myCounter.txt"</span><span class="o">);</span>
+            <span class="nc">BufferedReader</span> <span class="n">br</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">fr</span><span class="o">);</span>
+            <span class="c1">//读出一行数据</span>
+            <span class="nc">String</span> <span class="n">numVal</span><span class="o">=</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+            <span class="c1">//关闭文件流</span>
+            <span class="n">br</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="c1">//将numVal值放入到servletContext</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">getServletContext</span><span class="o">().</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"visitTime"</span><span class="o">,</span><span class="n">numVal</span><span class="o">+</span><span class="s">""</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"init被调用"</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//重写destroy函数(destroy函数在服务器被关闭时，会自动调用)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//再将新的次数写回文件</span>
+            <span class="nc">FileWriter</span> <span class="n">fw</span><span class="o">=</span><span class="k">new</span> <span class="nc">FileWriter</span><span class="o">(</span><span class="s">"f:/myCounter.txt"</span><span class="o">);</span>
+            <span class="nc">BufferedWriter</span> <span class="n">bw</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedWriter</span><span class="o">(</span><span class="n">fw</span><span class="o">);</span>
+            <span class="c1">//写入一行数据</span>
+            <span class="n">bw</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">getServletContext</span><span class="o">().</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">"visitTime"</span><span class="o">).</span><span class="na">toString</span><span class="o">());</span>
+            <span class="c1">//关闭文件流</span>
+            <span class="n">bw</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"destroy函数被调用"</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">// Connection ct=null;</span>
+        <span class="c1">// Statement sm=null;</span>
+        <span class="c1">// ResultSet rs=null;</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="c1">//接收用户用户名和密码</span>
+            <span class="nc">String</span> <span class="n">u</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"username"</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">p</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"passwd"</span><span class="o">);</span>
+            <span class="c1">//PrintWriter pw=res.getWriter();</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"username="</span><span class="o">+</span><span class="n">u</span><span class="o">+</span><span class="s">" passwd="</span><span class="o">+</span><span class="n">p</span><span class="o">);</span>
+            <span class="c1">//调用UserBeanCl,创建一个UserBeanCl对象</span>
+            <span class="nc">UserBeanCl</span> <span class="n">ubc</span><span class="o">=</span><span class="k">new</span> <span class="nc">UserBeanCl</span><span class="o">();</span>
+            <span class="c1">//验证，使用UserBeanCl的方法</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">ubc</span><span class="o">.</span><span class="na">checkUser</span><span class="o">(</span><span class="n">u</span><span class="o">,</span><span class="n">p</span><span class="o">))</span>
+            <span class="o">{</span>
+                <span class="nc">String</span> <span class="n">keep</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"keep"</span><span class="o">);</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"keep="</span><span class="o">+</span><span class="n">keep</span><span class="o">);</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">keep</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span><span class="c1">//是否选中了checkbox</span>
+                <span class="o">{</span>
+                    <span class="c1">//将用户名和密码保存在客户端</span>
+                    <span class="c1">//创建cookie</span>
+                    <span class="nc">Cookie</span> <span class="n">name</span><span class="o">=</span><span class="k">new</span> <span class="nc">Cookie</span><span class="o">(</span><span class="s">"myname"</span><span class="o">,</span><span class="n">u</span><span class="o">);</span>
+                    <span class="nc">Cookie</span> <span class="n">pass</span><span class="o">=</span><span class="k">new</span> <span class="nc">Cookie</span><span class="o">(</span><span class="s">"mypasswd"</span><span class="o">,</span><span class="n">p</span><span class="o">);</span>
+                    <span class="c1">//设置时间</span>
+                    <span class="n">name</span><span class="o">.</span><span class="na">setMaxAge</span><span class="o">(</span><span class="mi">14</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">3600</span><span class="o">);</span>
+                    <span class="n">pass</span><span class="o">.</span><span class="na">setMaxAge</span><span class="o">(</span><span class="mi">14</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">3600</span><span class="o">);</span>
+                    <span class="c1">//回写到客户端</span>
+                    <span class="n">res</span><span class="o">.</span><span class="na">addCookie</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+                    <span class="n">res</span><span class="o">.</span><span class="na">addCookie</span><span class="o">(</span><span class="n">pass</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="c1">//将验证成功的信息，写入session</span>
+                <span class="c1">//得到session</span>
+                <span class="nc">HttpSession</span> <span class="n">hs</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getSession</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="c1">//修改session的存在时间(这里改成20秒)</span>
+                <span class="n">hs</span><span class="o">.</span><span class="na">setMaxInactiveInterval</span><span class="o">(</span><span class="mi">20</span><span class="o">);</span>
+                <span class="c1">//向session添加属性</span>
+                <span class="n">hs</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"pass"</span><span class="o">,</span><span class="s">"ok"</span><span class="o">);</span>
+                <span class="n">hs</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"uname"</span><span class="o">,</span><span class="n">u</span><span class="o">);</span>
+                <span class="n">hs</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"passwd"</span><span class="o">,</span><span class="n">p</span><span class="o">);</span>
+                <span class="c1">//将servletContext中的visitTime中的值++</span>
+                <span class="nc">String</span> <span class="n">times</span><span class="o">=</span><span class="k">this</span><span class="o">.</span><span class="na">getServletContext</span><span class="o">().</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">"visitTime"</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span>
+                <span class="c1">//对times++再重新放回servlet</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">getServletContext</span><span class="o">().</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"visitTime"</span><span class="o">,(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">times</span><span class="o">)+</span><span class="mi">1</span><span class="o">)+</span><span class="s">""</span><span class="o">);</span>
+                <span class="c1">//将用户名传到welcome页面(可以在浏览器中看到</span>
+                <span class="c1">//res.sendRedirect("welcome?uname="+u+"&amp;passwd="+p);</span>
+                <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"main"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">else</span>
+            <span class="o">{</span>
+                <span class="c1">//不合法</span>
+                <span class="c1">//跳转</span>
+                <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"login?info=error1"</span><span class="o">);</span><span class="c1">//写要跳转到的servlet的url</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+<span class="cm">/*             //验证
+            if(p.equals("123"))
+            {
+                //合法
+                //将验证成功的信息，写入session
+                //得到session
+                HttpSession hs=req.getSession(true);
+                //修改session的存在时间(这里改成40秒)
+                hs.setMaxInactiveInterval(40);
+                //向session添加属性
+                hs.setAttribute("pass","ok");
+                //将用户名传到welcome页面(可以在浏览器中看到值)
+                res.sendRedirect("welcome?uname="+u+"&amp;passwd="+p);
+            }
+            else
+            {
+                //不合法
+                //跳转
+                res.sendRedirect("login?info=error1");//写要跳转到的servlet的url
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        } */</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>界面层_主界面(Main.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//主界面//登录界面</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//解决中文乱码</span>
+            <span class="n">res</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/html;charset=GB2312"</span><span class="o">);</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="c1">//返回登录界面</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;html&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;body bgcolor=#CEDEFF &gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;center&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/1.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;h1&gt;主界面&lt;/h1&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=welcome&gt;管理用户&lt;/a&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=?&gt;添加用户&lt;/a&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=？&gt;查找用户&lt;/a&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=？&gt;安全退出&lt;/a&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/center&gt;&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/logo.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/body&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/html&gt;"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息(向浏览器请求信息)</span>
+    <span class="c1">//res:用于向浏览器返回的信息(向浏览器发送信息)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>界面层_欢迎界面(Wel.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//欢迎界面</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Wel</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">PreparedStatement</span> <span class="n">ps</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//得到session</span>
+            <span class="nc">HttpSession</span> <span class="n">hs</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getSession</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">val</span><span class="o">=(</span><span class="nc">String</span><span class="o">)</span><span class="n">hs</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">"pass"</span><span class="o">);</span>
+            <span class="c1">//从Session中得到用户名和密码</span>
+            <span class="nc">String</span> <span class="n">u</span><span class="o">=(</span><span class="nc">String</span><span class="o">)</span><span class="n">hs</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">"uname"</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">p</span><span class="o">=(</span><span class="nc">String</span><span class="o">)</span><span class="n">hs</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">"passwd"</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">val</span><span class="o">==</span><span class="kc">null</span><span class="o">)</span><span class="c1">//判断</span>
+            <span class="o">{</span>
+                <span class="c1">//如果客户端session中没有用户信息，再看有没有cookie信息</span>
+                <span class="c1">//客户端得到所有cookie信息</span>
+                <span class="nc">Cookie</span> <span class="o">[]</span> <span class="n">allCookies</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getCookies</span><span class="o">();</span>
+                <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>
+                <span class="nc">String</span> <span class="n">name</span><span class="o">=</span><span class="s">""</span><span class="o">;</span>
+                <span class="nc">String</span> <span class="n">passwd</span><span class="o">=</span><span class="s">""</span><span class="o">;</span>
+                <span class="c1">//如果allCookies不为空</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">allCookies</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+                <span class="o">{</span>
+                    <span class="c1">//从中取出cookie</span>
+                    <span class="k">for</span><span class="o">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">allCookies</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+                    <span class="o">{</span>
+                        <span class="c1">//依次取出</span>
+                        <span class="nc">Cookie</span> <span class="n">temp</span><span class="o">=</span><span class="n">allCookies</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+                        <span class="k">if</span><span class="o">(</span><span class="n">temp</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"myname"</span><span class="o">))</span>
+                        <span class="o">{</span>
+                            <span class="n">name</span><span class="o">=</span><span class="n">temp</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span><span class="c1">//得到cookie的值</span>
+                        <span class="o">}</span>
+                        <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">temp</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"mypasswd"</span><span class="o">))</span>
+                        <span class="o">{</span>
+                            <span class="n">passwd</span><span class="o">=</span><span class="n">temp</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span><span class="c1">//得到cookie的值</span>
+                            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"passwd="</span><span class="o">+</span><span class="n">passwd</span><span class="o">);</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                    <span class="c1">//System.out.println("myname="+name+" passwd="+passwd);</span>
+                    <span class="k">if</span><span class="o">(!</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">""</span><span class="o">)&amp;&amp;!</span><span class="n">passwd</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">""</span><span class="o">))</span>
+                    <span class="o">{</span>
+                        <span class="c1">//到logincl去验证</span>
+                        <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"loginCl?username="</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">"&amp;passwd="</span><span class="o">+</span><span class="n">passwd</span><span class="o">);</span>
+                        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"myname="</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">" passwd="</span><span class="o">+</span><span class="n">passwd</span><span class="o">);</span>
+                        <span class="k">return</span><span class="o">;</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+                <span class="c1">//非法登录,跳转到登录界面并提示出错</span>
+                <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"login?info=error1"</span><span class="o">);</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="c1">//解决中文乱码</span>
+            <span class="n">res</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/html;charset=GB2312"</span><span class="o">);</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;body bgcolor=#CEDEFF &gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;center&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/1.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;欢迎您："</span><span class="o">+</span><span class="n">u</span><span class="o">+</span><span class="s">"&lt;img src=imgs/luowei.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="c1">//=====================分页的功能=============================</span>
+            <span class="kt">int</span> <span class="n">pageSize</span><span class="o">=</span><span class="mi">5</span><span class="o">;</span>        <span class="c1">//一页显示几条记录</span>
+            <span class="kt">int</span> <span class="n">pageNow</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span>        <span class="c1">//希望显示第几页</span>
+            <span class="c1">//int jumpPage=0;    //跳转的页面</span>
+            <span class="c1">//动态接收pageNow</span>
+            <span class="nc">String</span> <span class="n">sPageNow</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"pageNow"</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">sPageNow</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">//用户不是第一次进入welcome页面</span>
+                <span class="n">pageNow</span><span class="o">=</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">sPageNow</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="c1">//调用UserBeanCl的方法</span>
+            <span class="nc">UserBeanCl</span> <span class="n">ubc</span><span class="o">=</span><span class="k">new</span> <span class="nc">UserBeanCl</span><span class="o">();</span>
+            <span class="nc">ArrayList</span> <span class="n">al</span><span class="o">=</span><span class="n">ubc</span><span class="o">.</span><span class="na">getResultByPage</span><span class="o">(</span><span class="n">pageNow</span><span class="o">,</span><span class="n">pageSize</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;h1&gt;管理用户&lt;/h1&gt;&lt;br&gt;"</span><span class="o">);</span>
+            <span class="c1">//表头</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;table border=1&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;tr bgcolor=pink&gt;&lt;th&gt;用户id&lt;/th&gt;&lt;th&gt;用户名&lt;/th&gt;&lt;th&gt;密码&lt;/th&gt;"</span>
+                    <span class="o">+</span><span class="s">"&lt;th&gt;邮箱&lt;/th&gt;&lt;th&gt;级别&lt;/th&gt;&lt;th&gt;修改用户&lt;/th&gt;&lt;th&gt;删除用户&lt;/th&gt;&lt;tr&gt;"</span><span class="o">);</span>
+            <span class="c1">//定义一个颜色数组</span>
+            <span class="nc">String</span> <span class="o">[]</span> <span class="n">mycol</span><span class="o">={</span><span class="s">"silver"</span><span class="o">,</span><span class="s">"pink"</span><span class="o">};</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">al</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>
+            <span class="o">{</span>
+                <span class="c1">//取出UserBean</span>
+                <span class="nc">UserBean</span> <span class="n">ub</span><span class="o">=(</span><span class="nc">UserBean</span><span class="o">)</span><span class="n">al</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;tr bgcolor="</span><span class="o">+</span><span class="n">mycol</span><span class="o">[</span><span class="n">i</span><span class="o">%</span><span class="mi">2</span><span class="o">]+</span><span class="s">"&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">ub</span><span class="o">.</span><span class="na">getUserId</span><span class="o">()+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">ub</span><span class="o">.</span><span class="na">getUserName</span><span class="o">()+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">ub</span><span class="o">.</span><span class="na">getPasswd</span><span class="o">()+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">ub</span><span class="o">.</span><span class="na">getMail</span><span class="o">()+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;"</span><span class="o">+</span><span class="n">ub</span><span class="o">.</span><span class="na">getGrade</span><span class="o">()+</span><span class="s">"&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;&lt;a href=update?uId="</span><span class="o">+</span><span class="n">ub</span><span class="o">.</span><span class="na">getUserId</span><span class="o">()+</span><span class="s">"&amp;uName="</span><span class="o">+</span><span class="n">ub</span><span class="o">.</span><span class="na">getUserName</span><span class="o">()+</span>
+                        <span class="s">"&amp;uPass="</span><span class="o">+</span><span class="n">ub</span><span class="o">.</span><span class="na">getPasswd</span><span class="o">()+</span><span class="s">"&amp;uEmail="</span><span class="o">+</span><span class="n">ub</span><span class="o">.</span><span class="na">getMail</span><span class="o">()+</span><span class="s">"&amp;uGrade="</span><span class="o">+</span><span class="n">ub</span><span class="o">.</span><span class="na">getGrade</span><span class="o">()+</span><span class="s">"&gt;修改用户&lt;/a&gt;&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;td&gt;&lt;a href=delUserCl?userid="</span><span class="o">+</span><span class="n">ub</span><span class="o">.</span><span class="na">getUserId</span><span class="o">()+</span>
+                        <span class="s">" onClick=\"return window.confirm('您确认要删除该用户吗？')\"&gt;删除用户&lt;/a&gt;&lt;/td&gt;"</span><span class="o">);</span>
+                <span class="c1">//弹出删除确认对话框，其中\"是转义符</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/tr&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/table&gt;"</span><span class="o">);</span>
+            <span class="c1">//接收jumpPae</span>
+            <span class="c1">//jumpPage=Integer.parseInt(req.getParameter("jumpPage"));</span>
+            <span class="c1">//pageNow=jumpPage;</span>
+            <span class="kt">int</span> <span class="n">pageCount</span><span class="o">=</span><span class="n">ubc</span><span class="o">.</span><span class="na">getPageCount</span><span class="o">();</span>
+            <span class="k">if</span><span class="o">(</span><span class="mi">1</span><span class="o">!=</span><span class="n">pageNow</span><span class="o">)</span><span class="c1">//上一页</span>
+            <span class="o">{</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=welcome?pageNow="</span><span class="o">+(</span><span class="n">pageNow</span><span class="o">-</span><span class="mi">1</span><span class="o">)+</span><span class="s">"&gt;上一页&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="c1">//显示超链接(页面)</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="n">pageNow</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">pageNow</span><span class="o">+</span><span class="n">pageSize</span><span class="o">&amp;&amp;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">pageCount</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+            <span class="o">{</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=welcome?pageNow="</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="s">"&gt;"</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="s">"&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">pageCount</span><span class="o">!=</span><span class="n">pageNow</span><span class="o">)</span><span class="c1">//下一页</span>
+            <span class="o">{</span>
+                <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=welcome?pageNow="</span><span class="o">+(</span><span class="n">pageNow</span><span class="o">+</span><span class="mi">1</span><span class="o">)+</span><span class="s">"&gt;下一页&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;br&gt;"</span><span class="o">);</span>
+            <span class="c1">//指定跳转到某页</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;form action=welcome&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"跳转到：&lt;input type=text name=pageNow height=30 width=50&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;input type=submit value=Go&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/form&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=welcome?pageNow="</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="s">"&gt;第一页&lt;/a&gt; "</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=welcome?pageNow="</span><span class="o">+(</span><span class="n">pageCount</span><span class="o">-</span><span class="n">pageSize</span><span class="o">)+</span><span class="s">"&gt;最后页&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;br&gt;"</span><span class="o">);</span>
+<span class="cm">/*             //得到从loginCl传递的 用户名
+            String u=req.getParameter("uname");
+            //得到从loginCl传递的 密码
+            String p=req.getParameter("passwd");
+*/</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"welcome,hello! "</span><span class="o">+</span><span class="n">u</span><span class="o">+</span><span class="s">" Your password:"</span><span class="o">+</span><span class="n">p</span><span class="o">+</span><span class="s">"&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=login&gt;返回重新登录&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;br&gt;该网页被访问了"</span><span class="o">+</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">getServletContext</span><span class="o">().</span>
+                    <span class="n">getAttribute</span><span class="o">(</span><span class="s">"visitTime"</span><span class="o">).</span><span class="na">toString</span><span class="o">())+</span><span class="s">"次&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"您的ip="</span><span class="o">+</span><span class="n">req</span><span class="o">.</span><span class="na">getRemoteAddr</span><span class="o">()+</span><span class="s">"&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"您的主机名为："</span><span class="o">+</span><span class="n">req</span><span class="o">.</span><span class="na">getRemoteHost</span><span class="o">()+</span><span class="s">"&lt;br&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/center&gt;&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/logo.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/body&gt;"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+            <span class="k">try</span>
+            <span class="o">{</span>
+                <span class="k">if</span><span class="o">(</span><span class="kc">null</span><span class="o">!=</span><span class="n">rs</span><span class="o">)</span> <span class="o">{</span><span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span><span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;}</span>
+                <span class="k">if</span><span class="o">(</span><span class="kc">null</span><span class="o">!=</span><span class="n">ps</span><span class="o">)</span> <span class="o">{</span><span class="n">ps</span><span class="o">.</span><span class="na">close</span><span class="o">();</span><span class="n">ps</span><span class="o">=</span><span class="kc">null</span><span class="o">;}</span>
+                <span class="k">if</span><span class="o">(</span><span class="kc">null</span><span class="o">!=</span><span class="n">ct</span><span class="o">)</span> <span class="o">{</span><span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span><span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;}</span>
+            <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>界面层_修改用户(Update.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//修改用户界面</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Update</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//解决中文乱码</span>
+            <span class="n">res</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/html;charset=GB2312"</span><span class="o">);</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="c1">//返回登录界面</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;html&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;body bgcolor=#CEDEFF &gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;center&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/1.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;h1&gt;修改用户信息&lt;/h1&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;form action=updateCl&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;table border=1&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;tr&gt;&lt;td&gt;用户id&lt;/td&gt;&lt;td&gt;&lt;input readonly name=uId type=text value="</span>
+                    <span class="o">+</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"uId"</span><span class="o">)+</span><span class="s">"&gt;&lt;/td&gt;&lt;/tr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;tr&gt;&lt;td&gt;用户名&lt;/td&gt;&lt;td&gt;&lt;input readonly name=uName type=text value="</span>
+                    <span class="o">+</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"uName"</span><span class="o">)+</span><span class="s">"&gt;&lt;/td&gt;&lt;/tr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;tr&gt;&lt;td&gt;密码&lt;/td&gt;&lt;td&gt;&lt;input name=uPass type=text value="</span>
+                    <span class="o">+</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"uPass"</span><span class="o">)+</span><span class="s">"&gt;&lt;/td&gt;&lt;/tr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;tr&gt;&lt;td&gt;邮箱&lt;/td&gt;&lt;td&gt;&lt;input name=uEmail type=text value="</span>
+                    <span class="o">+</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"uEmail"</span><span class="o">)+</span><span class="s">"&gt;&lt;/td&gt;&lt;/tr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;tr&gt;&lt;td&gt;级别&lt;/td&gt;&lt;td&gt;&lt;input name=uGrade type=text value="</span>
+                    <span class="o">+</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"uGrade"</span><span class="o">)+</span><span class="s">"&gt;&lt;/td&gt;&lt;/tr&gt;"</span><span class="o">);</span>
+            <span class="c1">//提交按钮</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;tr&gt;&lt;td colspan=2&gt;&lt;input type=submit value=修改用户"</span><span class="o">+</span>
+                    <span class="s">" onClick=\"return window.confirm('您确认要修改该用户吗？')\"&gt;&lt;/td&gt;&lt;/tr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/table&gt;&lt;/form&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/center&gt;&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/logo.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/body&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/html&gt;"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息(向浏览器请求信息)</span>
+    <span class="c1">//res:用于向浏览器返回的信息(向浏览器发送信息)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>界面层_修改用户处理(UpdateCl.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//处理修改某个用户界面</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UpdateCl</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//解决中文乱码</span>
+            <span class="n">res</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/html;charset=GB2312"</span><span class="o">);</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="c1">//调用userBeanCl的删除用户的方法，完成删除任务</span>
+            <span class="nc">UserBeanCl</span> <span class="n">ubc</span><span class="o">=</span><span class="k">new</span> <span class="nc">UserBeanCl</span><span class="o">();</span>
+            <span class="c1">//接收从Update.java中传递的值</span>
+            <span class="nc">String</span> <span class="n">id</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"uId"</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">uPass</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"uPass"</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">uEmail</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"uEmail"</span><span class="o">);</span>
+            <span class="nc">String</span> <span class="n">uGrade</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"uGrade"</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">ubc</span><span class="o">.</span><span class="na">updateUser</span><span class="o">(</span><span class="n">id</span><span class="o">,</span><span class="n">uPass</span><span class="o">,</span><span class="n">uEmail</span><span class="o">,</span><span class="n">uGrade</span><span class="o">))</span>
+            <span class="o">{</span>
+                <span class="c1">//删除成功</span>
+                <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"ok"</span><span class="o">);</span>
+            <span class="o">}</span><span class="k">else</span>
+            <span class="o">{</span>
+                <span class="c1">//删除失败</span>
+                <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"err"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息(向浏览器请求信息)</span>
+    <span class="c1">//res:用于向浏览器返回的信息(向浏览器发送信息)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>界面层_删除用户(DelUserCl.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//处理删除某个用户界面</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DelUserCl</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//解决中文乱码</span>
+            <span class="n">res</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/html;charset=GB2312"</span><span class="o">);</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="c1">//调用userBeanCl的删除用户的方法，完成删除任务</span>
+            <span class="nc">UserBeanCl</span> <span class="n">ubc</span><span class="o">=</span><span class="k">new</span> <span class="nc">UserBeanCl</span><span class="o">();</span>
+            <span class="c1">//接收从Wel.java中传递的id</span>
+            <span class="nc">String</span> <span class="n">id</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"userid"</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">ubc</span><span class="o">.</span><span class="na">delUser</span><span class="o">(</span><span class="n">id</span><span class="o">))</span>
+            <span class="o">{</span>
+                <span class="c1">//删除成功</span>
+                <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"ok"</span><span class="o">);</span>
+            <span class="o">}</span><span class="k">else</span>
+            <span class="o">{</span>
+                <span class="c1">//删除失败</span>
+                <span class="n">res</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"err"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息(向浏览器请求信息)</span>
+    <span class="c1">//res:用于向浏览器返回的信息(向浏览器发送信息)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>界面层_操作失败(Err.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//操作失败界面</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Err</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//解决中文乱码</span>
+            <span class="n">res</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/html;charset=GB2312"</span><span class="o">);</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="c1">//返回登录界面</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;html&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;body bgcolor=#CEDEFF &gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;center&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/1.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;h1&gt;很遗憾，操作不成功！&lt;/h1&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=main&gt;返回主界面&lt;/a&gt;&amp;nbsp;"</span>
+                    <span class="o">+</span><span class="s">"&amp;nbsp;&amp;nbsp&lt;a href=welcome&gt;返回上一页面&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/center&gt;&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/logo.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/body&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/html&gt;"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息(向浏览器请求信息)</span>
+    <span class="c1">//res:用于向浏览器返回的信息(向浏览器发送信息)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>界面层_操作成功(Ok.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//操作成功界面</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ok</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span>
+<span class="o">{</span>
+    <span class="c1">//处理get请求</span>
+    <span class="c1">//req:用于获得浏览器的信息</span>
+    <span class="c1">//res:用于向浏览返回的信</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">//业务逻辑</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//解决中文乱码</span>
+            <span class="n">res</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/html;charset=GB2312"</span><span class="o">);</span>
+            <span class="nc">PrintWriter</span> <span class="n">pw</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="c1">//返回登录界面</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;html&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;body bgcolor=#CEDEFF &gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;center&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/1.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;h1&gt;恭喜你，操作成功！&lt;/h1&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=main&gt;返回主界面&lt;/a&gt;&amp;nbsp;"</span>
+                    <span class="o">+</span><span class="s">"&amp;nbsp;&amp;nbsp&lt;a href=welcome&gt;返回上一页面&lt;/a&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/center&gt;&lt;hr&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;img src=imgs/logo.gif&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/body&gt;"</span><span class="o">);</span>
+            <span class="n">pw</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;/html&gt;"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//处理post请求</span>
+    <span class="c1">//req:用于获得浏览器的信息(向浏览器请求信息)</span>
+    <span class="c1">//res:用于向浏览器返回的信息(向浏览器发送信息)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span><span class="nc">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">req</span><span class="o">,</span><span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>model层_表示User表(UserBean.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//这是一个UserBean &lt;-----&gt; users表映射</span>
+<span class="c1">//他的一个 对象 &lt;-----&gt; users表的一条记录对应</span>
+<span class="c1">//数据</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserBean</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">userName</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">passwd</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">mail</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">grade</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUserId</span><span class="o">(</span><span class="kt">int</span> <span class="n">userId</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userId</span><span class="o">=</span><span class="n">userId</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getUserId</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">userId</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUserName</span><span class="o">(</span><span class="nc">String</span> <span class="n">userName</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userName</span><span class="o">=</span><span class="n">userName</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getUserName</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">userName</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setPasswd</span><span class="o">(</span><span class="nc">String</span> <span class="n">passwd</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">passwd</span><span class="o">=</span><span class="n">passwd</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getPasswd</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">passwd</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setMail</span><span class="o">(</span><span class="nc">String</span> <span class="n">mail</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">mail</span><span class="o">=</span><span class="n">mail</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getMail</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">mail</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setGrade</span><span class="o">(</span><span class="kt">int</span> <span class="n">grade</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">grade</span><span class="o">=</span><span class="n">grade</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getGrade</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">grade</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>model层_业务逻辑(UserBeanCl.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//这是一个处理类(处理users表) &lt;-----&gt;操作UserBean</span>
+<span class="c1">//业务逻辑</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserBeanCl</span>
+<span class="o">{</span>
+    <span class="c1">//业务逻辑</span>
+    <span class="kd">private</span> <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">PreparedStatement</span> <span class="n">ps</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">ResultSet</span> <span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">rowCount</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>        <span class="c1">//共有几条记录(查表)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">pageCount</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>    <span class="c1">//一共有几页(计算)</span>
+    <span class="c1">//public static UserBean ub=new UserBean();</span>
+<span class="cm">/*     public UserBeanCl(UserBean ub)
+    {
+        this.ub=ub;
+    } */</span>
+    <span class="c1">//验证用户</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">checkUser</span><span class="o">(</span><span class="nc">String</span> <span class="n">u</span><span class="o">,</span><span class="nc">String</span> <span class="n">p</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="kt">boolean</span> <span class="n">b</span><span class="o">=</span><span class="kc">false</span><span class="o">;</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//得到连接</span>
+            <span class="nc">ConnDB</span> <span class="n">cd</span><span class="o">=</span><span class="k">new</span> <span class="nc">ConnDB</span><span class="o">();</span>
+            <span class="n">ct</span><span class="o">=</span><span class="n">cd</span><span class="o">.</span><span class="na">getConn</span><span class="o">();</span>
+            <span class="c1">// ps=ct.prepareStatement("select userName,passwd from users where userName='"</span>
+            <span class="c1">// +ub.getUserName()+"' limit 1");</span>
+            <span class="n">ps</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="s">"select userName,passwd from users where userName=? limit 1"</span><span class="o">);</span>
+            <span class="n">ps</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="n">u</span><span class="o">);</span>
+            <span class="n">rs</span><span class="o">=</span><span class="n">ps</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="nc">String</span> <span class="n">dbPasswd</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">dbPasswd</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">p</span><span class="o">))</span>
+                <span class="o">{</span>
+                    <span class="n">b</span><span class="o">=</span><span class="kc">true</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">b</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="cm">/*1.如果返回ResultSet，那么在使用ResultSet时是不能关闭与该ResultSet
+     *    相互关联的数据库连接等资源，从而造成资源浪费。
+     *2.如果返回ResultSet，只能使用rs.getInt(?),rs.getString(?)...这样的
+     *    方法来得到结果，代码的可读性不好，维护不方便。
+     *3.利用集合：比如ArrayList作为中转，这样，我们就可以尽快的关闭rs,数据库连接
+     *    同时更能体现面向对象编程，代码可读性好。
+            1.将rs中的每条记录，封装成一个UserBean对象ub；
+            2.将封装后的UserBean对象ub放入到ArrayList集合中，利于管理。
+    */</span>
+    <span class="c1">//-----------------------------</span>
+    <span class="c1">//分页显示结果</span>
+    <span class="kd">public</span> <span class="nc">ArrayList</span> <span class="nf">getResultByPage</span><span class="o">(</span><span class="kt">int</span> <span class="n">pageNow</span><span class="o">,</span><span class="kt">int</span> <span class="n">pageSize</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">ArrayList</span> <span class="n">al</span><span class="o">=</span><span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="c1">//得到rowCount</span>
+            <span class="nc">ConnDB</span> <span class="n">cd</span><span class="o">=</span><span class="k">new</span> <span class="nc">ConnDB</span><span class="o">();</span>
+            <span class="n">ct</span><span class="o">=</span><span class="n">cd</span><span class="o">.</span><span class="na">getConn</span><span class="o">();</span>
+            <span class="n">ps</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="s">"select count(*) from users"</span><span class="o">);</span>
+            <span class="n">rs</span><span class="o">=</span><span class="n">ps</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="n">rowCount</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="c1">//计算pageCount</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">rowCount</span><span class="o">%</span><span class="n">pageSize</span><span class="o">==</span><span class="mi">0</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">pageCount</span><span class="o">=</span><span class="n">rowCount</span><span class="o">/</span><span class="n">pageSize</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">else</span>
+            <span class="o">{</span>
+                <span class="n">pageCount</span><span class="o">=</span><span class="n">rowCount</span><span class="o">/</span><span class="n">pageSize</span><span class="o">+</span><span class="mi">1</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">ps</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="s">"select * from users limit "</span><span class="o">+</span><span class="n">pageSize</span><span class="o">*(</span><span class="n">pageNow</span><span class="o">-</span><span class="mi">1</span><span class="o">)</span>
+                    <span class="o">+</span><span class="s">","</span><span class="o">+</span><span class="n">pageSize</span><span class="o">);</span>
+            <span class="c1">//给?赋值</span>
+            <span class="c1">//ps.setInt(1,pageSize*(pageNow-1));</span>
+            <span class="c1">//ps.setInt(2,pageSize);</span>
+            <span class="n">rs</span><span class="o">=</span><span class="n">ps</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="c1">//将rs中的每条记录封装到UserBean ub</span>
+                <span class="nc">UserBean</span> <span class="n">ub</span><span class="o">=</span><span class="k">new</span> <span class="nc">UserBean</span><span class="o">();</span>
+                <span class="n">ub</span><span class="o">.</span><span class="na">setUserId</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="mi">1</span><span class="o">));</span>
+                <span class="n">ub</span><span class="o">.</span><span class="na">setUserName</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">2</span><span class="o">));</span>
+                <span class="n">ub</span><span class="o">.</span><span class="na">setPasswd</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">3</span><span class="o">));</span>
+                <span class="n">ub</span><span class="o">.</span><span class="na">setMail</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">4</span><span class="o">));</span>
+                <span class="n">ub</span><span class="o">.</span><span class="na">setGrade</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="mi">5</span><span class="o">));</span>
+                <span class="n">al</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ub</span><span class="o">);</span><span class="c1">//将ub放入到ArrayList集合中</span>
+            <span class="o">}</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">al</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//修改用户</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">updateUser</span><span class="o">(</span><span class="nc">String</span> <span class="n">id</span><span class="o">,</span><span class="nc">String</span> <span class="n">passwd</span><span class="o">,</span><span class="nc">String</span> <span class="n">email</span><span class="o">,</span><span class="nc">String</span> <span class="n">grade</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="kt">boolean</span> <span class="n">b</span><span class="o">=</span><span class="kc">false</span><span class="o">;</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//得到连接</span>
+            <span class="nc">ConnDB</span> <span class="n">cd</span><span class="o">=</span><span class="k">new</span> <span class="nc">ConnDB</span><span class="o">();</span>
+            <span class="n">ct</span><span class="o">=</span><span class="n">cd</span><span class="o">.</span><span class="na">getConn</span><span class="o">();</span>
+            <span class="nc">String</span> <span class="n">sql</span><span class="o">=</span><span class="s">"update users set passwd='"</span><span class="o">+</span><span class="n">passwd</span><span class="o">+</span><span class="s">"',email='"</span><span class="o">+</span><span class="n">email</span><span class="o">+</span>
+                    <span class="s">"',grade='"</span><span class="o">+</span><span class="n">grade</span><span class="o">+</span><span class="s">"' where useId='"</span><span class="o">+</span><span class="n">id</span><span class="o">+</span><span class="s">"'"</span><span class="o">;</span>
+            <span class="n">ps</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="kt">int</span> <span class="n">num</span><span class="o">=</span><span class="n">ps</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">num</span><span class="o">==</span><span class="mi">1</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">//删除成功</span>
+                <span class="n">b</span><span class="o">=</span><span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span><span class="k">else</span>
+            <span class="o">{</span>
+                <span class="c1">//删除失败</span>
+            <span class="o">}</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">b</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//删除用户</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">delUser</span><span class="o">(</span><span class="nc">String</span> <span class="n">id</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="kt">boolean</span> <span class="n">b</span><span class="o">=</span><span class="kc">false</span><span class="o">;</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//得到连接</span>
+            <span class="nc">ConnDB</span> <span class="n">cd</span><span class="o">=</span><span class="k">new</span> <span class="nc">ConnDB</span><span class="o">();</span>
+            <span class="n">ct</span><span class="o">=</span><span class="n">cd</span><span class="o">.</span><span class="na">getConn</span><span class="o">();</span>
+            <span class="nc">String</span> <span class="n">sql</span><span class="o">=</span><span class="s">"delete from users where useId='"</span><span class="o">+</span><span class="n">id</span><span class="o">+</span><span class="s">"'"</span><span class="o">;</span>
+            <span class="n">ps</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="kt">int</span> <span class="n">num</span><span class="o">=</span><span class="n">ps</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">num</span><span class="o">==</span><span class="mi">1</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="c1">//删除成功</span>
+                <span class="n">b</span><span class="o">=</span><span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span><span class="k">else</span>
+            <span class="o">{</span>
+                <span class="c1">//删除失败</span>
+            <span class="o">}</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">b</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//返回pageCount</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getPageCount</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">pageCount</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//关闭资源</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">close</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="k">if</span><span class="o">(</span><span class="kc">null</span><span class="o">!=</span><span class="n">rs</span><span class="o">)</span> <span class="o">{</span><span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span><span class="n">rs</span><span class="o">=</span><span class="kc">null</span><span class="o">;}</span>
+            <span class="k">if</span><span class="o">(</span><span class="kc">null</span><span class="o">!=</span><span class="n">ps</span><span class="o">)</span> <span class="o">{</span><span class="n">ps</span><span class="o">.</span><span class="na">close</span><span class="o">();</span><span class="n">ps</span><span class="o">=</span><span class="kc">null</span><span class="o">;}</span>
+            <span class="k">if</span><span class="o">(</span><span class="kc">null</span><span class="o">!=</span><span class="n">ct</span><span class="o">)</span> <span class="o">{</span><span class="n">ct</span><span class="o">.</span><span class="na">close</span><span class="o">();</span><span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;}</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>model层_连接数据库(ConnDB.java)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//从数据库中得到连接</span>
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">user_mng</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConnDB</span>
+<span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">Connection</span> <span class="nf">getConn</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//得到rowCount</span>
+            <span class="c1">//加载驱动</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"org.gjt.mm.mysql.Driver"</span><span class="o">).</span><span class="na">newInstance</span><span class="o">();</span>
+            <span class="c1">// Class.forName("com.microsoft.jdbc.sqlserver.SQLServerDriver");</span>
+            <span class="c1">// 得到连接</span>
+            <span class="c1">// ct=DriverManager.getConnection(</span>
+            <span class="c1">// "jdbc:microsoft:sqlserver://127.0.0.1:1433;databaseName=test_user",</span>
+            <span class="c1">// "sa","luowei");</span>
+            <span class="n">ct</span><span class="o">=</span><span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="s">"jdbc:mysql://localhost:3306/test_user"</span><span class="o">,</span>
+                    <span class="s">"root"</span><span class="o">,</span><span class="s">"root"</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">ct</span><span class="o">;</span>
+<span class="cm">/*        
+        try{
+            //利用数据源的方式访问数据库
+            //创建一个上下文环境
+            Context con=new javax.naming.InitalContext();
+            //通过con得到数据源
+            DataSource ds=(DataSource)con.lookup("java:comp/env/数据源的名字");
+            ct=ds.getConnection();
+        }catch(Eception e){
+            e.printStackTrace();
+        }
+*/</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2011-06-17-Java%E5%9F%BA%E7%A1%8012%E4%B9%8BServlet%E5%BC%80%E5%8F%91%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Java基础12之Servlet开发用户管理系统 - 知不知&amp;url=/list/docs/java/2011-06-17-Java%E5%9F%BA%E7%A1%8012%E4%B9%8BServlet%E5%BC%80%E5%8F%91%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2011-06-17-Java%E5%9F%BA%E7%A1%8012%E4%B9%8BServlet%E5%BC%80%E5%8F%91%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.html&amp;title=Java-Java基础12之Servlet开发用户管理系统 - 知不知&amp;summary=Java Servlet的应用，开发一个用户管理系统。&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2011-06-17-Java%E5%9F%BA%E7%A1%8012%E4%B9%8BServlet%E5%BC%80%E5%8F%91%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.html&amp;text=Java-Java基础12之Servlet开发用户管理系统 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2011-06-17-Java%E5%9F%BA%E7%A1%8012%E4%B9%8BServlet%E5%BC%80%E5%8F%91%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.html&amp;t=Java-Java基础12之Servlet开发用户管理系统 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2011-06-17-Java%E5%9F%BA%E7%A1%8012%E4%B9%8BServlet%E5%BC%80%E5%8F%91%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Java基础12之Servlet开发用户管理系统'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

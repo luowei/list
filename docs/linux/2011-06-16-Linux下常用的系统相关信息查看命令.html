@@ -1,0 +1,45 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Linux下常用的系统相关信息查看命令</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>Linux下常用的系统相关信息查看命令</strong></p> <ul> <li><strong>查看文本的常命令</strong>：<code class="highlighter-rouge">cat</code> 及 <code class="highlighter-rouge">tail -f</code>。</li> </ul> <h2 id="日志文件说明">日志文件说明</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/var/log/message 系统启动后的信息和错误日志，是Red Hat Linux中最常用的日志之一 
+/var/log/secure 与安全相关的日志信息 
+/var/log/maillog 与邮件相关的日志信息 
+/var/log/cron 与定时任务相关的日志信息 
+/var/log/spooler 与UUCP和news设备相关的日志信息 
+/var/log/boot.log 守护进程启动和停止相关的日志消息
+</code></pre></div></div> <h2 id="系统信息">系统信息</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># uname -a   # 查看内核/操作系统/CPU信息 
+# cat /etc/issue 
+# cat /etc/redhat-release # 查看操作系统版本 
+# cat /proc/cpuinfo  # 查看CPU信息 
+# hostname   # 查看计算机名 
+# lspci -tv   # 列出所有PCI设备 
+# lsusb -tv   # 列出所有USB设备 
+# lsmod    # 列出加载的内核模块 
+# env    # 查看环境变量
+</code></pre></div></div> <h2 id="资源信息">资源信息</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># free -m   # 查看内存使用量和交换区使用量 
+# df -h    # 查看各分区使用情况 
+# du -sh &lt;目录名&gt;  # 查看指定目录的大小 
+# grep MemTotal /proc/meminfo # 查看内存总量 
+# grep MemFree /proc/meminfo # 查看空闲内存量 
+# uptime   # 查看系统运行时间、用户数、负载 
+# cat /proc/loadavg  # 查看系统负载 
+</code></pre></div></div> <h2 id="磁盘和分区">磁盘和分区</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mount | column -t  # 查看挂接的分区状态 
+# fdisk -l   # 查看所有分区 
+# swapon -s   # 查看所有交换分区 
+# hdparm -i /dev/hda  # 查看磁盘参数(仅适用于IDE设备) 
+# dmesg | grep IDE  # 查看启动时IDE设备检测状况 
+</code></pre></div></div> <h2 id="网络情况">网络情况</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ifconfig   # 查看所有网络接口的属性 
+# iptables -L   # 查看防火墙设置 
+# route -n   # 查看路由表 
+# netstat -lntp   # 查看所有监听端口 
+# netstat -antp   # 查看所有已经建立的连接 
+# netstat -s   # 查看网络统计信息 
+</code></pre></div></div> <h2 id="进程信息">进程信息</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ps -ef   # 查看所有进程 
+# top    # 实时显示进程状态（另一篇文章里面有详细的介绍） 
+</code></pre></div></div> <h2 id="用户信息">用户信息</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># w    # 查看活动用户 
+# id &lt;用户名&gt;   # 查看指定用户信息 
+# last    # 查看用户登录日志 
+# cut -d: -f1 /etc/passwd # 查看系统所有用户 
+# cut -d: -f1 /etc/group # 查看系统所有组 
+# crontab -l   # 查看当前用户的计划任务 
+</code></pre></div></div> <h2 id="服务信息">服务信息</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chkconfig –list  # 列出所有系统服务 
+# chkconfig –list | grep on # 列出所有启动的系统服务 
+</code></pre></div></div> <h2 id="安装的程序情况">安装的程序情况</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rpm -qa   # 查看所有安装的软件包
+</code></pre></div></div> <hr /> <p>以上参考：<a href="http://www.centoscn.com/CentOS/help/2014/0310/2540.html">CentOS系统中常用查看日志命令</a></p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/linux/2011-06-16-Linux%E4%B8%8B%E5%B8%B8%E7%94%A8%E7%9A%84%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E4%BF%A1%E6%81%AF%E6%9F%A5%E7%9C%8B%E5%91%BD%E4%BB%A4.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Linux下常用的系统相关信息查看命令 - 知不知&amp;url=/list/docs/linux/2011-06-16-Linux%E4%B8%8B%E5%B8%B8%E7%94%A8%E7%9A%84%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E4%BF%A1%E6%81%AF%E6%9F%A5%E7%9C%8B%E5%91%BD%E4%BB%A4.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/linux/2011-06-16-Linux%E4%B8%8B%E5%B8%B8%E7%94%A8%E7%9A%84%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E4%BF%A1%E6%81%AF%E6%9F%A5%E7%9C%8B%E5%91%BD%E4%BB%A4.html&amp;title=Linux下常用的系统相关信息查看命令 - 知不知&amp;summary=Linux下常用的系统相关信息查看命令&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/linux/2011-06-16-Linux%E4%B8%8B%E5%B8%B8%E7%94%A8%E7%9A%84%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E4%BF%A1%E6%81%AF%E6%9F%A5%E7%9C%8B%E5%91%BD%E4%BB%A4.html&amp;text=Linux下常用的系统相关信息查看命令 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/linux/2011-06-16-Linux%E4%B8%8B%E5%B8%B8%E7%94%A8%E7%9A%84%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E4%BF%A1%E6%81%AF%E6%9F%A5%E7%9C%8B%E5%91%BD%E4%BB%A4.html&amp;t=Linux下常用的系统相关信息查看命令 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/linux/2011-06-16-Linux%E4%B8%8B%E5%B8%B8%E7%94%A8%E7%9A%84%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E4%BF%A1%E6%81%AF%E6%9F%A5%E7%9C%8B%E5%91%BD%E4%BB%A4.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Linux下常用的系统相关信息查看命令'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

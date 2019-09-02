@@ -1,0 +1,187 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>iOS中的MVC、MVVM 研究</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>iOS中的MVC、MVVM 研究</strong></p> <ul> <li> <p>一个标准的MVC架构</p> <ul> <li>Model</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  @interface Person : NSObject
+        
+  * (instancetype)initwithSalutation:(NSString *)salutation firstName:(NSString *)firstName lastName:(NSString *)lastName birthdate:(NSDate *)birthdate;
+        
+  @property (nonatomic, readonly) NSString *salutation;
+  @property (nonatomic, readonly) NSString *firstName;
+  @property (nonatomic, readonly) NSString *lastName;
+  @property (nonatomic, readonly) NSDate *birthdate;
+        
+  @end
+</code></pre></div> </div> <ul> <li>ViewController,有一个 PersonViewController ，在 viewDidLoad 里，只需要基于它的 model 属性设置一些 Label 即可</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  * (void)viewDidLoad {
+     [super viewDidLoad];
+        
+     if (self.model.salutation.length &gt; 0) {
+         self.nameLabel.text = [NSString stringWithFormat:@"%@ %@ %@", self.model.salutation, self.model.firstName, self.model.lastName];
+     } else {
+         self.nameLabel.text = [NSString stringWithFormat:@"%@ %@", self.model.firstName, self.model.lastName];
+     }
+        
+     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+     [dateFormatter setDateFormat:@"EEEE MMMM d, yyyy"];
+     self.birthdateLabel.text = [dateFormatter stringFromDate:model.birthdate];
+  }
+</code></pre></div> </div> </li> <li> <p>从MVC 到 MVVM 的演化</p> <ul> <li>优点</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  * MVVM 可以兼容你当下使用的 MVC 架构；
+  * MVVM 增加你的应用的可测试性；
+  MVVM 配合一个绑定机制效果最好。
+</code></pre></div> </div> <ul> <li>缺点</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  * 学习成本和开发成本都很高,新人很难上手；
+  *  iOS中，并没有现成的绑定机制可用，要么使用 KVO，要么引入类似 ReactiveCocoa 这样的第三方库；
+  *  数据绑定使 Debug 变得更难了，堆栈结构更复杂了，使得对象生命周期很难追踪；
+  *  对于过大的项目，数据绑定需要花费更多的内存;
+  *  ReactiveCocoa 在国内外还都是在小众领域，没有被大量接受成为主流的编程框架。在别的语言中，例如 Java 中的 RxJava 也同样没有成为主流;
+</code></pre></div> </div> <ul> <li>用一个 View Model 来增强它</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  @interface PersonViewModel : NSObject
+    
+  * (instancetype)initWithPerson:(Person *)person;
+    
+  @property (nonatomic, readonly) Person *person;
+    
+  @property (nonatomic, readonly) NSString *nameText;
+  @property (nonatomic, readonly) NSString *birthdateText;
+    
+  @end
+    
+</code></pre></div> </div> <p>View Model 的实现大概如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  @implementation PersonViewModel
+    
+  * (instancetype)initWithPerson:(Person *)person {
+      self = [super init];
+      if (!self) return nil;
+    
+      _person = person;
+      if (person.salutation.length &gt; 0) {
+          _nameText = [NSString stringWithFormat:@"%@ %@ %@", self.person.salutation, self.person.firstName, self.person.lastName];
+      } else {
+          _nameText = [NSString stringWithFormat:@"%@ %@", self.person.firstName, self.person.lastName];
+      }
+    
+      NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+      [dateFormatter setDateFormat:@"EEEE MMMM d, yyyy"];
+      _birthdateText = [dateFormatter stringFromDate:person.birthdate];
+    
+      return self;
+  }
+    
+  @end
+</code></pre></div> </div> <ul> <li>将 viewDidLoad 中的表示逻辑放入我们的 View Model 里了。此时，我们新的 viewDidLoad 就会非常轻量：</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  * (void)viewDidLoad {
+      [super viewDidLoad];
+    
+      self.nameLabel.text = self.viewModel.nameText;
+      self.birthdateLabel.text = self.viewModel.birthdateText;
+  }
+</code></pre></div> </div> <ul> <li> <p>在这个简单的例子中， Model 是不可变的，所以我们可以只在初始化的时候指定我们 View Model 的属性。对于可变 Model，我们还需要使用一些绑定机制，这样 View Model 就能在背后的 Model 改变时更新自身的属性。此外，一旦 View Model 上的 Model 发生改变，那 View 的属性也需要更新。Model 的改变应该级联向下通过 View Model 进入 View。</p> </li> <li> <p>在 OS X 上，我们可以使用 Cocoa 绑定，但在 iOS 上我们并没有这样好的配置可用。所以在iOS上一般可以通过 KVO 或 ReactiveCocoa 实现数据绑定；</p> </li> </ul> </li> <li> <p>iOS 中 MVVM 的改进方案 <img src="http://gracelancy.com/assets/post/arch0.png" alt="" /></p> <ol> <li>对 ViewModel 不引入双向绑定机制或者观察机制，而是通过传统的代理回调或是通知来将 UI 事件传递给外界。这样有3个好处： <ul> <li>首先是 View 的完全解耦合，只需要确定好相应的 ViewModel 和 UI 事件的回调接口即可与 Model 层完全隔离；</li> <li>ViewController 可以避免与 View 的具体表现打交道，这部分职责被转交给了 ViewModel，有效的减轻了 ViewController 的负担；</li> <li>同时我们弃用了传统绑定机制，使用了传统的易于理解的回调机制来传递 UI 事件，降低了学习成本，同时使得数据的流入和流出变得易于观察和控制，降低了维护了调适的成本。</li> </ul> </li> <li>对每一个 ViewController 都创建一个对应的 DataController，代码如下：</li> </ol> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  @interface APEHomePracticeViewController () &lt;APEHomePracticeSubjectsViewDelegate&gt;   
+  @property (nonatomic, strong, nullable) UIScrollView *contentView;
+  @property (nonatomic, strong, nullable) APEHomePracticeBannerView *bannerView;
+  @property (nonatomic, strong, nullable) APEHomePracticeActivityView *activityView;
+  @property (nonatomic, strong, nullable) APEHomePracticeSubjectsView *subjectsView;
+      
+  @property (nonatomic, strong, nullable) APEHomePracticeDataController *dataController;
+      
+  @end
+</code></pre></div> </div> <ol> <li>在 viewDidLoad 的时候，初始化好各个 SubView，并设置好布局：</li> </ol> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  * (void)setupContentView {
+      self.contentView = [[UIScrollView alloc] init];
+      [self.view addSubview:self.contentView];
+    
+      self.bannerView = [[APEHomePracticeBannerView alloc] init];
+      self.activityView = [[APEHomePracticeActivityView alloc] init];
+      self.subjectsView = [[APEHomePracticeSubjectsView alloc] init];
+      self.subjectsView.delegate = self;
+    
+      [self.contentView addSubview:self.bannerView];
+      [self.contentView addSubview:self.activityView];
+      [self.contentView addSubview:self.subjectsView];
+      // Layout Views ...
+  }
+</code></pre></div> </div> <ol> <li>接下来，ViewController 会向 DataController 请求 Subject 相关的数据，并在请求完成后，用获得的数据生成 ViewModel，将其装配给 SubjectView，完成界面渲染，代码如下：</li> </ol> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  * (void)fetchSubjectData {
+      [self.dataController requestSubjectDataWithCallback:^(NSError *error) {
+          if (error == nil) {
+              [self renderSubjectView];
+        }
+    }];
+  }
+  * (void)renderSubjectView {
+      APEHomePracticeSubjectsViewModel *viewModel =
+          [APEHomePracticeSubjectsViewModel viewModelWithSubjects:self.dataController.openSubjects];
+      [self.subjectsView bindDataWithViewModel:viewModel];
+  }
+</code></pre></div> </div> <ol> <li>DataController,每一个 ViewController 都会有一个对应的 DataController，这一类 DataController 的主要职责是处理这个页面上的所有数据相关的逻辑，我们称其为 View Related Data Controller。</li> </ol> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  // APEHomePracticeDataController.h
+  @interface APEHomePracticeDataController : APEBaseDataController
+  // 1
+  @property (nonatomic, strong, nonnull, readonly) NSArray&lt;APESubject *&gt; *openSubjects;
+  // 2
+  * (void)requestSubjectDataWithCallback:(nonnull APECompletionCallback)callback;
+    
+  @end
+</code></pre></div> </div> <ol> <li>DataController 这一层是一个灵活性很高的部件，一个 DataController 可以复用更小的 DataController，这一类更小的 DataController 通常只会包含纯粹的或是更抽象的 Model 相关的逻辑，例如网络请求，数据库请求，或是数据加工等。我们称这一类 DataController 为 Model Related Data Controller。</li> </ol> <p>Model Related Data Controller（以下为subjectDataController）通常会为上层提供正交的数据：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  // APEHomePracticeDataController.m
+  @interface APEHomePracticeDataController ()
+    
+  @property (nonatomic, strong, nonnull) APESubjectDataController *subjectDataController;
+    
+  @end
+    
+  @implementation APEHomePracticeDataController
+    
+  * (void)requestSubjectDataWithCallback:(nonnull APECompletionCallback)callback {
+      APEDataCallback dataCallback = ^(NSError *error, id data) {
+          callback(error);
+      };
+      [self.subjectDataController requestAllSubjectsWithCallback:dataCallback];
+      [self.subjectDataController requestUserSubjectsWithCallback:dataCallback];
+  }
+    
+  * (nonnull NSArray&lt;APESubject *&gt; *)openSubjects {
+      return self.subjectDataController.openSubjectsWithCurrentPhase ?: @[];
+  }
+    
+  @end
+</code></pre></div> </div> </li> <li> <p>Swift版的基于KVO 的 MVVM案例</p> </li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import UIKit
+
+struct Person { // Model
+    let firstName: String
+    let lastName: String
+}
+
+protocol GreetingViewModelProtocol: class {
+    var greeting: String? { get }
+    var greetingDidChange: ((GreetingViewModelProtocol) -&gt; ())? { get set } // function to call when greeting did change
+    init(person: Person)
+    func showGreeting()
+}
+
+class GreetingViewModel : GreetingViewModelProtocol {
+    let person: Person
+    var greeting: String? {
+        didSet {
+            self.greetingDidChange?(self)
+        }
+    }
+    var greetingDidChange: ((GreetingViewModelProtocol) -&gt; ())?
+    required init(person: Person) {
+        self.person = person
+    }
+    func showGreeting() {
+        self.greeting = "Hello" + " " + self.person.firstName + " " + self.person.lastName
+    }
+}
+
+class GreetingViewController : UIViewController {
+    var viewModel: GreetingViewModelProtocol! {
+        didSet {
+            self.viewModel.greetingDidChange = { [unowned self] viewModel in
+                self.greetingLabel.text = viewModel.greeting
+            }
+        }
+    }
+    let showGreetingButton = UIButton()
+    let greetingLabel = UILabel()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.showGreetingButton.addTarget(self.viewModel, action: "showGreeting", forControlEvents: .TouchUpInside)
+    }
+    // layout code goes here
+}
+// Assembling of MVVM
+let model = Person(firstName: "David", lastName: "Blaine")
+let viewModel = GreetingViewModel(person: model)
+let view = GreetingViewController()
+view.viewModel = viewModel
+</code></pre></div></div> <p>以上参考：</p> <p><a href="https://objccn.io/issue-13-1/">MVVM 介绍</a></p> <p><a href="https://blog.coding.net/blog/ios-architecture-patterns">iOS 架构模式 - 简述 MVC, MVP, MVVM 和 VIPER</a></p> <p><a href="http://gracelancy.com/blog/2016/01/06/ape-ios-arch-design/">猿题库 iOS 客户端架构设计</a></p> <p><a href="http://www.infoq.com/cn/articles/rethinking-mvc-mvvm">被误解的MVC和被神化的MVVM</a></p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/iOS/2016-04-06-iOS%E4%B8%AD%E7%9A%84MVC%E3%80%81MVVM%20%E7%A0%94%E7%A9%B6.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=iOS中的MVC、MVVM 研究 - 知不知&amp;url=/list/docs/iOS/2016-04-06-iOS%E4%B8%AD%E7%9A%84MVC%E3%80%81MVVM%20%E7%A0%94%E7%A9%B6.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/iOS/2016-04-06-iOS%E4%B8%AD%E7%9A%84MVC%E3%80%81MVVM%20%E7%A0%94%E7%A9%B6.html&amp;title=iOS中的MVC、MVVM 研究 - 知不知&amp;summary=iOS中的MVC、MVVM 研究&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/iOS/2016-04-06-iOS%E4%B8%AD%E7%9A%84MVC%E3%80%81MVVM%20%E7%A0%94%E7%A9%B6.html&amp;text=iOS中的MVC、MVVM 研究 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/iOS/2016-04-06-iOS%E4%B8%AD%E7%9A%84MVC%E3%80%81MVVM%20%E7%A0%94%E7%A9%B6.html&amp;t=iOS中的MVC、MVVM 研究 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/iOS/2016-04-06-iOS%E4%B8%AD%E7%9A%84MVC%E3%80%81MVVM%20%E7%A0%94%E7%A9%B6.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('iOS中的MVC、MVVM 研究'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

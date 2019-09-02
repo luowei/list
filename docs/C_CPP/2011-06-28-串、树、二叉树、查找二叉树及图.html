@@ -1,0 +1,749 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>数据结构-串、树、二叉树、查找二叉树及图</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="串">串</h3> <p><strong>str.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//str.h   </span>
+    
+<span class="cp">#ifndef _STR_H   
+#define _STR_H   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span>  
+<span class="p">{</span>   
+    <span class="kt">char</span> <span class="o">*</span><span class="n">ch</span><span class="p">;</span>   
+    <span class="kt">int</span> <span class="n">len</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">STR</span><span class="p">;</span>   
+    
+<span class="n">STR</span> <span class="o">*</span><span class="nf">NewStr</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">);</span>   
+<span class="kt">void</span> <span class="nf">DestroyStr</span><span class="p">(</span><span class="n">STR</span> <span class="o">*</span><span class="n">s</span><span class="p">);</span>   
+<span class="kt">void</span> <span class="nf">ClearStr</span><span class="p">(</span><span class="n">STR</span><span class="o">*</span> <span class="n">s</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">StrCompare</span><span class="p">(</span><span class="n">STR</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">STR</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">StrCancat</span><span class="p">(</span><span class="n">STR</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">STR</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>   
+<span class="n">STR</span> <span class="o">*</span><span class="nf">SubStr</span><span class="p">(</span><span class="n">STR</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="kt">int</span> <span class="n">pos</span><span class="p">,</span><span class="kt">int</span> <span class="n">len</span><span class="p">);</span>   
+    
+<span class="cp">#endif  
+</span></code></pre></div></div> <p><strong>str.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//str.c   </span>
+    
+<span class="cp">#include&lt;stdio.h&gt;   
+#include&lt;stdlib.h&gt;   
+#include "str.h"   
+</span>    
+<span class="n">STR</span> <span class="o">*</span><span class="nf">NewStr</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">)</span> <span class="c1">//新建一个串   </span>
+<span class="p">{</span>   
+    <span class="n">STR</span> <span class="o">*</span><span class="n">s</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>   
+    <span class="n">s</span><span class="o">=</span><span class="p">(</span><span class="n">STR</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">STR</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">str</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="o">++</span><span class="n">i</span><span class="p">);</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="o">=</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">free</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>   
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">=</span><span class="n">i</span><span class="p">;</span>   
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">str</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>   
+        <span class="o">--</span><span class="n">i</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="k">return</span> <span class="n">s</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">DestroyStr</span><span class="p">(</span><span class="n">STR</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="c1">//销毁串   </span>
+<span class="p">{</span>   
+    <span class="n">free</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">);</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">ClearStr</span><span class="p">(</span><span class="n">STR</span><span class="o">*</span> <span class="n">s</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="n">free</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">);</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">StrCompare</span><span class="p">(</span><span class="n">STR</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">STR</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="c1">//比较串   </span>
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>   
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">&amp;&amp;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">!=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>   
+            <span class="k">return</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>   
+    <span class="k">return</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">-</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">StrCancat</span><span class="p">(</span><span class="n">STR</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">STR</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="c1">//连接两个串   </span>
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>   
+    <span class="kt">char</span> <span class="o">*</span><span class="n">temp</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="n">temp</span><span class="o">=</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">((</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">+</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">temp</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>   
+        <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>   
+    <span class="k">for</span><span class="p">(;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">+</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>   
+        <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">];</span>   
+    <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="c1">//在最后加上'\0'   </span>
+    <span class="n">ClearStr</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="o">=</span><span class="n">temp</span><span class="p">;</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">=</span><span class="n">i</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="n">STR</span> <span class="o">*</span><span class="nf">SubStr</span><span class="p">(</span><span class="n">STR</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="kt">int</span> <span class="n">pos</span><span class="p">,</span><span class="kt">int</span> <span class="n">len</span><span class="p">)</span> <span class="c1">//获取子串   </span>
+<span class="p">{</span>   
+    <span class="n">STR</span> <span class="o">*</span><span class="n">t</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">pos</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">||</span><span class="n">pos</span><span class="o">&gt;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">||</span><span class="n">len</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">||</span><span class="n">len</span><span class="o">&gt;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">-</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+    <span class="n">t</span><span class="o">=</span><span class="n">NewStr</span><span class="p">(</span><span class="s">""</span><span class="p">);</span>   
+    <span class="n">ClearStr</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>   
+    <span class="n">t</span><span class="o">-&gt;</span><span class="n">ch</span><span class="o">=</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">((</span><span class="n">len</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">ch</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+    <span class="n">t</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">=</span><span class="n">len</span><span class="p">;</span>   
+    <span class="k">for</span><span class="p">(</span><span class="o">--</span><span class="n">len</span><span class="p">;</span><span class="n">len</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span><span class="o">--</span><span class="n">len</span><span class="p">)</span>   
+        <span class="n">t</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">[</span><span class="n">len</span><span class="p">]</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">[</span><span class="n">pos</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">len</span><span class="p">];</span>   
+    <span class="n">t</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">[</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="n">t</span><span class="p">;</span>   
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+    
+<span class="cp">#include&lt;stdio.h&gt;   
+#include&lt;stdlib.h&gt;   
+#include "str.h"   
+</span>    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">res</span><span class="p">;</span>   
+    <span class="n">STR</span> <span class="o">*</span><span class="n">t</span><span class="o">=</span><span class="nb">NULL</span><span class="p">,</span><span class="o">*</span><span class="n">s</span><span class="o">=</span><span class="n">NewStr</span><span class="p">(</span><span class="s">"hello"</span><span class="p">);</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"s=%s,len=%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">,</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">);</span>   
+    <span class="n">t</span><span class="o">=</span><span class="n">NewStr</span><span class="p">(</span><span class="s">"hello"</span><span class="p">);</span>   
+    <span class="n">res</span><span class="o">=</span><span class="n">StrCompare</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">t</span><span class="p">);</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">res</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"s=t</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">res</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"s&gt;t</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="k">else</span>  
+        <span class="n">printf</span><span class="p">(</span><span class="s">"s&lt;t</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="n">ClearStr</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>   
+    <span class="n">t</span><span class="o">=</span><span class="n">NewStr</span><span class="p">(</span><span class="s">"world"</span><span class="p">);</span>   
+    <span class="n">StrCancat</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">t</span><span class="p">);</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"s=%s,len=%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">,</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">);</span>   
+    <span class="n">DestroyStr</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>   
+    
+    <span class="n">t</span><span class="o">=</span><span class="n">SubStr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">);</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"t=%s,len=%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">ch</span><span class="p">,</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">);</span>   
+    
+    <span class="n">DestroyStr</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>   
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="树">树</h3> <p><strong>tree.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//tree.h   </span>
+    
+<span class="cp">#ifndef _TREE_H   
+#define _TREE_H   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">_node</span>  <span class="c1">//定义树的结点   </span>
+<span class="p">{</span>   
+    <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>   
+    <span class="k">struct</span> <span class="n">_node</span> <span class="o">*</span><span class="n">parent</span><span class="p">;</span>   
+    <span class="k">struct</span> <span class="n">_node</span> <span class="o">*</span><span class="n">child</span><span class="p">;</span>   
+    <span class="k">struct</span> <span class="n">_node</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">TREE</span><span class="p">;</span>   
+    
+<span class="kt">int</span> <span class="nf">InsertTree</span><span class="p">(</span><span class="n">TREE</span> <span class="o">**</span><span class="n">t</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="kt">int</span> <span class="n">size</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">DeleteAllTree</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">DeleteTree</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>   
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">GetTreeByKey</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">r</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span><span class="kt">int</span><span class="p">(</span><span class="o">*</span><span class="n">compare</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">));</span>   
+<span class="kt">int</span> <span class="nf">PrintTree</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">,</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="n">print</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="p">));</span>   
+    
+    
+<span class="cp">#endif  
+</span></code></pre></div></div> <p><strong>tree.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//tree.c   </span>
+    
+<span class="cp">#include&lt;stdio.h&gt;   
+#include&lt;stdlib.h&gt;   
+#include&lt;string.h&gt;   
+#include "tree.h"   
+</span>    
+<span class="kt">int</span> <span class="nf">InsertTree</span><span class="p">(</span><span class="n">TREE</span> <span class="o">**</span><span class="n">t</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="kt">int</span> <span class="n">size</span><span class="p">)</span>   
+<span class="c1">//第1个参数为目录指针变量的地址，第2个参数数据无类型，第3个参数数据的大小   </span>
+<span class="p">{</span>   
+    <span class="n">TREE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">TREE</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="n">memset</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">TREE</span><span class="p">));</span>   
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">malloc</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">size</span><span class="p">);</span>   
+    <span class="c1">//以上是创建一个新的结点   </span>
+    <span class="c1">//--------------------------------   </span>
+    <span class="c1">//以下是把数据存到新结点中去   </span>
+    <span class="k">if</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//如果目录结点为空   </span>
+        <span class="o">*</span><span class="n">t</span><span class="o">=</span><span class="n">p</span><span class="p">;</span>   
+    <span class="k">else</span> <span class="k">if</span><span class="p">((</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">child</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//如果树中只有根结点   </span>
+    <span class="p">{</span>   
+        <span class="n">p</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">=*</span><span class="n">t</span><span class="p">;</span>   
+        <span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">child</span><span class="o">=</span><span class="n">p</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="k">else</span>  
+    <span class="p">{</span>   
+        <span class="n">TREE</span> <span class="o">*</span><span class="n">tmp</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">child</span><span class="p">;</span>   
+        <span class="k">while</span><span class="p">(</span><span class="n">tmp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span> <span class="c1">//循环到这一层的最后一个结点   </span>
+            <span class="n">tmp</span><span class="o">=</span><span class="n">tmp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+        <span class="n">tmp</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">p</span><span class="p">;</span>   
+        <span class="n">p</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">=*</span><span class="n">t</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">DeleteAllTree</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="c1">//删除整棵树   </span>
+<span class="p">{</span>   
+    <span class="n">TREE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">while</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="c1">//当树不为空时，往下做，直到树为空   </span>
+    <span class="p">{</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">child</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//如果子结点不为空   </span>
+        <span class="p">{</span>   
+            <span class="n">p</span><span class="o">=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">child</span><span class="o">-&gt;</span><span class="n">child</span><span class="p">;</span>   
+            <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span><span class="c1">//这个循环使p指向t的孙子结点下的最后一个   </span>
+                <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+            <span class="c1">//此时p已指向t的孙子结点下的最后一个   </span>
+            <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">child</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//将此时p的下一个指向t的子结点的下一个(即t的最右子结点)   </span>
+            <span class="n">t</span><span class="o">-&gt;</span><span class="n">child</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span><span class="c1">//将指向t子结点的兄弟结点清空   </span>
+        <span class="p">}</span>   
+        <span class="n">p</span><span class="o">=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">child</span><span class="p">;</span><span class="c1">//将t的子结点赋给p指针,以记录t的子结点   </span>
+        <span class="n">free</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>   
+        <span class="n">free</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>   
+        <span class="n">t</span><span class="o">=</span><span class="n">p</span><span class="p">;</span> <span class="c1">//将p重新赋给t指针   </span>
+    <span class="p">}</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">DeleteTree</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="c1">//删除一个树结点   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//如果t为根结点   </span>
+        <span class="p">;</span>   
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">==</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">child</span><span class="p">)</span><span class="c1">//如果t是某一层的第一个结点   </span>
+        <span class="n">t</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">child</span><span class="o">=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//将t的下一个挂到t的位置   </span>
+    <span class="k">else</span>  
+    <span class="p">{</span>   
+        <span class="n">TREE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">child</span><span class="p">;</span><span class="c1">//将t结点所在的这一层的第1个兄弟结点赋给p   </span>
+        <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">==</span><span class="n">t</span><span class="p">)</span><span class="c1">//p往下找，直到找到p的下一个是t结点，即找到t的上一个   </span>
+            <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+        <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//把p的上一个的next指针指向t的下一个，这样就从树中删除了t结点   </span>
+    <span class="p">}</span>   
+    <span class="n">DeleteAllTree</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">GetTreeByKey</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">r</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span><span class="kt">int</span><span class="p">(</span><span class="o">*</span><span class="n">compare</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">))</span><span class="c1">//查找结点   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">compare</span><span class="p">(</span><span class="n">r</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="n">key</span><span class="p">))</span>   
+        <span class="k">return</span> <span class="n">r</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">GetTreeByKey</span><span class="p">(</span><span class="n">r</span><span class="o">-&gt;</span><span class="n">child</span><span class="p">,</span><span class="n">key</span><span class="p">,</span><span class="n">compare</span><span class="p">))</span>   
+        <span class="k">return</span> <span class="n">r</span><span class="o">-&gt;</span><span class="n">child</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">GetTreeByKey</span><span class="p">(</span><span class="n">r</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">,</span><span class="n">key</span><span class="p">,</span><span class="n">compare</span><span class="p">))</span>   
+        <span class="k">return</span> <span class="n">r</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">PrintTree</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">,</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="n">print</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="p">))</span><span class="c1">//打印树   </span>
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>   
+    <span class="n">TREE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">child</span><span class="p">;</span>   
+    <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">print</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>   
+        <span class="n">i</span><span class="o">++</span><span class="p">;</span>   
+        <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span><span class="c1">//让p指向它的兄弟   </span>
+    <span class="p">}</span>   
+    <span class="k">return</span> <span class="n">i</span><span class="p">;</span>   
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+    
+<span class="c1">//用树表示目录层次   </span>
+    
+<span class="cp">#include&lt;stdio.h&gt;   
+#include&lt;stdlib.h&gt;   
+#include&lt;string.h&gt;   
+#include "tree.h"   
+</span>    
+<span class="n">TREE</span> <span class="o">*</span><span class="n">root</span><span class="o">=</span><span class="nb">NULL</span><span class="p">,</span><span class="o">*</span><span class="n">curDir</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span><span class="c1">//根目录、当前目录   </span>
+    
+<span class="kt">void</span> <span class="nf">ParseMkdir</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">com</span><span class="p">)</span><span class="c1">//创建目录   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">InsertTree</span><span class="p">(</span><span class="o">&amp;</span><span class="n">curDir</span><span class="p">,</span><span class="o">&amp;</span><span class="n">com</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="cm">/*从Mkdir 后一个字符开始截取*/</span><span class="p">,</span><span class="n">strlen</span><span class="p">(</span><span class="o">&amp;</span><span class="n">com</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"命令操作失败！</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="p">}</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">CompareDir</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="k">return</span> <span class="n">strcmp</span><span class="p">((</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">,(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">key</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="o">?</span><span class="mi">1</span><span class="o">:</span><span class="mi">0</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">ParseRmdir</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">com</span><span class="p">)</span><span class="c1">//删除目录   </span>
+<span class="p">{</span>   
+    <span class="n">TREE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="n">GetTreeByKey</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="o">&amp;</span><span class="n">com</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span><span class="n">CompareDir</span><span class="p">);</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"文件不存在！"</span><span class="p">);</span>   
+    <span class="n">DeleteTree</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">ParseCd</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">com</span><span class="p">)</span><span class="c1">//切换目录   </span>
+<span class="p">{</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">PrintDir</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span><span class="c1">//打印目录   </span>
+<span class="p">{</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%10s"</span><span class="p">,(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">);</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">ParseLs</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">com</span><span class="p">)</span><span class="c1">//查看目录   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">PrintTree</span><span class="p">(</span><span class="n">curDir</span><span class="p">,</span><span class="n">PrintDir</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"没有目录！"</span><span class="p">);</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+<span class="p">}</span>   
+    
+    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="kt">char</span> <span class="n">str</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>   
+    <span class="n">InsertTree</span><span class="p">(</span><span class="o">&amp;</span><span class="n">root</span><span class="p">,</span><span class="s">"/"</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>   
+    <span class="n">curDir</span><span class="o">=</span><span class="n">root</span><span class="p">;</span>   
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"mkdir创建目录;</span><span class="se">\n</span><span class="s">rmdir删除目录;</span><span class="se">\n</span><span class="s">ls查看目录;</span><span class="se">\n</span><span class="s">cd切换目录;</span><span class="se">\n</span><span class="s">exit退出</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"&gt;&gt;&gt;:"</span><span class="p">);</span>   
+        <span class="n">gets</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>   
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">strstr</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="s">"mkdir"</span><span class="p">)</span><span class="o">==</span><span class="n">str</span><span class="p">)</span>   
+            <span class="n">ParseMkdir</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>   
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">strstr</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="s">"rmdir"</span><span class="p">)</span><span class="o">==</span><span class="n">str</span><span class="p">)</span>   
+            <span class="n">ParseRmdir</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>   
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">strstr</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="s">"cd"</span><span class="p">)</span><span class="o">==</span><span class="n">str</span><span class="p">)</span>   
+            <span class="n">ParseCd</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>   
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">strstr</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="s">"ls"</span><span class="p">)</span><span class="o">==</span><span class="n">str</span><span class="p">)</span>   
+            <span class="n">ParseLs</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>   
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">strstr</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="s">"exit"</span><span class="p">)</span><span class="o">==</span><span class="n">str</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="n">printf</span><span class="p">(</span><span class="s">"bey!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+        <span class="p">}</span>   
+        <span class="k">else</span>  
+            <span class="n">printf</span><span class="p">(</span><span class="s">"command not find!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="p">}</span>   
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="二叉树">二叉树</h3> <p><strong>tree.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//tree.h   </span>
+    
+<span class="cp">#ifndef _TREE_H   
+#define _TREE_H   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">node</span>   
+<span class="p">{</span>   
+    <span class="kt">char</span> <span class="n">data</span><span class="p">;</span>   
+    <span class="k">struct</span> <span class="n">node</span> <span class="o">*</span><span class="n">lchild</span><span class="p">,</span><span class="o">*</span><span class="n">rchild</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">TREE</span><span class="p">;</span>   
+    
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">MakeTree</span><span class="p">();</span>   
+<span class="kt">void</span> <span class="nf">PrintTreeByBefore</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>   
+    
+<span class="cp">#endif  
+</span></code></pre></div></div> <p><strong>tree.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//tree.c   </span>
+    
+<span class="cp">#include &lt;stdio.h&gt;   
+#include &lt;conio.h&gt;   
+#include &lt;stdlib.h&gt;   
+#include "tree.h"   
+#include "stack.h"   
+</span>    
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">MakeTree</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="kt">char</span> <span class="n">ch</span><span class="p">;</span>   
+    <span class="n">ch</span><span class="o">=</span><span class="n">getche</span><span class="p">();</span><span class="c1">//读取字符并显示   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">ch</span><span class="o">==</span><span class="sc">'#'</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+    <span class="n">t</span><span class="o">=</span><span class="p">(</span><span class="n">TREE</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">TREE</span><span class="p">));</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+    <span class="n">t</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">ch</span><span class="p">;</span>   
+    <span class="n">t</span><span class="o">-&gt;</span><span class="n">lchild</span><span class="o">=</span><span class="n">MakeTree</span><span class="p">();</span>   
+    <span class="n">t</span><span class="o">-&gt;</span><span class="n">rchild</span><span class="o">=</span><span class="n">MakeTree</span><span class="p">();</span>   
+    <span class="k">return</span> <span class="n">t</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">PrintTreeByBefore</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="c1">//先序打印   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span><span class="p">;</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[%c]"</span><span class="p">,</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>   
+    <span class="n">PrintTreeByBefore</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">lchild</span><span class="p">);</span>   
+    <span class="n">PrintTreeByBefore</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">rchild</span><span class="p">);</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">PrintTreeByMid</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="c1">//中序方式   </span>
+<span class="p">{</span>   
+    <span class="n">TREE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="n">t</span><span class="p">;</span>   
+    <span class="n">STACK</span><span class="o">*</span> <span class="n">s</span><span class="o">=</span><span class="n">InitStack</span><span class="p">();</span>   
+    <span class="n">Push</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="o">&amp;</span><span class="n">t</span><span class="p">);</span><span class="c1">//将根地址压到栈中   </span>
+    <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>   
+    <span class="p">{</span>   
+        <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">lchild</span><span class="p">;</span>   
+            <span class="n">Push</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="o">&amp;</span><span class="n">p</span><span class="p">);</span><span class="c1">//将p左结点压到栈中   </span>
+        <span class="p">}</span>   
+        <span class="n">Pop</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="o">&amp;</span><span class="n">p</span><span class="p">);</span>   
+        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>   
+        <span class="p">{</span>   
+            <span class="n">Pop</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="o">&amp;</span><span class="n">p</span><span class="p">);</span>   
+            <span class="n">printf</span><span class="p">(</span><span class="s">"[%c]"</span><span class="p">,</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>   
+            <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">rchild</span><span class="p">;</span>   
+            <span class="n">Push</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="o">&amp;</span><span class="n">p</span><span class="p">);</span>   
+        <span class="p">}</span>   
+    <span class="p">}</span>   
+    <span class="n">DestroyStack</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="n">TREE</span> <span class="o">*</span><span class="n">tree</span><span class="o">=</span><span class="n">MakeTree</span><span class="p">();</span>   
+    <span class="n">PrintTreeByBefore</span><span class="p">(</span><span class="n">tree</span><span class="p">);</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">*******************</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="n">PrintTreeByMid</span><span class="p">(</span><span class="n">tree</span><span class="p">);</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>stack.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//stack.h   </span>
+    
+<span class="cp">#ifndef _STACK_H   
+#define _STACK_H   
+</span>    
+<span class="cp">#include "tree.h"   
+</span>    
+<span class="cp">#define ElemType TREE*   
+</span>    
+<span class="cp">#define STACK_INIT_SIZE 10   
+#define STACK_INCREME 10   
+</span>    
+<span class="k">typedef</span> <span class="k">struct</span>  
+<span class="p">{</span>   
+    <span class="n">ElemType</span> <span class="o">*</span><span class="n">base</span><span class="p">;</span>   
+    <span class="n">ElemType</span> <span class="o">*</span><span class="n">top</span><span class="p">;</span>   
+    <span class="kt">int</span> <span class="n">size</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">STACK</span><span class="p">;</span>   
+    
+<span class="n">STACK</span> <span class="o">*</span><span class="nf">InitStack</span><span class="p">();</span>   
+<span class="kt">void</span> <span class="nf">DestroyStack</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">Push</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">Pop</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">);</span>   
+<span class="kt">int</span> <span class="nf">IsEmpty</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">);</span>   
+    
+<span class="cp">#endif  
+</span></code></pre></div></div> <p><strong>stack.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//stack.c   </span>
+    
+<span class="cp">#include&lt;stdio.h&gt;   
+#include&lt;stdlib.h&gt;   
+#include "stack.h"   
+</span>    
+<span class="n">STACK</span> <span class="o">*</span> <span class="nf">InitStack</span><span class="p">()</span> <span class="c1">//初始化一个栈   </span>
+<span class="p">{</span>   
+    <span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="o">=</span><span class="p">(</span><span class="n">STACK</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">STACK</span><span class="p">));</span><span class="c1">//初始化一个栈   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">=</span><span class="p">(</span><span class="n">ElemType</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">STACK_INIT_SIZE</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ElemType</span><span class="p">));</span><span class="c1">//为栈分配一个初始大小   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//如果栈底指针指向空   </span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="p">;</span> <span class="c1">//空栈，使栈底与栈顶指针相同   </span>
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">=</span><span class="n">STACK_INIT_SIZE</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="n">s</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">DestroyStack</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="c1">//销毁一个栈   </span>
+<span class="p">{</span>   
+    <span class="n">free</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="p">);</span>   
+    <span class="n">free</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">Push</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="c1">//压栈   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">e</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//判断传入的参数是否合法   </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">-</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">&gt;=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">)</span><span class="c1">//如果满栈   </span>
+    <span class="p">{</span>   
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">=</span><span class="p">(</span><span class="n">ElemType</span><span class="o">*</span><span class="p">)</span><span class="n">realloc</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="p">,</span>   
+            <span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">+</span><span class="n">STACK_INCREME</span><span class="p">)</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ElemType</span><span class="p">));</span><span class="c1">//重新分配栈的大小   </span>
+        <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//如果分配失败，返回零   </span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">+</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span><span class="c1">//重置栈顶指针   </span>
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">size</span><span class="o">+</span><span class="n">STACK_INCREME</span><span class="p">;</span><span class="c1">//重置栈大小   </span>
+    <span class="p">}</span>   
+    <span class="cm">/*  
+    //写法一  
+    *s-&gt;top=*e;//将数据存到栈顶  
+    s-&gt;top++; //栈顶上移  
+    */</span>  
+    <span class="c1">//写法二   </span>
+    <span class="o">*</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">++=*</span><span class="n">e</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">Pop</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">ElemType</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="c1">//出栈   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">==</span><span class="nb">NULL</span><span class="o">||</span><span class="n">e</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//判断传入的参数是否合法   </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span><span class="o">==</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">//如果是空栈，返回   </span>
+    <span class="o">*</span><span class="n">e</span><span class="o">=</span> <span class="o">*--</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">;</span> <span class="c1">//将栈顶元素存到*e中   </span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">int</span> <span class="nf">IsEmpty</span><span class="p">(</span><span class="n">STACK</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="c1">//判断栈是否为空   </span>
+<span class="p">{</span>   
+    <span class="k">return</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">==</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">base</span> <span class="o">?</span> <span class="mi">1</span><span class="o">:</span><span class="mi">0</span><span class="p">;</span>   
+<span class="p">}</span> 
+</code></pre></div></div> <h3 id="查找二叉树">查找二叉树</h3> <p><strong>tree.h</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//tree.h   </span>
+    
+<span class="cp">#ifndef _TREE_H   
+#define _TREE_H   
+</span>    
+<span class="k">typedef</span> <span class="kt">int</span> <span class="n">ElemType</span><span class="p">;</span>   
+    
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">treenode</span>   
+<span class="p">{</span>   
+    <span class="n">ElemType</span> <span class="n">data</span><span class="p">;</span>   
+    <span class="k">struct</span> <span class="n">treenode</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>   
+    <span class="k">struct</span> <span class="n">treenode</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>   
+<span class="p">}</span><span class="n">TREE</span><span class="p">;</span>   
+    
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">MakeEmptyTree</span><span class="p">();</span>   
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">InsertTreeNode</span><span class="p">(</span><span class="n">ElemType</span> <span class="n">e</span><span class="p">,</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>   
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">FindTreeNode</span><span class="p">(</span><span class="n">ElemType</span> <span class="n">e</span><span class="p">,</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>   
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">FindMax</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>   
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">FindMin</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>   
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">DeleteTreeNode</span><span class="p">(</span><span class="n">ElemType</span> <span class="n">e</span><span class="p">,</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>   
+<span class="kt">void</span> <span class="nf">DeleteTree</span><span class="p">(</span><span class="n">TREE</span> <span class="o">**</span><span class="n">t</span><span class="p">);</span>   
+    
+<span class="cp">#endif  
+</span></code></pre></div></div> <p><strong>tree.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//tree.c   </span>
+    
+<span class="cp">#include &lt;stdio.h&gt;   
+#include &lt;stdlib.h&gt;   
+#include "tree.h"   
+</span>    
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">MakeEmptyTree</span><span class="p">()</span> <span class="c1">//创建一个空树   </span>
+<span class="p">{</span>   
+    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">InsertTreeNode</span><span class="p">(</span><span class="n">ElemType</span> <span class="n">e</span><span class="p">,</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="c1">//插入树结点   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//如果是空树   </span>
+    <span class="p">{</span>   
+        <span class="n">t</span><span class="o">=</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">TREE</span><span class="p">));</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">//如果没分配成功   </span>
+        <span class="n">t</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">e</span><span class="p">;</span>   
+        <span class="n">t</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">e</span><span class="o">&lt;</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span> <span class="c1">//如果小于树结点   </span>
+    <span class="p">{</span>   
+        <span class="n">t</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">=</span><span class="n">InsertTreeNode</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span> <span class="c1">//插入树左边   </span>
+    <span class="p">}</span>   
+    <span class="k">else</span> <span class="c1">//否则   </span>
+        <span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">=</span><span class="n">InsertTreeNode</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span> <span class="c1">//插入树右边   </span>
+    <span class="k">return</span> <span class="n">t</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">FindTreeNode</span><span class="p">(</span><span class="n">ElemType</span> <span class="n">e</span><span class="p">,</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="c1">//查找结点   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">//如果树为空   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">==</span><span class="n">e</span><span class="p">)</span>  <span class="c1">//如果查找的是根结点   </span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">;</span>   
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">&lt;</span><span class="n">e</span><span class="p">)</span> <span class="c1">//大于根   </span>
+        <span class="k">return</span> <span class="n">FindTreeNode</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span><span class="c1">//去右边找   </span>
+    <span class="k">else</span>    <span class="c1">//否则   </span>
+        <span class="k">return</span> <span class="n">FindTreeNode</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span> <span class="c1">//去左边找   </span>
+<span class="p">}</span>   
+    
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">FindMax</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="c1">//查找树的最大值   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//如果是空树   </span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//如果右子树为空   </span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="n">FindMax</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span> <span class="c1">//否向右边找   </span>
+<span class="p">}</span>   
+    
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">FindMin</span><span class="p">(</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="c1">//查找树的最小值   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">//如果树为空   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="c1">//如果左子树为空   </span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">;</span>   
+    <span class="k">return</span> <span class="n">FindMin</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span> <span class="c1">//否则向左边找   </span>
+<span class="p">}</span>   
+    
+<span class="n">TREE</span> <span class="o">*</span><span class="nf">DeleteTreeNode</span><span class="p">(</span><span class="n">ElemType</span> <span class="n">e</span><span class="p">,</span><span class="n">TREE</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span>   
+<span class="p">{</span>   
+    <span class="n">TREE</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">//如果树为空   </span>
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">&gt;</span><span class="n">e</span><span class="p">)</span> <span class="c1">//小于根   </span>
+        <span class="n">t</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">=</span><span class="n">DeleteTreeNode</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span> <span class="c1">//去左边删除   </span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">&lt;</span><span class="n">e</span><span class="p">)</span> <span class="c1">//大于根   </span>
+        <span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">=</span><span class="n">DeleteTreeNode</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span><span class="c1">//去右边删除   </span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">&amp;&amp;</span> <span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">)</span> <span class="c1">//当等于当前结点，且其左右子树均不为空   </span>
+    <span class="p">{</span>   
+        <span class="n">p</span><span class="o">=</span><span class="n">FindMin</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span><span class="c1">//查找右子树的最小值   </span>
+        <span class="n">t</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">=</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span> <span class="c1">//将右子树的数据赋给当前找到的结点   </span>
+        <span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">=</span><span class="n">DeleteTreeNode</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>   
+        <span class="c1">//到结点的右子树去删除数据为最小值的那个结点，并将删除之后的结果赋给右子树   </span>
+    <span class="p">}</span>   
+    <span class="k">else</span> <span class="c1">//当等于当前结点，且其左右子树有空   </span>
+    <span class="p">{</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//如果左子树为空   </span>
+            <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span><span class="c1">//将右子树取代找到的结点   </span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span><span class="c1">//如果右子树为空   </span>
+            <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span><span class="c1">//将左子树取代找到的结点   </span>
+        <span class="n">free</span><span class="p">(</span><span class="n">t</span><span class="p">);</span><span class="c1">//释放找到的结点   </span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>   
+    <span class="p">}</span>   
+    <span class="k">return</span> <span class="n">t</span><span class="p">;</span>   
+<span class="p">}</span>   
+    
+<span class="kt">void</span> <span class="nf">DeleteTree</span><span class="p">(</span><span class="n">TREE</span> <span class="o">**</span><span class="n">t</span><span class="p">)</span> <span class="c1">//删除整棵树   </span>
+<span class="p">{</span>   
+    <span class="k">if</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="k">return</span> <span class="p">;</span>   
+    <span class="n">DeleteTree</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>   
+    <span class="n">DeleteTree</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>   
+    <span class="n">free</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">);</span>   
+    <span class="o">*</span><span class="n">t</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>   
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>test.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//test.c   </span>
+    
+<span class="cp">#include &lt;stdio.h&gt;   
+#include &lt;stdlib.h&gt;   
+#include "tree.h"   
+</span>    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>   
+    <span class="n">TREE</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span><span class="o">*</span><span class="n">tree</span><span class="o">=</span><span class="n">MakeEmptyTree</span><span class="p">();</span>   
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   
+    <span class="p">{</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Please enter a num:"</span><span class="p">);</span>   
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">n</span><span class="p">)</span><span class="o">!=</span><span class="mi">1</span><span class="p">)</span>   
+            <span class="k">break</span><span class="p">;</span>   
+        <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>   
+            <span class="k">break</span><span class="p">;</span>   
+        <span class="n">tree</span><span class="o">=</span><span class="n">InsertTreeNode</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">tree</span><span class="p">);</span>   
+    <span class="p">}</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Max of tree is %d,Min of tree is %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>   
+        <span class="n">FindMax</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="n">FindMin</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>   
+    
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Please enter search num:"</span><span class="p">);</span>   
+    <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">n</span><span class="p">);</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">FindTreeNode</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">tree</span><span class="p">))</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"find %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">n</span><span class="p">);</span>   
+    <span class="k">else</span>  
+        <span class="n">printf</span><span class="p">(</span><span class="s">"not find</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="n">p</span><span class="o">=</span><span class="n">DeleteTreeNode</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">tree</span><span class="p">);</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"delete %d success</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">n</span><span class="p">);</span>   
+    <span class="k">else</span>  
+        <span class="n">printf</span><span class="p">(</span><span class="s">"delete fail</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="n">DeleteTree</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tree</span><span class="p">);</span>   
+    <span class="k">if</span><span class="p">(</span><span class="n">tree</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"delete success</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="k">else</span>  
+        <span class="n">printf</span><span class="p">(</span><span class="s">"delete faile</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="图">图</h3> <p><strong>demo中的图结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/c/base/01.jpg" alt="demo中的图结构" /></p> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
+    
+<span class="cp">#include&lt;stdio.h&gt;   
+</span>    
+<span class="cp">#define MAX 10000   
+#define N 6   
+</span>    
+<span class="kt">int</span> <span class="n">G</span><span class="p">[</span><span class="n">N</span><span class="p">][</span><span class="n">N</span><span class="p">]</span><span class="o">=</span>   
+<span class="p">{</span>   
+    <span class="p">{</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">100</span><span class="p">},</span> <span class="c1">//表示v0分别到各个顶点的距离   </span>
+    <span class="p">{</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">},</span> <span class="c1">//表示v1分别到各个顶点的距离   </span>
+    <span class="p">{</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">},</span><span class="c1">//表示v2分别到各个顶点的距离   </span>
+    <span class="p">{</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="mi">10</span><span class="p">},</span><span class="c1">//表示v3分别到各个顶点的距离   </span>
+    <span class="p">{</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="mi">60</span><span class="p">},</span> <span class="c1">//表示v4分别到各个顶点的距离   </span>
+    <span class="p">{</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">}</span><span class="c1">//表示v5分别到各个顶点的距离   </span>
+<span class="p">};</span> <span class="c1">//图的矩阵图,行标表示起始顶点，列标表示终止顶点   </span>
+    
+<span class="kt">int</span> <span class="n">p</span><span class="p">[</span><span class="n">N</span><span class="p">][</span><span class="n">N</span><span class="p">]</span><span class="o">=</span>   
+<span class="p">{</span>   
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span><span class="c1">//第1行表示v0到v0所需要经过的路径的顶点   </span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span><span class="c1">//第2行表示v0到v1   </span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span><span class="c1">//第3行表示v0到v2,因为v0能直接到达v2,则直接在第2列上填2,第1表示v0本身   </span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span><span class="c1">//第4行表示v0到v3   </span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span><span class="c1">//第5行表示v0到v4,因为v0能直接到达v4,则直接在第2列上填4   </span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}</span> <span class="c1">//第6行表示v0到v5,因为v0能直接到达v5,则直接在第2列上填5   </span>
+<span class="p">};</span> <span class="c1">//用于存放第1个顶点到达其它顶点的最短距离经过的路径   </span>
+   <span class="c1">//能从v0直接到达的初始化时写上，如上   </span>
+    
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
+<span class="p">{</span>   
+    <span class="kt">int</span> <span class="n">d</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="n">MAX</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">100</span><span class="p">};</span><span class="c1">//表示v0分别到各个顶点的距离   </span>
+    <span class="kt">int</span> <span class="n">flag</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>   
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">min</span><span class="p">,</span><span class="n">k</span><span class="p">;</span>   
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="c1">//找出(第1个顶点到第i个顶点)的最短距离   </span>
+    <span class="p">{</span>   
+        <span class="n">min</span><span class="o">=</span><span class="n">MAX</span><span class="p">;</span>   
+        <span class="k">for</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">v</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">k</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="n">k</span><span class="o">++</span><span class="p">)</span> <span class="c1">//循环比较   </span>
+        <span class="p">{</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">flag</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">!=</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">min</span><span class="o">&gt;</span><span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>   
+            <span class="c1">//如果(第1个顶点到第k个顶点)的最短距离没有比较过,且min大于(第1个顶点到第k个顶点)的最短距离   </span>
+            <span class="p">{</span>   
+                <span class="n">min</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">];</span> <span class="c1">//将(第1个顶点到第k个顶点)的最短距离的值赋给min   </span>
+                <span class="n">v</span><span class="o">=</span><span class="n">k</span><span class="p">;</span> <span class="c1">//将下标k存到v中   </span>
+            <span class="p">}</span>   
+        <span class="p">}</span><span class="c1">//循环全部比较出来之后   </span>
+        <span class="n">flag</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="c1">//每循环1次，将flag[v]置1表示(第1个顶点到第v个顶点)的最短距离已经比较过了   </span>
+        <span class="n">d</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">=</span><span class="n">min</span><span class="p">;</span><span class="c1">//将比较后的(第1顶点到第v个顶点)的直接最小距离存到d[v]中   </span>
+    
+        <span class="k">for</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">k</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="n">k</span><span class="o">++</span><span class="p">)</span> <span class="c1">//循环比较,找出(第1个顶点到第k个顶点)最小的间接距离   </span>
+        <span class="p">{</span>   
+            <span class="k">if</span><span class="p">(</span><span class="n">flag</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">!=</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">min</span><span class="o">+</span><span class="n">G</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">k</span><span class="p">]</span><span class="o">&lt;</span><span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="c1">//当存在间接距离小于直接距离   </span>
+            <span class="c1">//   </span>
+            <span class="p">{</span>   
+                <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">min</span><span class="o">+</span><span class="n">G</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">k</span><span class="p">];</span> <span class="c1">//则把间接距离赋给d[k]   </span>
+                <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="c1">//如果原来没有被设置过   </span>
+                <span class="p">{</span>   
+                    <span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>   
+                    <span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">v</span><span class="p">;</span><span class="c1">//经过第v个顶点，将v设置到第2列   </span>
+                    <span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">k</span><span class="p">;</span><span class="c1">//将k设置到第3列   </span>
+                <span class="p">}</span>   
+                <span class="k">else</span> <span class="c1">//否则,即p[v][i]原来被设置过   </span>
+                <span class="p">{</span>   
+                    <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>   
+                    <span class="k">while</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">i</span><span class="p">])</span><span class="c1">//   </span>
+                    <span class="p">{</span>   
+                        <span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">p</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">i</span><span class="p">];</span><span class="c1">//将新得到的间接顶点设置到原来的最终顶点上   </span>
+                        <span class="n">i</span><span class="o">++</span><span class="p">;</span><span class="c1">//   </span>
+                    <span class="p">}</span>   
+                    <span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">k</span><span class="p">;</span><span class="c1">//将最终的顶点设置到p[k][i]   </span>
+                <span class="p">}</span>   
+            <span class="p">}</span>   
+        <span class="p">}</span>   
+    <span class="p">}</span>   
+         
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="c1">//这个循环打印v0到其它顶点的最小出距离   </span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%5d"</span><span class="p">,</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>   
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n\n</span><span class="s">"</span><span class="p">);</span>   
+    
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="c1">//这个循环打印v0到其它顶点经过的结点顺序   </span>
+    <span class="p">{</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"v0--&gt;v%d:::"</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>   
+        <span class="k">for</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">v</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="n">v</span><span class="o">++</span><span class="p">)</span>   
+        <span class="p">{</span>   
+            <span class="n">printf</span><span class="p">(</span><span class="s">"%5d"</span><span class="p">,</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">v</span><span class="p">]);</span>   
+        <span class="p">}</span>   
+        <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>   
+    <span class="p">}</span>   
+<span class="p">}</span>  
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/C_CPP/2011-06-28-%E4%B8%B2%E3%80%81%E6%A0%91%E3%80%81%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E6%9F%A5%E6%89%BE%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8A%E5%9B%BE.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=数据结构-串、树、二叉树、查找二叉树及图 - 知不知&amp;url=/list/docs/C_CPP/2011-06-28-%E4%B8%B2%E3%80%81%E6%A0%91%E3%80%81%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E6%9F%A5%E6%89%BE%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8A%E5%9B%BE.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/C_CPP/2011-06-28-%E4%B8%B2%E3%80%81%E6%A0%91%E3%80%81%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E6%9F%A5%E6%89%BE%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8A%E5%9B%BE.html&amp;title=数据结构-串、树、二叉树、查找二叉树及图 - 知不知&amp;summary=串、树、二叉树、查找二叉树及图&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/C_CPP/2011-06-28-%E4%B8%B2%E3%80%81%E6%A0%91%E3%80%81%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E6%9F%A5%E6%89%BE%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8A%E5%9B%BE.html&amp;text=数据结构-串、树、二叉树、查找二叉树及图 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/C_CPP/2011-06-28-%E4%B8%B2%E3%80%81%E6%A0%91%E3%80%81%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E6%9F%A5%E6%89%BE%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8A%E5%9B%BE.html&amp;t=数据结构-串、树、二叉树、查找二叉树及图 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/C_CPP/2011-06-28-%E4%B8%B2%E3%80%81%E6%A0%91%E3%80%81%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E6%9F%A5%E6%89%BE%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8A%E5%9B%BE.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('数据结构-串、树、二叉树、查找二叉树及图'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

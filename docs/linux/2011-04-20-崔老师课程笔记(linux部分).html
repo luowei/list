@@ -1,0 +1,155 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>崔老师课程笔记(linux部分)</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p>连接到linux服务器<br /> <code class="highlighter-rouge">telnet 192.168.5.200</code></p> <p>用户名：<br /> <code class="highlighter-rouge">cuilue</code></p> <p>账号与密码：<br /> <code class="highlighter-rouge">luowei luowei</code></p> <p>passwd 修改密码的命令</p> <hr /> <p>var 存放操作系统日常工作的日志文件</p> <p>pwd:显示当前的路径</p> <p>dir:在windows与linux下都可以，在linux下一般用ls</p> <p>windows下清屏：<code class="highlighter-rouge">cls</code><br /> linux下清屏：<code class="highlighter-rouge">clear</code></p> <p><strong>传文件</strong><br /> <code class="highlighter-rouge">ftp 192.168.5.200</code></p> <p><code class="highlighter-rouge">mput *</code></p> <hr /> <p>cd 后直接回车，回到家目录</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>luowei@boss:/<span class="nv">$ </span><span class="nb">cd
+</span>luowei@boss:~<span class="err">$</span>
+</code></pre></div></div> <p>到某个用户的家目录</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>luowei@boss:~<span class="nv">$ </span><span class="nb">cd</span> ~hanhan
+luowei@boss:/home/students/students/hanhan<span class="err">$</span>
+</code></pre></div></div> <p>~表示当前用户的家目录</p> <hr /> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>whoami 显示当前用户的名字  
+who am i 显示当前用户详细信息  
+who 显示服务器当前登录用户  
+
+date 显示当前的时间  
+cal 显示当前的日期  
+
+ls -a 显示当前路径下的所有文件或者文件夹，包括隐藏文件  
+ls -l 显示目录下的详细信息  
+ls -R 递归显示当前路径下的文件或者文件夹的信息  
+
+touch + file_name 创建文件  
+
+file a 显示a文件的类型  
+
+cat &gt; a 编辑a文件，按delete 键删除字符，ctrl+z退出。同时也覆盖文件中以前的内容。  
+
+cat &gt;&gt; a 向a文件中追加内容  
+
+cp old_file new_file  复制文件  
+</code></pre></div></div> <p><strong>例</strong>：cp /home/students/students/cuilue/shadow ./</p> <hr /> <p>查看文件的方式<br /> <code class="highlighter-rouge">more file_name</code></p> <p>按空格，一屏一屏的显示<br /> 按回车：一行一行的显示<br /> 按b:往回看去</p> <hr /> <p>head file_name<br /> 显示文件的前10行</p> <hr /> <p>tail file_name 显示文件的后10行<br /> tail -f 监视文件内容的最后几行</p> <p>cal 显示日历</p> <hr /> <p>vi 有三种状态模式</p> <p>编辑模式：按i 或者a进入到编辑模式<br /> 命令模式：按esc键进入命令模式<br /> 命令行模式：按shift+; 进入此模式，如 set nu 设置行号</p> <hr /> <p>i进入编辑模式，并且在光标处插入字符<br /> a进入编辑模式，并且在光标所在位置的下一处插入字符</p> <p>组合键：dw光标所在位置之后删除一个单词或连续字符<br /> x 删除当前光标所在位置的字符<br /> dd 删除当前光标所在位置的一行<br /> 5dd 删除5行 从当前光标所在位置算起<br /> yw 复制一个单词，从光标所在位置算起<br /> yy 复制当前光标所在位置的一行<br /> p 粘贴光标所在位置的下一行</p> <hr /> <p><strong>命令模式下</strong><br /> w 保存<br /> q 退出<br /> q! 强制退出<br /> wq! 保存并强制退出</p> <hr /> <p>mkdir aaa 建立名为aaa的文件夹<br /> rm dir aaa 删除名为aaa的文件夹<br /> mkdir -p aaa/b/c/d/e/f 创建一系列像管道一样的文件夹</p> <p>mv old_filename new_filename 相当于剪切，也可以用于修改文件名</p> <p>rm a? ?是通配符，只能表示一个字符,删除以a字母开头含两个字母的文件<br /> rm * 删除当前目录下的所有文件</p> <hr /> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-rw-r--r-- 1 luowei root //第一个'-'表示它是个文件  
+drwxr-xr-x 2 luowei students //第一个'd'表示它是个文件夹  
+</code></pre></div></div> <p><code class="highlighter-rouge">- rw- r-- r--</code><br /> 这些参数分别表示：<br /> d u g o a</p> <p>d 文件夹<br /> u 文件的拥有者<br /> g 和文件拥有处于同一组的同组人<br /> o 其他人<br /> a 所有人</p> <hr /> <p>r 表示可读 4<br /> w 表示可写 2<br /> x 表示可执行 1</p> <p>用数字代表分别为4，2，1 ，二进制分别为100,10,1<br /> 这样，三种相加权限可以唯一确定一种权限。</p> <p><strong>例1：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-rw-r--r--  
+分别表示  
+- 6 4 4  
+</code></pre></div></div> <p>例2:</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>luowei@boss:~<span class="nv">$ </span><span class="nb">chmod </span>766 a
+luowei@boss:~<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
+total 20
+<span class="nt">-rwxrw-rw-</span> 1 luowei students  168 2004-01-01 10:43 a
+</code></pre></div></div> <p>chmod 修改权限的命令</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- 删去某种权限  
++ 增加某种权限  
+= 让某一组人拥有哪几个权限  
+</code></pre></div></div> <p>例：</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod </span>u-r a
+<span class="nb">chmod </span>u+r,g-r,file_name
+<span class="nb">chmod </span>a+r file_name
+<span class="nb">chmod </span><span class="nv">a</span><span class="o">=</span>rw file_name
+</code></pre></div></div> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>luowei@boss:~<span class="nv">$ </span><span class="nb">umask
+</span>0022
+</code></pre></div></div> <p>umask：确定建立的(touch)的文件的默认权限为666-022(umask码)，建立的文件夹的权限为777-022(umask码)</p> <p><strong>下载文件</strong><br /> ftp到服务器<br /> <code class="highlighter-rouge">ftp 192.168.5.200</code></p> <p>登录上去之后默认是ascii下载方式</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Tyep set to A 
+Tyep set to I
+</code></pre></div></div> <p><strong>ascii 设置成ascii码方式</strong></p> <p>bin 设置成二进制解码方式</p> <p>get :下载某一个文件<br /> mget :下载多个文件</p> <p>如果是二进制文件，则需要使用bin方式下载</p> <p>lcd 切换本地的目录</p> <p><strong>上传文件</strong><br /> put:上传某一个文件<br /> mput：上传多个文件</p> <p>oracle 里的函数有哪些类型，有哪些？举例：</p> <p>sqlplus 进入oracle环境<br /> 进入了sqlplus后<br /> !clear 表示清屏</p> <p>在linux/unix 中输入’!’ 表示切换到linux操作系统环境的进行命令操作<br /> 在windows中 ‘$’ 表示切换到本地的操作系统环境的进行命令操作</p> <p>show user 查看是哪个用户登录的</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SQL&gt; select table_name
+  2  from user_tables;
+查看当前用户下有哪些表
+
+SQL&gt; select sysdate from dual;
+是oracle里的'哑表'
+
+哑表 用到了oracle的同意词的概念
+
+查看表结构：desc s_emp;
+
+varchar 与varchar2的区别：varchar不根据所存的字符变化，varchar2会根据所存的字符长度动态分配内存长度
+
+commission_pct:提成率
+</code></pre></div></div> <table> <tbody> <tr> <td>s_emp</td> <td>员工表</td> </tr> <tr> <td>s_dept</td> <td>部门表</td> </tr> <tr> <td>s_region</td> <td>地区表</td> </tr> </tbody> </table> <hr /> <p>l 显示刚刚执行过的sql语句，缓存每次自动存放刚刚执行的一条sql语句。<br /> / 执行一次缓存里的sql语句</p> <p>首先要定位到修改的那一行<br /> a 向缓存里sql语句指定的那一行追加(append)<br /> i 插入新的一行</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>例：
+SQL&gt; l
+  1  select salary*3
+  2* from s_emp
+SQL&gt; 1
+  1* select salary*3
+SQL&gt; i,last_name
+SQL&gt; l
+  1  select salary*3
+  2  ,last_name
+  3* from s_emp
+SQL&gt; /
+
+del 对缓存里sql语句删除指定的一行
+例：
+SQL&gt; l
+  1  select salary*3
+  2  ,last_name
+  3* from s_emp
+SQL&gt; 2
+  2* ,last_name
+SQL&gt; del
+SQL&gt; l
+  1  select salary*3
+  2* from s_emp
+
+重写第一行
+例：
+SQL&gt; l
+  1  select salary*3
+  2* from s_emp
+SQL&gt; 1 select salary
+SQL&gt; l
+  1  select salary
+  2* from s_emp
+
+c/old/new 替换指定行中的字符串
+例：
+SQL&gt; select salary*3,lest_name
+  2  from s_emp;
+select salary*3,lest_name
+                *
+ERROR at line 1:
+ORA-00904: "LEST_NAME": invalid identifier
+
+例：
+SQL&gt; 1
+  1* select salary*3,lest_name
+SQL&gt; c/les/las
+  1* select salary*3,last_name
+SQL&gt; /
+
+保存sql语句
+save file_name 保存缓存里的sql语句到本地
+例：
+SQL&gt; l
+  1  select salary*3,last_name
+  2* from s_emp
+SQL&gt; save test.sql
+Created file test.sql
+SQL&gt; !ls
+bash_profile  mydocument       shadow  test.sql
+java          SDemo??幕录??.zip  test    ??师?纬?录??.exe
+
+start file_name  执行本地的sql文件
+例：
+SQL&gt; start test.sql
+
+查看：
+SQL&gt; !more test.sql
+select salary*3,last_name
+from s_emp
+/
+
+清理缓存：
+SQL&gt; l
+  1  select salary*3,last_name
+  2* from s_emp
+SQL&gt; clear buffer;
+buffer cleared
+SQL&gt; l
+SP2-0223: No lines in SQL buffer.
+
+SQL&gt; col last_name for a15 调整列显示的格式
+SQL&gt; column last_name 显示某列上面定义的格式
+COLUMN   last_name ON 
+FORMAT   a15
+SQL&gt; column last_name clear 清除某列上面定义的格式
+</code></pre></div></div> <p>查询s_emp表中所有员工的工资，如果是销售人员则把工资加提成后显示出来，<br /> 如果不是销售人员则把工资正常显示。</p> <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- 1.</span>
+<span class="k">select</span> <span class="n">nvl</span><span class="p">(</span><span class="n">commission_pct</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">from</span> <span class="n">s_emp</span>
+
+<span class="c1">--- 2.</span>
+<span class="k">select</span> <span class="n">last_name</span><span class="p">,</span><span class="n">salary</span><span class="o">*</span><span class="p">(</span>
+<span class="mi">1</span><span class="o">+</span><span class="n">nvl</span><span class="p">(</span><span class="n">commission_pct</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span> <span class="n">sal</span>
+<span class="k">from</span> <span class="n">s_emp</span><span class="p">;</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/linux/2011-04-20-%E5%B4%94%E8%80%81%E5%B8%88%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0(linux%E9%83%A8%E5%88%86).html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=崔老师课程笔记(linux部分) - 知不知&amp;url=/list/docs/linux/2011-04-20-%E5%B4%94%E8%80%81%E5%B8%88%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0(linux%E9%83%A8%E5%88%86).html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/linux/2011-04-20-%E5%B4%94%E8%80%81%E5%B8%88%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0(linux%E9%83%A8%E5%88%86).html&amp;title=崔老师课程笔记(linux部分) - 知不知&amp;summary=linux基本命令笔记&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/linux/2011-04-20-%E5%B4%94%E8%80%81%E5%B8%88%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0(linux%E9%83%A8%E5%88%86).html&amp;text=崔老师课程笔记(linux部分) - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/linux/2011-04-20-%E5%B4%94%E8%80%81%E5%B8%88%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0(linux%E9%83%A8%E5%88%86).html&amp;t=崔老师课程笔记(linux部分) - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/linux/2011-04-20-%E5%B4%94%E8%80%81%E5%B8%88%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0(linux%E9%83%A8%E5%88%86).html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('崔老师课程笔记(linux部分)'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

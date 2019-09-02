@@ -1,0 +1,426 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础03之开发小评分系统与成绩统计查询</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>项目文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_13.jpg" alt="项目文件结构" /></p> <p><strong>主要内容有：</strong>Java基础中的泛型使用，小评分系统与成绩统计。</p> <h3 id="泛型与异常">泛型与异常</h3> <p><strong>泛型</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_14.jpg" alt="泛型" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_15.jpg" alt="泛型" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_16.jpg" alt="泛型" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_17.jpg" alt="泛型" /></p> <p><strong>Class7b / com.test1 / Test.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 功能：泛型的必要性  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="c1">//泛型   </span>
+        <span class="c1">//System.out.println("a="+(1&gt;&gt;&gt;2));   </span>
+        <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Dog</span><span class="o">&gt;</span> <span class="n">al</span><span class="o">=</span><span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Dog</span><span class="o">&gt;();</span><span class="c1">//将ArrayList转成对Dog的泛型   </span>
+        <span class="c1">//创建一只狗   </span>
+        <span class="nc">Dog</span> <span class="n">dog1</span><span class="o">=</span><span class="k">new</span> <span class="nc">Dog</span><span class="o">();</span>   
+        <span class="c1">//放入到集合   </span>
+        <span class="n">al</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">dog1</span><span class="o">);</span>   
+        <span class="c1">//取出   </span>
+        <span class="c1">//Dog temp=(Dog)al.get(0);   </span>
+        <span class="c1">//Cat temp2=(Cat)al.get(0);//类型转换错误   </span>
+        <span class="nc">Dog</span> <span class="n">temp</span><span class="o">=</span><span class="n">al</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span><span class="c1">//因为前定义了ArrayList对Dog泛型，所以不报错   </span>
+    <span class="o">}</span>   
+  
+<span class="o">}</span>   
+  
+<span class="kd">class</span> <span class="nc">Dog</span>   
+<span class="o">{</span>   
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>   
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>   
+    <span class="o">}</span>   
+       
+<span class="o">}</span>   
+  
+<span class="kd">class</span> <span class="nc">Cat</span>   
+<span class="o">{</span>   
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">color</span><span class="o">;</span>   
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>   
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getColor</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">color</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setColor</span><span class="o">(</span><span class="nc">String</span> <span class="n">color</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">color</span> <span class="o">=</span> <span class="n">color</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>   
+        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>   
+    <span class="o">}</span>   
+<span class="o">}</span> 
+</code></pre></div></div> <p><strong>Class7b / com.test1 / Test2.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * java的反射机制，泛型的经典应用  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test2</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="c1">//    </span>
+        <span class="nc">Gen</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">gen1</span><span class="o">=</span><span class="k">new</span> <span class="nc">Gen</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;(</span><span class="s">"aaa"</span><span class="o">);</span>   
+        <span class="n">gen1</span><span class="o">.</span><span class="na">showTypeName</span><span class="o">(</span><span class="n">gen1</span><span class="o">);</span>   
+        <span class="nc">Gen</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">gen2</span><span class="o">=</span><span class="k">new</span> <span class="nc">Gen</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;(</span><span class="mi">1</span><span class="o">);</span>   
+        <span class="n">gen2</span><span class="o">.</span><span class="na">showTypeName</span><span class="o">(</span><span class="n">gen2</span><span class="o">);</span>   
+           
+        <span class="nc">Gen</span><span class="o">&lt;</span><span class="nc">Bird</span><span class="o">&gt;</span> <span class="n">gen3</span><span class="o">=</span><span class="k">new</span> <span class="nc">Gen</span><span class="o">&lt;</span><span class="nc">Bird</span><span class="o">&gt;(</span><span class="k">new</span> <span class="nc">Bird</span><span class="o">());</span>   
+        <span class="n">gen3</span><span class="o">.</span><span class="na">showTypeName</span><span class="o">(</span><span class="n">gen3</span><span class="o">);</span>   
+    <span class="o">}</span>   
+  
+<span class="o">}</span>   
+  
+<span class="c1">//定义一个类   </span>
+<span class="kd">class</span> <span class="nc">Gen</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="c1">//定义的一种未知类型T，即泛型   </span>
+<span class="o">{</span>   
+    <span class="kd">private</span> <span class="no">T</span> <span class="n">o</span><span class="o">;</span><span class="c1">//用泛型定义一个变量(或对象)   </span>
+    <span class="c1">//构造函数   </span>
+    <span class="kd">public</span> <span class="nf">Gen</span><span class="o">(</span><span class="no">T</span> <span class="n">a</span><span class="o">)</span>   
+    <span class="o">{</span>   
+        <span class="n">o</span><span class="o">=</span><span class="n">a</span><span class="o">;</span>   
+    <span class="o">}</span>   
+       
+    <span class="c1">//得到T的类型名称   </span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">showTypeName</span><span class="o">(</span><span class="nc">Gen</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="n">obj</span><span class="o">)</span><span class="c1">//参数是泛型   </span>
+    <span class="o">{</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"类型是："</span><span class="o">+</span><span class="n">o</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>   
+        <span class="c1">//通过反射机制，可以得到T这个类型的很多信息   </span>
+        <span class="nc">Method</span><span class="o">[]</span> <span class="n">m</span><span class="o">=</span><span class="n">o</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredMethods</span><span class="o">();</span><span class="c1">//得到某个类型的函数   </span>
+        <span class="c1">//打印   </span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">m</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">m</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getName</span><span class="o">());</span>   
+        <span class="o">}</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>   
+  
+<span class="c1">//定义一个Bird   </span>
+<span class="kd">class</span> <span class="nc">Bird</span>   
+<span class="o">{</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test1</span><span class="o">()</span>   
+    <span class="o">{</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"aa"</span><span class="o">);</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">count</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span><span class="kt">int</span> <span class="n">b</span><span class="o">)</span>   
+    <span class="o">{</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">);</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>   
+  
+<span class="cm">/*  
+ *泛型的优点  
+ *1.类型安全  
+ *2.向后兼容  
+ *3. 层次清晰  
+ *4.性能较高，用Gj编写的代码可以为java编译器和虚拟机带来更多的类型信息。  
+ *  
+ *泛型主要解决安全和代码重用的问题  
+ *在没有泛型之前，通过对类型Object的引用来实现参数的"任意化"，"任意化"  
+ *带来的缺点是要做显式的类型转换，而这种转换是要求开发者对实际参数类型  
+ *可以预知的情况下进行的。对于强制类型转换错误的情况，编译器可能不提示  
+ *错误 ，在运行时才出现异常，这是一个安全隐患。  
+ *泛型的好处是在编译的时候检查类型安全，并且所有的强制转换都是自动和隐  
+ *式的，提高代码的重用率。  
+*/</span>
+</code></pre></div></div> <p><strong>Class7b / com.test1 / Test3.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 异常  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kn">import</span> <span class="nn">java.io.FileNotFoundException</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.io.FileReader</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.net.Socket</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.net.UnknownHostException</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test3</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="c1">//检查异常    </span>
+        <span class="c1">//1.打开文件   </span>
+        <span class="nc">FileReader</span> <span class="n">fr</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>   
+        <span class="k">try</span> <span class="o">{</span>   
+            <span class="n">fr</span><span class="o">=</span><span class="k">new</span> <span class="nc">FileReader</span><span class="o">(</span><span class="s">"d:\\1.txt"</span><span class="o">);</span>   
+            <span class="c1">//在出现异常的地方，就终止执行代码,然后进入到catch   </span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"继续！"</span><span class="o">);</span>   
+            <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="k">new</span> <span class="nc">Socket</span><span class="o">(</span><span class="s">"192.168.111.111"</span><span class="o">,</span><span class="mi">78</span><span class="o">);</span>   
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e1</span><span class="o">)</span> <span class="o">{</span><span class="c1">//采用Exception可以捕获所有异常，因为它是父类   </span>
+            <span class="c1">//把异常的信息输出，利于排除bug   </span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"\nException 内部"</span><span class="o">);</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"message:="</span><span class="o">+</span><span class="n">e1</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>   
+            <span class="c1">//System.exit(-1); //退出JVM   </span>
+            <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>   
+            <span class="c1">//处理   </span>
+        <span class="o">}</span>   
+        <span class="k">finally</span> <span class="c1">//这个语句块，不管有没有异常都会执行   </span>
+        <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"\n进入finally!"</span><span class="o">);</span>   
+            <span class="c1">//一般说，把需要关闭的资源[文件，连接，内存....]   </span>
+            <span class="k">if</span><span class="o">(</span><span class="n">fr</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>   
+            <span class="o">{</span>   
+                <span class="k">try</span> <span class="o">{</span>   
+                    <span class="n">fr</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>   
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>   
+                    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>   
+                <span class="o">}</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+           
+        <span class="c1">//2.连接一个192.168.12.12 ip的端口号4567   </span>
+        <span class="k">try</span> <span class="o">{</span>   
+            <span class="nc">Socket</span> <span class="n">s</span><span class="o">=</span><span class="k">new</span> <span class="nc">Socket</span><span class="o">(</span><span class="s">"192.168.1.23"</span><span class="o">,</span><span class="mi">78</span><span class="o">);</span>   
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">UnknownHostException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>   
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"\nUnknownHostException 内部"</span><span class="o">);</span>   
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>   
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>   
+            <span class="c1">//如果有多个catch语句，则进入匹配异常的那个   </span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"\nIOException 内部"</span><span class="o">);</span>   
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>   
+        <span class="o">}</span>   
+           
+        <span class="c1">//3.运行异常   </span>
+        <span class="k">try</span>  
+        <span class="o">{</span>   
+            <span class="kt">int</span> <span class="n">a</span><span class="o">=</span><span class="mi">4</span><span class="o">/</span><span class="mi">0</span><span class="o">;</span>   
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">ArithmeticException</span> <span class="n">e</span><span class="o">)</span>   
+        <span class="o">{</span>   
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>   
+        <span class="o">}</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"ok1"</span><span class="o">);</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>Class7b / com.test1 / Test4.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kn">import</span> <span class="nn">java.io.FileNotFoundException</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.io.FileReader</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test4</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     * @throws Exception   
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>   
+        <span class="c1">//异常抛给JVM去处理   </span>
+        <span class="c1">//创建一个Father   </span>
+        <span class="nc">Father</span> <span class="n">father</span><span class="o">=</span><span class="k">new</span> <span class="nc">Father</span><span class="o">();</span>   
+        <span class="n">father</span><span class="o">.</span><span class="na">test1</span><span class="o">();</span>   
+    <span class="o">}</span>   
+  
+<span class="o">}</span>   
+  
+<span class="kd">class</span> <span class="nc">Father</span>   
+<span class="o">{</span>   
+    <span class="kd">private</span> <span class="nc">Son</span> <span class="n">son</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>   
+    <span class="kd">public</span> <span class="nf">Father</span><span class="o">()</span>   
+    <span class="o">{</span>   
+        <span class="n">son</span><span class="o">=</span><span class="k">new</span> <span class="nc">Son</span><span class="o">();</span>   
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test1</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>   
+    <span class="o">{</span>   
+        <span class="c1">//异常抛给调用者(main函数)去处理   </span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"1"</span><span class="o">);</span>   
+        <span class="cm">/*  
+        try {  
+            son.test2();  
+        } catch (Exception e) {  
+            System.out.println("\n父亲在处理！");  
+            e.printStackTrace();  
+        }  
+        */</span>  
+        <span class="n">son</span><span class="o">.</span><span class="na">test2</span><span class="o">();</span>   
+    <span class="o">}</span>   
+<span class="o">}</span>   
+  
+<span class="kd">class</span> <span class="nc">Son</span>   
+<span class="o">{</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test2</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">FileNotFoundException</span>   
+    <span class="o">{</span>   
+        <span class="c1">//异常抛给调用者(Father.test1函数)去处理   </span>
+        <span class="nc">FileReader</span> <span class="n">fr</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>   
+        <span class="n">fr</span><span class="o">=</span><span class="k">new</span> <span class="nc">FileReader</span><span class="o">(</span><span class="s">"d:\\dd.txt"</span><span class="o">);</span>   
+    <span class="o">}</span>   
+<span class="o">}</span> 
+</code></pre></div></div> <h3 id="两个练习">两个练习</h3> <p><strong>HomeWork / com.test1 / Test1.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*  
+ * 跳水比赛，8个评委打分。运动员的成绩是8个成绩取掉一个最高分，  
+ * 去掉一个最低分，剩下的6个分数的平均分就是最后得分。使用一维  
+ * 数组实现打分功能。  
+ * 找出最佳与最差评委  
+ */</span>  
+  
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>   
+  
+<span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>   
+<span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>   
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test1</span> <span class="o">{</span>   
+  
+    <span class="cm">/**  
+     * @param args  
+     */</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="c1">//   </span>
+        <span class="nc">Judge</span> <span class="n">judge</span><span class="o">=</span><span class="k">new</span> <span class="nc">Judge</span><span class="o">();</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"平均分是："</span><span class="o">+</span><span class="n">judge</span><span class="o">.</span><span class="na">lastFen</span><span class="o">());</span>   
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"最差的裁判是："</span><span class="o">+(</span><span class="n">judge</span><span class="o">.</span><span class="na">getWorst</span><span class="o">()+</span><span class="mi">1</span><span class="o">));</span>   
+    <span class="o">}</span>   
+  
+<span class="o">}</span>   
+  
+<span class="kd">class</span> <span class="nc">Judge</span>   
+<span class="o">{</span>   
+    <span class="c1">//定义可以存放8个小数的数组   </span>
+    <span class="kt">float</span> <span class="n">fens</span><span class="o">[]=</span><span class="kc">null</span><span class="o">;</span>   
+    <span class="kt">int</span> <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="o">;</span>   
+    <span class="c1">//构造函数   </span>
+    <span class="kd">public</span> <span class="nf">Judge</span><span class="o">()</span>   
+    <span class="o">{</span>   
+        <span class="n">fens</span><span class="o">=</span><span class="k">new</span> <span class="kt">float</span><span class="o">[</span><span class="n">size</span><span class="o">];</span>   
+        <span class="c1">//初始化   </span>
+        <span class="nc">InputStreamReader</span> <span class="n">isr</span><span class="o">=</span><span class="k">new</span> <span class="nc">InputStreamReader</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span><span class="c1">//读取控制台数据存到输入流   </span>
+        <span class="nc">BufferedReader</span> <span class="n">br</span><span class="o">=</span><span class="k">new</span> <span class="nc">BufferedReader</span><span class="o">(</span><span class="n">isr</span><span class="o">);</span><span class="c1">//将数据从输入流存到Buf流中   </span>
+        <span class="k">try</span> <span class="o">{</span>   
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">fens</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+            <span class="o">{</span>   
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"请输入第"</span><span class="o">+(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">)+</span><span class="s">"裁判的分数："</span><span class="o">);</span>   
+                <span class="n">fens</span><span class="o">[</span><span class="n">i</span><span class="o">]=</span><span class="nc">Float</span><span class="o">.</span><span class="na">parseFloat</span><span class="o">(</span><span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">());</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>   
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>   
+        <span class="o">}</span>   
+        <span class="k">finally</span> <span class="c1">//关闭IO流   </span>
+        <span class="o">{</span>   
+            <span class="k">try</span> <span class="o">{</span>   
+                <span class="n">br</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>   
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>   
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+    <span class="o">}</span>   
+  
+    <span class="c1">//1.去掉最低分(目的找到最低分的下标)   </span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getLowFenIndex</span><span class="o">()</span>   
+    <span class="o">{</span>   
+        <span class="c1">//选择法   </span>
+        <span class="c1">//认为第一个就是最低   </span>
+        <span class="kt">float</span> <span class="n">minFen</span><span class="o">=</span><span class="n">fens</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>   
+        <span class="kt">int</span> <span class="n">minIndex</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">fens</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="k">if</span><span class="o">(</span><span class="n">minFen</span><span class="o">&gt;</span><span class="n">fens</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>   
+            <span class="o">{</span>   
+                <span class="c1">//修改最低分   </span>
+                <span class="n">minFen</span><span class="o">=</span><span class="n">fens</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>   
+                <span class="n">minIndex</span><span class="o">=</span><span class="n">i</span><span class="o">;</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+        <span class="k">return</span> <span class="n">minIndex</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="c1">//2.去掉最高分(目的找到最高分的下标)   </span>
+    <span class="c1">//2.去掉最高分(目的找到最高分的下标)   </span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getHighFenIndex</span><span class="o">()</span>   
+    <span class="o">{</span>   
+        <span class="c1">//选择法   </span>
+        <span class="c1">//认为第一个就是最高   </span>
+        <span class="kt">float</span> <span class="n">maxFen</span><span class="o">=</span><span class="n">fens</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>   
+        <span class="kt">int</span> <span class="n">maxIndex</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">fens</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="k">if</span><span class="o">(</span><span class="n">maxFen</span><span class="o">&lt;</span><span class="n">fens</span><span class="o">[</span><span class="n">i</span><span class="o">])</span>   
+            <span class="o">{</span>   
+                <span class="c1">//修改最高分   </span>
+                <span class="n">maxFen</span><span class="o">=</span><span class="n">fens</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>   
+                <span class="n">maxIndex</span><span class="o">=</span><span class="n">i</span><span class="o">;</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+        <span class="k">return</span> <span class="n">maxIndex</span><span class="o">;</span>   
+    <span class="o">}</span>   
+    <span class="c1">//3.得到平均分   </span>
+    <span class="c1">//3.得到运动员的最后得分   </span>
+    <span class="kd">public</span> <span class="kt">float</span> <span class="nf">lastFen</span><span class="o">()</span>   
+    <span class="o">{</span>   
+        <span class="kt">float</span> <span class="n">allFen</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>   
+        <span class="kt">int</span> <span class="n">minIndex</span><span class="o">=</span><span class="k">this</span><span class="o">.</span><span class="na">getLowFenIndex</span><span class="o">();</span>   
+        <span class="kt">int</span> <span class="n">maxIndex</span><span class="o">=</span><span class="k">this</span><span class="o">.</span><span class="na">getHighFenIndex</span><span class="o">();</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">fens</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="k">if</span><span class="o">(</span><span class="n">i</span><span class="o">!=</span><span class="n">minIndex</span><span class="o">&amp;&amp;</span><span class="n">i</span><span class="o">!=</span><span class="n">maxIndex</span><span class="o">)</span>   
+            <span class="o">{</span>   
+                <span class="n">allFen</span><span class="o">+=</span><span class="n">fens</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+        <span class="k">return</span> <span class="n">allFen</span><span class="o">/(</span><span class="n">fens</span><span class="o">.</span><span class="na">length</span><span class="o">-</span><span class="mi">2</span><span class="o">);</span>   
+    <span class="o">}</span>   
+    <span class="c1">//4.得到最差评委   </span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getWorst</span><span class="o">()</span>   
+    <span class="o">{</span>   
+        <span class="c1">//假设第一个评委是最差的   </span>
+        <span class="kt">int</span> <span class="n">worstIndex</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>   
+        <span class="kt">float</span> <span class="n">tempCai</span><span class="o">=</span><span class="mi">0</span><span class="n">f</span><span class="o">;</span>   
+        <span class="kt">float</span> <span class="n">cai</span><span class="o">=</span><span class="nc">Math</span><span class="o">.</span><span class="na">abs</span><span class="o">(</span><span class="n">fens</span><span class="o">[</span><span class="mi">0</span><span class="o">]-</span><span class="n">lastFen</span><span class="o">());</span>   
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">fens</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>   
+        <span class="o">{</span>   
+            <span class="n">tempCai</span><span class="o">=</span><span class="nc">Math</span><span class="o">.</span><span class="na">abs</span><span class="o">(</span><span class="n">fens</span><span class="o">[</span><span class="mi">0</span><span class="o">]-</span><span class="n">lastFen</span><span class="o">());</span>   
+            <span class="k">if</span><span class="o">(</span><span class="n">cai</span><span class="o">&lt;</span><span class="n">tempCai</span><span class="o">)</span>   
+            <span class="o">{</span>   
+                <span class="n">worstIndex</span><span class="o">=</span><span class="n">i</span><span class="o">;</span>   
+                <span class="n">cai</span><span class="o">=</span><span class="n">tempCai</span><span class="o">;</span>   
+            <span class="o">}</span>   
+        <span class="o">}</span>   
+        <span class="k">return</span> <span class="n">worstIndex</span><span class="o">;</span>   
+    <span class="o">}</span>   
+<span class="o">}</span> 
+</code></pre></div></div> <p><strong>HomeWork / com.test1 / Test2.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 三个同学考试，共考三门课：语文、数学、英语。使用二维整数   </span>
+<span class="c1">// 数组存放三个同学的学号和所有科目的考试成绩。如下表：  </span>
+<span class="c1">// 学号       语文      数学      英语  </span>
+<span class="c1">// 1002     78      92      76  </span>
+<span class="c1">// 1003     67      88      80  </span>
+<span class="c1">// 1007     90      95      80  </span>
+
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test2</span> <span class="o">{</span>
+    <span class="cm">/**
+     * @param args
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//定义一个二维数组 </span>
+          
+        <span class="kt">int</span><span class="o">[][]</span> <span class="n">stus</span> <span class="o">=</span> <span class="o">{{</span><span class="mi">1002</span><span class="o">,</span> <span class="mi">78</span><span class="o">,</span> <span class="mi">23</span><span class="o">,</span> <span class="mi">56</span><span class="o">},</span> <span class="o">{</span><span class="mi">1003</span><span class="o">,</span> <span class="mi">23</span><span class="o">,</span> <span class="mi">89</span><span class="o">,</span> <span class="mi">34</span><span class="o">},</span> <span class="o">{</span><span class="mi">1007</span><span class="o">,</span> <span class="mi">78</span><span class="o">,</span> <span class="mi">89</span><span class="o">,</span> <span class="mi">90</span><span class="o">}};</span>
+        
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"学号\t语文\t数学\t英语\t"</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">stus</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">+</span> <span class="s">"\t"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\n"</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8003%E4%B9%8B%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AF%84%E5%88%86%E7%B3%BB%E7%BB%9F%E4%B8%8E%E6%88%90%E7%BB%A9%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Java基础03之开发小评分系统与成绩统计查询 - 知不知&amp;url=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8003%E4%B9%8B%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AF%84%E5%88%86%E7%B3%BB%E7%BB%9F%E4%B8%8E%E6%88%90%E7%BB%A9%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8003%E4%B9%8B%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AF%84%E5%88%86%E7%B3%BB%E7%BB%9F%E4%B8%8E%E6%88%90%E7%BB%A9%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2.html&amp;title=Java-Java基础03之开发小评分系统与成绩统计查询 - 知不知&amp;summary=Java基础中的泛型，小评分系统与成绩统计&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8003%E4%B9%8B%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AF%84%E5%88%86%E7%B3%BB%E7%BB%9F%E4%B8%8E%E6%88%90%E7%BB%A9%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2.html&amp;text=Java-Java基础03之开发小评分系统与成绩统计查询 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8003%E4%B9%8B%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AF%84%E5%88%86%E7%B3%BB%E7%BB%9F%E4%B8%8E%E6%88%90%E7%BB%A9%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2.html&amp;t=Java-Java基础03之开发小评分系统与成绩统计查询 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2011-06-08-Java%E5%9F%BA%E7%A1%8003%E4%B9%8B%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AF%84%E5%88%86%E7%B3%BB%E7%BB%9F%E4%B8%8E%E6%88%90%E7%BB%A9%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Java基础03之开发小评分系统与成绩统计查询'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

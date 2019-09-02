@@ -1,0 +1,522 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Struts学习笔记之Struts框架输入校验、国际化及异常处理</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>项目文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_62.jpg" alt="文件结构" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_63.jpg" alt="文件结构" /></p> <h3 id="struts2的输入校验">Struts2的输入校验</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Struts2输入校验、执行流程：
+1）首先进行类型转换
+2）然后进行输入校验（执行validate方法）
+3）如果在上述过程中出现了任何错误，都不会再去执行 execute方法，会转向 struts.xml 中该 action 的名为 input 的 result 所对应的页面。
+</code></pre></div></div> <p><strong>要点：</strong></p> <ol> <li> <p>ActionSupport 类的 addActionError()方法的实现：首先创建一个ArrayList对象，然后将错误消息添加到该 ArrayList对象中。</p> </li> <li> <p>当调用 getActionErrors()方法返回 Action 级别的错误信息列表时，返回的实际上是集合的一个副本而不是集合本身，因此对集合副本调用 clear()方法清除的依旧是副本中的元素而非原集合中的元素，此时原集合中的内容没有收到任何的影响。换句话说，Action级别的错误信息列表对开发者来说是只读的。</p> </li> <li> <p>Field Error 级别的错误信息底层是用 LinkedHashMap 实现的，该Map 的 key 是 String 类型，value 是 List<String>类型，这就表示一个 Field Name 可以对应多条错误信息，这些错误信息都放置在List<String>集合当中。</String></String></p> </li> </ol> <p><strong>register.jsp</strong></p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">&lt;</span>%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%&gt;
+<span class="err">&lt;</span>%@ taglib prefix="s" uri="/struts-tags" %&gt;
+………………………………
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;h2&gt;&lt;font</span> <span class="na">color=</span><span class="s">"blue"</span><span class="nt">&gt;</span>用户注册<span class="nt">&lt;/font&gt;&lt;/h2&gt;</span>
+<span class="nt">&lt;s:actionerror</span> <span class="na">cssStyle=</span><span class="s">"color:red"</span><span class="nt">/&gt;</span>
+----------------------------------------
+<span class="nt">&lt;s:fielderror</span> <span class="na">cssStyle=</span><span class="s">"color:blue"</span><span class="nt">&gt;&lt;/s:fielderror&gt;</span>
+<span class="c">&lt;!--
+&lt;form action="register.action"&gt;
+username: &lt;input type="text" name="username" size="20"&gt;&lt;br&gt;
+password: &lt;input type="password" name="password" size="20"&gt;&lt;br&gt;
+repassword: &lt;input type="password" name="repassword" size="20"&gt;&lt;br&gt;
+age: &lt;input type="text" name="age" size="20"&gt;&lt;br&gt;
+birthday: &lt;input type="text" name="birthday" size="20"&gt;&lt;br&gt;
+graduation: &lt;input type="text" name="graduation" size="20"&gt;&lt;br&gt;
+&lt;input type="submit" value="submit"/&gt;
+&lt;/form&gt;
+--&gt;</span>
+<span class="nt">&lt;s:form</span> <span class="na">action=</span><span class="s">"register.action"</span> <span class="na">theme=</span><span class="s">"simple"</span><span class="nt">&gt;</span><span class="cp">&lt;!—-加theme="simple修饰以简单表单呈现--&gt;</span>
+    username: <span class="nt">&lt;s:textfield</span> <span class="na">name=</span><span class="s">"username"</span> <span class="na">label=</span><span class="s">"username"</span><span class="nt">&gt;&lt;/s:textfield&gt;&lt;br&gt;</span>
+    password: <span class="nt">&lt;s:password</span> <span class="na">name=</span><span class="s">"password"</span> <span class="na">label=</span><span class="s">"password"</span><span class="nt">&gt;&lt;/s:password&gt;&lt;br&gt;</span>
+    repassword: <span class="nt">&lt;s:password</span> <span class="na">name=</span><span class="s">"repassword"</span> <span class="na">label=</span><span class="s">"repassword"</span><span class="nt">&gt;&lt;/s:password&gt;&lt;br&gt;</span>
+    age: <span class="nt">&lt;s:textfield</span> <span class="na">name=</span><span class="s">"age"</span> <span class="na">label=</span><span class="s">"age"</span><span class="nt">&gt;&lt;/s:textfield&gt;&lt;br&gt;</span>
+    birthday: <span class="nt">&lt;s:textfield</span> <span class="na">name=</span><span class="s">"birthday"</span> <span class="na">label=</span><span class="s">"birthday"</span><span class="nt">&gt;&lt;/s:textfield&gt;&lt;br&gt;</span>
+    graduation: <span class="nt">&lt;s:textfield</span> <span class="na">name=</span><span class="s">"graduation"</span> <span class="na">label=</span><span class="s">"graduation"</span><span class="nt">&gt;&lt;/s:textfield&gt;&lt;br&gt;</span>
+    <span class="nt">&lt;s:submit</span> <span class="na">value=</span><span class="s">"submit"</span><span class="nt">&gt;&lt;/s:submit&gt;</span>
+<span class="nt">&lt;/s:form&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div> <p><strong>RegisterAction.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">shengsiyuan</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Calendar</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionSupport</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RegisterAction</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
+<span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">username</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">password</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">repassword</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">birthday</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">graduation</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getUsername</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">username</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUsername</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">username</span> <span class="o">=</span> <span class="n">username</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getPassword</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">password</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setPassword</span><span class="o">(</span><span class="nc">String</span> <span class="n">password</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">password</span> <span class="o">=</span> <span class="n">password</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getRepassword</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">repassword</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setRepassword</span><span class="o">(</span><span class="nc">String</span> <span class="n">repassword</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">repassword</span> <span class="o">=</span> <span class="n">repassword</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">Date</span> <span class="nf">getBirthday</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">birthday</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setBirthday</span><span class="o">(</span><span class="nc">Date</span> <span class="n">birthday</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">birthday</span> <span class="o">=</span> <span class="n">birthday</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">Date</span> <span class="nf">getGraduation</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">graduation</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setGraduation</span><span class="o">(</span><span class="nc">Date</span> <span class="n">graduation</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">graduation</span> <span class="o">=</span> <span class="n">graduation</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="no">SUCCESS</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">validate</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">username</span> <span class="o">||</span> <span class="n">username</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="o">||</span> <span class="n">username</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">addActionError</span><span class="o">(</span><span class="s">"username invalid"</span><span class="o">);</span>    <span class="c1">//Action级别的错误</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">addFieldError</span><span class="o">(</span><span class="s">"username"</span><span class="o">,</span> <span class="s">"username invalid in field"</span><span class="o">);</span><span class="c1">//field级别的错误</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">password</span> <span class="o">||</span> <span class="n">password</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="o">||</span> <span class="n">password</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">addActionError</span><span class="o">(</span><span class="s">"password invalid"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">repassword</span> <span class="o">||</span> <span class="n">repassword</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="o">||</span> <span class="n">repassword</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">addActionError</span><span class="o">(</span><span class="s">"repassword invalid"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="nf">if</span><span class="o">(!</span><span class="n">password</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">repassword</span><span class="o">))</span>
+        <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">addActionError</span><span class="o">(</span><span class="s">"the passwords not the same"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">age</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">||</span> <span class="n">age</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">addActionError</span><span class="o">(</span><span class="s">"age invalid"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">birthday</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">addActionError</span><span class="o">(</span><span class="s">"birthday invalid"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">graduation</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">addActionError</span><span class="o">(</span><span class="s">"graduation invalid"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(</span><span class="kc">null</span> <span class="o">!=</span> <span class="n">birthday</span> <span class="o">&amp;&amp;</span> <span class="kc">null</span> <span class="o">!=</span> <span class="n">graduation</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="nc">Calendar</span> <span class="n">c1</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>    <span class="c1">//获取日期</span>
+            <span class="n">c1</span><span class="o">.</span><span class="na">setTime</span><span class="o">(</span><span class="n">birthday</span><span class="o">);</span>
+            <span class="nc">Calendar</span> <span class="n">c2</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+            <span class="n">c2</span><span class="o">.</span><span class="na">setTime</span><span class="o">(</span><span class="n">graduation</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(!</span><span class="n">c1</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">c2</span><span class="o">))</span> <span class="c1">//如果c1不在c2前</span>
+            <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">addActionError</span><span class="o">(</span><span class="s">"birthday should be before graduation"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="c1">//this.getFieldErrors().clear();    //clear()方法清空的只是副本</span>
+        <span class="c1">//this.getActionErrors().clear();</span>
+        <span class="c1">//this.clearActionErrors();    //清除Action级别的错误消息</span>
+        <span class="c1">//this.clearFieldErrors();    //清除field级别的错误消息</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"invoked!!!"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>struts.xml</strong></p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd"&gt;</span>
+<span class="nt">&lt;struts&gt;</span>
+    <span class="nt">&lt;package</span> <span class="na">name=</span><span class="s">"struts2"</span> <span class="na">extends=</span><span class="s">"struts-default"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;action</span> <span class="na">name=</span><span class="s">"login"</span> <span class="na">class=</span><span class="s">"com.shengsiyuan.struts2.LoginAction"</span> <span class="na">method=</span><span class="s">"myExecute"</span><span class="nt">&gt;</span>    <span class="c">&lt;!-- 指定执行myExecute方法 --&gt;</span>
+            <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"success"</span><span class="nt">&gt;</span>/result.jsp<span class="nt">&lt;/result&gt;</span><span class="c">&lt;!-- 结果为success时，跳转到result.jsp --&gt;</span>
+        <span class="nt">&lt;/action&gt;</span>
+        <span class="nt">&lt;action</span> <span class="na">name=</span><span class="s">"userAction"</span> <span class="na">class=</span><span class="s">"com.shengsiyuan.struts2.UserAction"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"success"</span><span class="nt">&gt;</span>/output.jsp<span class="nt">&lt;/result&gt;</span>
+        <span class="nt">&lt;/action&gt;</span>
+        <span class="nt">&lt;action</span> <span class="na">name=</span><span class="s">"userAction2"</span> <span class="na">class=</span><span class="s">"com.shengsiyuan.struts2.UserAction2"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"success"</span><span class="nt">&gt;</span>/output.jsp<span class="nt">&lt;/result&gt;</span>
+        <span class="nt">&lt;/action&gt;</span>
+        <span class="nt">&lt;action</span> <span class="na">name=</span><span class="s">"register"</span> <span class="na">class=</span><span class="s">"com.shengsiyuan.struts2.RegisterAction"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"success"</span><span class="nt">&gt;</span>/registerResult.jsp<span class="nt">&lt;/result&gt;</span>
+            <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"input"</span><span class="nt">&gt;</span>/register.jsp<span class="nt">&lt;/result&gt;</span>
+        <span class="nt">&lt;/action&gt;</span>
+    <span class="nt">&lt;/package&gt;</span>
+<span class="nt">&lt;/struts&gt;</span>
+</code></pre></div></div> <p><strong>截图</strong> <br /> <strong>提交之前截图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_64.jpg" alt="提交之前截图" /></p> <p><strong>以html标签提交之后的截图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_65.jpg" alt="以html标签提交之后的截图" /></p> <p><strong>以struts标签，且未加theme=”simple”属性提交的结果</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_66.jpg" alt="以struts标签，且未加theme=&quot;simple&quot;属性提交的结果" /></p> <p>若使用<s:form action="register.action" theme="simple">则呈现的结果同以html提交一样。不管是Action级别的，还是field级别的，在执行excute方法时，只要对应的错误容器中有错误消息，则转到input对应的页面，如果容器中没有错误消息，则继续往下执行。</s:form></p> <p>在tomcat中手动添加web项目：</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
+<span class="nt">&lt;Context</span> <span class="na">path=</span><span class="s">"/myWebSite"</span> <span class="na">docBase=</span><span class="s">"D:/Workspace/servlet/myWebSite"</span> <span class="na">reloadable=</span><span class="s">"true"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/Host&gt;</span>
+<span class="nt">&lt;/Engine&gt;</span>
+<span class="nt">&lt;/Service&gt;</span>
+<span class="nt">&lt;/Server&gt;</span>
+java.lang.ClassNotFoundException: javax.el.ELResolver错误解决方法：Remove of classpath server-api.jar and jsp-api.jar
+…………
+</code></pre></div></div> <h3 id="action级别的自定义方法的输入校验">Action级别的自定义方法的输入校验</h3> <p><strong>要点：</strong></p> <ol> <li> <p>Action中自定义方法的输入校验。对于通过action的method属性所指定的自定义方法，其对应的自定义输入校验方法名为validateMyExecute（假设自定义的方法名为 myExecute） 。底层是通过反射来调用的。</p> </li> <li> <p>当在Action中指定了自定义的 execute方法时，首先会执行自定义的 execute 方法所对应的输入校验方法，然后再去执行标准的 validate 方法，执行完毕后如果出现了任何错误都不会再去执行自定义的execute方法，流程转向了 input这个名字所对应的页面上。</p> </li> </ol> <p><strong>Login.jsp</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"login.action"</span><span class="nt">&gt;</span>
+    username: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"username"</span><span class="nt">&gt;&lt;br&gt;</span>
+    password: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"password"</span> <span class="na">name=</span><span class="s">"password"</span><span class="nt">&gt;&lt;br&gt;</span>
+    age: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"age"</span><span class="nt">&gt;&lt;br&gt;</span>
+    date: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"date"</span><span class="nt">&gt;&lt;br&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div> <p><strong>LoginAction</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">shengsiyuan</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionSupport</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.shengsiyuan.exception.PasswordException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.shengsiyuan.exception.UsernameException</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LoginAction</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
+<span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">username</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">password</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">date</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">Date</span> <span class="nf">getDate</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">date</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setDate</span><span class="o">(</span><span class="nc">Date</span> <span class="n">date</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getUsername</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">username</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUsername</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">username</span> <span class="o">=</span> <span class="n">username</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getPassword</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">password</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setPassword</span><span class="o">(</span><span class="nc">String</span> <span class="n">password</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">password</span> <span class="o">=</span> <span class="n">password</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>
+    <span class="o">{</span>
+        <span class="k">if</span><span class="o">(!</span><span class="s">"hello"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">username</span><span class="o">))</span>
+        <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">UsernameException</span><span class="o">(</span><span class="s">"username invalid"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(!</span><span class="s">"world"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">password</span><span class="o">))</span>
+        <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">PasswordException</span><span class="o">(</span><span class="s">"password invalid"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="no">SUCCESS</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//自定的execute方法，在struts.xml中指定了LoginAction中的method方法为myExecute</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">myExecute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"myExecute invoked!!"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="no">SUCCESS</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//Action自定义方法的输入校验</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">validateMyExecute</span><span class="o">()</span>    <span class="c1">//此验证方法规定为将myExecute()方法名首字母大写后，再加前缀validate构成</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"validateMyExecute invoked!!"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">addActionError</span><span class="o">(</span><span class="s">"action error"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">validate</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="c1">//System.out.println("validate invoked!");</span>
+        <span class="c1">//this.addActionError("action error");</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>注：如果去除了struts.xml文件中的method=”myExecute”，则对应的自定义的校验方法将无效。</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;action name="login" class="com.shengsiyuan.struts2.LoginAction " method="myExecute"&gt;
+    &lt;result name="success"&gt;/result.jsp&lt;/result&gt;
+&lt;/action&gt;
+</code></pre></div></div> <p><strong>自定义Field级别的错误提示消息</strong></p> <p><strong>要点：</strong></p> <p>1） 新建一个以 Action 名命名的 properties 文件 ， 如RegisterAction.properties。 属性文件名要求为对应的Action文件名字。<br /> 2） 然后在该属性文件中指定每一个出错字段的错误消息 invalid.fieldvalue.birthday=birthday invalid !!</p> <p>Tip: jdk提供的一款中文转换为unicode编码的工具,在jdk的bin目录下，native2ascii。在命令行下使用，使用方法如下：<br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_67.jpg" alt="native2ascii" /></p> <p><strong>struts2校验框架</strong><br /> <strong>要点：</strong><br /> Struts2的校验框架（有效的xml文件） 。具体来说分为字段优先校验器与校验器优先校验器。 配置文件的命名规则为：要对哪个Action加入校验框架，即在此个Action所在的包下添加一个名字为 xxxActioh-validation.xml文件。比如给RegisterAction用校验框架校验，则在RegiterAction对应的包下，添加一个名为RegisterAction-validation.xml的文件. <br /> 注释掉Action当中的校验方法与自定义的校验方法，配置Action的execute方法为默认的execute方法。 Struts2框架校验执行的先后顺序：<br /> 1） 首先执行校验框架（xml文件）<br /> 2） 执行自定义方法的校验方法（validateMyExecute）<br /> 3） 执行validate方法<br /> 对于struts.xml文件的结果配置来说，局部要优于全局。</p> <p><strong>xwork-validator.xml</strong></p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="c">&lt;!--
+XWork Validators DTD.
+Used the following DOCTYPE.
+&lt;!DOCTYPE validators PUBLIC
+        "-//OpenSymphony Group//XWork Validator 1.0.2//EN"
+        "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd"&gt;
+--&gt;</span>
+<span class="cp">&lt;!ELEMENT validators (field|validator)+&gt;&lt;!—字段优先与校验器优先两种--&gt;</span>
+<span class="cp">&lt;!ELEMENT field (field-validator+)&gt;</span>
+<span class="cp">&lt;!ATTLIST field
+        name CDATA #REQUIRED
+        &gt;</span>
+<span class="cp">&lt;!ELEMENT field-validator (param*, message)&gt;</span>
+<span class="cp">&lt;!ATTLIST field-validator
+        type CDATA #REQUIRED
+        short-circuit (true|false) "false"
+        &gt;</span>
+<span class="cp">&lt;!ELEMENT validator (param*, message)&gt;</span>
+<span class="cp">&lt;!ATTLIST validator
+        type CDATA #REQUIRED
+        short-circuit (true|false) "false"
+        &gt;</span>
+<span class="cp">&lt;!ELEMENT param (#PCDATA)&gt;</span>
+<span class="cp">&lt;!ATTLIST param
+        name CDATA #REQUIRED
+        &gt;</span>
+<span class="cp">&lt;!ELEMENT message (#PCDATA)&gt;</span>
+<span class="cp">&lt;!ATTLIST message
+        key CDATA #IMPLIED
+        &gt;</span>
+</code></pre></div></div> <p><strong>RegisterAcion-validation.xml</strong><br /> 字段优先校验</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd"&gt;</span>
+<span class="nt">&lt;validators&gt;</span>
+    <span class="nt">&lt;field</span> <span class="na">name=</span><span class="s">"username"</span><span class="nt">&gt;</span><span class="c">&lt;!-- 对username设置校验规则 --&gt;</span>
+        <span class="nt">&lt;field-validator</span> <span class="na">type=</span><span class="s">"requiredstring"</span><span class="nt">&gt;</span><span class="c">&lt;!-- 字符串必填规则设置 --&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"trim"</span><span class="nt">&gt;</span>false<span class="nt">&lt;/param&gt;</span><span class="c">&lt;!-- 不清除空格 --&gt;</span>
+            <span class="nt">&lt;message&gt;</span>username can't be blank!<span class="nt">&lt;/message&gt;</span><span class="c">&lt;!-- 当校验失败提示的错误消息 --&gt;</span>
+        <span class="nt">&lt;/field-validator&gt;</span>
+        <span class="nt">&lt;field-validator</span> <span class="na">type=</span><span class="s">"stringlength"</span><span class="nt">&gt;</span><span class="c">&lt;!-- 字符串长度规则设置 --&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"minLength"</span><span class="nt">&gt;</span>4<span class="nt">&lt;/param&gt;</span><span class="c">&lt;!-- 最小长度 --&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"maxLength"</span><span class="nt">&gt;</span>6<span class="nt">&lt;/param&gt;</span><span class="c">&lt;!-- 最大长度 --&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"trim"</span><span class="nt">&gt;</span>false<span class="nt">&lt;/param&gt;</span>
+            <span class="cp">&lt;!—读取属性文件，使用国际化，当校验失败提示的错误消息 --
+            &lt;message key="username.invalid"&gt;</span><span class="nt">&lt;/message&gt;</span>&gt;
+        <span class="nt">&lt;/field-validator&gt;</span>
+    <span class="nt">&lt;/field&gt;</span>
+    <span class="nt">&lt;field</span> <span class="na">name=</span><span class="s">"password"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;field-validator</span> <span class="na">type=</span><span class="s">"requiredstring"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;message&gt;</span>password can't be blank!<span class="nt">&lt;/message&gt;</span>
+        <span class="nt">&lt;/field-validator&gt;</span>
+        <span class="nt">&lt;field-validator</span> <span class="na">type=</span><span class="s">"stringlength"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"minLength"</span><span class="nt">&gt;</span>4<span class="nt">&lt;/param&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"maxLength"</span><span class="nt">&gt;</span>6<span class="nt">&lt;/param&gt;</span>
+            <span class="nt">&lt;message&gt;</span>length of password should be between ${minLength} and ${maxLength}<span class="nt">&lt;/message&gt;</span>
+        <span class="nt">&lt;/field-validator&gt;</span>
+    <span class="nt">&lt;/field&gt;</span>
+    <span class="nt">&lt;field</span> <span class="na">name=</span><span class="s">"age"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;field-validator</span> <span class="na">type=</span><span class="s">"required"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;message&gt;</span>age can't be blank!<span class="nt">&lt;/message&gt;</span>
+        <span class="nt">&lt;/field-validator&gt;</span>
+        <span class="nt">&lt;field-validator</span> <span class="na">type=</span><span class="s">"int"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"min"</span><span class="nt">&gt;</span>10<span class="nt">&lt;/param&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"max"</span><span class="nt">&gt;</span>40<span class="nt">&lt;/param&gt;</span>
+            <span class="cp">&lt;!—在这里可以用${元素名} 引用上面的子元素--&gt;</span>
+            <span class="nt">&lt;message&gt;</span>age should be between ${min} and ${max}<span class="nt">&lt;/message&gt;</span>
+        <span class="nt">&lt;/field-validator&gt;</span>
+    <span class="nt">&lt;/field&gt;</span>
+    <span class="nt">&lt;field</span> <span class="na">name=</span><span class="s">"birthday"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;field-validator</span> <span class="na">type=</span><span class="s">"required"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;message&gt;</span>birthday can't be blank!<span class="nt">&lt;/message&gt;</span>
+        <span class="nt">&lt;/field-validator&gt;</span>
+        <span class="nt">&lt;field-validator</span> <span class="na">type=</span><span class="s">"date"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"min"</span><span class="nt">&gt;</span>2005-1-1<span class="nt">&lt;/param&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"max"</span><span class="nt">&gt;</span>2007-12-31<span class="nt">&lt;/param&gt;</span>
+            <span class="nt">&lt;message&gt;</span>birthday should be between ${min} and ${max}<span class="nt">&lt;/message&gt;</span>
+        <span class="nt">&lt;/field-validator&gt;</span>
+    <span class="nt">&lt;/field&gt;</span>
+<span class="nt">&lt;/validators&gt;</span>
+</code></pre></div></div> <p><strong>校验器优先校验（混合）</strong></p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN"
+        "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd"&gt;</span>
+<span class="nt">&lt;validator</span> <span class="na">type=</span><span class="s">"requiredstring"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"fieldName"</span><span class="nt">&gt;</span>username<span class="nt">&lt;/param&gt;</span>
+    <span class="nt">&lt;message&gt;</span>username can't be blank!<span class="nt">&lt;/message&gt;</span>
+<span class="nt">&lt;/validator&gt;</span>
+<span class="nt">&lt;validator</span> <span class="na">type=</span><span class="s">"stringlength"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"fieldName"</span><span class="nt">&gt;</span>username<span class="nt">&lt;/param&gt;</span>
+    <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"minLength"</span><span class="nt">&gt;</span>4<span class="nt">&lt;/param&gt;</span>
+    <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"maxLength"</span><span class="nt">&gt;</span>6<span class="nt">&lt;/param&gt;</span>
+    <span class="cp">&lt;!—在这里可以用${元素名} 引用上面的子元素--&gt;</span>
+    <span class="nt">&lt;message&gt;</span>length of username should be between ${minLength} and ${maxLength}<span class="nt">&lt;/message&gt;</span>
+    <span class="nt">&lt;/validator&gt;</span>
+    <span class="nt">&lt;field</span> <span class="na">name=</span><span class="s">"birthday"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;field-validator</span> <span class="na">type=</span><span class="s">"required"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;message&gt;</span>birthday can't be blank!<span class="nt">&lt;/message&gt;</span>
+        <span class="nt">&lt;/field-validator&gt;</span>
+        <span class="nt">&lt;field-validator</span> <span class="na">type=</span><span class="s">"date"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"min"</span><span class="nt">&gt;</span>2005-1-1<span class="nt">&lt;/param&gt;</span>
+            <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"max"</span><span class="nt">&gt;</span>2007-12-31<span class="nt">&lt;/param&gt;</span>
+            <span class="nt">&lt;message&gt;</span>birthday should be between ${min} and ${max}<span class="nt">&lt;/message&gt;</span>
+        <span class="nt">&lt;/field-validator&gt;</span>
+    <span class="nt">&lt;/field&gt;</span>
+<span class="nt">&lt;/validators&gt;</span>
+</code></pre></div></div> <p>打开com.opensymphony.xwork2.validator.validators可以发现一个default.xml文件，打开可以发现其中定义了各种校验器，内容如下：<br /> default.xml</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE validators PUBLIC
+        "-//OpenSymphony Group//XWork Validator Config 1.0//EN"
+        "http://www.opensymphony.com/xwork/xwork-validator-config-1.0.dtd"&gt;</span>
+<span class="c">&lt;!-- START SNIPPET: validators-default --&gt;</span>
+<span class="nt">&lt;validators&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"required"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.RequiredFieldValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"requiredstring"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.RequiredStringValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"int"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.IntRangeFieldValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"long"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.LongRangeFieldValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"short"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.ShortRangeFieldValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"double"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.DoubleRangeFieldValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"date"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.DateRangeFieldValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"expression"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.ExpressionValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"fieldexpression"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.FieldExpressionValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"email"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.EmailValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"url"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.URLValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"visitor"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.VisitorFieldValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"conversion"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.ConversionErrorFieldValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"stringlength"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.StringLengthFieldValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"regex"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.RegexFieldValidator"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;validator</span> <span class="na">name=</span><span class="s">"conditionalvisitor"</span> <span class="na">class=</span><span class="s">"com.opensymphony.xwork2.validator.validators.ConditionalVisitorFieldValidator"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/validators&gt;</span>
+        <span class="c">&lt;!-- END SNIPPET: validators-default --&gt;</span>
+</code></pre></div></div> <p>错误消息国际化<br /> 在Action所在的包下建立两个属性文件，名字分别叫：<br /> package_en_US.properties</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>username.invalid=username invalid
+</code></pre></div></div> <p>package_zh_CN.properties</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>username.invalid=\用\户\名\不\合\法\！
+#用户名不合法
+</code></pre></div></div> <p><strong>运行结果截图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_68.jpg" alt="运行结果截图" /></p> <p><strong>Struts2国际化</strong><br /> 对于国际化的资源文件，其命名规则是： package_语言名_国家名，比如package_zh_CN，package_en_US 。</p> <p><strong>I18NTest1.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">shengsiyuan</span><span class="o">.</span><span class="na">i18n</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Locale</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">I18NTest1</span>
+<span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Locale</span><span class="o">[]</span> <span class="n">locales</span> <span class="o">=</span> <span class="nc">Locale</span><span class="o">.</span><span class="na">getAvailableLocales</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">Locale</span> <span class="n">locale</span> <span class="o">:</span> <span class="n">locales</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">locale</span><span class="o">.</span><span class="na">getDisplayCountry</span><span class="o">()</span> <span class="o">+</span> <span class="s">" : "</span>
+                    <span class="o">+</span> <span class="n">locale</span><span class="o">.</span><span class="na">getCountry</span><span class="o">());</span>        <span class="c1">//显示国家及国家代码</span>
+<span class="c1">//            System.out.println(locale.getDisplayLanguage() + " : " + locale.getLanguage());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>I18Ntest2.java</strong><br /> 在src目录(classpath)下,建立三个资源文件，分别如下(注 i18n即为资源文件的base name)：<br /> i18n_en_US.properties</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hello=hello\:{0}
+</code></pre></div></div> <p>i18n_zh_CN.properties</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hello=\你\好\：{0}
+</code></pre></div></div> <p>i18n.properties</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hello=hello world
+</code></pre></div></div> <p><strong>I18Ntest2.java代码如下 ：</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">shengsiyuan</span><span class="o">.</span><span class="na">i18n</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Locale</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ResourceBundle</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">I18NTest2</span>
+<span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="nc">Locale</span><span class="o">.</span><span class="na">getDefault</span><span class="o">());</span>
+        <span class="c1">//绑定一个base name 为i18n的资源文件，Locale使用FRANCE(法国)</span>
+        <span class="nc">ResourceBundle</span> <span class="n">bundle</span> <span class="o">=</span> <span class="nc">ResourceBundle</span><span class="o">.</span><span class="na">getBundle</span><span class="o">(</span><span class="s">"i18n"</span><span class="o">,</span> <span class="nc">Locale</span><span class="o">.</span><span class="na">FRANCE</span><span class="o">);</span>
+        <span class="c1">//获取hello字符串的值</span>
+        <span class="nc">String</span> <span class="n">value</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"hello"</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>I18Ntest3.java(传入参数)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">shengsiyuan</span><span class="o">.</span><span class="na">i18n</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.text.MessageFormat</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Locale</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ResourceBundle</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">I18NTest3</span>
+<span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="nc">Locale</span> <span class="n">locale</span> <span class="o">=</span> <span class="nc">Locale</span><span class="o">.</span><span class="na">CHINA</span><span class="o">;</span>    <span class="c1">//将locale定义为CHINA</span>
+        <span class="c1">//绑定到资源文件</span>
+        <span class="nc">ResourceBundle</span> <span class="n">bundle</span> <span class="o">=</span> <span class="nc">ResourceBundle</span><span class="o">.</span><span class="na">getBundle</span><span class="o">(</span><span class="s">"i18n"</span><span class="o">,</span> <span class="n">locale</span><span class="o">);</span>
+        <span class="c1">//获取资源文件中的字符串对象</span>
+        <span class="nc">String</span> <span class="n">value</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"hello"</span><span class="o">);</span>
+        <span class="c1">//格式化字符串对象，并传入参数，后边的Object数组对象表示要插入到占位符上的具体的对象</span>
+        <span class="nc">String</span> <span class="n">result</span> <span class="o">=</span> <span class="nc">MessageFormat</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">[]{</span><span class="s">"维唯为为"</span><span class="o">});</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>注意：调整浏览器的语言和字符编码选项后，要注意，程序中输入的日期格式，也要做相应的改变，不然会出现日期类型转换错误。字符串国际化的同时，也要注意，日期的国际化。</p> <p><strong>Struts2异常处理及全局异常与结果</strong><br /> 要点：</p> <p>我们既可以在 Action 中定义异常与结果，也可以定义全局的异常与结果，局部总是优于全局的，如果定义成全局，那么可以为所有的 Action 所公用，而局部的异常与结果只能被当前的 Action 所独享，不能为其他Action所共享。 <br /> validate主要进行没有业务逻辑的验证，比如判断用户名长名、密码与重复密码是否相同等。而判断用户登录是否成功;</p> <p><strong>struts2异常处理实例</strong> 在第三层建一个包，取名exception ,并在包中建两个类，分别取名为：<br /> PasswordException.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">shengsiyuan</span><span class="o">.</span><span class="na">exception</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UsernameException</span> <span class="kd">extends</span> <span class="nc">Exception</span>
+<span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">message</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">UsernameException</span><span class="o">(</span><span class="nc">String</span> <span class="n">message</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">message</span> <span class="o">=</span> <span class="n">message</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getMessage</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">message</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setMessage</span><span class="o">(</span><span class="nc">String</span> <span class="n">message</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">message</span> <span class="o">=</span> <span class="n">message</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>UsernameException.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">shengsiyuan</span><span class="o">.</span><span class="na">exception</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PasswordException</span> <span class="kd">extends</span> <span class="nc">Exception</span>
+<span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">message</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">PasswordException</span><span class="o">(</span><span class="nc">String</span> <span class="n">message</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">message</span> <span class="o">=</span> <span class="n">message</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getMessage</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="n">message</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setMessage</span><span class="o">(</span><span class="nc">String</span> <span class="n">message</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">message</span> <span class="o">=</span> <span class="n">message</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>编辑loginAction的execute方法</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>
+    <span class="o">{</span>
+        <span class="k">if</span><span class="o">(!</span><span class="s">"hello"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">username</span><span class="o">))</span>
+        <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">UsernameException</span><span class="o">(</span><span class="s">"username invalid"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(!</span><span class="s">"world"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">password</span><span class="o">))</span>
+        <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">PasswordException</span><span class="o">(</span><span class="s">"password invalid"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="no">SUCCESS</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div> <p><strong>编辑struts.xml文件</strong><br /> Struts2的处理局部异常机制</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
+<span class="nt">&lt;struts&gt;</span>
+    <span class="nt">&lt;package</span> <span class="na">name=</span><span class="s">"struts2"</span> <span class="na">extends=</span><span class="s">"struts-default"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;action</span> <span class="na">name=</span><span class="s">"login"</span> <span class="na">class=</span><span class="s">"com.shengsiyuan.struts2.LoginAction"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;exception-mapping</span> <span class="na">result=</span><span class="s">"usernameInvalid"</span> <span class="na">exception=</span><span class="s">"com.shengsiyuan.exception.UsernameException"</span><span class="nt">&gt;&lt;/exception-mapping&gt;</span>
+        <span class="nt">&lt;exception-mapping</span> <span class="na">result=</span><span class="s">"passwordInvalid"</span> <span class="na">exception=</span><span class="s">"com.shengsiyuan.exception.PasswordException"</span><span class="nt">&gt;&lt;/exception-mapping&gt;</span>
+        <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"usernameInvalid"</span><span class="nt">&gt;</span>/usernameInvalid.jsp<span class="nt">&lt;/result&gt;</span>
+        <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"passwordInvalid"</span><span class="nt">&gt;</span>/passwordInvalid.jsp<span class="nt">&lt;/result&gt;</span>
+        <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"success"</span><span class="nt">&gt;</span>/result.jsp<span class="nt">&lt;/result&gt;</span>
+    <span class="nt">&lt;/action&gt;</span>
+    ………………
+<span class="nt">&lt;/struts&gt;</span>
+</code></pre></div></div> <p>Struts2的处理全局异常机制</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
+<span class="nt">&lt;struts&gt;</span>
+    <span class="nt">&lt;package</span> <span class="na">name=</span><span class="s">"struts2"</span> <span class="na">extends=</span><span class="s">"struts-default"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;global-results&gt;</span>
+        <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"usernameInvalid"</span><span class="nt">&gt;</span>/usernameInvalid.jsp<span class="nt">&lt;/result&gt;</span>
+        <span class="nt">&lt;result</span> <span class="na">name=</span><span class="s">"passwordInvalid"</span><span class="nt">&gt;</span>/passwordInvalid.jsp<span class="nt">&lt;/result&gt;</span>
+    <span class="nt">&lt;/global-results&gt;</span>
+    <span class="nt">&lt;global-exception-mappings&gt;</span>
+        <span class="nt">&lt;exception-mapping</span> <span class="na">result=</span><span class="s">"usernameInvalid"</span> <span class="na">exception=</span><span class="s">"com.shengsiyuan.exception.UsernameException"</span><span class="nt">&gt;&lt;/exception-mapping&gt;</span>
+        <span class="nt">&lt;exception-mapping</span> <span class="na">result=</span><span class="s">"passwordInvalid"</span> <span class="na">exception=</span><span class="s">"com.shengsiyuan.exception.PasswordException"</span><span class="nt">&gt;&lt;/exception-mapping&gt;</span>
+    <span class="nt">&lt;/global-exception-mappings&gt;</span>
+    ………………
+<span class="nt">&lt;/struts&gt;</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/java/2012-01-09-Struts%E6%A1%86%E6%9E%B6%E8%BE%93%E5%85%A5%E6%A0%A1%E9%AA%8C%E3%80%81%E5%9B%BD%E9%99%85%E5%8C%96%E5%8F%8A%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Java-Struts学习笔记之Struts框架输入校验、国际化及异常处理 - 知不知&amp;url=/list/docs/java/2012-01-09-Struts%E6%A1%86%E6%9E%B6%E8%BE%93%E5%85%A5%E6%A0%A1%E9%AA%8C%E3%80%81%E5%9B%BD%E9%99%85%E5%8C%96%E5%8F%8A%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/java/2012-01-09-Struts%E6%A1%86%E6%9E%B6%E8%BE%93%E5%85%A5%E6%A0%A1%E9%AA%8C%E3%80%81%E5%9B%BD%E9%99%85%E5%8C%96%E5%8F%8A%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86.html&amp;title=Java-Struts学习笔记之Struts框架输入校验、国际化及异常处理 - 知不知&amp;summary=Struts框架输入校验、国际化及异常处理&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/java/2012-01-09-Struts%E6%A1%86%E6%9E%B6%E8%BE%93%E5%85%A5%E6%A0%A1%E9%AA%8C%E3%80%81%E5%9B%BD%E9%99%85%E5%8C%96%E5%8F%8A%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86.html&amp;text=Java-Struts学习笔记之Struts框架输入校验、国际化及异常处理 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/java/2012-01-09-Struts%E6%A1%86%E6%9E%B6%E8%BE%93%E5%85%A5%E6%A0%A1%E9%AA%8C%E3%80%81%E5%9B%BD%E9%99%85%E5%8C%96%E5%8F%8A%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86.html&amp;t=Java-Struts学习笔记之Struts框架输入校验、国际化及异常处理 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/java/2012-01-09-Struts%E6%A1%86%E6%9E%B6%E8%BE%93%E5%85%A5%E6%A0%A1%E9%AA%8C%E3%80%81%E5%9B%BD%E9%99%85%E5%8C%96%E5%8F%8A%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Java-Struts学习笔记之Struts框架输入校验、国际化及异常处理'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

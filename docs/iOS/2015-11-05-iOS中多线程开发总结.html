@@ -1,0 +1,560 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>iOS中多线程开发总结</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>iOS中多线程开发，Queue 及 GCD 相关总结</strong></p> <ul> <li>主要有：<code class="highlighter-rouge">NSThread，NSOperation，GCD，线程同步(NSLock同步锁,@synchronized代码块)</code></li> <li>iOS中多线程使用并不复杂，关键是如何控制好各个线程的执行顺序、处理好资源竞争问题；</li> </ul> <p><strong>NSThread</strong> 两种方式创建：</p> <ul> <li>detachNewThreadSelector: toTarget: withObject: 直接将操作添加到线程中并启动；</li> <li>initWithTarget: selector: object: 创建一个线程对象，然后调用start方法启动；</li> <li>案例：多线程下载图片</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//1. 使用对象方法
+// NSThread *thread=[[NSThread alloc]initWithTarget:self selector:@selector(loadImage) object:nil];
+// [thread start];
+    
+//2. 使用类方法
+[NSThread detachNewThreadSelector:@selector(loadImage) toTarget:self withObject:nil];
+</code></pre></div></div> <ul> <li>在主线程中更新UI：</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self performSelectorOnMainThread:@selector(updateImage:) withObject:data waitUntilDone:YES];
+</code></pre></div></div> <ul> <li>设置线程名称:<code class="highlighter-rouge">thread.name=[NSString stringWithFormat:@"myThread%i",i];</code></li> <li>线程的优先级,范围为0~1，值越大优先级越高,<code class="highlighter-rouge">thread.threadPriority=1.0;</code></li> <li>让所在线程休眠2s:<code class="highlighter-rouge">[NSThread sleepForTimeInterval:2.0];</code></li> <li>取消未完成的线程:<code class="highlighter-rouge">if (!thread.isFinished) { [thread cancel]; }</code></li> <li>扩展–NSObject分类扩展方法</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>performSelectorInBackground: withObject: ：在后台执行一个操作，本质就是重新创建一个线程执行当前方法。
+performSelector: onThread: withObject: waitUntilDone: ：在指定的线程上执行一个方法，需要用户创建一个线程对象。
+performSelectorOnMainThread: withObject: waitUntilDone: ：在主线程上执行一个方法。
+</code></pre></div></div> <hr /> <p><strong>NSOperation</strong> 使用NSOperation和NSOperationQueue进行多线程开发类似于C#中的线程池，只要将一个NSOperation（实际开中需要使用其子类NSInvocationOperation、NSBlockOperation）放到NSOperationQueue这个队列中线程就会依次启动。NSOperationQueue负责管理、执行所有的NSOperation，在这个过程中可以更加容易的管理线程总数和控制线程之间的依赖关系。</p> <p>NSOperation有两个常用子类用于创建线程操作：NSInvocationOperation和NSBlockOperation，两种方式本质没有区别，但是是后者使用Block形式进行代码组织，使用相对方便。</p> <ul> <li>在主队列上更新UI界面</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//更新UI界面,此处调用了主线程队列的方法（mainQueue是UI主线程）
+[[NSOperationQueue mainQueue] addOperationWithBlock:^{
+[self updateImageWithData:data andIndex:i];
+}];
+</code></pre></div></div> <ul> <li>NSInvocationOperation</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-(void)loadImageWithMultiThread{
+   /*创建一个调用操作
+    object:调用方法参数
+   */
+   NSInvocationOperation *invocationOperation=[[NSInvocationOperation alloc]initWithTarget:self selector:@selector(loadImage) object:nil];
+   //创建完NSInvocationOperation对象并不会调用，它由一个start方法启动操作，但是注意如果直接调用start方法，则此操作会在主线程中调用，一般不会这么操作,而是添加到NSOperationQueue中
+//    [invocationOperation start];
+   
+   //创建操作队列
+   NSOperationQueue *operationQueue=[[NSOperationQueue alloc]init];
+   //注意添加到操作队后，队列会开启一个线程执行此操作
+   [operationQueue addOperation:invocationOperation];
+}
+</code></pre></div></div> <ul> <li>NSBlockOperation</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-(void)loadImageWithMultiThread{
+   int count=ROW_COUNT*COLUMN_COUNT;
+   //创建操作队列
+   NSOperationQueue *operationQueue=[[NSOperationQueue alloc]init];
+   operationQueue.maxConcurrentOperationCount=5;//设置最大并发线程数
+   //创建多个线程用于填充图片
+   for (int i=0; i&lt;count; ++i) {
+       //方法1：创建操作块添加到队列
+//        //创建多线程操作
+//        NSBlockOperation *blockOperation=[NSBlockOperation blockOperationWithBlock:^{
+//            [self loadImage:[NSNumber numberWithInt:i]];
+//        }];
+//        //创建操作队列
+//
+//        [operationQueue addOperation:blockOperation];
+       
+       //方法2：直接使用操队列添加操作
+       [operationQueue addOperationWithBlock:^{
+           [self loadImage:[NSNumber numberWithInt:i]];
+       }];
+       
+   }
+}
+</code></pre></div></div> <ul> <li>线程执行顺序,可以给每个NSOperation可以设置依赖线程来控制</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-(void)loadImageWithMultiThread{
+   int count=ROW_COUNT*COLUMN_COUNT;
+   //创建操作队列
+   NSOperationQueue *operationQueue=[[NSOperationQueue alloc]init];
+   operationQueue.maxConcurrentOperationCount=5;//设置最大并发线程数
+   
+   NSBlockOperation *lastBlockOperation=[NSBlockOperation blockOperationWithBlock:^{
+       [self loadImage:[NSNumber numberWithInt:(count-1)]];
+   }];
+   //创建多个线程用于填充图片
+   for (int i=0; i&lt;count-1; ++i) {
+       //方法1：创建操作块添加到队列
+       //创建多线程操作
+       NSBlockOperation *blockOperation=[NSBlockOperation blockOperationWithBlock:^{
+           [self loadImage:[NSNumber numberWithInt:i]];
+       }];
+       //设置依赖操作为最后一张图片加载操作
+       [blockOperation addDependency:lastBlockOperation];
+       
+       [operationQueue addOperation:blockOperation];
+       
+   }
+   //将最后一个图片的加载操作加入线程队列
+   [operationQueue addOperation:lastBlockOperation];
+}
+</code></pre></div></div> <hr /> <p><strong>GCD</strong></p> <p>GCD(Grand Central Dispatch)是基于C语言开发的一套多线程开发机制,GCD中也有一个类似于NSOperationQueue的队列，GCD统一管理整个队列中的任务。但是GCD中的队列分为并行队列和串行队列两类：</p> <ul> <li>串行队列：只有一个线程，加入到队列中的操作按添加顺序依次执行。</li> <li>并发队列：有多个线程，操作进来之后它会将这些队列安排在可用的处理器上，同时保证先进来的任务优先处理。</li> <li> <p>其实在GCD中还有一个特殊队列就是主队列，用来执行主线程上的操作任务（从前面的演示中可以看到其实在NSOperation中也有一个主队列）。</p> </li> <li>在GCD主线程队列中，更新UI</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//更新UI界面,此处调用了GCD主线程队列的方法
+   dispatch_queue_t mainQueue= dispatch_get_main_queue();
+   dispatch_sync(mainQueue, ^{
+       [self updateImageWithData:data andIndex:i];
+   });
+}
+</code></pre></div></div> <ul> <li>串行队列</li> </ul> <p>使用串行队列时首先要创建一个串行队列，然后调用异步调用方法，在此方法中传入串行队列和线程操作即可自动执行。下面使用线程队列演示图片的加载过程，你会发现多张图片会按顺序加载，因为当前队列中只有一个线程。</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-(void)loadImageWithMultiThread{
+   int count=ROW_COUNT*COLUMN_COUNT;
+   
+   /*创建一个串行队列
+    第一个参数：队列名称
+    第二个参数：队列类型
+   */
+   dispatch_queue_t serialQueue=dispatch_queue_create("myThreadQueue1", DISPATCH_QUEUE_SERIAL);//注意queue对象不是指针类型
+   //创建多个线程用于填充图片
+   for (int i=0; i&lt;count; ++i) {
+       //异步执行队列任务
+       dispatch_async(serialQueue, ^{
+           [self loadImage:[NSNumber numberWithInt:i]];
+       });
+       
+   }
+   //非ARC环境请释放
+//    dispatch_release(seriQueue);
+}
+</code></pre></div></div> <ul> <li>并发队列</li> </ul> <p>并发队列同样是使用dispatch_queue_create()方法创建，只是最后一个参数指定为DISPATCH_QUEUE_CONCURRENT进行创建，但是在实际开发中我们通常不会重新创建一个并发队列而是使用dispatch_get_global_queue()方法取得一个全局的并发队列（当然如果有多个并发队列可以使用前者创建）。下面通过并行队列演示一下多个图片的加载。代码与上面串行队列加载类似，只需要修改照片加载方法如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-(void)loadImageWithMultiThread{
+   int count=ROW_COUNT*COLUMN_COUNT;
+   
+   /*取得全局队列
+    第一个参数：线程优先级
+    第二个参数：标记参数，目前没有用，一般传入0
+   */
+   dispatch_queue_t globalQueue=dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+   //创建多个线程用于填充图片
+   for (int i=0; i&lt;count; ++i) {
+       //异步执行队列任务
+       dispatch_async(globalQueue, ^{
+           [self loadImage:[NSNumber numberWithInt:i]];
+       });
+   }
+}
+</code></pre></div></div> <ul> <li>结论</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- 在GDC中一个操作是多线程执行还是单线程执行取决于当前队列类型和执行方法，只有队列类型为并行队列并且使用异步方法执行时才能在多个线程中执行。
+- 串行队列可以按顺序执行，并行队列的异步方法无法确定执行顺序。
+- UI界面的更新最好采用同步方法，其他操作采用异步方法。
+</code></pre></div></div> <ul> <li>其他任务执行方法</li> </ul> <p>GCD执行任务的方法并非只有简单的同步调用方法和异步调用方法，还有其他一些常用方法：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- dispatch_apply():重复执行某个任务，但是注意这个方法没有办法异步执行（为了不阻塞线程可以使用dispatch_async()包装一下再执行）。
+- dispatch_once():单次执行一个任务，此方法中的任务只会执行一次，重复调用也没办法重复执行（单例模式中常用此方法）。
+- dispatch_time()：延迟一定的时间后执行。
+- dispatch_barrier_async()：使用此方法创建的任务首先会查看队列中有没有别的任务要执行，如果有，则会等待已有任务执行完毕再执行；同时在此方法后添加的任务必须等待此方法中任务执行后才能执行。（利用这个方法可以控制执行顺序，例如前面先加载最后一张图片的需求就可以先使用这个方法将最后一张图片加载的操作添加到队列，然后调用dispatch_async()添加其他图片加载任务）
+- dispatch_group_async()：实现对任务分组管理，如果一组任务全部完成可以通过dispatch_group_notify()方法获得完成通知（需要定义dispatch_group_t作为分组标识）。
+</code></pre></div></div> <hr /> <p><strong>线程同步</strong></p> <p>说到多线程就不得不提多线程中的锁机制，多线程操作过程中往往多个线程是并发执行的，同一个资源可能被多个线程同时访问，造成资源抢夺，这个过程中如果没有锁机制往往会造成重大问题。</p> <p>要解决资源抢夺问题在iOS中有常用的有两种方法：一种是使用NSLock同步锁，另一种是使用@synchronized代码块。两种方法实现原理是类似的，只是在处理上代码块使用起来更加简单（C#中也有类似的处理机制synchronized和lock）</p> <p>使用同步锁时如果一个线程A已经加锁，线程B就无法进入。那么B怎么知道是否资源已经被其他线程锁住呢？可以通过tryLock方法，此方法会返回一个BOOL型的值，如果为YES说明获取锁成功，否则失败。另外还有一个lockBeforeData:方法指定在某个时间内获取锁，同样返回一个BOOL值，如果在这个时间内加锁成功则返回YES，失败则返回NO。</p> <ul> <li>NSLock</li> </ul> <p>iOS中对于资源抢占的问题可以使用同步锁NSLock来解决，使用时把需要加锁的代码（以后暂时称这段代码为”加锁代码“）放到NSLock的lock和unlock之间，一个线程A进入加锁代码之后由于已经加锁，另一个线程B就无法访问，只有等待前一个线程A执行完加锁代码后解锁，B线程才能访问加锁代码。需要注意的是lock和unlock之间的”加锁代码“应该是抢占资源的读取和修改代码，不要将过多的其他操作代码放到里面，否则一个线程执行的时候另一个线程就一直在等待，就无法发挥多线程的作用了。</p> <p>另外，在上面的代码中”抢占资源“_imageNames定义成了成员变量，这么做是不明智的，应该定义为“原子属性”。对于被抢占资源来说将其定义为原子属性是一个很好的习惯，因为有时候很难保证同一个资源不在别处读取和修改。nonatomic属性读取的是内存数据（寄存器计算好的结果），而atomic就保证直接读取寄存器的数据，这样一来就不会出现一个线程正在修改数据，而另一个线程读取了修改之前（存储在内存中）的数据，永远保证同时只有一个线程在访问一个属性。</p> <p>下面的代码演示了如何使用NSLock进行线程同步：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    
+@interface KCMainViewController (){
+   NSMutableArray *_imageViews;
+   NSLock *_lock;
+}
+@property (atomic,strong) NSMutableArray *imageNames;
+    
+@end
+    
+@implementation KCMainViewController
+    
+- (void)viewDidLoad {
+   [super viewDidLoad];
+   [self layoutUI];
+   
+   //初始化锁对象
+   _lock=[[NSLock alloc]init];
+}
+    
+#pragma mark 请求图片数据
+-(NSData *)requestData:(int )index{
+   NSData *data;
+   NSString *name;
+   //加锁
+   [_lock lock];
+   if (_imageNames.count&gt;0) {
+       name=[_imageNames lastObject];
+       [_imageNames removeObject:name];
+   }
+   //使用完解锁
+   [_lock unlock];
+   if(name){
+       NSURL *url=[NSURL URLWithString:name];
+       data=[NSData dataWithContentsOfURL:url];
+   }
+   return data;
+}
+    
+#pragma mark 加载图片
+-(void)loadImage:(NSNumber *)index{
+   int i=[index integerValue];
+   //请求数据
+   NSData *data= [self requestData:i];
+   //更新UI界面,此处调用了GCD主线程队列的方法
+   dispatch_queue_t mainQueue= dispatch_get_main_queue();
+   dispatch_sync(mainQueue, ^{
+       [self updateImageWithData:data andIndex:i];
+   });
+}
+    
+#pragma mark 多线程下载图片
+-(void)loadImageWithMultiThread{
+   int count=ROW_COUNT*COLUMN_COUNT;
+    
+   dispatch_queue_t globalQueue=dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+   //创建多个线程用于填充图片
+   for (int i=0; i&lt;count; ++i) {
+       //异步执行队列任务
+       dispatch_async(globalQueue, ^{
+           [self loadImage:[NSNumber numberWithInt:i]];
+       });
+   }
+   
+}
+@end
+</code></pre></div></div> <ul> <li>@synchronized代码块</li> </ul> <p>使用@synchronized解决线程同步问题相比较NSLock要简单一些，日常开发中也更推荐使用此方法。首先选择一个对象作为同步对象（一般使用self），然后将”加锁代码”（争夺资源的读取、修改代码）放到代码块中。@synchronized中的代码执行时先检查同步对象是否被另一个线程占用，如果占用该线程就会处于等待状态，直到同步对象被释放。下面的代码演示了如何使用@synchronized进行线程同步：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-(NSData *)requestData:(int )index{
+   NSData *data;
+   NSString *name;
+   //线程同步
+   @synchronized(self){
+       if (_imageNames.count&gt;0) {
+           name=[_imageNames lastObject];
+           [NSThread sleepForTimeInterval:0.001f];
+           [_imageNames removeObject:name];
+       }
+   }
+   if(name){
+       NSURL *url=[NSURL URLWithString:name];
+       data=[NSData dataWithContentsOfURL:url];
+   }
+   return data;
+}
+</code></pre></div></div> <ul> <li>使用GCD解决资源抢占问题</li> </ul> <p>在GCD中提供了一种信号机制，也可以解决资源抢占问题（和同步锁的机制并不一样）。GCD中信号量是dispatch_semaphore_t类型，支持信号通知和信号等待。每当发送一个信号通知，则信号量+1；每当发送一个等待信号时信号量-1,；如果信号量为0则信号会处于等待状态，直到信号量大于0开始执行。根据这个原理我们可以初始化一个信号量变量，默认信号量设置为1，每当有线程进入“加锁代码”之后就调用信号等待命令（此时信号量为0）开始等待，此时其他线程无法进入，执行完后发送信号通知（此时信号量为1），其他线程开始进入执行，如此一来就达到了线程同步目的。</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@interface KCMainViewController (){
+   NSMutableArray *_imageViews;
+   dispatch_semaphore_t _semaphore;//定义一个信号量
+}
+@property (atomic,strong) NSMutableArray *imageNames;
+    
+@end
+    
+@implementation KCMainViewController
+   - (void)viewDidLoad {
+       [super viewDidLoad];
+       [self layoutUI];
+       
+       /*初始化信号量
+        参数是信号量初始值
+        */
+       _semaphore=dispatch_semaphore_create(1);
+   }
+   //...
+   
+#pragma mark 请求图片数据
+-(NSData *)requestData:(int )index{
+  NSData *data;
+  NSString *name;
+  
+  /*信号等待
+   第二个参数：等待时间
+   */
+  dispatch_semaphore_wait(_semaphore, DISPATCH_TIME_FOREVER);
+  if (_imageNames.count&gt;0) {
+      name=[_imageNames lastObject];
+      [_imageNames removeObject:name];
+  }
+  //信号通知
+  dispatch_semaphore_signal(_semaphore);
+   
+  
+  if(name){
+      NSURL *url=[NSURL URLWithString:name];
+      data=[NSData dataWithContentsOfURL:url];
+  }
+  
+  return data;
+}
+   
+#pragma mark 加载图片
+-(void)loadImage:(NSNumber *)index{
+  int i=[index integerValue];
+  //请求数据
+  NSData *data= [self requestData:i];
+  //更新UI界面,此处调用了GCD主线程队列的方法
+  dispatch_queue_t mainQueue= dispatch_get_main_queue();
+  dispatch_sync(mainQueue, ^{
+      [self updateImageWithData:data andIndex:i];
+  });
+}
+   
+#pragma mark 多线程下载图片
+-(void)loadImageWithMultiThread{
+  int count=ROW_COUNT*COLUMN_COUNT;
+//    dispatch_queue_t globalQueue=dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+   
+  //这里创建一个并发队列（使用全局并发队列也可以）
+  dispatch_queue_t queue=dispatch_queue_create("myQueue", DISPATCH_QUEUE_CONCURRENT);
+  
+  for (int i=0; i&lt;count; i++) {
+      dispatch_async(queue, ^{
+          [self loadImage:[NSNumber numberWithInt:i]];
+      });
+   }
+}
+    
+@end
+    
+</code></pre></div></div> <ul> <li>控制线程通信 由于线程的调度是透明的，程序有时候很难对它进行有效的控制，为了解决这个问题iOS提供了NSCondition来控制线程通信(同前面GCD的信号机制类似)。NSCondition实现了NSLocking协议，所以它本身也有lock和unlock方法，因此也可以将它作为NSLock解决线程同步问题，此时使用方法跟NSLock没有区别，只要在线程开始时加锁，取得资源后释放锁即可，这部分内容比较简单在此不再演示。当然，单纯解决线程同步问题不是NSCondition设计的主要目的，NSCondition更重要的是解决线程之间的调度关系（当然，这个过程中也必须先加锁、解锁）。NSCondition可以调用wati方法控制某个线程处于等待状态，直到其他线程调用signal（此方法唤醒一个线程，如果有多个线程在等待则任意唤醒一个）或者broadcast（此方法会唤醒所有等待线程）方法唤醒该线程才能继续。</li> </ul> <p>假设当前imageNames没有任何图片，而整个界面能够加载15张图片（每张都不能重复），现在创建15个线程分别从imageNames中取图片加载到界面中。由于imageNames中没有任何图片，那么15个线程都处于等待状态，只有当调用图片创建方法往imageNames中添加图片后（每次创建一个）并且唤醒其他线程（这里只唤醒一个线程）才能继续执行加载图片。如此，每次创建一个图片就会唤醒一个线程去加载，这个过程其实就是一个典型的生产者-消费者模式。下面通过NSCondition实现这个流程的控制：</p> <p>KCMainViewController.h</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#import &lt;UIKit/UIKit.h&gt;
+    
+@interface KCMainViewController : UIViewController
+    
+#pragma mark 图片资源存储容器
+@property (atomic,strong) NSMutableArray *imageNames;
+    
+#pragma mark 当前加载的图片索引（图片链接地址连续）
+@property (atomic,assign) int currentIndex;
+    
+@end
+</code></pre></div></div> <p>KCMainViewController.m</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#import "KCMainViewController.h"
+#import "KCImageData.h"
+#define ROW_COUNT 5
+#define COLUMN_COUNT 3
+#define ROW_HEIGHT 100
+#define ROW_WIDTH ROW_HEIGHT
+#define CELL_SPACING 10
+#define IMAGE_COUNT 9
+    
+@interface KCMainViewController (){
+   NSMutableArray *_imageViews;
+   NSCondition *_condition;
+}
+    
+@end
+    
+@implementation KCMainViewController
+    
+#pragma mark - 事件
+- (void)viewDidLoad {
+   [super viewDidLoad];
+    
+   [self layoutUI];
+}
+    
+#pragma mark - 内部私有方法
+#pragma mark 界面布局
+-(void)layoutUI{
+   //创建多个图片控件用于显示图片
+   _imageViews=[NSMutableArray array];
+   for (int r=0; r&lt;ROW_COUNT; r++) {
+       for (int c=0; c&lt;COLUMN_COUNT; c++) {
+           UIImageView *imageView=[[UIImageView alloc]initWithFrame:CGRectMake(c*ROW_WIDTH+(c*CELL_SPACING), r*ROW_HEIGHT+(r*CELL_SPACING                           ), ROW_WIDTH, ROW_HEIGHT)];
+           imageView.contentMode=UIViewContentModeScaleAspectFit;
+           [self.view addSubview:imageView];
+           [_imageViews addObject:imageView];
+           
+       }
+   }
+   
+   UIButton *btnLoad=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+   btnLoad.frame=CGRectMake(50, 500, 100, 25);
+   [btnLoad setTitle:@"加载图片" forState:UIControlStateNormal];
+   [btnLoad addTarget:self action:@selector(loadImageWithMultiThread) forControlEvents:UIControlEventTouchUpInside];
+   [self.view addSubview:btnLoad];
+   
+   UIButton *btnCreate=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+   btnCreate.frame=CGRectMake(160, 500, 100, 25);
+   [btnCreate setTitle:@"创建图片" forState:UIControlStateNormal];
+   [btnCreate addTarget:self action:@selector(createImageWithMultiThread) forControlEvents:UIControlEventTouchUpInside];
+   [self.view addSubview:btnCreate];
+   
+   //创建图片链接
+   _imageNames=[NSMutableArray array];
+   
+   //初始化锁对象
+   _condition=[[NSCondition alloc]init];
+   
+   _currentIndex=0;
+   
+}
+    
+    
+#pragma mark 创建图片
+-(void)createImageName{
+   [_condition lock];
+   //如果当前已经有图片了则不再创建，线程处于等待状态
+   if (_imageNames.count&gt;0) {
+       NSLog(@"createImageName wait, current:%i",_currentIndex);
+       [_condition wait];
+   }else{
+       NSLog(@"createImageName work, current:%i",_currentIndex);
+       //生产者，每次生产1张图片
+       [_imageNames addObject:[NSString stringWithFormat:@"http://images.cnblogs.com/cnblogs_com/kenshincui/613474/o_%i.jpg",_currentIndex++]];
+       
+       //创建完图片则发出信号唤醒其他等待线程
+       [_condition signal];
+   }
+   [_condition unlock];
+}
+    
+#pragma mark 加载图片并将图片显示到界面
+-(void)loadAnUpdateImageWithIndex:(int )index{
+   //请求数据
+   NSData *data= [self requestData:index];
+   //更新UI界面,此处调用了GCD主线程队列的方法
+   dispatch_queue_t mainQueue= dispatch_get_main_queue();
+   dispatch_sync(mainQueue, ^{
+       UIImage *image=[UIImage imageWithData:data];
+       UIImageView *imageView= _imageViews[index];
+       imageView.image=image;
+   });
+}
+    
+#pragma mark 请求图片数据
+-(NSData *)requestData:(int )index{
+   NSData *data;
+   NSString *name;
+   name=[_imageNames lastObject];
+   [_imageNames removeObject:name];
+   if(name){
+       NSURL *url=[NSURL URLWithString:name];
+       data=[NSData dataWithContentsOfURL:url];
+   }
+   return data;
+}
+    
+#pragma mark 加载图片
+-(void)loadImage:(NSNumber *)index{
+   int i=(int)[index integerValue];
+   //加锁
+   [_condition lock];
+   //如果当前有图片资源则加载，否则等待
+   if (_imageNames.count&gt;0) {
+       NSLog(@"loadImage work,index is %i",i);
+       [self loadAnUpdateImageWithIndex:i];
+       [_condition broadcast];
+   }else{
+       NSLog(@"loadImage wait,index is %i",i);
+       NSLog(@"%@",[NSThread currentThread]);
+       //线程等待
+       [_condition wait];
+       NSLog(@"loadImage resore,index is %i",i);
+       //一旦创建完图片立即加载
+       [self loadAnUpdateImageWithIndex:i];
+   }
+   //解锁
+   [_condition unlock];
+}
+    
+    
+#pragma mark - UI调用方法
+#pragma mark 异步创建一张图片链接
+-(void)createImageWithMultiThread{
+   dispatch_queue_t globalQueue=dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+   //创建图片链接
+   dispatch_async(globalQueue, ^{
+       [self createImageName];
+   });
+}
+    
+#pragma mark 多线程下载图片
+-(void)loadImageWithMultiThread{
+   int count=ROW_COUNT*COLUMN_COUNT;
+   dispatch_queue_t globalQueue=dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    
+   for (int i=0; i&lt;count; ++i) {
+       //加载图片
+       dispatch_async(globalQueue, ^{
+           [self loadImage:[NSNumber numberWithInt:i]];
+       });
+   }
+}
+@end
+</code></pre></div></div> <ul> <li>iOS中的其他锁</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>在iOS开发中，除了同步锁有时候还会用到一些其他锁类型，在此简单介绍一下：
+NSRecursiveLock ：递归锁，有时候“加锁代码”中存在递归调用，递归开始前加锁，递归调用开始后会重复执行此方法以至于反复执行加锁代码最终造成死锁，这个时候可以使用递归锁来解决。使用递归锁可以在一个线程中反复获取锁而不造成死锁，这个过程中会记录获取锁和释放锁的次数，只有最后两者平衡锁才被最终释放。
+NSDistributedLock：分布锁，它本身是一个互斥锁，基于文件方式实现锁机制，可以跨进程访问。
+pthread_mutex_t：同步锁，基于C语言的同步锁机制，使用方法与其他同步锁机制类似。
+</code></pre></div></div> <ul> <li>Dispatch Group的使用</li> </ul> <p>假设有这样一个需求：从网络上下载两张不同的图片，然后显示到不同的UIImageView上去，一般可以这样实现</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 根据url获取UIImage  
+- (UIImage *)imageWithURLString:(NSString *)urlString {  
+    NSURL *url = [NSURL URLWithString:urlString];  
+    NSData *data = [NSData dataWithContentsOfURL:url];  
+    return [UIImage imageWithData:data];  
+}  
+  
+- (void)downloadImages {  
+    // 异步下载图片  
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{  
+        // 下载第一张图片  
+        NSString *url1 = @"http://car0.autoimg.cn/upload/spec/9579/u_20120110174805627264.jpg";  
+        UIImage *image1 = [self imageWithURLString:url1];  
+          
+        // 下载第二张图片  
+        NSString *url2 = @"http://hiphotos.baidu.com/lvpics/pic/item/3a86813d1fa41768bba16746.jpg";  
+        UIImage *image2 = [self imageWithURLString:url2];  
+          
+        // 回到主线程显示图片  
+        dispatch_async(dispatch_get_main_queue(), ^{  
+            self.imageView1.image = image1;  
+              
+            self.imageView2.image = image2;  
+        });  
+    });  
+} 
+</code></pre></div></div> <p>虽然这种方案可以解决问题，但其实两张图片的下载过程并不需要按顺序执行，并发执行它们可以提高执行速度。有个注意点就是必须等两张图片都下载完毕后才能回到主线程显示图片。Dispatch Group能够在这种情况下帮我们提升性能。下面先看看Dispatch Group的用处：</p> <p>我们可以使用dispatch_group_async函数将多个任务关联到一个Dispatch Group和相应的queue中，group会并发地同时执行这些任务。而且Dispatch Group可以用来阻塞一个线程, 直到group关联的所有的任务完成执行。有时候你必须等待任务完成的结果,然后才能继续后面的处理。dispatch_group_notify函数用来指定一个额外的block，该block将在group中所有任务完成后执行.</p> <p>下面用Dispatch Group优化上面的代码：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)downloadImages {  
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);  
+      
+    // 异步下载图片  
+    dispatch_async(queue, ^{  
+        // 创建一个组  
+        dispatch_group_t group = dispatch_group_create();  
+          
+        __block UIImage *image1 = nil;  
+        __block UIImage *image2 = nil;  
+          
+        // 关联一个任务到group  
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{  
+            // 下载第一张图片  
+            NSString *url1 = @"http://car0.autoimg.cn/upload/spec/9579/u_20120110174805627264.jpg";  
+            image1 = [self imageWithURLString:url1];  
+        });  
+          
+        // 关联一个任务到group  
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{  
+            // 下载第一张图片  
+            NSString *url2 = @"http://hiphotos.baidu.com/lvpics/pic/item/3a86813d1fa41768bba16746.jpg";  
+            image2 = [self imageWithURLString:url2];  
+        });  
+          
+        // 等待组中的任务执行完毕,回到主线程执行block回调  
+        dispatch_group_notify(group, dispatch_get_main_queue(), ^{  
+            self.imageView1.image = image1;  
+            self.imageView2.image = image2;  
+        });  
+    });  
+} 
+</code></pre></div></div> <ul> <li>GCD 延时</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//延时执行
+dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+
+    NSLog(@"-------延时执行--------");
+});
+</code></pre></div></div> <ul> <li>GCD 定时器</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 开启倒计时效果
+
+- (IBAction)openCountdown:(id)sender {
+
+
+    __block NSInteger time = 59; //倒计时时间
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+
+    dispatch_source_set_timer(timer,DISPATCH_TIME_NOW,1.0*NSEC_PER_SEC, 0); //每秒执行
+
+    dispatch_source_set_event_handler(timer, ^{
+
+        if(time &lt;= 0){ //倒计时结束，关闭
+
+            dispatch_source_cancel(timer);
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+
+                //设置按钮的样式
+                [self.openSeconds setTitle:@"重新发送" forState:UIControlStateNormal];
+                self.timeLabel.text = @"开始";
+
+                self.openSeconds.userInteractionEnabled = YES;
+            });
+
+        }else{
+
+            int seconds = time % 60;
+            dispatch_async(dispatch_get_main_queue(), ^{
+
+
+                //设置label读秒效果
+                self.timeLabel.text = [NSString stringWithFormat:@"重新发送(%.2d)",seconds];
+
+                [self.openSeconds setTitle:@"已发送" forState:UIControlStateNormal];
+                // 在这个状态下 用户交互关闭，防止再次点击 button 再次计时
+                self.openSeconds.userInteractionEnabled = NO;
+
+            });
+
+            time--;
+        }
+    });
+
+    dispatch_resume(timer);
+}
+</code></pre></div></div> <ul> <li> <p>总结</p> <ol> <li>无论使用哪种方法进行多线程开发，每个线程启动后并不一定立即执行相应的操作，具体什么时候由系统调度（CPU空闲时就会执行）。</li> <li>更新UI应该在主线程（UI线程）中进行，并且推荐使用同步调用，常用的方法如下： <ul> <li><code class="highlighter-rouge">- (void)performSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait</code></li> <li>或者<code class="highlighter-rouge">-(void)performSelector:(SEL)aSelector onThread:(NSThread *)thr withObject:(id)arg waitUntilDone:(BOOL) wait;</code>方法传递主线程<code class="highlighter-rouge">[NSThread mainThread]</code></li> <li><code class="highlighter-rouge">[NSOperationQueue mainQueue] addOperationWithBlock: dispatch_sync(dispatch_get_main_queue(), ^{})</code></li> </ul> </li> <li>NSThread适合轻量级多线程开发，控制线程顺序比较难，同时线程总数无法控制（每次创建并不能重用之前的线程，只能创建一个新的线程）。</li> <li>对于简单的多线程开发建议使用NSObject的扩展方法完成，而不必使用NSThread。</li> <li>可以使用NSThread的currentThread方法取得当前线程，使用 sleepForTimeInterval:方法让当前线程休眠。</li> <li>NSOperation进行多线程开发可以控制线程总数及线程依赖关系。</li> <li>创建一个NSOperation不应该直接调用start方法（如果直接start则会在主线程中调用）而是应该放到NSOperationQueue中启动。</li> <li>相比NSInvocationOperation推荐使用NSBlockOperation，代码简单，同时由于闭包性使它没有传参问题。</li> <li>NSOperation是对GCD面向对象的ObjC封装，但是相比GCD基于C语言开发，效率却更高，建议如果任务之间有依赖关系或者想要监听任务完成状态的情况下优先选择NSOperation否则使用GCD。</li> <li>在GCD中串行队列中的任务被安排到一个单一线程执行（不是主线程），可以方便地控制执行顺序；并发队列在多个线程中执行（前提是使用异步方法），顺序控制相对复杂，但是更高效。</li> <li>在GDC中一个操作是多线程执行还是单线程执行取决于当前队列类型和执行方法，只有队列类型为并行队列并且使用异步方法执行时才能在多个线程中执行（如果是并行队列使用同步方法调用则会在主线程中执行）。</li> <li>相比使用NSLock，@synchronized更加简单，推荐使用后者。</li> </ol> </li> </ul> <p>最后，本文参考了：<br /> <a href="http://www.cnblogs.com/kenshincui/p/3983982.html">并行开发其实很容易</a><br /> <a href="http://blog.csdn.net/q199109106q/article/details/8566300">多线程编程 - GCD</a><br /> <a href="http://www.jianshu.com/p/89e2d23b0c7d">GCD 实现定时器、倒计时</a></p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/iOS/2015-11-05-iOS%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91%E6%80%BB%E7%BB%93.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=iOS中多线程开发总结 - 知不知&amp;url=/list/docs/iOS/2015-11-05-iOS%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91%E6%80%BB%E7%BB%93.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/iOS/2015-11-05-iOS%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91%E6%80%BB%E7%BB%93.html&amp;title=iOS中多线程开发总结 - 知不知&amp;summary=iOS中多线程开发，Queue 及 GCD 相关总结&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/iOS/2015-11-05-iOS%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91%E6%80%BB%E7%BB%93.html&amp;text=iOS中多线程开发总结 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/iOS/2015-11-05-iOS%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91%E6%80%BB%E7%BB%93.html&amp;t=iOS中多线程开发总结 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/iOS/2015-11-05-iOS%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91%E6%80%BB%E7%BB%93.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('iOS中多线程开发总结'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>

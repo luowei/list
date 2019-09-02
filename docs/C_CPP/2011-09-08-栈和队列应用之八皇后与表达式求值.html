@@ -1,0 +1,348 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>数据结构-栈和队列应用之八皇后与表达式求值</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="八皇后问题">八皇后问题</h3> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* 
+八皇后问题是在8x8的国际象棋棋盘上，安放8个皇后，要求没有一个皇后能够"吃掉"任何其他一个皇后， 
+即没有两上或两个以上的皇后占据棋盘上的同一行、同一列或同一条对角线。 
+ 
+算法描述： 
+    1.置当前行当前列均为1; 
+    2.while(当前行号&lt;=8) 
+    3.{检查当前行，从当前列起逐列试探，寻找安全列号; 
+    4.    if(找到安全列号) 
+    5.        放置皇后，将列号记入栈中，并将下一行置成当前行，第1列置为当前列; 
+    6.    esle 
+    7.        退栈回溯到上一行，移去该行放置的皇后，以该皇后所在列的下一列作为当前列; 
+    8.}结束程序。 
+ 
+     
+1.当前行和列用i和j表示。若皇后放在位置(i,j)上，则将j压入栈中，即s[i]=j. 
+2.添加三个布尔数组(初始值为真)，用于保存与检查有关的信息。 
+    enum boolean {false,true}; 
+    enum boolean a[9],a[17],a[17]; 
+    int s[9]; 
+     
+    1.其中 a[j]为真时，表示第j列上无皇后。 
+    2.b[k]:表示 "/"方向的第 k 条对角线上无皇后。 
+    3.c[k]:表赤 "\"方向的第 k 条对角线上无皇后。  
+     
+    位于同一条 "/"方向的对角线上的诸方格，其行、列坐标之和 i+j 是相等的，这种方向的对角线有15条， 
+    其行列坐标之和分别为2至16，因此用b[2...16]标记该方向的诸对角线上有无皇后，b[k]为真时表 
+    示该方向的第 k 条对角线上无皇后。  
+     
+    行列坐标之差 i-j 相等的诸方格在同一条 "\"方向以对角线上，该类对角线有15条，其行列坐标之差分 
+    别是 -7到7 ，因为C语言数组下标是从0开始，所以用 c[2...16]标记这种方向的诸对角线上有无皇后， 
+    c[k](k=i-j+9,使其取值范围为2到16)，为真时表示该方向的第 k 条对角线上无皇后。 
+     
+    所以 b[i+j]和c[i-j+9]真假就分别表示了通过位置(i,j)的两条对角线上有无皇后。因此，位置 (i,j) 的 
+    "安全" 性可用逻辑表达示： 
+            a[j] &amp;&amp; b[i+j] &amp;&amp; c[i-j+9]      
+    来表示。在位置 (i,j) 上放置皇后后，相当于将 a[j],b[i+j]和 c[i-j+9]置为假;移去 (i,j)上的皇后相当 
+    于将 a[j],b[i+j]和 c[i-j+9]置为真。   
+*/</span> 
+ 
+<span class="k">enum</span> <span class="n">boolean</span> <span class="p">{</span><span class="nb">false</span><span class="p">,</span><span class="nb">true</span><span class="p">};</span> 
+<span class="k">enum</span> <span class="n">boolean</span> <span class="n">a</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span><span class="n">b</span><span class="p">[</span><span class="mi">17</span><span class="p">],</span><span class="n">c</span><span class="p">[</span><span class="mi">17</span><span class="p">];</span> 
+<span class="kt">int</span> <span class="n">s</span><span class="p">[</span><span class="mi">9</span><span class="p">];</span> 
+<span class="cp">#include&lt;stdio.h&gt; 
+</span><span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="kt">void</span> <span class="n">print</span><span class="p">(),</span><span class="n">movequeen</span><span class="p">(),</span><span class="n">eightqueen</span><span class="p">();</span>    <span class="c1">//函数声明 </span>
+    <span class="n">eightqueen</span><span class="p">();</span>                             <span class="c1">//求解八皇后  </span>
+<span class="p">}</span>  
+ 
+<span class="cm">/*******************************************/</span> 
+<span class="cm">/**           求解八皇后           **/</span> 
+<span class="cm">/*******************************************/</span> 
+<span class="kt">void</span> <span class="nf">eightqueen</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">;</span> 
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="mi">16</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>             <span class="c1">//将棋盘上的所有格子都置为真  </span>
+    <span class="p">{</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">2</span> <span class="o">&amp;&amp;</span> <span class="n">i</span><span class="o">&lt;=</span><span class="mi">9</span><span class="p">)</span> 
+            <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span>        <span class="c1">//将第j列置为真 , 设置成无皇后     </span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span>                <span class="c1">//将"/"方向的第 i 条对角线置为真 , 设置成无皇后 </span>
+        <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span>                <span class="c1">//将"\"方向的第 i 条对角线置为真 , 设置成无皇后 </span>
+    <span class="p">}</span> 
+    <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>                     <span class="c1">//置当前行当前列均为1 </span>
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">)</span>                    <span class="c1">//当i等于0时终止循环  </span>
+    <span class="p">{</span> 
+        <span class="k">while</span><span class="p">(</span><span class="n">j</span><span class="o">&lt;=</span><span class="mi">8</span><span class="p">)</span>                <span class="c1">//在当前行i上寻找安全位置 </span>
+        <span class="p">{</span> 
+            <span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">j</span><span class="o">+</span><span class="mi">9</span><span class="p">])</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="n">j</span><span class="o">++</span><span class="p">;</span>     
+        <span class="p">}</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">j</span><span class="o">&lt;=</span><span class="mi">8</span><span class="p">)</span>                <span class="c1">//找到安全位置(i,j) </span>
+        <span class="p">{</span> 
+            <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span> 
+            <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span> 
+            <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">j</span><span class="o">+</span><span class="mi">9</span><span class="p">]</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span> 
+            <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">j</span><span class="p">;</span>                <span class="c1">//皇后位置入栈 </span>
+            <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">==</span><span class="mi">8</span><span class="p">)</span>            <span class="c1">//找到一个解，输出解  </span>
+            <span class="p">{</span> 
+                <span class="n">print</span><span class="p">();</span>        <span class="c1">//打印输出一个解 </span>
+                <span class="n">movequeen</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">);</span>    <span class="c1">//移去位置(i,j)上的皇后 </span>
+                <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> 
+                <span class="n">j</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>            <span class="c1">//退栈，回溯到上一个皇后 </span>
+                <span class="n">movequeen</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">);</span>    <span class="c1">//移去位置(i,j)上的皇后 </span>
+                <span class="n">j</span><span class="o">++</span><span class="p">;</span>  
+            <span class="p">}</span> 
+            <span class="k">else</span> 
+            <span class="p">{</span> 
+                <span class="n">i</span><span class="o">++</span><span class="p">;</span>            <span class="c1">//准备放置下一个皇后  </span>
+                <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> 
+            <span class="p">}</span> 
+        <span class="p">}</span> 
+        <span class="k">else</span> 
+        <span class="p">{</span> 
+            <span class="n">i</span><span class="o">--</span><span class="p">;</span>                <span class="c1">//退栈 </span>
+            <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">)</span>            <span class="c1">//栈不为空，移去皇后  </span>
+            <span class="p">{</span> 
+                <span class="n">j</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> 
+                <span class="n">movequeen</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">);</span>    <span class="c1">//移去皇后 </span>
+                <span class="n">j</span><span class="o">++</span><span class="p">;</span>     
+            <span class="p">}</span> 
+        <span class="p">}</span>  
+    <span class="p">}</span> 
+<span class="p">}</span> 
+ 
+<span class="cm">/*******************************************/</span> 
+<span class="cm">/**         打印输出一具解的函数          **/</span> 
+<span class="cm">/*******************************************/</span> 
+<span class="kt">void</span> <span class="nf">print</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="kt">int</span> <span class="n">k</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">行号:    1   2   3   4   5   6   7   8</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"列号："</span><span class="p">);</span> 
+    <span class="k">for</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">k</span><span class="o">&lt;=</span><span class="mi">8</span><span class="p">;</span><span class="n">k</span><span class="o">++</span><span class="p">)</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%4d"</span><span class="p">,</span><span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n\n</span><span class="s">"</span><span class="p">);</span>  
+<span class="p">}</span>  
+ 
+<span class="cm">/*******************************************/</span> 
+<span class="cm">/**         移去位置(i,j)上的皇后的函数          **/</span> 
+<span class="cm">/*******************************************/</span> 
+ 
+<span class="kt">void</span> <span class="nf">movequeen</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="kt">int</span> <span class="n">j</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span> 
+    <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span> 
+    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">j</span><span class="o">+</span><span class="mi">9</span><span class="p">]</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span> 
+<span class="p">}</span> 
+ 
+</code></pre></div></div> <h3 id="表达式求值">表达式求值</h3> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include&lt;stdio.h&gt; 
+#define    StackSize    100 
+#define QueueSize    100 
+</span> 
+<span class="cm">/*队列的相关操作*/</span> 
+<span class="k">typedef</span> <span class="kt">char</span> <span class="n">DataType</span><span class="p">;</span> 
+<span class="k">typedef</span> <span class="k">struct</span> 
+<span class="p">{</span> 
+    <span class="kt">char</span> <span class="n">data</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span> 
+    <span class="kt">int</span> <span class="n">front</span><span class="p">,</span><span class="n">rear</span><span class="p">;</span> 
+<span class="p">}</span><span class="n">SeqQueue</span><span class="p">;</span>                    <span class="c1">//定义队列类型 </span>
+ 
+<span class="kt">void</span> <span class="nf">InitQueue</span><span class="p">(</span><span class="n">SeqQueue</span> <span class="o">*</span><span class="n">Q</span><span class="p">)</span>    <span class="c1">//初始化队列  </span>
+<span class="p">{</span> 
+    <span class="n">Q</span><span class="o">-&gt;</span><span class="n">front</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+    <span class="n">Q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+<span class="p">}</span> 
+ 
+<span class="kt">int</span> <span class="nf">QueueEmpty</span><span class="p">(</span><span class="n">SeqQueue</span> <span class="o">*</span><span class="n">Q</span><span class="p">)</span>    <span class="c1">//判断空队列 </span>
+<span class="p">{</span> 
+    <span class="k">return</span> <span class="n">Q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="o">==</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">;</span>  
+<span class="p">}</span> 
+ 
+<span class="kt">void</span> <span class="nf">EnQueue</span><span class="p">(</span><span class="n">SeqQueue</span> <span class="o">*</span><span class="n">Q</span><span class="p">,</span><span class="n">DataType</span> <span class="n">x</span><span class="p">)</span>    <span class="c1">//入队列 </span>
+<span class="p">{</span> 
+    <span class="k">if</span><span class="p">((</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">QueueSize</span><span class="o">==</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">)</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Queue overflow</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="k">else</span> 
+    <span class="p">{</span> 
+        <span class="n">Q</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">]</span><span class="o">=</span><span class="n">x</span><span class="p">;</span> 
+        <span class="n">Q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="o">=</span><span class="p">(</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">QueueSize</span><span class="p">;</span>         
+    <span class="p">}</span>  
+<span class="p">}</span>  
+ 
+<span class="n">DataType</span> <span class="nf">DeQueue</span><span class="p">(</span><span class="n">SeqQueue</span> <span class="o">*</span><span class="n">Q</span><span class="p">)</span>            <span class="c1">//出队列  </span>
+<span class="p">{</span> 
+    <span class="n">DataType</span> <span class="n">x</span><span class="p">;</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">QueueEmpty</span><span class="p">(</span><span class="n">Q</span><span class="p">))</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Queue Empty</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>  
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> 
+    <span class="p">}</span> 
+    <span class="k">else</span> 
+    <span class="p">{</span> 
+        <span class="n">x</span><span class="o">=</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">];</span> 
+<span class="c1">//        free(Q-&gt;data[Q-&gt;front]); </span>
+        <span class="n">Q</span><span class="o">-&gt;</span><span class="n">front</span><span class="o">=</span><span class="p">(</span><span class="n">Q</span><span class="o">-&gt;</span><span class="n">front</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span> 
+        <span class="k">return</span> <span class="n">x</span><span class="p">;</span> 
+    <span class="p">}</span> 
+<span class="p">}</span> 
+ 
+<span class="cm">/*栈的相关操作*/</span> 
+<span class="k">typedef</span> <span class="k">struct</span> 
+<span class="p">{</span> 
+    <span class="n">DataType</span> <span class="n">data</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span> 
+    <span class="kt">int</span> <span class="n">top</span><span class="p">;</span> 
+<span class="p">}</span><span class="n">SeqStack</span><span class="p">;</span>                                <span class="c1">//栈类型的定义 </span>
+ 
+<span class="kt">void</span> <span class="nf">InitStack</span><span class="p">(</span><span class="n">SeqStack</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span>                <span class="c1">//初始化栈  </span>
+<span class="p">{</span> 
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span> 
+<span class="p">}</span>  
+ 
+<span class="kt">void</span> <span class="nf">Push</span><span class="p">(</span><span class="n">SeqStack</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="n">DataType</span> <span class="n">x</span><span class="p">)</span>        <span class="c1">//入栈 </span>
+<span class="p">{</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">==</span><span class="n">StackSize</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"stack overflow"</span><span class="p">);</span> 
+        <span class="k">return</span><span class="p">;</span> 
+    <span class="p">}</span> 
+    <span class="k">else</span> 
+    <span class="p">{</span> 
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">=</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> 
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">]</span><span class="o">=</span><span class="n">x</span><span class="p">;</span> 
+    <span class="p">}</span> 
+<span class="p">}</span>  
+ 
+<span class="n">DataType</span> <span class="nf">Pop</span><span class="p">(</span><span class="n">SeqStack</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span>                <span class="c1">//退栈 </span>
+<span class="p">{</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">==-</span><span class="mi">1</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"stack underflow"</span><span class="p">);</span> 
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> 
+    <span class="p">}</span> 
+    <span class="k">else</span> 
+        <span class="k">return</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">--</span><span class="p">];</span>  
+<span class="p">}</span>  
+ 
+<span class="n">DataType</span> <span class="nf">GetTop</span><span class="p">(</span><span class="n">SeqStack</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span>                        <span class="c1">//取栈顶元素 </span>
+<span class="p">{</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">==-</span><span class="mi">1</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"stack empty"</span><span class="p">);</span> 
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> 
+    <span class="p">}</span> 
+    <span class="k">else</span> 
+        <span class="k">return</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">];</span>  
+<span class="p">}</span>  
+ 
+<span class="cm">/*求运算符优先级函数*/</span> 
+<span class="kt">int</span> <span class="nf">Priority</span><span class="p">(</span><span class="n">DataType</span> <span class="n">op</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="k">switch</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> 
+    <span class="p">{</span> 
+        <span class="k">case</span> <span class="sc">'('</span><span class="p">:</span> 
+        <span class="k">case</span> <span class="sc">'#'</span><span class="p">:</span><span class="k">return</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> 
+        <span class="k">case</span> <span class="sc">'-'</span><span class="p">:</span> 
+        <span class="k">case</span> <span class="sc">'+'</span><span class="p">:</span><span class="k">return</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> 
+        <span class="k">case</span> <span class="sc">'*'</span><span class="p">:</span> 
+        <span class="k">case</span> <span class="sc">'/'</span><span class="p">:</span><span class="k">return</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span> 
+    <span class="p">}</span> 
+<span class="p">}</span>  
+ 
+<span class="kt">void</span> <span class="nf">CTPostExp</span><span class="p">(</span><span class="n">SeqQueue</span> <span class="o">*</span><span class="n">Q</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="n">SeqStack</span> <span class="n">OS</span><span class="p">;</span> 
+    <span class="kt">char</span> <span class="n">c</span><span class="p">,</span><span class="n">t</span><span class="p">;</span> 
+    <span class="n">SeqStack</span> <span class="o">*</span><span class="n">S</span><span class="p">;</span> 
+    <span class="n">S</span><span class="o">=&amp;</span><span class="n">OS</span><span class="p">;</span> 
+    <span class="n">InitStack</span><span class="p">(</span><span class="n">S</span><span class="p">);</span>                        <span class="c1">//初始化栈 </span>
+    <span class="n">Push</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="sc">'#'</span><span class="p">);</span>                        <span class="c1">//压入栈底元素 '#'  </span>
+    <span class="k">do</span>                                    <span class="c1">//扫描中缀表达式 </span>
+    <span class="p">{</span> 
+        <span class="n">c</span><span class="o">=</span><span class="n">getchar</span><span class="p">();</span> 
+        <span class="k">switch</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> 
+        <span class="p">{</span> 
+            <span class="k">case</span> <span class="sc">' '</span><span class="p">:</span><span class="k">break</span><span class="p">;</span>                <span class="c1">//去除空格 </span>
+            <span class="k">case</span> <span class="sc">'1'</span><span class="p">:</span> 
+             <span class="k">case</span> <span class="sc">'2'</span><span class="p">:</span> 
+             <span class="k">case</span> <span class="sc">'3'</span><span class="p">:</span> 
+             <span class="k">case</span> <span class="sc">'4'</span><span class="p">:</span> 
+             <span class="k">case</span> <span class="sc">'5'</span><span class="p">:</span> 
+             <span class="k">case</span> <span class="sc">'6'</span><span class="p">:</span> 
+             <span class="k">case</span> <span class="sc">'7'</span><span class="p">:</span> 
+             <span class="k">case</span> <span class="sc">'8'</span><span class="p">:</span> 
+             <span class="k">case</span> <span class="sc">'9'</span><span class="p">:</span> 
+                 <span class="n">EnQueue</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">c</span><span class="p">);</span> 
+                 <span class="k">break</span><span class="p">;</span> 
+             <span class="k">case</span> <span class="sc">'('</span><span class="p">:</span> 
+                 <span class="n">Push</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">c</span><span class="p">);</span> 
+                 <span class="k">break</span><span class="p">;</span> 
+             <span class="k">case</span> <span class="sc">')'</span><span class="p">:</span> 
+             <span class="k">case</span> <span class="sc">'#'</span><span class="p">:</span> 
+                 <span class="k">do</span> 
+                 <span class="p">{</span> 
+                     <span class="n">t</span><span class="o">=</span><span class="n">Pop</span><span class="p">(</span><span class="n">S</span><span class="p">);</span> 
+                     <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">!=</span><span class="sc">'('</span><span class="o">&amp;&amp;</span><span class="n">t</span><span class="o">!=</span><span class="sc">'#'</span><span class="p">)</span> 
+                         <span class="n">EnQueue</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">);</span> 
+                 <span class="p">}</span><span class="k">while</span><span class="p">(</span><span class="n">t</span><span class="o">!=</span><span class="sc">'('</span><span class="o">&amp;&amp;</span><span class="n">S</span><span class="o">-&gt;</span><span class="n">top</span><span class="o">!=-</span><span class="mi">1</span><span class="p">);</span> 
+                 <span class="k">break</span><span class="p">;</span> 
+            <span class="k">case</span> <span class="sc">'+'</span><span class="p">:</span> 
+            <span class="k">case</span> <span class="sc">'-'</span><span class="p">:</span> 
+            <span class="k">case</span> <span class="sc">'*'</span><span class="p">:</span> 
+            <span class="k">case</span> <span class="sc">'/'</span><span class="p">:</span> 
+                <span class="k">while</span><span class="p">(</span><span class="n">Priority</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">Priority</span><span class="p">(</span><span class="n">GetTop</span><span class="p">(</span><span class="n">S</span><span class="p">)))</span> 
+                <span class="p">{</span> 
+                    <span class="n">t</span><span class="o">=</span><span class="n">Pop</span><span class="p">(</span><span class="n">S</span><span class="p">);</span> 
+                    <span class="n">EnQueue</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">);</span> 
+                <span class="p">}</span> 
+                <span class="n">Push</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">c</span><span class="p">);</span> 
+                <span class="k">break</span><span class="p">;</span> 
+        <span class="p">}</span> 
+    <span class="p">}</span><span class="k">while</span><span class="p">(</span><span class="n">c</span><span class="o">!=</span><span class="sc">'#'</span><span class="p">);</span>                        <span class="c1">//以'#'号结束表达式扫描  </span>
+<span class="p">}</span> 
+ 
+<span class="kt">int</span> <span class="nf">CPostExp</span><span class="p">(</span><span class="n">SeqQueue</span> <span class="o">*</span><span class="n">Q</span><span class="p">)</span> 
+<span class="p">{</span> 
+    <span class="n">SeqStack</span> <span class="n">VS</span><span class="p">,</span><span class="o">*</span><span class="n">S</span><span class="p">;</span> 
+    <span class="kt">char</span> <span class="n">ch</span><span class="p">;</span> 
+    <span class="kt">int</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">;</span> 
+    <span class="n">S</span><span class="o">=&amp;</span><span class="n">VS</span><span class="p">;</span> 
+    <span class="n">InitStack</span><span class="p">(</span><span class="n">S</span><span class="p">);</span> 
+    <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">QueueEmpty</span><span class="p">(</span><span class="n">Q</span><span class="p">))</span> 
+    <span class="p">{</span> 
+        <span class="n">ch</span><span class="o">=</span><span class="n">DeQueue</span><span class="p">(</span><span class="n">Q</span><span class="p">);</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">ch</span><span class="o">&gt;=</span><span class="sc">'0'</span><span class="o">&amp;&amp;</span><span class="n">ch</span><span class="o">&lt;=</span><span class="sc">'9'</span><span class="p">)</span> 
+            <span class="n">Push</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">ch</span><span class="o">-</span><span class="sc">'0'</span><span class="p">);</span> 
+        <span class="k">else</span> 
+        <span class="p">{</span> 
+            <span class="n">y</span><span class="o">=</span><span class="n">Pop</span><span class="p">(</span><span class="n">S</span><span class="p">);</span> 
+            <span class="n">x</span><span class="o">=</span><span class="n">Pop</span><span class="p">(</span><span class="n">S</span><span class="p">);</span> 
+            <span class="k">switch</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> 
+            <span class="p">{</span> 
+                <span class="k">case</span> <span class="sc">'+'</span><span class="p">:</span> 
+                    <span class="n">Push</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">);</span> 
+                    <span class="k">break</span><span class="p">;</span> 
+                <span class="k">case</span> <span class="sc">'-'</span><span class="p">:</span> 
+                    <span class="n">Push</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">x</span><span class="o">-</span><span class="n">y</span><span class="p">);</span> 
+                    <span class="k">break</span><span class="p">;</span> 
+                <span class="k">case</span> <span class="sc">'*'</span><span class="p">:</span> 
+                    <span class="n">Push</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">);</span> 
+                    <span class="k">break</span><span class="p">;</span> 
+                <span class="k">case</span> <span class="sc">'/'</span><span class="p">:</span> 
+                    <span class="n">Push</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">x</span><span class="o">/</span><span class="n">y</span><span class="p">);</span> 
+                    <span class="k">break</span><span class="p">;</span> 
+            <span class="p">}</span> 
+        <span class="p">}</span>  
+    <span class="p">}</span> 
+    <span class="k">return</span> <span class="n">GetTop</span><span class="p">(</span><span class="n">S</span><span class="p">);</span> 
+<span class="p">}</span>  
+ 
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+    <span class="n">SeqQueue</span> <span class="o">*</span><span class="n">Q</span><span class="p">;</span> 
+    <span class="n">SeqQueue</span> <span class="n">PostQ</span><span class="p">,</span><span class="n">PostQ2</span><span class="p">;</span>                        <span class="c1">//定义队列，存放后缀表达式  </span>
+    <span class="n">Q</span><span class="o">=&amp;</span><span class="n">PostQ</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"请输入中缀表达式(以#号结束)："</span><span class="p">);</span> 
+    <span class="n">InitQueue</span><span class="p">(</span><span class="n">Q</span><span class="p">);</span>                        <span class="c1">//初始化队列 </span>
+    <span class="n">CTPostExp</span><span class="p">(</span><span class="n">Q</span><span class="p">);</span>                        <span class="c1">//调用转换函数将中缀表式转换成后缀表达式 </span>
+    <span class="n">PostQ2</span><span class="o">=</span><span class="n">PostQ</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"后缀表达式为："</span><span class="p">);</span> 
+    <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">QueueEmpty</span><span class="p">(</span><span class="n">Q</span><span class="p">))</span>                <span class="c1">//输出后缀表达式 </span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%2c"</span><span class="p">,</span><span class="n">DeQueue</span><span class="p">(</span><span class="n">Q</span><span class="p">));</span>  
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"计算结果为%4d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">CPostExp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">PostQ2</span><span class="p">));</span> 
+<span class="p">}</span> 
+
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=/list/docs/C_CPP/2011-09-08-%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E4%B9%8B%E5%85%AB%E7%9A%87%E5%90%8E%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B1%82%E5%80%BC.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=数据结构-栈和队列应用之八皇后与表达式求值 - 知不知&amp;url=/list/docs/C_CPP/2011-09-08-%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E4%B9%8B%E5%85%AB%E7%9A%87%E5%90%8E%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B1%82%E5%80%BC.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=/list/docs/C_CPP/2011-09-08-%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E4%B9%8B%E5%85%AB%E7%9A%87%E5%90%8E%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B1%82%E5%80%BC.html&amp;title=数据结构-栈和队列应用之八皇后与表达式求值 - 知不知&amp;summary=栈和队列应用之八皇后与表达式求值&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=/list/docs/C_CPP/2011-09-08-%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E4%B9%8B%E5%85%AB%E7%9A%87%E5%90%8E%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B1%82%E5%80%BC.html&amp;text=数据结构-栈和队列应用之八皇后与表达式求值 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=/list/docs/C_CPP/2011-09-08-%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E4%B9%8B%E5%85%AB%E7%9A%87%E5%90%8E%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B1%82%E5%80%BC.html&amp;t=数据结构-栈和队列应用之八皇后与表达式求值 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=/list/docs/C_CPP/2011-09-08-%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E4%B9%8B%E5%85%AB%E7%9A%87%E5%90%8E%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B1%82%E5%80%BC.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('数据结构-栈和队列应用之八皇后与表达式求值'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span> </footer> </section> </body> </html>
