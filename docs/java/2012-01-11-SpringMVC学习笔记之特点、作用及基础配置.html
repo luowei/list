@@ -25,7 +25,7 @@ springframework.context.support-3.1.0.RELEASE.jar
 springframework.core-3.1.0.RELEASE.jar
 springframework.web.servlet-3.1.0.RELEASE.jar
 commons-logging-1.1.1.jar
-</code></pre></div></div> <p><strong>文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_74.jpg" alt="文件结构" /></p> <p>配置web.xml</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;servlet&gt;</span>
+</code></pre></div></div> <p><strong>文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_74.jpg" alt="文件结构" /></p> <p>配置web.xml</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;servlet&gt;</span>
     <span class="nt">&lt;servlet-name&gt;</span>test<span class="nt">&lt;/servlet-name&gt;</span>
     <span class="nt">&lt;servlet-class&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="nt">&lt;/servlet-class&gt;</span>
     <span class="nt">&lt;load-on-startup&gt;</span>1<span class="nt">&lt;/load-on-startup&gt;</span> <span class="c">&lt;!-- 在项目启动时就加载 --&gt;</span>
@@ -98,7 +98,7 @@ org.springframework.expression-3.1.0.RELEASE.jar
 </code></pre></div></div> <p><strong>start.jsp</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;body&gt;</span>
 This is my start jsp page. <span class="nt">&lt;br&gt;</span>
 <span class="nt">&lt;/body&gt;</span>
-</code></pre></div></div> <p><strong>运行结果</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_75.jpg" alt="图1" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_76.jpg" alt="图2" /></p> <p>控制器功能结构<br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_77.jpg" alt="控制器功能结构" /></p> <p>modules<br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_78.jpg" alt="modules" /></p> <p><strong>spring mvc常用controller</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@、直接实现Controller 接口或AbstractController抽象类
+</code></pre></div></div> <p><strong>运行结果</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_75.jpg" alt="图1" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_76.jpg" alt="图2" /></p> <p>控制器功能结构<br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_77.jpg" alt="控制器功能结构" /></p> <p>modules<br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_78.jpg" alt="modules" /></p> <p><strong>spring mvc常用controller</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@、直接实现Controller 接口或AbstractController抽象类
 @、ModelAndView对象 模型视图对象
 @、用于直接跳转页面的
 ParameterizableViewController, UrlFilenameViewController
@@ -112,7 +112,7 @@ public (ModelAndView | Map | String | void) actionName(HttpServletRequest reques
 
 @、能封装表单参数的CommondController、 FormController
 如果一个控制器实现了CommandContrller 或FormController，那么它就可以直接接收一个表单对象。
-</code></pre></div></div> <h3 id="基于示例1的示例2">基于示例1的示例2</h3> <p><strong>文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_79.jpg" alt="文件结构" /></p> <p><strong>命令控制器 EmpController.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">test</span><span class="o">;</span>
+</code></pre></div></div> <h3 id="基于示例1的示例2">基于示例1的示例2</h3> <p><strong>文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_79.jpg" alt="文件结构" /></p> <p><strong>命令控制器 EmpController.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">test</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.text.SimpleDateFormat</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.ejb.Handle</span><span class="o">;</span>
@@ -368,7 +368,7 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd"</span><spa
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"suffix"</span> <span class="na">value=</span><span class="s">".jsp"</span><span class="nt">/&gt;</span><span class="c">&lt;!-- 返回的逻辑名称的后缀 --&gt;</span>
     <span class="nt">&lt;/bean&gt;</span>
 <span class="nt">&lt;/beans&gt;</span>
-</code></pre></div></div> <p><strong>运行截图：</strong><br /> spring mvc 的controller控制器处理<br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_80.jpg" alt="spring mvc 的controller控制器处理 " /></p> <p>绑定注册日期属性编辑器控件<br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_81.jpg" alt="绑定注册日期属性编辑器控件" /></p> <p>处理模型<br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_82.jpg" alt="处理模型" /></p> <p>一个controller对应多个url的处理<br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_83.jpg" alt="一个controller对应多个url的处理" /></p> <p><strong>MultiController</strong><br /> 要点： 1.如果没有指定视图名称，那么spring mvc 它会按默认的方式来指定视图名称。</p> <p>EmpMultiController.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">test</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>运行截图：</strong><br /> spring mvc 的controller控制器处理<br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_80.jpg" alt="spring mvc 的controller控制器处理 " /></p> <p>绑定注册日期属性编辑器控件<br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_81.jpg" alt="绑定注册日期属性编辑器控件" /></p> <p>处理模型<br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_82.jpg" alt="处理模型" /></p> <p>一个controller对应多个url的处理<br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_83.jpg" alt="一个controller对应多个url的处理" /></p> <p><strong>MultiController</strong><br /> 要点： 1.如果没有指定视图名称，那么spring mvc 它会按默认的方式来指定视图名称。</p> <p>EmpMultiController.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">test</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.servlet.http.HttpSession</span><span class="o">;</span>
@@ -450,7 +450,7 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd"</span><spa
     <span class="nt">&lt;/bean&gt;</span>
 <span class="nt">&lt;/beans&gt;</span>
 </code></pre></div></div> <p><strong>spring mvc 常用的Handler mapping</strong><br /> @、默认的ControllerClassNameHandlerMapping<br /> 按照控制器的类名来自动完成映射，在这需要使用拦截器的时候，它不需要配置任何属性。如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"&gt;
-</code></pre></div></div> <p>当发送一个以 abc.test 结尾的请求时，它会找一个名称为AbcController，直接根据控制器的类名匹配请求的路径来寻找控制器。</p> <p>如果是multiController<br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_84.jpg" alt="如果是multiController" /></p> <p>@、常用的SimpleUrlHandlerMapping 按照简单的Url映射 @、BeanNameUrlHandlerMapping 按照beanName的Url来映射。 @、基于注解Controller时使用的DefaultAnnotationHandlerMapping</p> <h3 id="基于注解的mvc">基于注解的MVC</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>**要点：**
+</code></pre></div></div> <p>当发送一个以 abc.test 结尾的请求时，它会找一个名称为AbcController，直接根据控制器的类名匹配请求的路径来寻找控制器。</p> <p>如果是multiController<br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_84.jpg" alt="如果是multiController" /></p> <p>@、常用的SimpleUrlHandlerMapping 按照简单的Url映射 @、BeanNameUrlHandlerMapping 按照beanName的Url来映射。 @、基于注解Controller时使用的DefaultAnnotationHandlerMapping</p> <h3 id="基于注解的mvc">基于注解的MVC</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>**要点：**
 
 基于xml文件配置的mvc的缺点：到项目到达一定程序是，就会有很多的配置文件，造成项目维护起来比较麻烦，优点：低侵入式，降低了耦合。  
 新建一个名为 ：@mvc 的项目，并把配置spring mvc需要的Jar都加到WEB-INF/lib目录下。
@@ -471,7 +471,7 @@ http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/util
 http://www.springframework.org/schema/util/spring-util-3.1.xsd"</span> <span class="nt">&gt;</span>
 <span class="nt">&lt;/beans&gt;</span>
-</code></pre></div></div> <p><strong>示例3(基于注解的配置)</strong><br /> 文件结构：<br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_85.jpg" alt="文件结构：" /></p> <p>servlet.xml</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+</code></pre></div></div> <p><strong>示例3(基于注解的配置)</strong><br /> 文件结构：<br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_85.jpg" alt="文件结构：" /></p> <p>servlet.xml</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
        <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
        <span class="na">xmlns:mvc=</span><span class="s">"http://www.springframework.org/schema/mvc"</span>
@@ -559,7 +559,7 @@ http://www.springframework.org/schema/util/spring-util-3.1.xsd"</span> <span cla
 </code></pre></div></div> <p>start_post.jsp</p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;body&gt;</span>
 <span class="nt">&lt;h1&gt;</span>This is start_post JSP page. <span class="nt">&lt;/h1&gt;&lt;br&gt;</span>
 <span class="nt">&lt;/body&gt;</span>
-</code></pre></div></div> <p><strong>运行截图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_86.jpg" alt="运行截图" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/master/images/java/base/article_87.jpg" alt="运行截图" /></p> <p>@、@Controller<br /> //标记一个类为控制器<br /> @、@RequestMapping 请求映射<br /> @、@RequestParam, @PathVariable, @CookieValue<br /> @、Handler方法的可用参数与返回值</p> <h3 id="spring-mvc-常用viewresoler--view">spring MVC 常用ViewResoler &amp; View</h3> <p><strong>要点</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. 当映射的方法返回值为void的时候，则spring mvc框架会生成一个隐含的viewName,根据请求的路径，生成相应的视图名，如果请求的是 xxx.do,则返回的视图为 xxx.jsp ;
+</code></pre></div></div> <p><strong>运行截图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_86.jpg" alt="运行截图" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_87.jpg" alt="运行截图" /></p> <p>@、@Controller<br /> //标记一个类为控制器<br /> @、@RequestMapping 请求映射<br /> @、@RequestParam, @PathVariable, @CookieValue<br /> @、Handler方法的可用参数与返回值</p> <h3 id="spring-mvc-常用viewresoler--view">spring MVC 常用ViewResoler &amp; View</h3> <p><strong>要点</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. 当映射的方法返回值为void的时候，则spring mvc框架会生成一个隐含的viewName,根据请求的路径，生成相应的视图名，如果请求的是 xxx.do,则返回的视图为 xxx.jsp ;
 2. 当映射的方法返回值的类型为String,则方法返回对应的视图名，在结果页面中同样还可以使用方法中的model;
 3. 当返回的是任意类型的对象时，则框架会将该类型的对象也存放到model中，例如：如果函数返回值是User类型的对象，则框架会自动向Model中设置一个属性：model.addAttribute("user",user) ;
 4. 如果返回List&lt;User&gt;,则框架会自动向Model中加入：model.addAttribute("userList",userList) ;
