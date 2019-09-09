@@ -1,0 +1,56 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <link rel="stylesheet" href="/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>mysql在docker上的安装配置</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>参考：</strong></p> <ul class="task-list"> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />Connect to container create by docker-compose：<a href="https://forums.docker.com/t/connect-to-container-create-by-docker-compose/44682">https://forums.docker.com/t/connect-to-container-create-by-docker-compose/44682</a></li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />How to Create a MySql Instance with Docker Compose：<a href="https://medium.com/@chrischuck35/how-to-create-a-mysql-instance-with-docker-compose-1598f3cc1bee">https://medium.com/@chrischuck35/how-to-create-a-mysql-instance-with-docker-compose-1598f3cc1bee</a></li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />phpmyadmin/phpmyadmin:<a href="https://hub.docker.com/r/phpmyadmin/phpmyadmin/">https://hub.docker.com/r/phpmyadmin/phpmyadmin/</a></li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />docker 部署 mysql + phpmyadmin 3种方法:<a href="https://blog.csdn.net/Gekkoou/article/details/80897309">https://blog.csdn.net/Gekkoou/article/details/80897309</a></li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />利用 Docker 架起 phpMyAdmin + MySQL (MAC):<a href="https://ithelp.ithome.com.tw/articles/10200754?sc=pt">https://ithelp.ithome.com.tw/articles/10200754?sc=pt</a></li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />Docker 安裝 Mysql + Phpmyadmin:<a href="http://www.andrewchen.tw/2017/05/05/20170505_NOTE_DOCKER_MYSQL/">http://www.andrewchen.tw/2017/05/05/20170505_NOTE_DOCKER_MYSQL/</a></li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />Docker安装Mysql管理工具Phpmyadmin:<a href="https://xu3352.github.io/docker/2017/12/27/install-phpmyadmin-with-docker">https://xu3352.github.io/docker/2017/12/27/install-phpmyadmin-with-docker</a></li> </ul> <h2 id="配置网络-容器间互联">配置网络-容器间互联</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker network create -d bridge mysql_network
+</code></pre></div></div> <h2 id="使用docker-compose">使用docker-compose</h2> <h3 id="docker-compose常用命令">docker-compose常用命令</h3> <p>docker-compose service的启动、运行及删除</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker-compose up -d //创建并后台启动
+docker-compose stop	//停止
+docker-compose start	//启动
+docker-compose ps	//查看
+docker-compose down --rmi all --remove-orphans  //删除服务、并删除生成的镜像和容器
+</code></pre></div></div> <h1 id="创建网络-net-mysql">创建网络 net-mysql</h1> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker network create -d bridge network_mysql
+</code></pre></div></div> <h1 id="创建容器mysql">创建容器mysql</h1> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /var/www/mysql
+docker run -d \
+    --restart always \
+    --name my-mysql \
+    --network network_mysql \
+    -e MYSQL_USER=luowei \
+    -e MYSQL_PASSWORD=xxxx \
+    -e MYSQL_ROOT_PASSWORD=xxxxxx \
+    -v $PWD/conf:/etc/mysql \
+    -v $PWD/mydata:/var/lib/mysql \
+    -p 3306:3306 \
+    mysql:5.7
+
+docker run --rm -d \
+    --name my-mysql \
+    -e MYSQL_USER=luowei \
+    -e MYSQL_PASSWORD=xxxx \
+    -e MYSQL_ROOT_PASSWORD=xxxxxx \
+    -v $PWD/conf:/etc/mysql \
+    -v $PWD/mydata:/var/lib/mysql \
+    -v $PWD/log:/var/log \
+    -p 3306:3306 \
+    --network network_mysql \
+    mysql:5.7
+</code></pre></div></div> <h1 id="创建容器-my-phpmyadmin">创建容器 my-phpmyadmin</h1> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># docker cp fdafd3ecc26f:/etc/phpmyadmin/config.user.inc.php /Users/luowei/projects/My_Docker/phpmyadmin/data/config.user.inc.php  
+# docker cp fdafd3ecc26f:/usr/local/etc/php/conf.d/php-phpmyadmin.ini /Users/luowei/projects/My_Docker/phpmyadmin/data/php-phpmyadmin.ini  
+
+docker run -d \
+    --name my-phpmyadmin \
+    --network network_mysql \
+    -e MYSQL_USER=luowei \
+    -e MYSQL_PASSWORD=xxxx \
+    -e MYSQL_ROOT_PASSWORD=xxxxxx \
+    -e PMA_HOST=my-mysql \
+    -p 31000:80 \
+    phpmyadmin/phpmyadmin:4.9
+
+docker run --rm \
+    --name my-phpmyadmin \
+    --network network_mysql \
+    -e MYSQL_USER=luowei \
+    -e MYSQL_PASSWORD=xxxx \
+    -e MYSQL_ROOT_PASSWORD=xxxxxx \
+    -e PMA_HOST=my-mysql \
+    -v $PWD/log:/var/log \
+    -p 31000:80 \
+    phpmyadmin/phpmyadmin:4.9
+
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fdocker%2F2019-08-07-mysql%25E5%259C%25A8docker%25E4%25B8%258A%25E7%259A%2584%25E5%25AE%2589%25E8%25A3%2585%25E9%2585%258D%25E7%25BD%25AE.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=mysql在docker上的安装配置 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fdocker%2F2019-08-07-mysql%25E5%259C%25A8docker%25E4%25B8%258A%25E7%259A%2584%25E5%25AE%2589%25E8%25A3%2585%25E9%2585%258D%25E7%25BD%25AE.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fdocker%2F2019-08-07-mysql%25E5%259C%25A8docker%25E4%25B8%258A%25E7%259A%2584%25E5%25AE%2589%25E8%25A3%2585%25E9%2585%258D%25E7%25BD%25AE.html&amp;title=mysql在docker上的安装配置 - 知不知&amp;summary=mysql在docker上的安装配置&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fdocker%2F2019-08-07-mysql%25E5%259C%25A8docker%25E4%25B8%258A%25E7%259A%2584%25E5%25AE%2589%25E8%25A3%2585%25E9%2585%258D%25E7%25BD%25AE.html&amp;text=mysql在docker上的安装配置 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fdocker%2F2019-08-07-mysql%25E5%259C%25A8docker%25E4%25B8%258A%25E7%259A%2584%25E5%25AE%2589%25E8%25A3%2585%25E9%2585%258D%25E7%25BD%25AE.html&amp;t=mysql在docker上的安装配置 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fdocker%2F2019-08-07-mysql%25E5%259C%25A8docker%25E4%25B8%258A%25E7%259A%2584%25E5%25AE%2589%25E8%25A3%2585%25E9%2585%258D%25E7%25BD%25AE.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('mysql在docker上的安装配置'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io">luowei</a>.</span> </footer> </section> </body> </html>
