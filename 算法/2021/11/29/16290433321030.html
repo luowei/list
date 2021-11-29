@@ -1,0 +1,388 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/%E7%AE%97%E6%B3%95/2021/11/29/16290433321030.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>归并排序</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="归并排序">归并排序</h1> <p>归并排序是基于分而治之算法的原理。把一个问题被划分为多个独立的子问题，再对每个子问题作同样的划分，直到base case无法再分时处理base case问题即可。最后，将子问题一层层合并起来形成最终解决方案。</p> <p><img src="https://luowei.github.io/list/media/16290433321030/16290438179155.jpg" alt="-w500" /></p> <p>假设我们必须对数组 A 进行排序，定义一个子问题是对这个数组的一个子部分进行排序，例如从索引 p 开始到索引 r 结束，表示为 A[p..r]。</p> <p><img src="https://luowei.github.io/list/https://www.runoob.com/wp-content/uploads/2019/03/mergeSort.gif" alt="-w600" /></p> <h2 id="步骤">步骤</h2> <p><strong>划分</strong> 如果 q 是 p 和 r 的中间点，那么我们可以将子数组 A[p..r] 拆分为两个数组 A[p..q] 和 A[q+1, r]。</p> <p><strong>处理</strong> 在处理步骤中，我们尝试对子数组 A[p..q] 和 A[q+1, r] 进行排序。 如果还没有达到base case，就再次划分这两个子数组并尝试对它们进行排序。</p> <p><strong>合并</strong> 当处理到达base step，并且我们得到数组 A[p..r] 的两个排序子数组 A[p..q] 和 A[q+1, r] 时，通过创建一个排序数组 A[p..r] 来合并来自两个已排序的子数组 A[p..q] 和 A[q+1, r]的结果。</p> <h3 id="图示合并的过程">图示合并的过程</h3> <p>以下数组 A[0..5] 包含两个已排序的子数组 A[0..3] 和 A[4..5] <img src="https://luowei.github.io/list/media/16290433321030/16290444270324.jpg" alt="-w300" /></p> <p>创建子数组的副本以进行合并 <img src="https://luowei.github.io/list/media/16290433321030/16290445177663.jpg" alt="-w300" /></p> <p>定义3个索引指针来操作子数组与合并的数组 <img src="https://luowei.github.io/list/media/16290433321030/16290446034787.jpg" alt="-w600" /></p> <p>两数组合并过程 <img src="https://luowei.github.io/list/media/16290433321030/16290446564014.jpg" alt="-w600" /></p> <p>剩余元素追加的过程 <img src="https://luowei.github.io/list/media/16290433321030/16290447350105.jpg" alt="-w500" /> <img src="https://luowei.github.io/list/media/16290433321030/16290447413051.jpg" alt="-w500" /></p> <h2 id="复杂度">复杂度</h2> <p>|Time Complexity|| |—|—| |Best | O(n<em>log n) | |Worst | O(n</em>log n) | |Average | O(n*log n) | |<strong>Space Complexity</strong> | O(n) | |<strong>Stability</strong> | Yes |</p> <h2 id="代码实现">代码实现</h2> <p><strong>Swift 实现</strong></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">import</span> <span class="kt">Foundation</span>
+
+<span class="c1">//对数组在 l..r 区间的元素作归并排序,左闭右开</span>
+<span class="kd">func</span> <span class="nf">mergeSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">],</span><span class="nv">l</span><span class="p">:</span><span class="kt">Int</span><span class="p">,</span><span class="nv">r</span><span class="p">:</span><span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;</span> <span class="n">r</span> <span class="p">{</span>
+        <span class="c1">//取中点，把在 l..r 区间的数组元素分成两个子数组</span>
+        <span class="k">let</span> <span class="nv">m</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        
+        <span class="c1">//对两个子数组分别作同样的归并排序</span>
+        <span class="nf">mergeSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">l</span><span class="p">:</span> <span class="n">l</span><span class="p">,</span> <span class="nv">r</span><span class="p">:</span> <span class="n">m</span><span class="p">)</span>
+        <span class="nf">mergeSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">l</span><span class="p">:</span> <span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nv">r</span><span class="p">:</span> <span class="n">r</span><span class="p">)</span>
+        
+        <span class="c1">//合并已排好序的子数组</span>
+        <span class="nf">merge</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">l</span><span class="p">:</span><span class="n">l</span><span class="p">,</span> <span class="nv">m</span><span class="p">:</span><span class="n">m</span><span class="p">,</span> <span class="nv">r</span><span class="p">:</span><span class="n">r</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="kd">func</span> <span class="nf">merge</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">],</span><span class="nv">l</span><span class="p">:</span><span class="kt">Int</span><span class="p">,</span> <span class="nv">m</span><span class="p">:</span><span class="kt">Int</span><span class="p">,</span> <span class="nv">r</span><span class="p">:</span><span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//创建两个子数组：L: a1[l..m] 和 a2: A[m+1..r]</span>
+    <span class="k">let</span> <span class="nv">n1</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">let</span> <span class="nv">n2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="n">m</span>
+    
+    <span class="c1">//数组赋值</span>
+    <span class="k">let</span> <span class="nv">a1</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Int</span><span class="p">](</span><span class="nv">https</span><span class="p">:</span><span class="c1">//luowei.github.io/list/array[l ... m])</span>
+    <span class="k">let</span> <span class="nv">a2</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Int</span><span class="p">](</span><span class="nv">https</span><span class="p">:</span><span class="c1">//luowei.github.io/list/array[m+1 ... r])</span>
+    
+    <span class="c1">//var a1 = [Int](https://luowei.github.io/list/repeating: 0, count: n1)</span>
+    <span class="c1">//var a2 = [Int](https://luowei.github.io/list/repeating: 0, count: n2)</span>
+    <span class="c1">//var a1_i=0,a2_i=0</span>
+    <span class="c1">//while a1_i &lt; n1 {</span>
+    <span class="c1">//    a1[a1_i] = array[l+a1_i]</span>
+    <span class="c1">//    a1_i+=1</span>
+    <span class="c1">//}</span>
+    <span class="c1">//while a2_i &lt; n2 {</span>
+    <span class="c1">//    a2[a2_i] = array[m+1+a2_i]</span>
+    <span class="c1">//    a2_i+=1</span>
+    <span class="c1">//}</span>
+    
+    <span class="c1">//合并两个子数组,重叠区间部分，用两个指针(i,j)轮换比较处理</span>
+    <span class="k">var</span> <span class="nv">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="n">l</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">a1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">a2</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="p">{</span>
+            <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">a1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+            <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">a2</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="p">}</span>
+        <span class="n">k</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//超出区间部分追加上</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span> <span class="p">{</span>
+        <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">a1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">k</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="p">}</span>
+    <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span> <span class="p">{</span>
+        <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">a2</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">k</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+
+
+<span class="c1">//打印</span>
+<span class="kd">func</span> <span class="nf">printMergeSortSort</span><span class="p">(</span><span class="n">_</span> <span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]){</span>
+    <span class="nf">mergeSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">l</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">r</span><span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">count</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">arr</span><span class="p">:[</span><span class="kt">Int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nf">printMergeSortSort</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arr</span><span class="p">)</span>
+</code></pre></div></div> <p>Python实现</p> <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># MergeSort in Python
+</span>
+
+<span class="k">def</span> <span class="nf">mergeSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+
+        <span class="c1">#  r is the point where the array is divided into two subarrays
+</span>        <span class="n">r</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">array</span><span class="p">[:</span><span class="n">r</span><span class="p">]</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">r</span><span class="p">:]</span>
+
+        <span class="c1"># Sort the two halves
+</span>        <span class="n">mergeSort</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+        <span class="n">mergeSort</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="n">j</span> <span class="o">=</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Until we reach either end of either L or M, pick larger among
+</span>        <span class="c1"># elements L and M and place them in the correct position at A[p..r]
+</span>        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+                <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># When we run out of elements in either L or M,
+</span>        <span class="c1"># pick up the remaining elements and put in A[p..r]
+</span>        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+            <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+<span class="c1"># Print the array
+</span><span class="k">def</span> <span class="nf">printList</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s">" "</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">()</span>
+
+
+<span class="c1"># Driver program
+</span><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">mergeSort</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s">"Sorted array is: "</span><span class="p">)</span>
+    <span class="n">printList</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+</code></pre></div></div> <p><strong>Java 实现</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Merge sort in Java</span>
+
+<span class="kd">class</span> <span class="nc">MergeSort</span> <span class="o">{</span>
+
+  <span class="c1">// Merge two subarrays L and M into arr</span>
+  <span class="kt">void</span> <span class="nf">merge</span><span class="o">(</span><span class="kt">int</span> <span class="n">arr</span><span class="o">[],</span> <span class="kt">int</span> <span class="n">p</span><span class="o">,</span> <span class="kt">int</span> <span class="n">q</span><span class="o">,</span> <span class="kt">int</span> <span class="n">r</span><span class="o">)</span> <span class="o">{</span>
+
+    <span class="c1">// Create L ← A[p..q] and M ← A[q+1..r]</span>
+    <span class="kt">int</span> <span class="n">n1</span> <span class="o">=</span> <span class="n">q</span> <span class="o">-</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="n">q</span><span class="o">;</span>
+
+    <span class="kt">int</span> <span class="no">L</span><span class="o">[]</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">n1</span><span class="o">];</span>
+    <span class="kt">int</span> <span class="no">M</span><span class="o">[]</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">n2</span><span class="o">];</span>
+
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+      <span class="no">L</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">arr</span><span class="o">[</span><span class="n">p</span> <span class="o">+</span> <span class="n">i</span><span class="o">];</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span>
+      <span class="no">M</span><span class="o">[</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="n">arr</span><span class="o">[</span><span class="n">q</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">j</span><span class="o">];</span>
+
+    <span class="c1">// Maintain current index of sub-arrays and main array</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">,</span> <span class="n">k</span><span class="o">;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">p</span><span class="o">;</span>
+
+    <span class="c1">// Until we reach either end of either L or M, pick larger among</span>
+    <span class="c1">// elements L and M and place them in the correct position at A[p..r]</span>
+    <span class="k">while</span> <span class="o">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="no">L</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">&lt;=</span> <span class="no">M</span><span class="o">[</span><span class="n">j</span><span class="o">])</span> <span class="o">{</span>
+        <span class="n">arr</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="no">L</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+        <span class="n">i</span><span class="o">++;</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">arr</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="no">M</span><span class="o">[</span><span class="n">j</span><span class="o">];</span>
+        <span class="n">j</span><span class="o">++;</span>
+      <span class="o">}</span>
+      <span class="n">k</span><span class="o">++;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// When we run out of elements in either L or M,</span>
+    <span class="c1">// pick up the remaining elements and put in A[p..r]</span>
+    <span class="k">while</span> <span class="o">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">arr</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="no">L</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+      <span class="n">i</span><span class="o">++;</span>
+      <span class="n">k</span><span class="o">++;</span>
+    <span class="o">}</span>
+
+    <span class="k">while</span> <span class="o">(</span><span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">arr</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="no">M</span><span class="o">[</span><span class="n">j</span><span class="o">];</span>
+      <span class="n">j</span><span class="o">++;</span>
+      <span class="n">k</span><span class="o">++;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="c1">// Divide the array into two subarrays, sort them and merge them</span>
+  <span class="kt">void</span> <span class="nf">mergeSort</span><span class="o">(</span><span class="kt">int</span> <span class="n">arr</span><span class="o">[],</span> <span class="kt">int</span> <span class="n">l</span><span class="o">,</span> <span class="kt">int</span> <span class="n">r</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">l</span> <span class="o">&lt;</span> <span class="n">r</span><span class="o">)</span> <span class="o">{</span>
+
+      <span class="c1">// m is the point where the array is divided into two subarrays</span>
+      <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="o">(</span><span class="n">l</span> <span class="o">+</span> <span class="n">r</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span><span class="o">;</span>
+
+      <span class="n">mergeSort</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="n">m</span><span class="o">);</span>
+      <span class="n">mergeSort</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">r</span><span class="o">);</span>
+
+      <span class="c1">// Merge the sorted subarrays</span>
+      <span class="n">merge</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="n">m</span><span class="o">,</span> <span class="n">r</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="c1">// Print the array</span>
+  <span class="kd">static</span> <span class="kt">void</span> <span class="nf">printArray</span><span class="o">(</span><span class="kt">int</span> <span class="n">arr</span><span class="o">[])</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">+</span> <span class="s">" "</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="c1">// Driver program</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">arr</span><span class="o">[]</span> <span class="o">=</span> <span class="o">{</span> <span class="mi">6</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">12</span><span class="o">,</span> <span class="mi">10</span><span class="o">,</span> <span class="mi">9</span><span class="o">,</span> <span class="mi">1</span> <span class="o">};</span>
+
+    <span class="nc">MergeSort</span> <span class="n">ob</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MergeSort</span><span class="o">();</span>
+    <span class="n">ob</span><span class="o">.</span><span class="na">mergeSort</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">arr</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Sorted array:"</span><span class="o">);</span>
+    <span class="n">printArray</span><span class="o">(</span><span class="n">arr</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>C 实现</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Merge sort in C</span>
+
+<span class="cp">#include &lt;stdio.h&gt;
+</span>
+<span class="c1">// Merge two subarrays L and M into arr</span>
+<span class="kt">void</span> <span class="nf">merge</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">q</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="c1">// Create L ← A[p..q] and M ← A[q+1..r]</span>
+  <span class="kt">int</span> <span class="n">n1</span> <span class="o">=</span> <span class="n">q</span> <span class="o">-</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="n">q</span><span class="p">;</span>
+
+  <span class="kt">int</span> <span class="n">L</span><span class="p">[</span><span class="n">n1</span><span class="p">],</span> <span class="n">M</span><span class="p">[</span><span class="n">n2</span><span class="p">];</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="n">i</span><span class="p">];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">q</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">j</span><span class="p">];</span>
+
+  <span class="c1">// Maintain current index of sub-arrays and main array</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">;</span>
+  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">k</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+
+  <span class="c1">// Until we reach either end of either L or M, pick larger among</span>
+  <span class="c1">// elements L and M and place them in the correct position at A[p..r]</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span>
+      <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+      <span class="n">j</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">k</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// When we run out of elements in either L or M,</span>
+  <span class="c1">// pick up the remaining elements and put in A[p..r]</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">k</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+    <span class="n">j</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">k</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Divide the array into two subarrays, sort them and merge them</span>
+<span class="kt">void</span> <span class="nf">mergeSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">l</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">// m is the point where the array is divided into two subarrays</span>
+    <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+
+    <span class="n">mergeSort</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">);</span>
+    <span class="n">mergeSort</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
+
+    <span class="c1">// Merge the sorted subarrays</span>
+    <span class="n">merge</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Print the array</span>
+<span class="kt">void</span> <span class="nf">printArray</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Driver program</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">arr</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">};</span>
+  <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+
+  <span class="n">mergeSort</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">"Sorted array: </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="n">printArray</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>C++ 实现</strong></p> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Merge sort in C++</span>
+
+<span class="cp">#include &lt;iostream&gt;
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="c1">// Merge two subarrays L and M into arr</span>
+<span class="kt">void</span> <span class="nf">merge</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">q</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+  
+  <span class="c1">// Create L ← A[p..q] and M ← A[q+1..r]</span>
+  <span class="kt">int</span> <span class="n">n1</span> <span class="o">=</span> <span class="n">q</span> <span class="o">-</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="n">q</span><span class="p">;</span>
+
+  <span class="kt">int</span> <span class="n">L</span><span class="p">[</span><span class="n">n1</span><span class="p">],</span> <span class="n">M</span><span class="p">[</span><span class="n">n2</span><span class="p">];</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="n">i</span><span class="p">];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">q</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">j</span><span class="p">];</span>
+
+  <span class="c1">// Maintain current index of sub-arrays and main array</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">;</span>
+  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">k</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+
+  <span class="c1">// Until we reach either end of either L or M, pick larger among</span>
+  <span class="c1">// elements L and M and place them in the correct position at A[p..r]</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span>
+      <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+      <span class="n">j</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">k</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// When we run out of elements in either L or M,</span>
+  <span class="c1">// pick up the remaining elements and put in A[p..r]</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">k</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+    <span class="n">j</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">k</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Divide the array into two subarrays, sort them and merge them</span>
+<span class="kt">void</span> <span class="nf">mergeSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">l</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// m is the point where the array is divided into two subarrays</span>
+    <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+
+    <span class="n">mergeSort</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">);</span>
+    <span class="n">mergeSort</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
+
+    <span class="c1">// Merge the sorted subarrays</span>
+    <span class="n">merge</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Print the array</span>
+<span class="kt">void</span> <span class="nf">printArray</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Driver program</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">arr</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">};</span>
+  <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+
+  <span class="n">mergeSort</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Sorted array: </span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+  <span class="n">printArray</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290433321030.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=归并排序 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290433321030.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290433321030.html&amp;title=归并排序 - 知不知&amp;summary=归并排序&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290433321030.html&amp;text=归并排序 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290433321030.html&amp;t=归并排序 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290433321030.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('归并排序'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
