@@ -1,0 +1,298 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/%E7%AE%97%E6%B3%95/2021/11/29/16300814933154.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>堆排序</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="堆排序">堆排序</h1> <p>堆排序是指利用堆这种数据结构所设计的一种排序算法，基于数组与树两种数据结构。因为堆是一个近似完全二叉树的结构，并且子结点的键值或索引总是小于（或者大于）它的父节点。</p> <p><img src="https://www.runoob.com/wp-content/uploads/2019/03/heapSort.gif" alt="-w600" /></p> <p>堆排序其实就是利用堆的概念来排序的选择排序，原理是将数组的元素可视化为一种特殊的完整二叉树，称为堆。堆分为两种： <strong>最大堆：</strong>每个节点的值都大于或等于其子节点的值，在堆排序算法中用于升序排列； <strong>最小堆：</strong>每个节点的值都小于或等于其子节点的值，在堆排序算法中用于降序排列； <img src="https://luowei.github.io/list/media/16300814933154/16300839920170.jpg" alt="-w300" /></p> <p>完整二叉树有一个有趣的特性，我们可以用它来找到任何节点的子节点和父节点。比如数组中任何一个索引为<code class="highlighter-rouge">i</code>的元素，则它的左子元素的索引为<code class="highlighter-rouge">2i+1</code>，右子元素的索引为<code class="highlighter-rouge">2i+2</code>。 此外，索引为<code class="highlighter-rouge">i</code>的元素的父元素的索引为<code class="highlighter-rouge">(i-1)/2</code>。 <img src="https://luowei.github.io/list/media/16300814933154/16300837249173.jpg" alt="-w600" /></p> <h2 id="如何堆化heapify一颗树">如何”堆化(heapify)”一颗树</h2> <p>堆化一颗树是通过在堆的所有非叶了节点上运行一个名为<code class="highlighter-rouge">heapify</code>的函数，将其修改为一个最大(小)堆。下面先以两个最基本的场景看<code class="highlighter-rouge">Heapify</code>过程：</p> <p><strong>Base case</strong> <img src="https://luowei.github.io/list/media/16300814933154/16300853133946.jpg" alt="-w400" /> 上图的 Scenario-1 中的根元素是最大的，说明已经是最大堆了，所以不需要做任何操作；Scenario-2 中有一个比根元素<code class="highlighter-rouge">2</code>大的子元素<code class="highlighter-rouge">7</code>，所以这里需要交换以维持这个case的最大堆性质；</p> <p><strong>当节点不只一层，有子树的情况下</strong> <img src="https://luowei.github.io/list/media/16300814933154/16300859134540.jpg" alt="-w180" /> 当只有顶部不是最大堆，而子树都是最大堆的情况下，要维护这颗树的最大值性质，就需要持续把<code class="highlighter-rouge">2</code>往下层推直到它到达正确位置。操作过程如下： <img src="https://luowei.github.io/list/media/16300814933154/16300861586937.jpg" alt="-w400" /> 因此，要在两个子树都是最大堆的树中维护最大堆的性质，就需要对根元素重复运行<code class="highlighter-rouge">heapify</code>，直到它大于其子节点或成为叶节点。</p> <h2 id="构造最大堆max-heap">构造最大堆(max-heap)</h2> <p>从任何树构建最大堆，可以从底向上开始堆化它的每个子树，并在将<code class="highlighter-rouge">heapify</code>函数应用于包括根元素在内的所有元素，最后以形成最大堆结束。</p> <p>对于完整二叉树，第一个非叶节点的索引在<code class="highlighter-rouge">n/2 - 1</code>，此索引之后的所有其他节点都是叶节点，因此不需要堆化<code class="highlighter-rouge">heapify</code>。由此，我们可以这样去建立一个最大堆：</p><pre><code class="language-C">// Build heap (rearrange array)
+for (int i = n / 2 - 1; i &gt;= 0; i--)
+  heapify(arr, n, i);
+</code></pre><p><img src="https://luowei.github.io/list/media/16300814933154/16300867645099.jpg" alt="-w600" /> <img src="https://luowei.github.io/list/media/16300814933154/16300867875433.jpg" alt="-w600" /> <img src="https://luowei.github.io/list/media/16300814933154/16300868186589.jpg" alt="-w600" /> <img src="https://luowei.github.io/list/media/16300814933154/16300868668410.jpg" alt="-w600" /></p> <h2 id="堆排序的工作流程">堆排序的工作流程</h2> <ol> <li>由于树满足最大堆(Max-Heap)性质，所以最大的元素存储在根节点；</li> <li>Swap：取出根元素，放在数组的末尾（第n个位置）把树（堆）的最后一项放在空的地方。</li> <li>Remove：将堆的大小减少1。</li> <li>Heapify：再次对根元素进行Heapify，使我们在根处获得最大元素。</li> <li>重复该过程，直到列表中的所有项目都排序完毕。</li> </ol> <p><strong>过程如下：</strong> <img src="https://luowei.github.io/list/media/16300814933154/heap_sort.jpg" alt="-w400" /> 这个操作过程代码如下：</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Heap sort</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+
+  <span class="c1">// Heapify root element to get highest element at root again</span>
+  <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="复杂度">复杂度</h2> <p>|Time Complexity|| |—|—| |Best | O(nlog n) | |Worst | O(nlog n) | |Average | O(nlog n) | |<strong>Space Complexity</strong> | O(1) | |<strong>Stability</strong> | No |</p> <h2 id="代码实现">代码实现</h2> <p><strong>Swift实现</strong></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">import</span> <span class="kt">Foundation</span>
+
+<span class="c1">//参考：https://www.programiz.com/dsa/heap-sort</span>
+
+<span class="kd">func</span> <span class="nf">heapSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">])</span> <span class="p">{</span>
+    <span class="c1">//构建最大堆，从完全二叉树的最后一个非叶子节点往前作堆化；最后一个非叶节点的索引是：(n/2 - 1)</span>
+    <span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">count</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="c1">//堆化</span>
+        <span class="nf">heapify</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">n</span><span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="nv">i</span><span class="p">:</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//堆排序，遍历所有的节点，依次拿根节点的值与它互换；</span>
+    <span class="c1">//因为每次取根节点的值互换后都会重新堆化，所以每次取的值都是新堆里最大的，当迭代完成后其实就完成了数组的重排</span>
+    <span class="k">var</span> <span class="nv">j</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="c1">//值互换，依次把根节点值交换到非叶子节点处</span>
+        <span class="n">array</span><span class="o">.</span><span class="nf">swapAt</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+        
+        <span class="c1">//在大小为j的堆上再次做堆化处理，以期下次在根位置(0)处获得的值，仍然是这个大小为j的堆里最大的</span>
+        <span class="nf">heapify</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">n</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span> <span class="nv">i</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+        
+        <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//堆化，是自顶向下(从根到叶子)把底层的大值交换到顶层的迭代过程</span>
+<span class="kd">func</span> <span class="nf">heapify</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">],</span> <span class="nv">n</span><span class="p">:</span><span class="kt">Int</span><span class="p">,</span> <span class="nv">i</span><span class="p">:</span><span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//假设默认i指向是当前堆的最大值，定义一个largest指针指向最大值</span>
+    <span class="k">var</span> <span class="nv">largest</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">i</span>
+    
+    <span class="c1">//则左右孩子指针分别为left、right</span>
+    <span class="k">let</span> <span class="nv">left</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">let</span> <span class="nv">right</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span>
+    
+    <span class="c1">//如果左指针left在当前堆大小n的范围内，并且left所指的值大于前最大值</span>
+    <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">array</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">array</span><span class="p">[</span><span class="n">largest</span><span class="p">]</span> <span class="p">{</span>
+        <span class="n">largest</span> <span class="o">=</span> <span class="n">left</span> <span class="c1">//赋值largest指向左指针位置，largest指向发生变化</span>
+    <span class="p">}</span>
+    <span class="c1">//如果右指针right在当前堆大小n的范围内，并且right所指的值大于前最大值</span>
+    <span class="k">if</span> <span class="n">right</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">array</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">array</span><span class="p">[</span><span class="n">largest</span><span class="p">]</span> <span class="p">{</span>
+        <span class="n">largest</span> <span class="o">=</span> <span class="n">right</span> <span class="c1">//赋值largest指向右指针位置，largest指向发生变化</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//如果largest指向发生变化，不再是默认i指的位置了</span>
+    <span class="k">if</span> <span class="n">largest</span> <span class="o">!=</span> <span class="n">i</span> <span class="p">{</span>
+        <span class="c1">//交换array[i]与array[largest]的值</span>
+        <span class="n">array</span><span class="o">.</span><span class="nf">swapAt</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">largest</span><span class="p">)</span> <span class="c1">//因i是left与right的父节点，这个交换操作保证了父节点的值大于子节点的</span>
+        
+        <span class="c1">//因为在这个if里largest是已经被赋值指向了子节点，所以继续递归对子节点作堆化处理</span>
+        <span class="nf">heapify</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">n</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span> <span class="nv">i</span><span class="p">:</span> <span class="n">largest</span><span class="p">)</span>
+    <span class="p">}</span>
+    
+<span class="p">}</span>
+
+<span class="c1">//打印</span>
+<span class="kd">func</span> <span class="nf">printHeapSortSort</span><span class="p">(</span><span class="n">_</span> <span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]){</span>
+    <span class="nf">heapSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">arr</span><span class="p">:[</span><span class="kt">Int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nf">printHeapSortSort</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arr</span><span class="p">)</span>
+</code></pre></div></div> <p><strong>Python 实现</strong></p> <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Heap Sort in python
+</span>
+
+  <span class="k">def</span> <span class="nf">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+      <span class="c1"># Find largest among root and children
+</span>      <span class="n">largest</span> <span class="o">=</span> <span class="n">i</span>
+      <span class="n">l</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+      <span class="n">r</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span>
+  
+      <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">arr</span><span class="p">[</span><span class="n">l</span><span class="p">]:</span>
+          <span class="n">largest</span> <span class="o">=</span> <span class="n">l</span>
+  
+      <span class="k">if</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">largest</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">arr</span><span class="p">[</span><span class="n">r</span><span class="p">]:</span>
+          <span class="n">largest</span> <span class="o">=</span> <span class="n">r</span>
+  
+      <span class="c1"># If root is not largest, swap with largest and continue heapifying
+</span>      <span class="k">if</span> <span class="n">largest</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
+          <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="n">largest</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">largest</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+          <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">largest</span><span class="p">)</span>
+  
+  
+  <span class="k">def</span> <span class="nf">heapSort</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+      <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+  
+      <span class="c1"># Build max heap
+</span>      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+          <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+  
+      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+          <span class="c1"># Swap
+</span>          <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+  
+          <span class="c1"># Heapify root element
+</span>          <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+  
+  
+  <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+  <span class="n">heapSort</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="s">"Sorted array is"</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+      <span class="k">print</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">d "</span> <span class="o">%</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s">''</span><span class="p">)</span>
+</code></pre></div></div> <p><strong>Java 实现</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Heap Sort in Java</span>
+  
+  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">HeapSort</span> <span class="o">{</span>
+  
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="kt">int</span> <span class="n">arr</span><span class="o">[])</span> <span class="o">{</span>
+      <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+  
+      <span class="c1">// Build max heap</span>
+      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+        <span class="n">heapify</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="n">n</span><span class="o">,</span> <span class="n">i</span><span class="o">);</span>
+      <span class="o">}</span>
+  
+      <span class="c1">// Heap sort</span>
+      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">arr</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+        <span class="n">arr</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+        <span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">temp</span><span class="o">;</span>
+  
+        <span class="c1">// Heapify root element</span>
+        <span class="n">heapify</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="n">i</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  
+    <span class="kt">void</span> <span class="nf">heapify</span><span class="o">(</span><span class="kt">int</span> <span class="n">arr</span><span class="o">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// Find largest among root, left child and right child</span>
+      <span class="kt">int</span> <span class="n">largest</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+      <span class="kt">int</span> <span class="n">l</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+      <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="o">;</span>
+  
+      <span class="k">if</span> <span class="o">(</span><span class="n">l</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">arr</span><span class="o">[</span><span class="n">l</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">arr</span><span class="o">[</span><span class="n">largest</span><span class="o">])</span>
+        <span class="n">largest</span> <span class="o">=</span> <span class="n">l</span><span class="o">;</span>
+  
+      <span class="k">if</span> <span class="o">(</span><span class="n">r</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">arr</span><span class="o">[</span><span class="n">r</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">arr</span><span class="o">[</span><span class="n">largest</span><span class="o">])</span>
+        <span class="n">largest</span> <span class="o">=</span> <span class="n">r</span><span class="o">;</span>
+  
+      <span class="c1">// Swap and continue heapifying if root is not largest</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">largest</span> <span class="o">!=</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">swap</span> <span class="o">=</span> <span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+        <span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">arr</span><span class="o">[</span><span class="n">largest</span><span class="o">];</span>
+        <span class="n">arr</span><span class="o">[</span><span class="n">largest</span><span class="o">]</span> <span class="o">=</span> <span class="n">swap</span><span class="o">;</span>
+  
+        <span class="n">heapify</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="n">n</span><span class="o">,</span> <span class="n">largest</span><span class="o">);</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  
+    <span class="c1">// Function to print an array</span>
+    <span class="kd">static</span> <span class="kt">void</span> <span class="nf">printArray</span><span class="o">(</span><span class="kt">int</span> <span class="n">arr</span><span class="o">[])</span> <span class="o">{</span>
+      <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">+</span> <span class="s">" "</span><span class="o">);</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+    <span class="o">}</span>
+  
+    <span class="c1">// Driver code</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
+      <span class="kt">int</span> <span class="n">arr</span><span class="o">[]</span> <span class="o">=</span> <span class="o">{</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">12</span><span class="o">,</span> <span class="mi">9</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">6</span><span class="o">,</span> <span class="mi">10</span> <span class="o">};</span>
+  
+      <span class="nc">HeapSort</span> <span class="n">hs</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HeapSort</span><span class="o">();</span>
+      <span class="n">hs</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">arr</span><span class="o">);</span>
+  
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Sorted array is"</span><span class="o">);</span>
+      <span class="n">printArray</span><span class="o">(</span><span class="n">arr</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></div></div> <p><strong>C 实现</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Heap Sort in C</span>
+  
+  <span class="cp">#include &lt;stdio.h&gt;
+</span>  
+  <span class="c1">// Function to swap the the position of two elements</span>
+  <span class="kt">void</span> <span class="nf">swap</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">temp</span> <span class="o">=</span> <span class="o">*</span><span class="n">a</span><span class="p">;</span>
+    <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="o">*</span><span class="n">b</span><span class="p">;</span>
+    <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+  <span class="p">}</span>
+  
+  <span class="kt">void</span> <span class="nf">heapify</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Find largest among root, left child and right child</span>
+    <span class="kt">int</span> <span class="n">largest</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">right</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
+  
+    <span class="k">if</span> <span class="p">(</span><span class="n">left</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">arr</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">arr</span><span class="p">[</span><span class="n">largest</span><span class="p">])</span>
+      <span class="n">largest</span> <span class="o">=</span> <span class="n">left</span><span class="p">;</span>
+  
+    <span class="k">if</span> <span class="p">(</span><span class="n">right</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">arr</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">arr</span><span class="p">[</span><span class="n">largest</span><span class="p">])</span>
+      <span class="n">largest</span> <span class="o">=</span> <span class="n">right</span><span class="p">;</span>
+  
+    <span class="c1">// Swap and continue heapifying if root is not largest</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">largest</span> <span class="o">!=</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">arr</span><span class="p">[</span><span class="n">largest</span><span class="p">]);</span>
+      <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">largest</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// Main function to do heap sort</span>
+  <span class="kt">void</span> <span class="nf">heapSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Build max heap</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span>
+      <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+  
+    <span class="c1">// Heap sort</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  
+      <span class="c1">// Heapify root element to get highest element at root again</span>
+      <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// Print an array</span>
+  <span class="kt">void</span> <span class="nf">printArray</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// Driver code</span>
+  <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">arr</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">};</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+  
+    <span class="n">heapSort</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Sorted array is </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">printArray</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></div></div> <p><strong>C++ 实现</strong></p> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Heap Sort in C++</span>
+  
+  <span class="cp">#include &lt;iostream&gt;
+</span>  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+  
+  <span class="kt">void</span> <span class="nf">heapify</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Find largest among root, left child and right child</span>
+    <span class="kt">int</span> <span class="n">largest</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">right</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
+  
+    <span class="k">if</span> <span class="p">(</span><span class="n">left</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">arr</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">arr</span><span class="p">[</span><span class="n">largest</span><span class="p">])</span>
+      <span class="n">largest</span> <span class="o">=</span> <span class="n">left</span><span class="p">;</span>
+  
+    <span class="k">if</span> <span class="p">(</span><span class="n">right</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">arr</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">arr</span><span class="p">[</span><span class="n">largest</span><span class="p">])</span>
+      <span class="n">largest</span> <span class="o">=</span> <span class="n">right</span><span class="p">;</span>
+  
+    <span class="c1">// Swap and continue heapifying if root is not largest</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">largest</span> <span class="o">!=</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">swap</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="n">largest</span><span class="p">]);</span>
+      <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">largest</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// main function to do heap sort</span>
+  <span class="kt">void</span> <span class="nf">heapSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Build max heap</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span>
+      <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+  
+    <span class="c1">// Heap sort</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">swap</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  
+      <span class="c1">// Heapify root element to get highest element at root again</span>
+      <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// Print an array</span>
+  <span class="kt">void</span> <span class="nf">printArray</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+      <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// Driver code</span>
+  <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">arr</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">};</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+    <span class="n">heapSort</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Sorted array is </span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">printArray</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16300814933154.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=堆排序 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16300814933154.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16300814933154.html&amp;title=堆排序 - 知不知&amp;summary=堆排序&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16300814933154.html&amp;text=堆排序 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16300814933154.html&amp;t=堆排序 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16300814933154.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('堆排序'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
