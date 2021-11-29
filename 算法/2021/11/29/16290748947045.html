@@ -1,0 +1,317 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/%E7%AE%97%E6%B3%95/2021/11/29/16290748947045.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>基数排序</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="基数排序">基数排序</h1> <p>&lt; 基数排序是首先对相同位值的各个数字进行分组来对元素进行排序。 然后，根据元素的递增/递减顺序对元素进行排序。</p> <p><strong>原理</strong>是将整数按位数切割成不同的数字，然后按每个位数分别比较。由于整数也可以表达字符串（比如名字或日期）和特定格式的浮点数，所以基数排序也不是只能使用于整数。</p> <p><img src="https://www.runoob.com/wp-content/uploads/2019/03/radixSort.gif" alt="-w600" /></p> <p><strong>三种利用了桶的概念的排序算法：</strong></p> <blockquote> <p>基数排序：根据键值的每位数字来分配桶； 计数排序：每个桶只存储单一键值； 桶排序：每个桶存储一定范围的数值；</p> </blockquote> <p>下图所示对数组为 [121, 432, 564, 23, 1, 45, 788] 按照基数排序。 <img src="https://luowei.github.io/list/media/16290748947045/16299948045224.jpg" alt="-w434" /></p> <h2 id="基数排序的工作流程">基数排序的工作流程</h2> <ol> <li> <p>从数组中找出最大的数<code class="highlighter-rouge">max</code>，然后令<code class="highlighter-rouge">X</code>为这个最大的数<code class="highlighter-rouge">max</code>的位数，并以<code class="highlighter-rouge">X</code>来确定后面循环的排序过程应该要到达的位置。比如说上面的数组中最大数为<code class="highlighter-rouge">788</code>有<code class="highlighter-rouge">3</code>数位(百、十、个)，所以循环排序的过程要到达百位才能结束。</p> </li> <li> <p>对数组中的数字对应位上的每个数字进行排序，这个排序可以使用任意一种稳定的排序算法。比如下面对数组的数字中的个位进行基数排序。 <img src="https://luowei.github.io/list/media/16290748947045/16299955196451.jpg" alt="-w500" /></p> </li> <li> <p>然后在原来的基础上对十位数进行排序。 <img src="https://luowei.github.io/list/media/16290748947045/16299957386670.jpg" alt="-w400" /></p> </li> <li> <p>最后在第3步排序后的基础上，再对百位数进行对数组中数字排序。 <img src="https://luowei.github.io/list/media/16290748947045/16299958345440.jpg" alt="-w400" /></p> </li> </ol> <h2 id="代码实现">代码实现</h2> <p><strong>Swift实现</strong></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//  基数排序首先通过对相同位值的各个数字进行分组来对元素进行排序。先对个位的数字排序、再排十位，一直到最高位。</span>
+<span class="c1">//  而每组同位数字的排序可以使用任何稳定的排序技术进行排序。</span>
+
+<span class="kd">import</span> <span class="kt">Foundation</span>
+
+<span class="c1">//基数排序</span>
+<span class="kd">func</span> <span class="nf">radixSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]){</span>
+    <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//取最大值，确定基数的最大位数，进行遍历</span>
+    <span class="k">let</span> <span class="nv">max</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="nf">max</span><span class="p">()</span> <span class="p">??</span> <span class="mi">0</span>
+    <span class="k">var</span> <span class="nv">place</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">max</span> <span class="o">/</span> <span class="n">place</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="c1">//作有基数位的计数排序</span>
+        <span class="nf">radixCountSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">place</span><span class="p">:</span> <span class="n">place</span><span class="p">)</span>
+        <span class="n">place</span> <span class="o">*=</span> <span class="mi">10</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//有基数位的计数排序，place代表基数位</span>
+<span class="kd">func</span> <span class="nf">radixCountSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">],</span><span class="nv">place</span><span class="p">:</span><span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    
+    <span class="c1">//获得数组中的最大值</span>
+    <span class="k">let</span> <span class="nv">max</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="nf">max</span><span class="p">()</span> <span class="p">??</span> <span class="mi">0</span>
+    
+    <span class="c1">//定义一个大小为(max+1)的计数数组</span>
+    <span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Int</span><span class="p">](</span><span class="nv">https</span><span class="p">:</span><span class="c1">//luowei.github.io/list/repeating: 0, count: max+1)</span>
+    
+    <span class="c1">//先算每个元素(索引位置)的计数，得到元数的计数数组。以原数组值为索引，在count中存储这个值在原数组中出现的计数</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..&lt;</span> <span class="n">array</span><span class="o">.</span><span class="n">count</span> <span class="p">{</span>
+        <span class="n">count</span><span class="p">[(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">place</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1">//这里索引模 %10，所以有计数的索引在0-9</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//再算每个元素(索引位置)的计数前缀累积和，得到一个索引计数的前缀和数组</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span> <span class="o">...</span> <span class="mi">9</span> <span class="p">{</span> <span class="c1">//因为有计数的索引在0-9,所以遍历0-9</span>
+        <span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="c1">//print("== cosum:\(count)")</span>
+
+    <span class="c1">//定义一个输出数组</span>
+    <span class="k">var</span> <span class="nv">output</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Int</span><span class="p">](</span><span class="nv">https</span><span class="p">:</span><span class="c1">//luowei.github.io/list/repeating: 0, count: array.count)</span>
+
+    <span class="c1">//count数组中的某个索引的累积和，代表这个索引对应元素应该在原数组中排在什么位置</span>
+    <span class="c1">//所以遍历原数组中每个元素，根据这个元素在count数组中的累积和，得出它应该排在数组中的 count[array[i]] - 1</span>
+<span class="c1">//    for i in 0 ..&lt; array.count {</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="nf">stride</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">through</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="nv">by</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//注意这里要倒序遍历，不然多次调用此排序方法顺序就不对了</span>
+        <span class="n">output</span><span class="p">[</span><span class="n">count</span><span class="p">[(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">place</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">count</span><span class="p">[(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">place</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="p">}</span>
+
+    <span class="c1">//将outpu拷贝到原数组</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..&lt;</span> <span class="n">array</span><span class="o">.</span><span class="n">count</span> <span class="p">{</span>
+        <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="c1">//打印</span>
+<span class="kd">func</span> <span class="nf">printRadixCountSort</span><span class="p">(</span><span class="n">_</span> <span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]){</span>
+    <span class="c1">//var array:[Float] = [3, 2, 5, 7, 1, 5, 4, 8, 11, 0]</span>
+    <span class="nf">radixSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">arr</span><span class="p">:[</span><span class="kt">Int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">121</span><span class="p">,</span> <span class="mi">432</span><span class="p">,</span> <span class="mi">564</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">788</span><span class="p">]</span>
+<span class="nf">printRadixCountSort</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arr</span><span class="p">)</span>
+</code></pre></div></div> <p><strong>Python实现</strong></p> <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Radix sort in Python
+</span>
+
+<span class="c1"># Using counting sort to sort the elements in the basis of significant places
+</span><span class="k">def</span> <span class="nf">countingSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">place</span><span class="p">):</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span>
+
+    <span class="c1"># Calculate count of elements
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">//</span> <span class="n">place</span>
+        <span class="n">count</span><span class="p">[</span><span class="n">index</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Calculate cumulative count
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+        <span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Place the elements in sorted order
+</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">//</span> <span class="n">place</span>
+        <span class="n">output</span><span class="p">[</span><span class="n">count</span><span class="p">[</span><span class="n">index</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">count</span><span class="p">[</span><span class="n">index</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+
+<span class="c1"># Main function to implement radix sort
+</span><span class="k">def</span> <span class="nf">radixSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+    <span class="c1"># Get maximum element
+</span>    <span class="n">max_element</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+    <span class="c1"># Apply counting sort to sort elements based on place value.
+</span>    <span class="n">place</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">max_element</span> <span class="o">//</span> <span class="n">place</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">countingSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">place</span><span class="p">)</span>
+        <span class="n">place</span> <span class="o">*=</span> <span class="mi">10</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">121</span><span class="p">,</span> <span class="mi">432</span><span class="p">,</span> <span class="mi">564</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">788</span><span class="p">]</span>
+<span class="n">radixSort</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div></div> <p><strong>Java实现</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Radix Sort in Java Programming</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">RadixSort</span> <span class="o">{</span>
+
+  <span class="c1">// Using counting sort to sort the elements in the basis of significant places</span>
+  <span class="kt">void</span> <span class="nf">countingSort</span><span class="o">(</span><span class="kt">int</span> <span class="n">array</span><span class="o">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="o">,</span> <span class="kt">int</span> <span class="n">place</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span><span class="o">[]</span> <span class="n">output</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">size</span> <span class="o">+</span> <span class="mi">1</span><span class="o">];</span>
+    <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">max</span><span class="o">)</span>
+        <span class="n">max</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+    <span class="o">}</span>
+    <span class="kt">int</span><span class="o">[]</span> <span class="n">count</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">max</span> <span class="o">+</span> <span class="mi">1</span><span class="o">];</span>
+
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">max</span><span class="o">;</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span>
+      <span class="n">count</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+
+    <span class="c1">// Calculate count of elements</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+      <span class="n">count</span><span class="o">[(</span><span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">/</span> <span class="n">place</span><span class="o">)</span> <span class="o">%</span> <span class="mi">10</span><span class="o">]++;</span>
+
+    <span class="c1">// Calculate cumulative count</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+      <span class="n">count</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">+=</span> <span class="n">count</span><span class="o">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="o">];</span>
+
+    <span class="c1">// Place the elements in sorted order</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+      <span class="n">output</span><span class="o">[</span><span class="n">count</span><span class="o">[(</span><span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">/</span> <span class="n">place</span><span class="o">)</span> <span class="o">%</span> <span class="mi">10</span><span class="o">]</span> <span class="o">-</span> <span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+      <span class="n">count</span><span class="o">[(</span><span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">/</span> <span class="n">place</span><span class="o">)</span> <span class="o">%</span> <span class="mi">10</span><span class="o">]--;</span>
+    <span class="o">}</span>
+
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+      <span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">output</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+  <span class="o">}</span>
+
+  <span class="c1">// Function to get the largest element from an array</span>
+  <span class="kt">int</span> <span class="nf">getMax</span><span class="o">(</span><span class="kt">int</span> <span class="n">array</span><span class="o">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">max</span><span class="o">)</span>
+        <span class="n">max</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+    <span class="k">return</span> <span class="n">max</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="c1">// Main function to implement radix sort</span>
+  <span class="kt">void</span> <span class="nf">radixSort</span><span class="o">(</span><span class="kt">int</span> <span class="n">array</span><span class="o">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// Get maximum element</span>
+    <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="n">getMax</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">size</span><span class="o">);</span>
+
+    <span class="c1">// Apply counting sort to sort elements based on place value.</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">place</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">max</span> <span class="o">/</span> <span class="n">place</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">;</span> <span class="n">place</span> <span class="o">*=</span> <span class="mi">10</span><span class="o">)</span>
+      <span class="n">countingSort</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">size</span><span class="o">,</span> <span class="n">place</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="c1">// Driver code</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
+    <span class="kt">int</span><span class="o">[]</span> <span class="n">data</span> <span class="o">=</span> <span class="o">{</span> <span class="mi">121</span><span class="o">,</span> <span class="mi">432</span><span class="o">,</span> <span class="mi">564</span><span class="o">,</span> <span class="mi">23</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">45</span><span class="o">,</span> <span class="mi">788</span> <span class="o">};</span>
+    <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+    <span class="nc">RadixSort</span> <span class="n">rs</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RadixSort</span><span class="o">();</span>
+    <span class="n">rs</span><span class="o">.</span><span class="na">radixSort</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">size</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Sorted Array in Ascending Order: "</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="nc">Arrays</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">data</span><span class="o">));</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div> <p><strong>C 实现</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Radix Sort in C Programming</span>
+
+<span class="cp">#include &lt;stdio.h&gt;
+</span>
+<span class="c1">// Function to get the largest element from an array</span>
+<span class="kt">int</span> <span class="nf">getMax</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max</span><span class="p">)</span>
+      <span class="n">max</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+  <span class="k">return</span> <span class="n">max</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Using counting sort to sort the elements in the basis of significant places</span>
+<span class="kt">void</span> <span class="nf">countingSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="kt">int</span> <span class="n">place</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">output</span><span class="p">[</span><span class="n">size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+  <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">place</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">;</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(((</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">place</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max</span><span class="p">)</span>
+      <span class="n">max</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="kt">int</span> <span class="n">count</span><span class="p">[</span><span class="n">max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">max</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="c1">// Calculate count of elements</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">count</span><span class="p">[(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">place</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+    
+  <span class="c1">// Calculate cumulative count</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Place the elements in sorted order</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">output</span><span class="p">[</span><span class="n">count</span><span class="p">[(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">place</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">count</span><span class="p">[(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">place</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span><span class="o">--</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">// Main function to implement radix sort</span>
+<span class="kt">void</span> <span class="nf">radixsort</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Get maximum element</span>
+  <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="n">getMax</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+
+  <span class="c1">// Apply counting sort to sort elements based on place value.</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">place</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">max</span> <span class="o">/</span> <span class="n">place</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">place</span> <span class="o">*=</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">countingSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">place</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Print an array</span>
+<span class="kt">void</span> <span class="nf">printArray</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d  "</span><span class="p">,</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Driver code</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">array</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">121</span><span class="p">,</span> <span class="mi">432</span><span class="p">,</span> <span class="mi">564</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">788</span><span class="p">};</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+  <span class="n">radixsort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  <span class="n">printArray</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>C++ 实现</strong></p> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Radix Sort in C++ Programming</span>
+
+<span class="cp">#include &lt;iostream&gt;
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="c1">// Function to get the largest element from an array</span>
+<span class="kt">int</span> <span class="nf">getMax</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max</span><span class="p">)</span>
+      <span class="n">max</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+  <span class="k">return</span> <span class="n">max</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Using counting sort to sort the elements in the basis of significant places</span>
+<span class="kt">void</span> <span class="nf">countingSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="kt">int</span> <span class="n">place</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">const</span> <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">output</span><span class="p">[</span><span class="n">size</span><span class="p">];</span>
+  <span class="kt">int</span> <span class="n">count</span><span class="p">[</span><span class="n">max</span><span class="p">];</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">max</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="c1">// Calculate count of elements</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">count</span><span class="p">[(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">place</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+
+  <span class="c1">// Calculate cumulative count</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">max</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Place the elements in sorted order</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">output</span><span class="p">[</span><span class="n">count</span><span class="p">[(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">place</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">count</span><span class="p">[(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">place</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span><span class="o">--</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">// Main function to implement radix sort</span>
+<span class="kt">void</span> <span class="nf">radixsort</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Get maximum element</span>
+  <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="n">getMax</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+
+  <span class="c1">// Apply counting sort to sort elements based on place value.</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">place</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">max</span> <span class="o">/</span> <span class="n">place</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">place</span> <span class="o">*=</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">countingSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">place</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Print an array</span>
+<span class="kt">void</span> <span class="nf">printArray</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Driver code</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">array</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">121</span><span class="p">,</span> <span class="mi">432</span><span class="p">,</span> <span class="mi">564</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">788</span><span class="p">};</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+  <span class="n">radixsort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  <span class="n">printArray</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290748947045.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=基数排序 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290748947045.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290748947045.html&amp;title=基数排序 - 知不知&amp;summary=基数排序&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290748947045.html&amp;text=基数排序 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290748947045.html&amp;t=基数排序 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290748947045.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('基数排序'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
