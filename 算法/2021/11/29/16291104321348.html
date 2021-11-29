@@ -1,0 +1,457 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/%E7%AE%97%E6%B3%95/2021/11/29/16291104321348.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>桶排序</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="桶排序">桶排序</h1> <p>桶排序是计数排序的升级版。它利用了函数的映射关系，高效与否的关键就在于这个映射函数的确定。</p> <p>桶排序是将未排序的数组元素分成称为桶的若干组。，然后通过使用任意合适的排序算法或递归应用相同的存储桶算法对每个存储桶进行排序，最后，将排序后的桶组合起来形成最终的排序数组。</p> <p>桶排序的过程可以理解为一种分散-聚集的方法。首先将元素分散到桶中，然后对每个桶中的元素进行排序，最后按顺序收集元素。 <img src="https://luowei.github.io/list/media/16291104321348/16300760967683.jpg" alt="-w600" /></p> <p>要使桶排序更加高效，应尽可能做到这两点：</p> <ol> <li>在额外空间充足的情况下，尽量增大桶的数量；</li> <li>使用的映射函数能够将输入的 N 个数据均匀的分配到 K 个桶中；</li> </ol> <p>当输入的数据可以均匀的分配到每一个桶中时排序的速度最快；当输入的数据被分配到了同一个桶中排序的速度最慢。</p> <p><img src="https://luowei.github.io/list/media/16291104321348/16300735739560.jpg" alt="-w300" /></p> <h2 id="桶排序的工作流程">桶排序的工作流程</h2> <ol> <li> <p>这里假设有以下1个输入数组，并创建一个大小为10的数组，它的每个槽都用作存储元素的桶。 <img src="https://luowei.github.io/list/media/16291104321348/16300764253093.jpg" alt="-w300" /> <img src="https://luowei.github.io/list/media/16291104321348/16300765861672.jpg" alt="-w400" /></p> </li> <li> <p>根据桶的范围将元素从数组插入到桶中。例如要插入元素为<code class="highlighter-rouge">0.23</code>，把它乘上<code class="highlighter-rouge">size=10</code>，然后再把它转换成整形<code class="highlighter-rouge">.23*10=2.3 ~ 2</code>，这样就确定了把<code class="highlighter-rouge">.23</code>插入到第2个桶中。 <img src="https://luowei.github.io/list/media/16291104321348/16300768819441.jpg" alt="-w400" /> 类似的将其他元素也按同样的方式插入到桶中。 <img src="https://luowei.github.io/list/media/16291104321348/16300769987098.jpg" alt="-w400" /></p> </li> <li> <p>对每个桶中的元素使用任意一种稳定的排序方法排后序。 <img src="https://luowei.github.io/list/media/16291104321348/16300771111903.jpg" alt="-w400" /></p> </li> <li> <p>最后聚集每个桶中的所有元素即可。 <img src="https://luowei.github.io/list/media/16291104321348/16300772302446.jpg" alt="-w400" /></p> </li> </ol> <h2 id="复杂度">复杂度</h2> <p>|Time Complexity|| |—|—| |Best | O(n+k) | |Worst | O(n^2) | |Average | O(n) | |<strong>Space Complexity</strong> | O(n+k) | |<strong>Stability</strong> | Yes |</p> <h2 id="代码实现">代码实现</h2> <p><strong>Swift实现</strong></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//  桶排序的原理是：把原数组的值规格化成桶的索引</span>
+
+<span class="kd">import</span> <span class="kt">Foundation</span>
+
+<span class="c1">//n表示桶的个数</span>
+<span class="kd">func</span> <span class="nf">bucketSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Float</span><span class="p">],</span> <span class="nv">n</span><span class="p">:</span><span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">){</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//创建一个大小为n的桶数组</span>
+    <span class="k">var</span> <span class="nv">bucket</span> <span class="o">=</span> <span class="p">[[</span><span class="kt">Float</span><span class="p">]](</span><span class="nv">https</span><span class="p">:</span><span class="c1">//luowei.github.io/list/repeating: [Float](), count: n)</span>
+    
+    <span class="k">let</span> <span class="nv">min</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="nf">min</span><span class="p">()</span> <span class="p">??</span> <span class="mi">0</span>
+    <span class="k">let</span> <span class="nv">max</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="nf">max</span><span class="p">()</span> <span class="p">??</span> <span class="mi">0</span>
+    <span class="k">let</span> <span class="nv">rang</span> <span class="o">=</span> <span class="n">max</span> <span class="o">-</span> <span class="n">min</span> <span class="c1">//数组的值域区间</span>
+    
+    <span class="c1">//向每个桶中添加元素</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..&lt;</span> <span class="n">n</span> <span class="p">{</span>
+        <span class="c1">//获得 array[i] 所在的桶的索引</span>
+        <span class="k">var</span> <span class="nv">bucketIndex</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">((</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">min</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="kt">Float</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">rang</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">bucketIndex</span> <span class="o">==</span> <span class="n">n</span> <span class="p">{</span>
+            <span class="n">bucketIndex</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">}</span><span class="k">else</span> <span class="k">if</span> <span class="n">bucketIndex</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="n">bucketIndex</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="p">}</span>
+        
+<span class="c1">//        //把array中的数据规格化到 0 ..&lt; n 之间，以适配桶的索引</span>
+<span class="c1">//        let bucketIndex = Int( array[i] * Float(n)) //索引</span>
+        
+        <span class="n">bucket</span><span class="p">[</span><span class="n">bucketIndex</span><span class="p">]</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>  <span class="c1">//值</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//对每个桶中的元素集进行排序</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..&lt;</span> <span class="n">n</span> <span class="p">{</span>
+        <span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="nf">sort</span><span class="p">()</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//从桶中取出排序好的数组</span>
+    <span class="k">var</span> <span class="nv">index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..&lt;</span> <span class="n">n</span> <span class="p">{</span> <span class="c1">//遍历每个桶</span>
+        <span class="k">let</span> <span class="nv">size</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">count</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..&lt;</span> <span class="n">size</span> <span class="p">{</span> <span class="c1">//遍历每个桶中的元素</span>
+            <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    
+<span class="p">}</span>
+
+<span class="c1">//打印</span>
+<span class="kd">func</span> <span class="nf">printBucketSort</span><span class="p">(){</span>
+    <span class="k">var</span> <span class="nv">array</span><span class="p">:[</span><span class="kt">Float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.42</span><span class="p">,</span> <span class="mf">0.32</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">,</span> <span class="mf">0.52</span><span class="p">,</span> <span class="mf">0.37</span><span class="p">,</span> <span class="mf">0.47</span><span class="p">,</span> <span class="mf">0.51</span><span class="p">]</span>
+    <span class="c1">//var array:[Float] = [3, 2, 5, 7, 1, 5, 4, 8, 11, 0]</span>
+    <span class="nf">bucketSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">n</span><span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">printBucketSort</span><span class="p">()</span>
+</code></pre></div></div> <p><strong>Python 实现</strong></p> <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Bucket Sort in Python
+</span>
+
+<span class="k">def</span> <span class="nf">bucketSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+    <span class="n">bucket</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Create empty buckets
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+        <span class="n">bucket</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+
+    <span class="c1"># Insert elements into their respective buckets
+</span>    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">array</span><span class="p">:</span>
+        <span class="n">index_b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">j</span><span class="p">)</span>
+        <span class="n">bucket</span><span class="p">[</span><span class="n">index_b</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+    <span class="c1"># Sort the elements of each bucket
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+        <span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="c1"># Get the sorted elements
+</span>    <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+            <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">array</span>
+
+
+<span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.42</span><span class="p">,</span> <span class="mf">.32</span><span class="p">,</span> <span class="mf">.33</span><span class="p">,</span> <span class="mf">.52</span><span class="p">,</span> <span class="mf">.37</span><span class="p">,</span> <span class="mf">.47</span><span class="p">,</span> <span class="mf">.51</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"Sorted Array in descending order is"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">bucketSort</span><span class="p">(</span><span class="n">array</span><span class="p">))</span>
+</code></pre></div></div> <p><strong>Java 实现</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Bucket sort in Java</span>
+
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Collections</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">BucketSort</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bucketSort</span><span class="o">(</span><span class="kt">float</span><span class="o">[]</span> <span class="n">arr</span><span class="o">,</span> <span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="o">)</span>
+      <span class="k">return</span><span class="o">;</span>
+    <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">"unchecked"</span><span class="o">)</span>
+    <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Float</span><span class="o">&gt;[]</span> <span class="n">bucket</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">[</span><span class="n">n</span><span class="o">];</span>
+
+    <span class="c1">// Create empty buckets</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+      <span class="n">bucket</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Float</span><span class="o">&gt;();</span>
+
+    <span class="c1">// Add elements into the buckets</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="kt">int</span> <span class="n">bucketIndex</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">*</span> <span class="n">n</span><span class="o">;</span>
+      <span class="n">bucket</span><span class="o">[</span><span class="n">bucketIndex</span><span class="o">].</span><span class="na">add</span><span class="o">(</span><span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Sort the elements of each bucket</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="nc">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">((</span><span class="n">bucket</span><span class="o">[</span><span class="n">i</span><span class="o">]));</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Get the sorted array</span>
+    <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">bucket</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">size</span><span class="o">();</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+        <span class="n">arr</span><span class="o">[</span><span class="n">index</span><span class="o">++]</span> <span class="o">=</span> <span class="n">bucket</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">get</span><span class="o">(</span><span class="n">j</span><span class="o">);</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="c1">// Driver code</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">BucketSort</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BucketSort</span><span class="o">();</span>
+    <span class="kt">float</span><span class="o">[]</span> <span class="n">arr</span> <span class="o">=</span> <span class="o">{</span> <span class="o">(</span><span class="kt">float</span><span class="o">)</span> <span class="mf">0.42</span><span class="o">,</span> <span class="o">(</span><span class="kt">float</span><span class="o">)</span> <span class="mf">0.32</span><span class="o">,</span> <span class="o">(</span><span class="kt">float</span><span class="o">)</span> <span class="mf">0.33</span><span class="o">,</span> <span class="o">(</span><span class="kt">float</span><span class="o">)</span> <span class="mf">0.52</span><span class="o">,</span> <span class="o">(</span><span class="kt">float</span><span class="o">)</span> <span class="mf">0.37</span><span class="o">,</span> <span class="o">(</span><span class="kt">float</span><span class="o">)</span> <span class="mf">0.47</span><span class="o">,</span>
+        <span class="o">(</span><span class="kt">float</span><span class="o">)</span> <span class="mf">0.51</span> <span class="o">};</span>
+    <span class="n">b</span><span class="o">.</span><span class="na">bucketSort</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="mi">7</span><span class="o">);</span>
+
+    <span class="k">for</span> <span class="o">(</span><span class="kt">float</span> <span class="n">i</span> <span class="o">:</span> <span class="n">arr</span><span class="o">)</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="s">"  "</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>C 实现</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Bucket sort in C</span>
+
+<span class="cp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+</span>
+<span class="cp">#define NARRAY 7   // Array size
+#define NBUCKET 6  // Number of buckets
+#define INTERVAL 10  // Each bucket capacity
+</span>
+<span class="k">struct</span> <span class="n">Node</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">BucketSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[]);</span>
+<span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="nf">InsertionSort</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">list</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[]);</span>
+<span class="kt">void</span> <span class="nf">printBuckets</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">list</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">getBucketIndex</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">);</span>
+
+<span class="c1">// Sorting function</span>
+<span class="kt">void</span> <span class="nf">BucketSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">**</span><span class="n">buckets</span><span class="p">;</span>
+
+  <span class="c1">// Create buckets and allocate memory size</span>
+  <span class="n">buckets</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">**</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="p">)</span> <span class="o">*</span> <span class="n">NBUCKET</span><span class="p">);</span>
+
+  <span class="c1">// Initialize empty buckets</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NBUCKET</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Fill the buckets with respective elements</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NARRAY</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">current</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">getBucketIndex</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="n">current</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+    <span class="n">current</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">current</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">pos</span><span class="p">];</span>
+    <span class="n">buckets</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">current</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Print the buckets along with their elements</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NBUCKET</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Bucket[%d]: "</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="n">printBuckets</span><span class="p">(</span><span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Sort the elements of each bucket</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NBUCKET</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">InsertionSort</span><span class="p">(</span><span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  <span class="p">}</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">"-------------</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"Bucktets after sorting</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NBUCKET</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Bucket[%d]: "</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="n">printBuckets</span><span class="p">(</span><span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Put sorted elements on arr</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NBUCKET</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">node</span><span class="p">;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">arr</span><span class="p">[</span><span class="n">j</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+      <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Function to sort the elements of each bucket</span>
+<span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="nf">InsertionSort</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">nodeList</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">list</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">list</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">list</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">nodeList</span> <span class="o">=</span> <span class="n">list</span><span class="p">;</span>
+  <span class="n">k</span> <span class="o">=</span> <span class="n">list</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+  <span class="n">nodeList</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">k</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">nodeList</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">k</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">tmp</span><span class="p">;</span>
+      <span class="n">tmp</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+      <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+      <span class="n">tmp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">nodeList</span><span class="p">;</span>
+      <span class="n">nodeList</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+      <span class="k">continue</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">nodeList</span><span class="p">;</span> <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">ptr</span> <span class="o">=</span> <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">k</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">tmp</span><span class="p">;</span>
+      <span class="n">tmp</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+      <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+      <span class="n">tmp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+      <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+      <span class="k">continue</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+      <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+      <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="k">continue</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">nodeList</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">getBucketIndex</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">value</span> <span class="o">/</span> <span class="n">INTERVAL</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="kt">int</span> <span class="n">ar</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NARRAY</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span> <span class="n">ar</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Print buckets</span>
+<span class="kt">void</span> <span class="nf">printBuckets</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">cur</span> <span class="o">=</span> <span class="n">list</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">cur</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Driver code</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">array</span><span class="p">[</span><span class="n">NARRAY</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">42</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">51</span><span class="p">};</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">"Initial array: "</span><span class="p">);</span>
+  <span class="n">print</span><span class="p">(</span><span class="n">array</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"-------------</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+
+  <span class="n">BucketSort</span><span class="p">(</span><span class="n">array</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"-------------</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"Sorted array: "</span><span class="p">);</span>
+  <span class="n">print</span><span class="p">(</span><span class="n">array</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>C++ 实现</strong></p> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Bucket sort in C++</span>
+
+<span class="cp">#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="cp">#define NARRAY 7   // Array size
+#define NBUCKET 6  // Number of buckets
+#define INTERVAL 10  // Each bucket capacity
+</span>
+<span class="k">struct</span> <span class="n">Node</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">BucketSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[]);</span>
+<span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="nf">InsertionSort</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">list</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[]);</span>
+<span class="kt">void</span> <span class="nf">printBuckets</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">list</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">getBucketIndex</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">);</span>
+
+<span class="c1">// Sorting function</span>
+<span class="kt">void</span> <span class="nf">BucketSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">**</span><span class="n">buckets</span><span class="p">;</span>
+
+  <span class="c1">// Create buckets and allocate memory size</span>
+  <span class="n">buckets</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">**</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="p">)</span> <span class="o">*</span> <span class="n">NBUCKET</span><span class="p">);</span>
+
+  <span class="c1">// Initialize empty buckets</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NBUCKET</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Fill the buckets with respective elements</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NARRAY</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">current</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">getBucketIndex</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="n">current</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+    <span class="n">current</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">current</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">pos</span><span class="p">];</span>
+    <span class="n">buckets</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">current</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Print the buckets along with their elements</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NBUCKET</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Bucket["</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">"] : "</span><span class="p">;</span>
+    <span class="n">printBuckets</span><span class="p">(</span><span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Sort the elements of each bucket</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NBUCKET</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">InsertionSort</span><span class="p">(</span><span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  <span class="p">}</span>
+
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"-------------"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Bucktets after sorted"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NBUCKET</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Bucket["</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">"] : "</span><span class="p">;</span>
+    <span class="n">printBuckets</span><span class="p">(</span><span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Put sorted elements on arr</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NBUCKET</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">node</span><span class="p">;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">arr</span><span class="p">[</span><span class="n">j</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+      <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NBUCKET</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">node</span><span class="p">;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">tmp</span><span class="p">;</span>
+      <span class="n">tmp</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+      <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+      <span class="n">free</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="n">free</span><span class="p">(</span><span class="n">buckets</span><span class="p">);</span>
+  <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Function to sort the elements of each bucket</span>
+<span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="nf">InsertionSort</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">nodeList</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">list</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">list</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">list</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">nodeList</span> <span class="o">=</span> <span class="n">list</span><span class="p">;</span>
+  <span class="n">k</span> <span class="o">=</span> <span class="n">list</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+  <span class="n">nodeList</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">k</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">nodeList</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">k</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">tmp</span><span class="p">;</span>
+      <span class="n">tmp</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+      <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+      <span class="n">tmp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">nodeList</span><span class="p">;</span>
+      <span class="n">nodeList</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+      <span class="k">continue</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">nodeList</span><span class="p">;</span> <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">ptr</span> <span class="o">=</span> <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">k</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">tmp</span><span class="p">;</span>
+      <span class="n">tmp</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+      <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+      <span class="n">tmp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+      <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+      <span class="k">continue</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+      <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+      <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="k">continue</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">nodeList</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">getBucketIndex</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">value</span> <span class="o">/</span> <span class="n">INTERVAL</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Print buckets</span>
+<span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="kt">int</span> <span class="n">ar</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NARRAY</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">setw</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">ar</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">printBuckets</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">cur</span> <span class="o">=</span> <span class="n">list</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">cur</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">setw</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Driver code</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">array</span><span class="p">[</span><span class="n">NARRAY</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">42</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">51</span><span class="p">};</span>
+
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Initial array: "</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="n">print</span><span class="p">(</span><span class="n">array</span><span class="p">);</span>
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"-------------"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+
+  <span class="n">BucketSort</span><span class="p">(</span><span class="n">array</span><span class="p">);</span>
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"-------------"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Sorted array: "</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="n">print</span><span class="p">(</span><span class="n">array</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16291104321348.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=桶排序 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16291104321348.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16291104321348.html&amp;title=桶排序 - 知不知&amp;summary=桶排序&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16291104321348.html&amp;text=桶排序 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16291104321348.html&amp;t=桶排序 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16291104321348.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('桶排序'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
