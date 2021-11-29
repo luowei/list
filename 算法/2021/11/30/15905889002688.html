@@ -1,0 +1,410 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/%E7%AE%97%E6%B3%95/2021/11/30/15905889002688.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>高级操作系统之同步锁代码</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="高级操作系统之同步锁代码">高级操作系统之同步锁代码</h1> <h2 id="读优先">读优先</h2><pre><code class="language-C">#define N 10
+#define M 10
+#define READTIMES 100000
+#define WRITETIMES 100000
+
+#include "csapp.h"
+
+int readcnt;    /* Initially 0 */
+sem_t mutex, w; /* Both initially 1 */
+
+void *read_thread(void *vargp);
+void *write_thread(void *vargp);
+
+int main() {
+	readcnt = 0;
+	pthread_t readers[N];
+	pthread_t writers[M];
+ 	sem_init(&amp;mutex, 0, N);
+	sem_init(&amp;w, 0, 1);
+
+	int i;
+	for (i=0;i&lt;N;i++) 
+		Pthread_create(&amp;readers[i], NULL, read_thread, (void *)i);
+	for (i=0;i&lt;M;i++) 
+		Pthread_create(&amp;writers[i], NULL, write_thread, (void *)i);
+
+	for (i=0;i&lt;N;i++) 
+		Pthread_join(readers[i], NULL);
+	for (i=0;i&lt;M;i++)
+		Pthread_join(writers[i], NULL);
+}
+
+void *read_thread(void *vargp)
+{   
+	for (int i=0;i&lt;READTIMES;i++) {
+		P(&amp;mutex);
+		readcnt++;
+		if (readcnt == 1) /* First in */
+			P(&amp;w);
+		V(&amp;mutex);
+		
+		/* Reading happens here */
+		printf("Reader (%d) is reading, readcnt = %d, i=%d\n", (int)vargp, readcnt, i);
+		if (i==READTIMES-1)
+			printf("Reader (%d) finished!\n", (int)vargp);
+
+		P(&amp;mutex);
+		readcnt--;
+		if (readcnt == 0) /* Last out */
+			V(&amp;w);
+		V(&amp;mutex);
+	}
+}
+
+void *write_thread(void *vargp)
+{
+	for (int i=0;i&lt;WRITETIMES;i++) {
+		P(&amp;w);
+
+		/* Writing here */
+		printf("writing...i=%d\n", i);
+		if(i==WRITETIMES-1)
+			printf("Writer (%d) finished!\n", (int)vargp);
+
+		V(&amp;w);
+	}
+}
+
+</code></pre><h2 id="读写公平">读写公平</h2><pre><code class="language-C">#define N 10
+#define READTIMES 100000
+#define WRITETIMES 10000
+
+#include "csapp.h"
+
+sem_t common_sem, w; /* Both initially 1 */
+
+void *read_thread(void *vargp);
+void *write_thread(void *vargp);
+
+int main() {
+	pthread_t readers[N];
+	pthread_t writers[N];
+ 	sem_init(&amp;common_sem, 0, N);
+	sem_init(&amp;w, 0, 1);
+
+	int i;
+	for (i=0;i&lt;N;i++) {
+		Pthread_create(&amp;readers[i], NULL, read_thread, (void *)i);
+		Pthread_create(&amp;writers[i], NULL, write_thread, (void *)i);
+	}
+
+	for (i=0;i&lt;N;i++) { 
+		Pthread_join(readers[i], NULL);
+		Pthread_join(writers[i], NULL);
+	}
+}
+
+void *read_thread(void *vargp)
+{   
+    for (int i=0;i&lt;READTIMES;i++) {
+        P(&amp;common_sem);
+        
+        /* Reading happens here */
+        printf("Reader (%d) is reading, i=%d\n", (int)vargp, i);
+	if (i==READTIMES-1)
+		printf("Reader (%d) finished!\n", (int)vargp);        
+
+        V(&amp;common_sem);
+    }
+}
+
+void *write_thread(void *vargp)
+{
+    int j;
+    for (int i=0;i&lt;WRITETIMES;i++) {
+        P(&amp;w);
+		for (j=0;j&lt;N;j++) 
+			P(&amp;common_sem);
+		V(&amp;w);
+
+        /* Writing here */
+        printf("writing...i=%d\n", i);
+		if(i==WRITETIMES-1)
+			printf("Writer (%d) finished!\n", (int)vargp);
+	
+		for (j=0;j&lt;N;j++)
+        	V(&amp;common_sem);
+    }
+}
+</code></pre><h2 id="写优先">写优先</h2><pre><code class="language-C">#define N 10
+#define M 10
+#define READTIMES 100000
+#define WRITETIMES 100000
+
+#include "csapp.h"
+
+int readcnt, writecnt;    /* Initially 0 */
+sem_t r, w, rcnt, wcnt; /* Both initially 1 */
+
+void *read_thread(void *vargp);
+void *write_thread(void *vargp);
+
+int main() {
+	readcnt = 0;
+	writecnt = 0;
+	pthread_t readers[N];
+	pthread_t writers[M];
+ 	sem_init(&amp;r, 0, 1);
+	sem_init(&amp;w, 0, 1);
+	sem_init(&amp;rcnt, 0, 1);
+	sem_init(&amp;wcnt, 0, 1);
+
+	int i;
+	for (i=0;i&lt;N;i++) 
+		Pthread_create(&amp;readers[i], NULL, read_thread, (void *)i);
+	for (i=0;i&lt;M;i++) 
+		Pthread_create(&amp;writers[i], NULL, write_thread, (void *)i);
+
+	for (i=0;i&lt;N;i++) 
+		Pthread_join(readers[i], NULL);
+	for (i=0;i&lt;M;i++)
+		Pthread_join(writers[i], NULL);
+}
+
+void *read_thread(void *vargp)
+{   
+    for (int i=0;i&lt;READTIMES;i++) {
+        P(&amp;r);
+		P(&amp;rcnt);
+        readcnt++;
+        if (readcnt == 1) /* First in */
+                P(&amp;w);
+        V(&amp;rcnt);
+		V(&amp;r);
+        
+        /* Reading happens here */
+        printf("Reader (%d) is reading, readcnt = %d, i=%d\n", (int)vargp, readcnt, i);
+		if (i==READTIMES-1)
+			printf("Reader (%d) finished!\n", (int)vargp);        
+
+        P(&amp;rcnt);
+        readcnt--;
+        if (readcnt == 0) /* Last out */
+                V(&amp;w);
+        V(&amp;rcnt);
+    }
+}
+
+void *write_thread(void *vargp)
+{
+    for (int i=0;i&lt;WRITETIMES;i++) {
+		P(&amp;wcnt);
+		writecnt++;
+		if (writecnt == 1)
+			P(&amp;r);
+		V(&amp;wcnt);
+
+        P(&amp;w);
+
+        /* Writing here */
+        printf("writing...i=%d\n", i);
+		if(i==WRITETIMES-1)
+			printf("Writer (%d) finished!\n", (int)vargp);
+
+        V(&amp;w);
+
+		P(&amp;wcnt);
+		writecnt--;
+		if (writecnt == 0)
+			V(&amp;r);
+		V(&amp;wcnt);
+    }
+}
+</code></pre><h2 id="有锁链表">有锁链表</h2><pre><code class="language-C">#define N 100
+#define Total 100000000
+
+#include "csapp.h"
+
+typedef struct __node_t { // basic node structure
+  int             key;
+  struct __node_t *next;
+} node_t;
+
+typedef struct __list_t { // basic list structure
+  node_t          *head;
+  pthread_mutex_t lock;
+} list_t;
+
+list_t mylist;
+
+void List_Init(list_t *L) {
+   L-&gt;head = NULL;
+   pthread_mutex_init(&amp;L-&gt;lock, NULL);
+}
+
+void *worker(void *argp) {
+   for (int i=0;i&lt;Total/N;i++) 
+      List_Insert(&amp;mylist, (int)((int)argp&lt;&lt;16+i));
+}
+
+void main() {
+   List_Init(&amp;mylist);
+   pthread_t workers[N];
+   int i;
+
+
+   for (i=0;i&lt;N;i++) {
+      Pthread_create(&amp;workers[i], NULL, worker, (void *)i);
+   }
+   for (i=0;i&lt;N;i++) {
+      Pthread_join(workers[i], NULL);
+   }
+
+}
+
+void List_Insert(list_t *L, int key) {
+   // synchronization not needed
+   node_t *new = malloc(sizeof(node_t));
+   if (new == NULL) {
+      perror("malloc");
+      return;
+   }
+   new-&gt;key = key; 
+
+   // just lock critical section
+   pthread_mutex_lock(&amp;L-&gt;lock);
+   new-&gt;next = L-&gt;head; 
+   L-&gt;head = new;
+   pthread_mutex_unlock(&amp;L-&gt;lock);
+}
+
+
+int List_Lookup(list_t *L, int key) {
+   int rv = -1;
+   pthread_mutex_lock(&amp;L-&gt;lock);
+   node_t *curr = L-&gt;head;
+   while (curr) {
+      if (curr-&gt;key == key) {
+         rv = 0;
+         break;
+      }
+      curr = curr-&gt;next;
+   }
+   pthread_mutex_unlock(&amp;L-&gt;lock);
+   return rv;
+}
+
+</code></pre><h2 id="无锁链表">无锁链表</h2><pre><code class="language-C">#define N 100
+#define Total 100000000
+
+#include "csapp.h"
+
+typedef struct __node_t { // basic node structure
+  int             key;
+  struct __node_t *next;
+} node_t;
+
+typedef struct __list_t { // basic list structure
+  node_t          *head;
+//  pthread_mutex_t lock;
+} list_t;
+
+list_t mylist;
+
+/* return 1 when swapping happens;
+   retnrun 0 when not*/
+int CAS(unsigned long *dst, unsigned long oldVal, unsigned long newVal)
+{
+    unsigned char ret;
+    //printf("(%lu,%lu,%lu)", *dst, oldVal, newVal);
+    __asm__ __volatile__ (
+            "  lock cmpxchgq %2,%1\n"
+            "  sete %0\n" // ret=zf (0:oldVal!=*dst ; 1:oldVal==*dst)
+            : "=q" (ret), "=m" (*dst)
+            : "r" (newVal), "m" (*dst), "a" (oldVal)
+            : "memory");
+    //printf("-&gt;(%lu,%lu,%lu):%d\r\n", *dst, oldVal, newVal, ret);
+    //above assembly returns 0 in case of failure
+    if (ret) 
+        return 1;
+    return 0;
+}
+
+
+void List_Init(list_t *L) {
+   L-&gt;head = NULL;
+//   pthread_mutex_init(&amp;L-&gt;lock, NULL);
+}
+
+void printList(list_t *L) {
+   node_t* p = L-&gt;head;
+   printf("!! p init = %d\r\n", (int)p);
+   while(p!=NULL) {
+      printf("p-&gt;key = %d\n", p-&gt;key);
+      p = p-&gt;next;
+   }
+}
+
+int getListLen(list_t *L) {
+   int len = 0;
+   node_t* p = L-&gt;head;
+   while(p != NULL) {
+      p = p-&gt;next;
+      len++;
+   }
+   return len;
+}
+
+void *worker(void *argp) {
+   for (int i=0;i&lt;Total/N;i++) 
+      List_Insert(&amp;mylist, i);
+   //printList(&amp;mylist);
+}
+
+void main() {
+
+   List_Init(&amp;mylist);
+   pthread_t workers[N];
+   int i;
+
+
+   for (i=0;i&lt;N;i++) {
+      Pthread_create(&amp;workers[i], NULL, worker, (void *)i);
+   }
+   for (i=0;i&lt;N;i++) {
+      Pthread_join(workers[i], NULL);
+   }
+   int len = getListLen(&amp;mylist);
+   printf("list len = %d\n", len);
+}
+
+void List_Insert(list_t *L, int key) {
+   // synchronization not needed
+   node_t *new = malloc(sizeof(node_t));
+   if (new == NULL) {
+      perror("malloc");
+      return;
+   }
+   new-&gt;key = key; 
+   
+   // just lock critical section
+   //pthread_mutex_lock(&amp;L-&gt;lock);
+   int tmp;
+   do {
+      new-&gt;next = L-&gt;head;
+      tmp = CAS(&amp;(L-&gt;head), new-&gt;next, new);
+   }while(tmp == 0);
+   //printf("CurNode(%lu, %d, %lu)\r\n", new, new-&gt;key, new-&gt;next);
+   //printList(L);
+   //L-&gt;head = new;
+   //pthread_mutex_unlock(&amp;L-&gt;lock);
+}
+
+
+int List_Lookup(list_t *L, int key) {
+   int rv = -1;
+   //pthread_mutex_lock(&amp;L-&gt;lock);
+   node_t *curr = L-&gt;head;
+   while (curr) {
+      if (curr-&gt;key == key) {
+         rv = 0;
+         break;
+      }
+      curr = curr-&gt;next;
+   }
+   //pthread_mutex_unlock(&amp;L-&gt;lock);
+   return rv;
+}
+
+</code></pre><p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F30%2F15905889002688.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=高级操作系统之同步锁代码 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F30%2F15905889002688.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F30%2F15905889002688.html&amp;title=高级操作系统之同步锁代码 - 知不知&amp;summary=高级操作系统之同步锁代码&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F30%2F15905889002688.html&amp;text=高级操作系统之同步锁代码 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F30%2F15905889002688.html&amp;t=高级操作系统之同步锁代码 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F30%2F15905889002688.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('高级操作系统之同步锁代码'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
