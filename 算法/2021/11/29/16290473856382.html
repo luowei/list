@@ -1,0 +1,369 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/%E7%AE%97%E6%B3%95/2021/11/29/16290473856382.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>快速排序</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="快速排序">快速排序</h1> <p>快速排序是一种基于分治法的排序算法，通过选择一个枢轴元素（或说参考值，从数组中选择的元素）将数组划分为子数组。</p> <p>在划分数组时使小于枢轴的元素保留在左侧，大于枢轴的元素位于枢轴的右侧。每轮划分后，继续对左右子数组使用相同的方法进行划分，直持续到每个子数组都只包含一个元素。此时，元素已经排好序，将元素组合起来就是一个有序的数组。</p> <p><img src="https://luowei.github.io/list/https://www.runoob.com/wp-content/uploads/2019/03/quickSort.gif" alt="-w600" /></p> <h2 id="快速排序工作流程">快速排序工作流程</h2> <p><strong>1.选择一个枢轴元素(参考值)</strong> 这里选数组的最右边的元素 <img src="https://luowei.github.io/list/media/16290473856382/16290479163143.jpg" alt="-w400" /></p> <p><strong>2.重排数组</strong> 以2为枢轴元素，重排后的数组比2小的在它左边，比2大的在它右边，如下图： <img src="https://luowei.github.io/list/media/16290473856382/16290480565208.jpg" alt="-w400" /></p> <p><strong><em>重排过程：</em></strong></p> <ol> <li> <p>定义一个固定索引指针指向枢轴元素，并定义两个指针(快、慢双指针)都指到左边的第1个元素索引上，然后用指针指向的元素与枢轴元素进行比较； <img src="https://luowei.github.io/list/media/16290473856382/16290484266716.jpg" alt="-w400" /></p> </li> <li> <p>如果快指针指向的元素大于枢轴元素，就把快指针往后挪1个位置，继续下一次与枢轴元素比较，此时慢指针还保持在原来的位置上； <img src="https://luowei.github.io/list/media/16290473856382/16290486473668.jpg" alt="-w400" /></p> </li> <li> <p>继续迭代，快指针继续不断与枢轴元素比较挪移，直到快指针指的元素小于枢轴元素，就交换快慢指针所指向的元素，交换后快、慢就都同时往后挪1位置； <img src="https://luowei.github.io/list/media/16290473856382/16290490716060.jpg" alt="-w400" /></p> </li> <li> <p>重复 2、3这一过程，快指针元素大于枢轴元素就只挪快指针；小于枢轴元素就交换快慢指针元素并把快慢指针都往后挪； <img src="https://luowei.github.io/list/media/16290473856382/16290493012536.jpg" alt="-w400" /></p> </li> <li> <p>直到快指针到达最后一个元素的位置； <img src="https://luowei.github.io/list/media/16290473856382/16290498182392.jpg" alt="-w400" /></p> </li> <li> <p>最后交换枢轴元素与慢指针元素； <img src="https://luowei.github.io/list/media/16290473856382/16290498591373.jpg" alt="-w400" /></p> </li> </ol> <p><strong>3.划分子数组</strong> 一次遍历交换后，以原枢轴元素为界线，再分别对左右子数组做1、2操作(即1.选择数组最右边元素作为子数组的枢轴元素；2.重排子数组)； <img src="https://luowei.github.io/list/media/16290473856382/16290501629391.jpg" alt="-w600" /></p> <p>左子数组划分重排过程 <img src="https://luowei.github.io/list/media/16290473856382/16290502238402.jpg" alt="-w600" /></p> <p>右子数组划分重排过程 <img src="https://luowei.github.io/list/media/16290473856382/16290503203014.jpg" alt="-w600" /></p> <h2 id="复杂度">复杂度</h2> <p>|Time Complexity|| |—|—| |Best | O(n<em>log n) | |Worst | O(n^2) | |Average | O(n</em>log n) | |<strong>Space Complexity</strong> | O(log n) | |<strong>Stability</strong> | NO |</p> <h2 id="代码实现">代码实现</h2> <p><strong>Swift实现</strong></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">import</span> <span class="kt">Foundation</span>
+
+<span class="kd">func</span> <span class="nf">quickSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Array</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">count</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">){</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//找一个参考值base</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">base</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">first</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+    <span class="c1">//分配左右两块区</span>
+    <span class="k">var</span> <span class="nv">left</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Int</span><span class="p">](</span><span class="nv">https</span><span class="p">:</span><span class="c1">//luowei.github.io/list/)</span>
+    <span class="k">var</span> <span class="nv">right</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Int</span><span class="p">](</span><span class="nv">https</span><span class="p">:</span><span class="c1">//luowei.github.io/list/)</span>
+    <span class="c1">//遍历</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span>  <span class="mi">1</span> <span class="o">..&lt;</span> <span class="n">array</span><span class="o">.</span><span class="n">count</span> <span class="p">{</span>
+        <span class="c1">//把大于base的放到右边区块，小于等于base的放到左边区块</span>
+        <span class="k">if</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">base</span> <span class="p">{</span>
+            <span class="n">right</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+            <span class="n">left</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//再分别对左区与右区的数据进行同样的划分，直全部划分完</span>
+    <span class="nf">quickSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">left</span><span class="p">)</span>
+    <span class="nf">quickSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">right</span><span class="p">)</span>
+    
+    <span class="c1">//把参考值，左右两边的数据拼起来</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">+</span> <span class="n">right</span>
+<span class="p">}</span>
+
+
+<span class="c1">// MARK: - 快速排序，又称划分交换排序（partition-exchange sort）</span>
+<span class="c1">// 划分交换的方式排序更省空间</span>
+<span class="kd">func</span> <span class="nf">partitionExchangeSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">],</span><span class="nv">low</span><span class="p">:</span><span class="kt">Int</span><span class="p">,</span><span class="nv">hight</span><span class="p">:</span><span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">low</span> <span class="o">&lt;</span> <span class="n">hight</span><span class="p">){</span>
+        <span class="c1">//划分出一个参考值，小于参考值放左边，大于参考值的放右边</span>
+        <span class="k">let</span> <span class="nv">pi</span><span class="p">:</span><span class="kt">Int</span> <span class="o">=</span> <span class="nf">partition</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">low</span><span class="p">:</span> <span class="n">low</span><span class="p">,</span> <span class="nv">hight</span><span class="p">:</span> <span class="n">hight</span><span class="p">)</span>
+        <span class="c1">//对参考值左边的列表 递归调用快排方法</span>
+        <span class="nf">partitionExchangeSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">low</span><span class="p">:</span> <span class="n">low</span><span class="p">,</span> <span class="nv">hight</span><span class="p">:</span> <span class="n">pi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1">//对参考值右边的列表 递归调用快排方法</span>
+        <span class="nf">partitionExchangeSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">low</span><span class="p">:</span> <span class="n">pi</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">hight</span><span class="p">:</span> <span class="n">hight</span><span class="p">)</span>
+    <span class="p">}</span>
+    
+<span class="p">}</span>
+
+<span class="c1">//划分操作:比基准值小的摆放在基准前面，比基准值大的摆在基准的后面</span>
+<span class="kd">func</span> <span class="nf">partition</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">],</span><span class="nv">low</span><span class="p">:</span><span class="kt">Int</span><span class="p">,</span><span class="nv">hight</span><span class="p">:</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span><span class="p">{</span>
+    <span class="c1">//选最右边的作为基准值(参考值)</span>
+    <span class="k">let</span> <span class="nv">pivot</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">hight</span><span class="p">]</span>
+    
+    <span class="c1">//i用于指向一个更大的元素</span>
+    <span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">low</span> <span class="o">-</span> <span class="mi">1</span>
+    
+    <span class="c1">//遍历并与参考值比较，注意这里运行了双指针技巧，i与j</span>
+<span class="c1">//    for i in low ..&lt; hight - 1 {</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="k">in</span> <span class="nf">stride</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="n">low</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="n">hight</span><span class="p">,</span> <span class="nv">by</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pivot</span> <span class="p">{</span>
+            <span class="c1">//如果pivot值小，就把array[j]与(i+1位置)互换，相当于把j指针指的数挪到前面去，i指针指的数挪到后面</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">array</span><span class="o">.</span><span class="nf">swapAt</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//遍历完后，把最尾部的参考值互换到(i+1)指针指的位置，这样就保证了(i+1)前面的元素肯定是小于Pivot的，其后面的数肯定是大于Pivot的</span>
+    <span class="n">array</span><span class="o">.</span><span class="nf">swapAt</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">hight</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="c1">//打印</span>
+<span class="kd">func</span> <span class="nf">printQuickSort</span><span class="p">(</span><span class="n">_</span> <span class="nv">array</span><span class="p">:</span><span class="k">inout</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]){</span>
+    <span class="c1">//quickSort(array: &amp;array)</span>
+    <span class="nf">partitionExchangeSort</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">,</span> <span class="nv">low</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">hight</span><span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">count</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">arr</span><span class="p">:[</span><span class="kt">Int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nf">printQuickSort</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arr</span><span class="p">)</span>
+</code></pre></div></div> <p><strong>Python实现</strong></p> <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Quick sort in Python
+</span>
+<span class="c1"># function to find the partition position
+</span><span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+
+  <span class="c1"># choose the rightmost element as pivot
+</span>  <span class="n">pivot</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">high</span><span class="p">]</span>
+
+  <span class="c1"># pointer for greater element
+</span>  <span class="n">i</span> <span class="o">=</span> <span class="n">low</span> <span class="o">-</span> <span class="mi">1</span>
+
+  <span class="c1"># traverse through all elements
+</span>  <span class="c1"># compare each element with pivot
+</span>  <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pivot</span><span class="p">:</span>
+      <span class="c1"># if element smaller than pivot is found
+</span>      <span class="c1"># swap it with the greater element pointed by i
+</span>      <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+
+      <span class="c1"># swapping element at i with element at j
+</span>      <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">=</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+  <span class="c1"># swap the pivot element with the greater element specified by i
+</span>  <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">array</span><span class="p">[</span><span class="n">high</span><span class="p">])</span> <span class="o">=</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">high</span><span class="p">],</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+
+  <span class="c1"># return the position from where partition is done
+</span>  <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="c1"># function to perform quicksort
+</span><span class="k">def</span> <span class="nf">quickSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">:</span>
+
+    <span class="c1"># find pivot element such that
+</span>    <span class="c1"># element smaller than pivot are on the left
+</span>    <span class="c1"># element greater than pivot are on the right
+</span>    <span class="n">pi</span> <span class="o">=</span> <span class="n">partition</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
+
+    <span class="c1"># recursive call on the left of pivot
+</span>    <span class="n">quickSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">pi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># recursive call on the right of pivot
+</span>    <span class="n">quickSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">pi</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"Unsorted Array"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">quickSort</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">'Sorted Array in Ascending Order:'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div></div> <p><strong>Java实现</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Quick sort in Java</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">Quicksort</span> <span class="o">{</span>
+
+  <span class="c1">// method to find the partition position</span>
+  <span class="kd">static</span> <span class="kt">int</span> <span class="nf">partition</span><span class="o">(</span><span class="kt">int</span> <span class="n">array</span><span class="o">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="o">,</span> <span class="kt">int</span> <span class="n">high</span><span class="o">)</span> <span class="o">{</span>
+    
+    <span class="c1">// choose the rightmost element as pivot</span>
+    <span class="kt">int</span> <span class="n">pivot</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">high</span><span class="o">];</span>
+    
+    <span class="c1">// pointer for greater element</span>
+    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="o">(</span><span class="n">low</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+
+    <span class="c1">// traverse through all elements</span>
+    <span class="c1">// compare each element with pivot</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">low</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">high</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">array</span><span class="o">[</span><span class="n">j</span><span class="o">]</span> <span class="o">&lt;=</span> <span class="n">pivot</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="c1">// if element smaller than pivot is found</span>
+        <span class="c1">// swap it with the greatr element pointed by i</span>
+        <span class="n">i</span><span class="o">++;</span>
+
+        <span class="c1">// swapping element at i with element at j</span>
+        <span class="kt">int</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+        <span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">j</span><span class="o">];</span>
+        <span class="n">array</span><span class="o">[</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="n">temp</span><span class="o">;</span>
+      <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="c1">// swapt the pivot element with the greater element specified by i</span>
+    <span class="kt">int</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">];</span>
+    <span class="n">array</span><span class="o">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">high</span><span class="o">];</span>
+    <span class="n">array</span><span class="o">[</span><span class="n">high</span><span class="o">]</span> <span class="o">=</span> <span class="n">temp</span><span class="o">;</span>
+
+    <span class="c1">// return the position from where partition is done</span>
+    <span class="k">return</span> <span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">static</span> <span class="kt">void</span> <span class="nf">quickSort</span><span class="o">(</span><span class="kt">int</span> <span class="n">array</span><span class="o">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="o">,</span> <span class="kt">int</span> <span class="n">high</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span><span class="o">)</span> <span class="o">{</span>
+
+      <span class="c1">// find pivot element such that</span>
+      <span class="c1">// elements smaller than pivot are on the left</span>
+      <span class="c1">// elements greater than pivot are on the right</span>
+      <span class="kt">int</span> <span class="n">pi</span> <span class="o">=</span> <span class="n">partition</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">low</span><span class="o">,</span> <span class="n">high</span><span class="o">);</span>
+      
+      <span class="c1">// recursive call on the left of pivot</span>
+      <span class="n">quickSort</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">low</span><span class="o">,</span> <span class="n">pi</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+
+      <span class="c1">// recursive call on the right of pivot</span>
+      <span class="n">quickSort</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">pi</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">high</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Main class</span>
+<span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
+
+    <span class="kt">int</span><span class="o">[]</span> <span class="n">data</span> <span class="o">=</span> <span class="o">{</span> <span class="mi">8</span><span class="o">,</span> <span class="mi">7</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">9</span><span class="o">,</span> <span class="mi">6</span> <span class="o">};</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Unsorted Array"</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="nc">Arrays</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">data</span><span class="o">));</span>
+
+    <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+
+    <span class="c1">// call quicksort() on array data</span>
+    <span class="nc">Quicksort</span><span class="o">.</span><span class="na">quickSort</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Sorted Array in Ascending Order: "</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="nc">Arrays</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">data</span><span class="o">));</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div> <p><strong>C 实现</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Quick sort in C</span>
+
+<span class="cp">#include &lt;stdio.h&gt;
+</span>
+<span class="c1">// function to swap elements</span>
+<span class="kt">void</span> <span class="nf">swap</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="o">*</span><span class="n">a</span><span class="p">;</span>
+  <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="o">*</span><span class="n">b</span><span class="p">;</span>
+  <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// function to find the partition position</span>
+<span class="kt">int</span> <span class="nf">partition</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="p">,</span> <span class="kt">int</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+  
+  <span class="c1">// select the rightmost element as pivot</span>
+  <span class="kt">int</span> <span class="n">pivot</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">high</span><span class="p">];</span>
+  
+  <span class="c1">// pointer for greater element</span>
+  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+
+  <span class="c1">// traverse each element of the array</span>
+  <span class="c1">// compare them with the pivot</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">low</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pivot</span><span class="p">)</span> <span class="p">{</span>
+        
+      <span class="c1">// if element smaller than pivot is found</span>
+      <span class="c1">// swap it with the greater element pointed by i</span>
+      <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+      
+      <span class="c1">// swap element at i with element at j</span>
+      <span class="n">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">// swap the pivot element with the greater element at i</span>
+  <span class="n">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="n">high</span><span class="p">]);</span>
+  
+  <span class="c1">// return the partition point</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">quickSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="p">,</span> <span class="kt">int</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+    
+    <span class="c1">// find the pivot element such that</span>
+    <span class="c1">// elements smaller than pivot are on left of pivot</span>
+    <span class="c1">// elements greater than pivot are on right of pivot</span>
+    <span class="kt">int</span> <span class="n">pi</span> <span class="o">=</span> <span class="n">partition</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">);</span>
+    
+    <span class="c1">// recursive call on the left of pivot</span>
+    <span class="n">quickSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">pi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+    
+    <span class="c1">// recursive call on the right of pivot</span>
+    <span class="n">quickSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">pi</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// function to print array elements</span>
+<span class="kt">void</span> <span class="nf">printArray</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d  "</span><span class="p">,</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// main function</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">data</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">};</span>
+  
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+  
+  <span class="n">printf</span><span class="p">(</span><span class="s">"Unsorted Array</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="n">printArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  
+  <span class="c1">// perform quicksort on data</span>
+  <span class="n">quickSort</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+  
+  <span class="n">printf</span><span class="p">(</span><span class="s">"Sorted array in ascending order: </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="n">printArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>C++ 实现</strong></p> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Quick sort in C++</span>
+
+<span class="cp">#include &lt;iostream&gt;
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="c1">// function to swap elements</span>
+<span class="kt">void</span> <span class="nf">swap</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="o">*</span><span class="n">a</span><span class="p">;</span>
+  <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="o">*</span><span class="n">b</span><span class="p">;</span>
+  <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// function to print the array</span>
+<span class="kt">void</span> <span class="nf">printArray</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// function to rearrange array (find the partition point)</span>
+<span class="kt">int</span> <span class="nf">partition</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="p">,</span> <span class="kt">int</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+    
+  <span class="c1">// select the rightmost element as pivot</span>
+  <span class="kt">int</span> <span class="n">pivot</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">high</span><span class="p">];</span>
+  
+  <span class="c1">// pointer for greater element</span>
+  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+
+  <span class="c1">// traverse each element of the array</span>
+  <span class="c1">// compare them with the pivot</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">low</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pivot</span><span class="p">)</span> <span class="p">{</span>
+        
+      <span class="c1">// if element smaller than pivot is found</span>
+      <span class="c1">// swap it with the greater element pointed by i</span>
+      <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+      
+      <span class="c1">// swap element at i with element at j</span>
+      <span class="n">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// swap pivot with the greater element at i</span>
+  <span class="n">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="n">high</span><span class="p">]);</span>
+  
+  <span class="c1">// return the partition point</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">quickSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">array</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="p">,</span> <span class="kt">int</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+      
+    <span class="c1">// find the pivot element such that</span>
+    <span class="c1">// elements smaller than pivot are on left of pivot</span>
+    <span class="c1">// elements greater than pivot are on righ of pivot</span>
+    <span class="kt">int</span> <span class="n">pi</span> <span class="o">=</span> <span class="n">partition</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">);</span>
+
+    <span class="c1">// recursive call on the left of pivot</span>
+    <span class="n">quickSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">pi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+
+    <span class="c1">// recursive call on the right of pivot</span>
+    <span class="n">quickSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">pi</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Driver code</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">data</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">};</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+  
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Unsorted Array: </span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+  <span class="n">printArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  
+  <span class="c1">// perform quicksort on data</span>
+  <span class="n">quickSort</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+  
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Sorted array in ascending order: </span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+  <span class="n">printArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290473856382.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=快速排序 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290473856382.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290473856382.html&amp;title=快速排序 - 知不知&amp;summary=快速排序&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290473856382.html&amp;text=快速排序 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290473856382.html&amp;t=快速排序 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25AE%2597%25E6%25B3%2595%2F2021%2F11%2F29%2F16290473856382.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('快速排序'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
