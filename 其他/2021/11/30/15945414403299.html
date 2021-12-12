@@ -28,7 +28,7 @@
 
 <span class="k">UPDATE</span> <span class="n">tb_chizhu</span> <span class="k">SET</span> <span class="n">wuBiQuanMa</span><span class="o">=</span><span class="k">NULL</span> <span class="k">WHERE</span> <span class="k">LENGTH</span><span class="p">(</span><span class="n">wuBiQuanMa</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span>
 
-</code></pre></div></div> <p><strong>查询和更新一级简码</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT COUNT(*) FROM T_98CodeTable;
+</code></pre></div></div> <p><strong>查询和更新一级简码</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT COUNT(*) FROM T_98CodeTable;
 
 -- 1. 查询和更新一级简码  
 SELECT * FROM T_86CodeTable WHERE LENGTH(Code)=1 AND Word IN('一','地','在','要','工','上','是','中','国','同','和','的','有','人','我','主','产','不','为','这','民','了','发','以','经')
@@ -36,7 +36,7 @@ SELECT * FROM T_98CodeTable WHERE LENGTH(Code)=1 AND Word IN('一','地','在','
 
 UPDATE T_86CodeTable SET UserCnt=100 WHERE LENGTH(Code)=1 AND Word IN('一','地','在','要','工','上','是','中','国','同','和','的','有','人','我','主','产','不','为','这','民','了','发','以','经')
 UPDATE T_98CodeTable SET UserCnt=100 WHERE LENGTH(Code)=1 AND Word IN('一','地','在','要','工','上','是','中','国','同','和','的','有','人','我','主','产','不','为','这','民','了','发','以','经')
-</code></pre></div></div> <p><strong>查询和更新二级简码</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- 查询和更新二级简码
+</code></pre></div></div> <p><strong>查询和更新二级简码</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- 查询和更新二级简码
 -- SELECT `hanZi` FROM tb_word where `leiXing` = 2 and LENGTH(wuBiBianMa)=2;
 
 SELECT * FROM T_86CodeTable WHERE LENGTH(Code)=2 AND Code NOT LIKE '%z%' AND Word NOT IN('一','地','在','要','工','上','是','中','国','同','和','的','有','人','我','主','产','不','为','这','民','了','发','以','经')

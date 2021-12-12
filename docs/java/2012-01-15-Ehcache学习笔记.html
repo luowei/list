@@ -6,11 +6,11 @@
 <span class="n">config</span><span class="o">.</span><span class="na">setmaxEntriesLocalDisk</span><span class="o">(</span><span class="mi">1000000</span><span class="o">);</span>
 </code></pre></div></div> <p>当然也可以冻结动态的Cache的配置，如下：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Cache</span> <span class="n">cache</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="na">getCache</span><span class="o">(</span><span class="s">"sampleCache"</span><span class="o">);</span>
 <span class="n">cache</span><span class="o">.</span><span class="na">disableDynamicFeatures</span><span class="o">();</span>      
-</code></pre></div></div> <p>在xml中将 <ehcache> 元素的属性 dynamicConfigattribute 改为 "false"即可。</ehcache></p> <p><strong>多层次Cache的Cache Warming</strong><br /> 要在缓存启动的时候同步缓存数据。EHCache2.5以上版本提供了支持，如下：<br /> Replicated caches provide a boot strap mechanism which populates them. For example following is the JGroups bootstrap cache loader:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bootstrapCacheLoaderFactory 
+</code></pre></div></div> <p>在xml中将 <ehcache> 元素的属性 dynamicConfigattribute 改为 "false"即可。</ehcache></p> <p><strong>多层次Cache的Cache Warming</strong><br /> 要在缓存启动的时候同步缓存数据。EHCache2.5以上版本提供了支持，如下：<br /> Replicated caches provide a boot strap mechanism which populates them. For example following is the JGroups bootstrap cache loader:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bootstrapCacheLoaderFactory 
 class="net.sf.ehcache.distribution.jgroups.JGroupsBootstrapCacheLoaderFactory" properties="bootstrapAsynchronously=true"/&gt;
-</code></pre></div></div> <p>There are two new bootstrapCacheLoaderFactory implementations: one for standalone caches with DiskStores, and one for Terracotta Distributed caches.</p> <p><strong>DiskStoreBootstrapCacheLoaderFactory</strong><br /> The DiskStoreBootstrapCacheLoaderFactory loads elements from the DiskStore to the On-Heap Store and the Off-Heap store until either:</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bootstrapCacheLoaderFactory class="net.sf.ehcache.store.DiskStoreBootstrapCacheLoaderFactory" 
+</code></pre></div></div> <p>There are two new bootstrapCacheLoaderFactory implementations: one for standalone caches with DiskStores, and one for Terracotta Distributed caches.</p> <p><strong>DiskStoreBootstrapCacheLoaderFactory</strong><br /> The DiskStoreBootstrapCacheLoaderFactory loads elements from the DiskStore to the On-Heap Store and the Off-Heap store until either:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bootstrapCacheLoaderFactory class="net.sf.ehcache.store.DiskStoreBootstrapCacheLoaderFactory" 
 properties="bootstrapAsynchronously=true"/&gt;
-</code></pre></div></div> <p><strong>TerracottaBootstrapCacheLoaderFactory</strong><br /> The TerracottaBootstrapCacheLoaderFactory loads elements from the Terracotta L2 to the L1 based on what it was using the last time it ran. If this is the first time it has been run it has no effect.</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bootstrapCacheLoaderFactory class="net.sf.ehcache.terracotta.TerracottaBootstrapCacheLoaderFactory"
+</code></pre></div></div> <p><strong>TerracottaBootstrapCacheLoaderFactory</strong><br /> The TerracottaBootstrapCacheLoaderFactory loads elements from the Terracotta L2 to the L1 based on what it was using the last time it ran. If this is the first time it has been run it has no effect.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bootstrapCacheLoaderFactory class="net.sf.ehcache.terracotta.TerracottaBootstrapCacheLoaderFactory"
                              properties="bootstrapAsynchronously=true,
 directory=dumps,
 interval=5,
@@ -144,500 +144,500 @@ useDedicatedThread=false"/&gt;
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>示例3： EHCacheUtils.java</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">com</span><span class="p">.</span><span class="n">ttpod</span><span class="p">.</span><span class="n">common</span><span class="p">.</span><span class="n">tool</span><span class="p">.</span><span class="n">cache</span><span class="p">;</span>
-<span class="p">/**</span>
- <span class="p">*</span> <span class="p">@</span><span class="n">classDescription</span><span class="p">:</span><span class="n">ehcache</span><span class="err">工具类</span>
- <span class="p">*/</span>
-<span class="k">public</span> <span class="n">class</span> <span class="n">EHCacheUtil</span> <span class="p">{</span>
-    <span class="n">private</span> <span class="n">static</span> <span class="n">CacheManager</span> <span class="n">cacheManager</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">static</span> <span class="n">Cache</span> <span class="n">cache</span><span class="p">=</span><span class="n">null</span><span class="p">;</span>
-<span class="p">//------------------</span><span class="err">简化</span><span class="p">---------------------</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">初始化缓存管理容器</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">CacheManager</span> <span class="n">initCacheManager</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">cacheManager</span> <span class="p">==</span> <span class="n">null</span><span class="p">)</span>
-                <span class="n">cacheManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="n">getInstance</span><span class="p">();</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="n">return</span> <span class="n">cacheManager</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">初始化缓存管理容器</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">path</span> <span class="n">ehcache</span><span class="p">.</span><span class="n">xml</span><span class="err">存放的路徑</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">CacheManager</span> <span class="n">initCacheManager</span><span class="p">(</span><span class="k">String</span> <span class="n">path</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">cacheManager</span> <span class="p">==</span> <span class="n">null</span><span class="p">){</span>
-                <span class="nf">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s2">"为进来"</span><span class="p">+</span><span class="n">path</span><span class="p">);</span>
-                <span class="n">cacheManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="n">getInstance</span><span class="p">().</span><span class="nb">create</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
-            <span class="p">}</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="n">return</span> <span class="n">cacheManager</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">初始化</span><span class="n">cache</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">Cache</span> <span class="n">initCache</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">checkCacheManager</span><span class="p">();</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">null</span><span class="p">==</span><span class="n">cacheManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">)){</span>
-            <span class="n">cacheManager</span><span class="p">.</span><span class="n">addCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="n">cache</span><span class="p">=</span><span class="n">cacheManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-        <span class="n">return</span> <span class="n">cache</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">添加缓存</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">key</span> <span class="err">关键字</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">value</span> <span class="err">值</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">put</span><span class="p">(</span><span class="n">Object</span> <span class="n">key</span><span class="p">,</span><span class="n">Object</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">checkCache</span><span class="p">();</span>
-        <span class="p">//</span> <span class="err">创建</span><span class="n">Element</span><span class="p">,</span><span class="err">然后放入</span><span class="n">Cache</span><span class="err">对象中</span>
-        <span class="n">Element</span> <span class="n">element</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Element</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
-        <span class="n">cache</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">element</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">获取</span><span class="n">cache</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">key</span> <span class="err">关键字</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">Object</span> <span class="n">get</span><span class="p">(</span><span class="n">Object</span> <span class="n">key</span><span class="p">){</span>
-        <span class="n">checkCache</span><span class="p">();</span>
-        <span class="n">Element</span> <span class="n">element</span> <span class="p">=</span> <span class="n">cache</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">null</span><span class="p">==</span><span class="n">element</span><span class="p">){</span>
-            <span class="n">return</span> <span class="n">null</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="n">return</span> <span class="n">element</span><span class="p">.</span><span class="n">getObjectValue</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="p">//--------------</span><span class="err">更加方便使用的</span><span class="p">----------------</span>
-    <span class="p">//</span><span class="n">private</span> <span class="n">static</span> <span class="n">CacheManager</span> <span class="n">myManager</span><span class="p">=</span><span class="n">null</span><span class="p">;</span>
-    <span class="p">//</span><span class="n">private</span> <span class="n">static</span> <span class="n">Cache</span> <span class="n">myCache</span><span class="p">=</span><span class="n">null</span><span class="p">;</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">初始化缓存</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">author</span> <span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">cacheName</span> <span class="err">缓存名称</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">maxElementsInMemory</span> <span class="err">元素最大数量</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">overflowToDisk</span> <span class="err">是否持久化到硬盘</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">eternal</span> <span class="err">是否会死亡</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">timeToLiveSeconds</span> <span class="err">缓存存活时间</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">timeToIdleSeconds</span> <span class="err">缓存的间隔时间</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span> <span class="err">缓存</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">throws</span> <span class="n">Exception</span> <span class="err">异常</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">Cache</span> <span class="n">initCache</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">,</span><span class="n">int</span> <span class="n">maxElementsInMemory</span><span class="p">,</span>
-                                  <span class="k">boolean</span> <span class="n">overflowToDisk</span><span class="p">,</span><span class="k">boolean</span> <span class="n">eternal</span><span class="p">,</span><span class="n">long</span> <span class="n">timeToLiveSeconds</span><span class="p">,</span>
-                                  <span class="n">long</span> <span class="n">timeToIdleSeconds</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span><span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="n">CacheManager</span> <span class="n">singletonManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="nb">create</span><span class="p">();</span>
-            <span class="n">Cache</span> <span class="n">myCache</span> <span class="p">=</span> <span class="n">singletonManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">myCache</span><span class="c1">!=null){
-</span>                <span class="n">CacheConfiguration</span> <span class="n">config</span> <span class="p">=</span> <span class="n">cache</span><span class="p">.</span><span class="n">getCacheConfiguration</span><span class="p">();</span>
-                <span class="n">config</span><span class="p">.</span><span class="n">setTimeToLiveSeconds</span><span class="p">(</span><span class="n">timeToLiveSeconds</span><span class="p">);</span>
-                <span class="n">config</span><span class="p">.</span><span class="n">setMaxElementsInMemory</span><span class="p">(</span><span class="n">maxElementsInMemory</span><span class="p">);</span>
-                <span class="n">config</span><span class="p">.</span><span class="n">setOverflowToDisk</span><span class="p">(</span><span class="n">overflowToDisk</span><span class="p">);</span>
-                <span class="n">config</span><span class="p">.</span><span class="n">setEternal</span><span class="p">(</span><span class="n">eternal</span><span class="p">);</span>
-                <span class="n">config</span><span class="p">.</span><span class="n">setTimeToIdleSeconds</span><span class="p">(</span><span class="n">timeToIdleSeconds</span><span class="p">);</span>
-            <span class="p">}</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">myCache</span><span class="p">==</span><span class="n">null</span><span class="p">){</span>
-                <span class="n">Cache</span> <span class="n">memoryOnlyCache</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Cache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">,</span> <span class="n">maxElementsInMemory</span><span class="p">,</span> <span class="n">overflowToDisk</span><span class="p">,</span>
-                        <span class="n">eternal</span><span class="p">,</span> <span class="n">timeToLiveSeconds</span><span class="p">,</span> <span class="n">timeToIdleSeconds</span><span class="p">);</span>
-                <span class="n">singletonManager</span><span class="p">.</span><span class="n">addCache</span><span class="p">(</span><span class="n">memoryOnlyCache</span><span class="p">);</span>
-                <span class="n">myCache</span> <span class="p">=</span> <span class="n">singletonManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="p">}</span>
-            <span class="n">return</span> <span class="n">myCache</span><span class="p">;</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">//</span><span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s2">"init cache "</span><span class="p">+</span><span class="n">cacheName</span><span class="p">+</span><span class="s2">" failed!!!"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">初始化</span><span class="n">cache</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">author</span> <span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">cacheName</span> <span class="n">cache</span><span class="err">的名字</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">timeToLiveSeconds</span> <span class="err">有效时间</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span> <span class="n">cache</span> <span class="err">缓存</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">throws</span> <span class="n">Exception</span> <span class="err">异常</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">Cache</span> <span class="n">initCache</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">,</span><span class="n">long</span> <span class="n">timeToLiveSeconds</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span><span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="n">CacheManager</span> <span class="n">myManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="nb">create</span><span class="p">();</span>
-            <span class="n">Cache</span> <span class="n">myCache</span> <span class="p">=</span> <span class="n">myManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">myCache</span><span class="c1">!=null){
-</span>                <span class="n">CacheConfiguration</span> <span class="n">config</span> <span class="p">=</span> <span class="n">myCache</span><span class="p">.</span><span class="n">getCacheConfiguration</span><span class="p">();</span>
-                <span class="n">config</span><span class="p">.</span><span class="n">setTimeToLiveSeconds</span><span class="p">(</span><span class="n">timeToLiveSeconds</span><span class="p">);</span>
-            <span class="p">}</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">myCache</span><span class="p">==</span><span class="n">null</span><span class="p">){</span>
-                <span class="n">myCache</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Cache</span><span class="p">(</span>
-                        <span class="n">new</span> <span class="n">CacheConfiguration</span><span class="p">(</span><span class="n">cacheName</span><span class="p">,</span> <span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">MAXELEMENTSINMEMORY</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">memoryStoreEvictionPolicy</span><span class="p">(</span><span class="n">MemoryStoreEvictionPolicy</span><span class="p">.</span><span class="n">LFU</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">overflowToDisk</span><span class="p">(</span><span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">OVERFLOWTODISK</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">eternal</span><span class="p">(</span><span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">ETERNAL</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">timeToLiveSeconds</span><span class="p">(</span><span class="n">timeToLiveSeconds</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">timeToIdleSeconds</span><span class="p">(</span><span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">TIMETOIDLESECONDS</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">diskPersistent</span><span class="p">(</span><span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">DISKPERSISTENT</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">diskExpiryThreadIntervalSeconds</span><span class="p">(</span><span class="m">0</span><span class="p">));</span>
-                <span class="n">myManager</span><span class="p">.</span><span class="n">addCache</span><span class="p">(</span><span class="n">myCache</span><span class="p">);</span>
-            <span class="p">}</span>
-            <span class="n">return</span> <span class="n">myCache</span><span class="p">;</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">//</span><span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s2">"init cache "</span><span class="p">+</span><span class="n">cacheName</span><span class="p">+</span><span class="s2">" failed!!!"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">初始化</span><span class="n">Cache</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">author</span> <span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">cacheName</span> <span class="n">cache</span><span class="err">容器名</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span> <span class="n">cache</span><span class="err">容器</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">throws</span> <span class="n">Exception</span> <span class="err">失败抛出异常</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">Cache</span> <span class="n">initMyCache</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span><span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="n">CacheManager</span> <span class="n">myManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="nb">create</span><span class="p">();</span>
-            <span class="n">Cache</span> <span class="n">myCache</span> <span class="p">=</span> <span class="n">myManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">myCache</span><span class="p">==</span><span class="n">null</span><span class="p">){</span>
-                <span class="n">myCache</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Cache</span><span class="p">(</span>
-                        <span class="n">new</span> <span class="n">CacheConfiguration</span><span class="p">(</span><span class="n">cacheName</span><span class="p">,</span> <span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">MAXELEMENTSINMEMORY</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">memoryStoreEvictionPolicy</span><span class="p">(</span><span class="n">MemoryStoreEvictionPolicy</span><span class="p">.</span><span class="n">LFU</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">overflowToDisk</span><span class="p">(</span><span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">OVERFLOWTODISK</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">eternal</span><span class="p">(</span><span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">ETERNAL</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">timeToLiveSeconds</span><span class="p">(</span><span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">TIMETOlIVESECONDS</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">timeToIdleSeconds</span><span class="p">(</span><span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">TIMETOIDLESECONDS</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">diskPersistent</span><span class="p">(</span><span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">DISKPERSISTENT</span><span class="p">)</span>
-                                <span class="p">.</span><span class="n">diskExpiryThreadIntervalSeconds</span><span class="p">(</span><span class="m">0</span><span class="p">));</span>
-                <span class="n">myManager</span><span class="p">.</span><span class="n">addCache</span><span class="p">(</span><span class="n">myCache</span><span class="p">);</span>
-            <span class="p">}</span>
-            <span class="n">return</span> <span class="n">myCache</span><span class="p">;</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">//</span><span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s2">"init cache "</span><span class="p">+</span><span class="n">cacheName</span><span class="p">+</span><span class="s2">" failed!!!"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">修改缓存容器配置</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">author</span> <span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">cacheName</span> <span class="err">缓存名</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">timeToLiveSeconds</span> <span class="err">有效时间</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">maxElementsInMemory</span> <span class="err">最大数量</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span> <span class="err">真</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">throws</span> <span class="n">Exception</span> <span class="err">异常</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">boolean</span> <span class="n">modifyCache</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">,</span>
-                                      <span class="n">long</span> <span class="n">timeToLiveSeconds</span><span class="p">,</span><span class="n">int</span> <span class="n">maxElementsInMemory</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span><span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">StringUtils</span><span class="p">.</span><span class="n">isNotBlank</span><span class="p">(</span><span class="n">cacheName</span><span class="p">)</span> <span class="p">&amp;&amp;</span> <span class="n">timeToLiveSeconds</span><span class="c1">!=0L
-</span>                    <span class="p">&amp;&amp;</span> <span class="n">maxElementsInMemory</span><span class="c1">!=0){
-</span>                <span class="n">CacheManager</span> <span class="n">myManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="nb">create</span><span class="p">();</span>
-                <span class="n">Cache</span> <span class="n">myCache</span> <span class="p">=</span> <span class="n">myManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-                <span class="n">CacheConfiguration</span> <span class="n">config</span> <span class="p">=</span> <span class="n">myCache</span><span class="p">.</span><span class="n">getCacheConfiguration</span><span class="p">();</span>
-                <span class="n">config</span><span class="p">.</span><span class="n">setTimeToLiveSeconds</span><span class="p">(</span><span class="n">timeToLiveSeconds</span><span class="p">);</span>
-                <span class="n">config</span><span class="p">.</span><span class="n">setMaxElementsInMemory</span><span class="p">(</span><span class="n">maxElementsInMemory</span><span class="p">);</span>
-                <span class="n">return</span> <span class="nb">true</span><span class="p">;</span>
-            <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-                <span class="n">return</span> <span class="nb">false</span><span class="p">;</span>
-            <span class="p">}</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">//</span><span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s2">"modify cache "</span><span class="p">+</span><span class="n">cacheName</span><span class="p">+</span><span class="s2">" failed!!!"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">向指定容器中设置值</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">author</span> <span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">vesselName</span> <span class="err">容器名</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">key</span> <span class="err">键</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">value</span> <span class="err">值</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span> <span class="err">返回真</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">throws</span> <span class="n">Exception</span> <span class="err">异常</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">boolean</span> <span class="n">setValue</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">,</span><span class="k">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">Object</span> <span class="n">value</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span><span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="n">CacheManager</span> <span class="n">myManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="nb">create</span><span class="p">();</span>
-            <span class="n">Cache</span> <span class="n">myCache</span> <span class="p">=</span> <span class="n">myManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">myCache</span><span class="p">==</span><span class="n">null</span><span class="p">){</span>
-                <span class="n">myCache</span><span class="p">=</span><span class="n">initCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-                <span class="p">//</span><span class="n">myManager</span><span class="p">.</span><span class="n">addCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-                <span class="p">//</span><span class="n">myCache</span><span class="p">=</span><span class="n">myManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="p">}</span>
-            <span class="n">myCache</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">new</span> <span class="n">Element</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">));</span>
-            <span class="n">return</span> <span class="nb">true</span><span class="p">;</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">//</span><span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s2">"set cache "</span><span class="p">+</span><span class="n">cacheName</span><span class="p">+</span><span class="s2">" failed!!!"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">向指定容器中设置值</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">author</span> <span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">cacheName</span> <span class="err">容器名</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">key</span> <span class="err">键</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">value</span> <span class="err">值</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">timeToIdleSeconds</span> <span class="err">间歇时间</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">timeToLiveSeconds</span> <span class="err">存活时间</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span> <span class="err">真</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">throws</span> <span class="n">Exception</span> <span class="err">抛出异常</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">boolean</span> <span class="n">setValue</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">,</span><span class="k">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">Object</span> <span class="n">value</span><span class="p">,</span>
-                                   <span class="k">Integer</span> <span class="n">timeToLiveSeconds</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span><span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="n">CacheManager</span> <span class="n">myManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="nb">create</span><span class="p">();</span>
-            <span class="n">Cache</span> <span class="n">myCache</span> <span class="p">=</span> <span class="n">myManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">myCache</span><span class="p">==</span><span class="n">null</span><span class="p">){</span>
-                <span class="n">initCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">,</span> <span class="n">timeToLiveSeconds</span><span class="p">);</span>
-                <span class="n">myCache</span> <span class="p">=</span> <span class="n">myManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="p">}</span>
-            <span class="n">myCache</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">new</span> <span class="n">Element</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">ETERNAL</span><span class="p">,</span>
-                    <span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">TIMETOIDLESECONDS</span><span class="p">,</span> <span class="n">timeToLiveSeconds</span><span class="p">));</span>
-            <span class="n">return</span> <span class="nb">true</span><span class="p">;</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">//</span><span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s2">"set cache "</span><span class="p">+</span><span class="n">cacheName</span><span class="p">+</span><span class="s2">" failed!!!"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">从</span><span class="n">ehcache</span><span class="err">的指定容器中取值</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">author</span> <span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">createTime</span> <span class="m">2012</span><span class="p">-</span><span class="m">4</span><span class="p">-</span><span class="m">23</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">key</span> <span class="err">键</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span> <span class="err">返回</span><span class="n">Object</span><span class="err">类型的值</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">throws</span> <span class="n">Exception</span> <span class="err">异常</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">Object</span> <span class="nf">getValue</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">,</span><span class="k">String</span> <span class="n">key</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span><span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="n">CacheManager</span> <span class="n">myManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="nb">create</span><span class="p">();</span>
-            <span class="n">Cache</span> <span class="n">myCache</span> <span class="p">=</span> <span class="n">myManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">myCache</span><span class="p">==</span><span class="n">null</span><span class="p">){</span>
-                <span class="n">myCache</span><span class="p">=</span><span class="n">initMyCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="p">}</span>
-            <span class="n">return</span> <span class="n">myCache</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">).</span><span class="nf">getValue</span><span class="p">();</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">//</span><span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">return</span> <span class="n">null</span><span class="p">;</span>
-            <span class="p">//</span><span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s2">"get cache "</span><span class="p">+</span><span class="n">cacheName</span><span class="p">+</span><span class="s2">" failed!!!"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">删除指定的</span><span class="n">ehcache</span><span class="err">容器</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">author</span> <span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">vesselName</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span> <span class="err">真</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">throws</span> <span class="n">Exception</span> <span class="err">失败抛出异常</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">boolean</span> <span class="n">removeEhcache</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span><span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="n">CacheManager</span> <span class="n">myManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="nb">create</span><span class="p">();</span>
-            <span class="n">myManager</span><span class="p">.</span><span class="n">removeCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="n">return</span> <span class="nb">true</span><span class="p">;</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">//</span><span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s2">"remove cache "</span><span class="p">+</span><span class="n">cacheName</span><span class="p">+</span><span class="s2">" failed!!!"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">删除所有的</span><span class="n">EHCache</span><span class="err">容器</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">author</span> <span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">cacheName</span> <span class="err">容器名</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span> <span class="err">返回真</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">throws</span> <span class="n">Exception</span> <span class="err">失败抛出异常</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">boolean</span> <span class="n">removeAllEhcache</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span><span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="n">CacheManager</span> <span class="n">myManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="nb">create</span><span class="p">();</span>
-            <span class="n">myManager</span><span class="p">.</span><span class="n">removalAll</span><span class="p">();</span>
-            <span class="n">return</span> <span class="nb">true</span><span class="p">;</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">//</span><span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s2">"remove cache "</span><span class="p">+</span><span class="n">cacheName</span><span class="p">+</span><span class="s2">" failed!!!"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">删除</span><span class="n">EHCache</span><span class="err">容器中的元素</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">author</span> <span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">cacheName</span>    <span class="err">容器名</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">key</span> <span class="err">键</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span> <span class="err">真</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">throws</span> <span class="n">Exception</span> <span class="err">失败抛出异常</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">boolean</span> <span class="n">removeElment</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">,</span><span class="k">String</span> <span class="n">key</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span><span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="n">CacheManager</span> <span class="n">myManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="nb">create</span><span class="p">();</span>
-            <span class="n">Cache</span> <span class="n">myCache</span> <span class="p">=</span> <span class="n">myManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="n">myCache</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
-            <span class="n">return</span> <span class="nb">true</span><span class="p">;</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">//</span><span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s2">"remove cache "</span><span class="p">+</span><span class="n">cacheName</span><span class="p">+</span><span class="s2">" failed!!!"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">删除指定容器中的所有元素</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">author</span> <span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">cacheName</span> <span class="err">容器名</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">key</span> <span class="err">键</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span> <span class="err">真</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">throws</span> <span class="n">Exception</span> <span class="err">失败抛出异常</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">boolean</span> <span class="n">removeAllElment</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">,</span><span class="k">String</span> <span class="n">key</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span><span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-            <span class="n">CacheManager</span> <span class="n">myManager</span> <span class="p">=</span> <span class="n">CacheManager</span><span class="p">.</span><span class="nb">create</span><span class="p">();</span>
-            <span class="n">Cache</span> <span class="n">myCache</span> <span class="p">=</span> <span class="n">myManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-            <span class="n">myCache</span><span class="p">.</span><span class="n">removeAll</span><span class="p">();</span>
-            <span class="n">return</span> <span class="nb">true</span><span class="p">;</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">//</span><span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s2">"remove cache "</span><span class="p">+</span><span class="n">cacheName</span><span class="p">+</span><span class="s2">" failed!!!"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">//------------------</span><span class="err">方便调用</span><span class="p">------------</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">释放</span><span class="n">CacheManage</span>
-     <span class="p">*</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">shutdown</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">cacheManager</span><span class="p">.</span><span class="n">shutdown</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">移除</span><span class="n">cache</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">cacheName</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">removeCache</span><span class="p">(</span><span class="k">String</span> <span class="n">cacheName</span><span class="p">){</span>
-        <span class="n">checkCacheManager</span><span class="p">();</span>
-        <span class="n">cache</span><span class="p">=</span><span class="n">cacheManager</span><span class="p">.</span><span class="n">getCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">null</span><span class="c1">!=cache){
-</span>            <span class="n">cacheManager</span><span class="p">.</span><span class="n">removeCache</span><span class="p">(</span><span class="n">cacheName</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">移除</span><span class="n">cache</span><span class="err">中的</span><span class="n">key</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">cacheName</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">remove</span><span class="p">(</span><span class="k">String</span> <span class="n">key</span><span class="p">){</span>
-        <span class="n">checkCache</span><span class="p">();</span>
-        <span class="n">cache</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">移除所有</span><span class="n">cache</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">removeAllCache</span><span class="p">(){</span>
-        <span class="n">checkCacheManager</span><span class="p">();</span>
-        <span class="n">cacheManager</span><span class="p">.</span><span class="n">removalAll</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">移除所有</span><span class="n">Element</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">removeAllKey</span><span class="p">(){</span>
-        <span class="n">checkCache</span><span class="p">();</span>
-        <span class="n">cache</span><span class="p">.</span><span class="n">removeAll</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">获取所有的</span><span class="n">cache</span><span class="err">名称</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">String</span><span class="p">[]</span><span class="n">getAllCaches</span><span class="p">(){</span>
-        <span class="n">checkCacheManager</span><span class="p">();</span>
-        <span class="n">return</span> <span class="n">cacheManager</span><span class="p">.</span><span class="n">getCacheNames</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">获取</span><span class="n">Cache</span><span class="err">所有的</span><span class="n">Keys</span>
-     <span class="p">*</span> <span class="p">@</span><span class="n">return</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">List</span> <span class="n">getKeys</span><span class="p">(){</span>
-        <span class="n">checkCache</span><span class="p">();</span>
-        <span class="n">return</span> <span class="n">cache</span><span class="p">.</span><span class="n">getKeys</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">检测</span><span class="n">cacheManager</span>
-     <span class="p">*/</span>
-    <span class="n">private</span> <span class="n">static</span> <span class="n">void</span> <span class="n">checkCacheManager</span><span class="p">(){</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">null</span><span class="p">==</span><span class="n">cacheManager</span><span class="p">){</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">IllegalArgumentException</span><span class="p">(</span><span class="s2">"调用前请先初始化CacheManager值：EHCacheUtil.initCacheManager"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="n">private</span> <span class="n">static</span> <span class="n">void</span> <span class="n">checkCache</span><span class="p">(){</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">null</span><span class="p">==</span><span class="n">cache</span><span class="p">){</span>
-            <span class="n">throw</span> <span class="n">new</span> <span class="n">IllegalArgumentException</span><span class="p">(</span><span class="s2">"调用前请先初始化Cache值：EHCacheUtil.initCache(参数)"</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="k">String</span><span class="p">[]</span><span class="n">arg</span><span class="p">){</span>
-        <span class="p">//</span><span class="err">初始化</span><span class="p">--</span><span class="err">必须</span>
-        <span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">initCacheManager</span><span class="p">();</span>
-        <span class="k">String</span><span class="p">[]</span><span class="n">caches</span><span class="p">=</span><span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">getAllCaches</span><span class="p">();</span>
-        <span class="n">for</span><span class="p">(</span><span class="k">String</span> <span class="n">cache</span><span class="p">:</span><span class="n">caches</span><span class="p">){</span>
-            <span class="nf">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">cache</span><span class="p">);</span>
-        <span class="p">}</span>
-<span class="p">//</span>        <span class="p">//</span><span class="err">放入</span><span class="n">Test</span> <span class="n">Cache</span><span class="err">中</span>
-<span class="p">//</span>        <span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">initCache</span><span class="p">(</span><span class="s2">"ceshi"</span><span class="p">);</span>
-<span class="p">//</span>        <span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s2">"F"</span><span class="p">,</span> <span class="s2">"hello world"</span><span class="p">);</span>
-<span class="p">//</span>        <span class="p">//--</span><span class="m">1111</span>
-<span class="p">//</span>        <span class="nf">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"F"</span><span class="p">));</span>
-<span class="p">//</span>    
-<span class="p">//</span>        
-<span class="p">//</span>        <span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">initCacheManager</span><span class="p">();</span>
-<span class="p">//</span>        <span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">initCache</span><span class="p">(</span><span class="s2">"Test"</span><span class="p">);</span>
-<span class="p">//</span>        <span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s2">"F"</span><span class="p">,</span> <span class="s2">"hello world1"</span><span class="p">);</span>
-<span class="p">//</span>        
-<span class="p">//</span>        <span class="p">//----</span><span class="m">2222</span>
-<span class="p">//</span>        <span class="nf">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"F"</span><span class="p">));</span>
-<span class="p">//</span>        
-<span class="p">//</span>        <span class="p">//</span><span class="err">初始化</span><span class="p">--</span><span class="err">必须</span>
-<span class="p">//</span>        <span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">initCacheManager</span><span class="p">();</span>
-<span class="p">//</span>        <span class="p">//</span><span class="err">放入</span><span class="n">Test</span> <span class="n">Cache</span><span class="err">中</span>
-<span class="p">//</span>        <span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">initCache</span><span class="p">(</span><span class="s2">"ceshi"</span><span class="p">);</span>
-<span class="p">//</span>        <span class="p">//----</span><span class="m">3333</span>
-<span class="p">//</span>        <span class="nf">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"F"</span><span class="p">));</span>
-<span class="p">//</span>        
-<span class="p">//</span>        
-<span class="p">//</span>        <span class="p">//</span><span class="err">初始化</span><span class="p">--</span><span class="err">必须</span>
-<span class="p">//</span>        <span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">initCacheManager</span><span class="p">();</span>
-<span class="p">//</span>        <span class="p">//</span><span class="err">放入</span><span class="n">Test</span> <span class="n">Cache</span><span class="err">中</span>
-<span class="p">//</span>        <span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">initCache</span><span class="p">(</span><span class="s2">"cassger"</span><span class="p">);</span>
-<span class="p">//</span>        <span class="p">//----</span>
-<span class="p">//</span>        <span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s2">"F"</span><span class="p">,</span> <span class="s2">"fangs"</span><span class="p">);</span>
-<span class="p">//</span>        <span class="nf">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">EHCacheUtil</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"F"</span><span class="p">));</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div></div> <p><strong>EHCacheConfig.java</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">com</span><span class="p">.</span><span class="n">ttpod</span><span class="p">.</span><span class="n">common</span><span class="p">.</span><span class="n">tool</span><span class="p">.</span><span class="n">cache</span><span class="p">;</span>
-<span class="p">/**</span>
- <span class="p">*</span> <span class="p">@</span><span class="n">className</span><span class="p">:</span><span class="n">EHCacheConfig</span><span class="p">.</span><span class="n">java</span>
- <span class="p">*</span> <span class="p">@</span><span class="n">classDescription</span><span class="p">:</span>
- <span class="p">*</span> <span class="p">@</span><span class="n">author</span><span class="p">:</span><span class="n">wei</span><span class="p">.</span><span class="n">luo</span>
- <span class="p">*</span> <span class="p">@</span><span class="n">createTime</span><span class="p">:</span><span class="m">2012</span><span class="p">-</span><span class="m">4</span><span class="p">-</span><span class="m">23</span>
- <span class="p">*/</span>
-<span class="k">public</span> <span class="n">class</span> <span class="n">EHCacheConfig</span> <span class="p">{</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">元素最大数量</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">int</span> <span class="n">MAXELEMENTSINMEMORY</span><span class="p">=</span><span class="m">50000</span><span class="p">;</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">是否把溢出数据持久化到硬盘</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">boolean</span> <span class="n">OVERFLOWTODISK</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">是否会死亡</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">boolean</span> <span class="n">ETERNAL</span><span class="p">=</span><span class="nb">false</span><span class="p">;</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">缓存的间歇时间</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">int</span> <span class="n">TIMETOIDLESECONDS</span><span class="p">=</span><span class="m">600</span><span class="p">;</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">存活时间</span><span class="p">(</span><span class="err">默认一天</span><span class="p">)</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="n">int</span> <span class="n">TIMETOlIVESECONDS</span><span class="p">=</span><span class="m">86400</span><span class="p">;</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">需要持久化到硬盘否</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">boolean</span> <span class="n">DISKPERSISTENT</span><span class="p">=</span><span class="nb">false</span><span class="p">;</span>
-    <span class="p">/**</span>
-     <span class="p">*</span> <span class="err">内存存取策略</span>
-     <span class="p">*/</span>
-    <span class="k">public</span> <span class="n">static</span> <span class="k">String</span> <span class="n">MEMORYSTOREEVICTIONPOLICY</span><span class="p">=</span><span class="s2">"LFU"</span><span class="p">;</span>
-<span class="p">}</span>
+</code></pre></div></div> <p><strong>示例3： EHCacheUtils.java</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package com.ttpod.common.tool.cache;
+/**
+ * @classDescription:ehcache工具类
+ */
+public class EHCacheUtil {
+    private static CacheManager cacheManager = null;
+    private static Cache cache=null;
+//------------------简化---------------------
+    /**
+     * 初始化缓存管理容器
+     */
+    public static CacheManager initCacheManager() {
+        try {
+            if (cacheManager == null)
+                cacheManager = CacheManager.getInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cacheManager;
+    }
+    /**
+     * 初始化缓存管理容器
+     * @param path ehcache.xml存放的路徑
+     */
+    public static CacheManager initCacheManager(String path) {
+        try {
+            if (cacheManager == null){
+                System.out.println("为进来"+path);
+                cacheManager = CacheManager.getInstance().create(path);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cacheManager;
+    }
+    /**
+     * 初始化cache
+     */
+    public static Cache initCache(String cacheName) {
+        checkCacheManager();
+        if(null==cacheManager.getCache(cacheName)){
+            cacheManager.addCache(cacheName);
+        }
+        cache=cacheManager.getCache(cacheName);
+        return cache;
+    }
+    /**
+     * 添加缓存
+     * @param key 关键字
+     * @param value 值
+     */
+    public static void put(Object key,Object value) {
+        checkCache();
+        // 创建Element,然后放入Cache对象中
+        Element element = new Element(key, value);
+        cache.put(element);
+    }
+    /**
+     * 获取cache
+     * @param key 关键字
+     * @return
+     */
+    public static Object get(Object key){
+        checkCache();
+        Element element = cache.get(key);
+        if(null==element){
+            return null;
+        }
+        return element.getObjectValue();
+    }
+    //--------------更加方便使用的----------------
+    //private static CacheManager myManager=null;
+    //private static Cache myCache=null;
+    /**
+     * 初始化缓存
+     * @author wei.luo
+     * @param cacheName 缓存名称
+     * @param maxElementsInMemory 元素最大数量
+     * @param overflowToDisk 是否持久化到硬盘
+     * @param eternal 是否会死亡
+     * @param timeToLiveSeconds 缓存存活时间
+     * @param timeToIdleSeconds 缓存的间隔时间
+     * @return 缓存
+     * @throws Exception 异常
+     */
+    public static Cache initCache(String cacheName,int maxElementsInMemory,
+                                  boolean overflowToDisk,boolean eternal,long timeToLiveSeconds,
+                                  long timeToIdleSeconds) throws Exception{
+        try {
+            CacheManager singletonManager = CacheManager.create();
+            Cache myCache = singletonManager.getCache(cacheName);
+            if(myCache!=null){
+                CacheConfiguration config = cache.getCacheConfiguration();
+                config.setTimeToLiveSeconds(timeToLiveSeconds);
+                config.setMaxElementsInMemory(maxElementsInMemory);
+                config.setOverflowToDisk(overflowToDisk);
+                config.setEternal(eternal);
+                config.setTimeToIdleSeconds(timeToIdleSeconds);
+            }
+            if(myCache==null){
+                Cache memoryOnlyCache = new Cache(cacheName, maxElementsInMemory, overflowToDisk,
+                        eternal, timeToLiveSeconds, timeToIdleSeconds);
+                singletonManager.addCache(memoryOnlyCache);
+                myCache = singletonManager.getCache(cacheName);
+            }
+            return myCache;
+        } catch (Exception e) {
+            //e.printStackTrace();
+            throw new Exception("init cache "+cacheName+" failed!!!");
+        }
+    }
+    /**
+     * 初始化cache
+     * @author wei.luo
+     * @param cacheName cache的名字
+     * @param timeToLiveSeconds 有效时间
+     * @return cache 缓存
+     * @throws Exception 异常
+     */
+    public static Cache initCache(String cacheName,long timeToLiveSeconds) throws Exception{
+        try {
+            CacheManager myManager = CacheManager.create();
+            Cache myCache = myManager.getCache(cacheName);
+            if(myCache!=null){
+                CacheConfiguration config = myCache.getCacheConfiguration();
+                config.setTimeToLiveSeconds(timeToLiveSeconds);
+            }
+            if(myCache==null){
+                myCache = new Cache(
+                        new CacheConfiguration(cacheName, EHCacheConfig.MAXELEMENTSINMEMORY)
+                                .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
+                                .overflowToDisk(EHCacheConfig.OVERFLOWTODISK)
+                                .eternal(EHCacheConfig.ETERNAL)
+                                .timeToLiveSeconds(timeToLiveSeconds)
+                                .timeToIdleSeconds(EHCacheConfig.TIMETOIDLESECONDS)
+                                .diskPersistent(EHCacheConfig.DISKPERSISTENT)
+                                .diskExpiryThreadIntervalSeconds(0));
+                myManager.addCache(myCache);
+            }
+            return myCache;
+        } catch (Exception e) {
+            //e.printStackTrace();
+            throw new Exception("init cache "+cacheName+" failed!!!");
+        }
+    }
+    /**
+     * 初始化Cache
+     * @author wei.luo
+     * @param cacheName cache容器名
+     * @return cache容器
+     * @throws Exception 失败抛出异常
+     */
+    public static Cache initMyCache(String cacheName) throws Exception{
+        try {
+            CacheManager myManager = CacheManager.create();
+            Cache myCache = myManager.getCache(cacheName);
+            if(myCache==null){
+                myCache = new Cache(
+                        new CacheConfiguration(cacheName, EHCacheConfig.MAXELEMENTSINMEMORY)
+                                .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
+                                .overflowToDisk(EHCacheConfig.OVERFLOWTODISK)
+                                .eternal(EHCacheConfig.ETERNAL)
+                                .timeToLiveSeconds(EHCacheConfig.TIMETOlIVESECONDS)
+                                .timeToIdleSeconds(EHCacheConfig.TIMETOIDLESECONDS)
+                                .diskPersistent(EHCacheConfig.DISKPERSISTENT)
+                                .diskExpiryThreadIntervalSeconds(0));
+                myManager.addCache(myCache);
+            }
+            return myCache;
+        } catch (Exception e) {
+            //e.printStackTrace();
+            throw new Exception("init cache "+cacheName+" failed!!!");
+        }
+    }
+    /**
+     * 修改缓存容器配置
+     * @author wei.luo
+     * @param cacheName 缓存名
+     * @param timeToLiveSeconds 有效时间
+     * @param maxElementsInMemory 最大数量
+     * @return 真
+     * @throws Exception 异常
+     */
+    public static boolean modifyCache(String cacheName,
+                                      long timeToLiveSeconds,int maxElementsInMemory) throws Exception{
+        try {
+            if(StringUtils.isNotBlank(cacheName) &amp;&amp; timeToLiveSeconds!=0L
+                    &amp;&amp; maxElementsInMemory!=0){
+                CacheManager myManager = CacheManager.create();
+                Cache myCache = myManager.getCache(cacheName);
+                CacheConfiguration config = myCache.getCacheConfiguration();
+                config.setTimeToLiveSeconds(timeToLiveSeconds);
+                config.setMaxElementsInMemory(maxElementsInMemory);
+                return true;
+            }else{
+                return false;
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            throw new Exception("modify cache "+cacheName+" failed!!!");
+        }
+    }
+    /**
+     * 向指定容器中设置值
+     * @author wei.luo
+     * @param vesselName 容器名
+     * @param key 键
+     * @param value 值
+     * @return 返回真
+     * @throws Exception 异常
+     */
+    public static boolean setValue(String cacheName,String key, Object value) throws Exception{
+        try {
+            CacheManager myManager = CacheManager.create();
+            Cache myCache = myManager.getCache(cacheName);
+            if(myCache==null){
+                myCache=initCache(cacheName);
+                //myManager.addCache(cacheName);
+                //myCache=myManager.getCache(cacheName);
+            }
+            myCache.put(new Element(key, value));
+            return true;
+        } catch (Exception e) {
+            //e.printStackTrace();
+            throw new Exception("set cache "+cacheName+" failed!!!");
+        }
+    }
+    /**
+     * 向指定容器中设置值
+     * @author wei.luo
+     * @param cacheName 容器名
+     * @param key 键
+     * @param value 值
+     * @param timeToIdleSeconds 间歇时间
+     * @param timeToLiveSeconds 存活时间
+     * @return 真
+     * @throws Exception 抛出异常
+     */
+    public static boolean setValue(String cacheName,String key, Object value,
+                                   Integer timeToLiveSeconds) throws Exception{
+        try {
+            CacheManager myManager = CacheManager.create();
+            Cache myCache = myManager.getCache(cacheName);
+            if(myCache==null){
+                initCache(cacheName, timeToLiveSeconds);
+                myCache = myManager.getCache(cacheName);
+            }
+            myCache.put(new Element(key, value, EHCacheConfig.ETERNAL,
+                    EHCacheConfig.TIMETOIDLESECONDS, timeToLiveSeconds));
+            return true;
+        } catch (Exception e) {
+            //e.printStackTrace();
+            throw new Exception("set cache "+cacheName+" failed!!!");
+        }
+    }
+    /**
+     * 从ehcache的指定容器中取值
+     * @author wei.luo
+     * @createTime 2012-4-23
+     * @param key 键
+     * @return 返回Object类型的值
+     * @throws Exception 异常
+     */
+    public static Object getValue(String cacheName,String key) throws Exception{
+        try {
+            CacheManager myManager = CacheManager.create();
+            Cache myCache = myManager.getCache(cacheName);
+            if(myCache==null){
+                myCache=initMyCache(cacheName);
+            }
+            return myCache.get(key).getValue();
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return null;
+            //throw new Exception("get cache "+cacheName+" failed!!!");
+        }
+    }
+    /**
+     * 删除指定的ehcache容器
+     * @author wei.luo
+     * @param vesselName
+     * @return 真
+     * @throws Exception 失败抛出异常
+     */
+    public static boolean removeEhcache(String cacheName) throws Exception{
+        try {
+            CacheManager myManager = CacheManager.create();
+            myManager.removeCache(cacheName);
+            return true;
+        } catch (Exception e) {
+            //e.printStackTrace();
+            throw new Exception("remove cache "+cacheName+" failed!!!");
+        }
+    }
+    /**
+     * 删除所有的EHCache容器
+     * @author wei.luo
+     * @param cacheName 容器名
+     * @return 返回真
+     * @throws Exception 失败抛出异常
+     */
+    public static boolean removeAllEhcache(String cacheName) throws Exception{
+        try {
+            CacheManager myManager = CacheManager.create();
+            myManager.removalAll();
+            return true;
+        } catch (Exception e) {
+            //e.printStackTrace();
+            throw new Exception("remove cache "+cacheName+" failed!!!");
+        }
+    }
+    /**
+     * 删除EHCache容器中的元素
+     * @author wei.luo
+     * @param cacheName    容器名
+     * @param key 键
+     * @return 真
+     * @throws Exception 失败抛出异常
+     */
+    public static boolean removeElment(String cacheName,String key) throws Exception{
+        try {
+            CacheManager myManager = CacheManager.create();
+            Cache myCache = myManager.getCache(cacheName);
+            myCache.remove(key);
+            return true;
+        } catch (Exception e) {
+            //e.printStackTrace();
+            throw new Exception("remove cache "+cacheName+" failed!!!");
+        }
+    }
+    /**
+     * 删除指定容器中的所有元素
+     * @author wei.luo
+     * @param cacheName 容器名
+     * @param key 键
+     * @return 真
+     * @throws Exception 失败抛出异常
+     */
+    public static boolean removeAllElment(String cacheName,String key) throws Exception{
+        try {
+            CacheManager myManager = CacheManager.create();
+            Cache myCache = myManager.getCache(cacheName);
+            myCache.removeAll();
+            return true;
+        } catch (Exception e) {
+            //e.printStackTrace();
+            throw new Exception("remove cache "+cacheName+" failed!!!");
+        }
+    }
+    //------------------方便调用------------
+    /**
+     * 释放CacheManage
+     *
+     */
+    public static void shutdown() {
+        cacheManager.shutdown();
+    }
+    /**
+     * 移除cache
+     * @param cacheName
+     */
+    public static void removeCache(String cacheName){
+        checkCacheManager();
+        cache=cacheManager.getCache(cacheName);
+        if(null!=cache){
+            cacheManager.removeCache(cacheName);
+        }
+    }
+    /**
+     * 移除cache中的key
+     * @param cacheName
+     */
+    public static void remove(String key){
+        checkCache();
+        cache.remove(key);
+    }
+    /**
+     * 移除所有cache
+     */
+    public static void removeAllCache(){
+        checkCacheManager();
+        cacheManager.removalAll();
+    }
+    /**
+     * 移除所有Element
+     */
+    public static void removeAllKey(){
+        checkCache();
+        cache.removeAll();
+    }
+    /**
+     * 获取所有的cache名称
+     * @return
+     */
+    public static String[]getAllCaches(){
+        checkCacheManager();
+        return cacheManager.getCacheNames();
+    }
+    /**
+     * 获取Cache所有的Keys
+     * @return
+     */
+    public static List getKeys(){
+        checkCache();
+        return cache.getKeys();
+    }
+    /**
+     * 检测cacheManager
+     */
+    private static void checkCacheManager(){
+        if(null==cacheManager){
+            throw new IllegalArgumentException("调用前请先初始化CacheManager值：EHCacheUtil.initCacheManager");
+        }
+    }
+    private static void checkCache(){
+        if(null==cache){
+            throw new IllegalArgumentException("调用前请先初始化Cache值：EHCacheUtil.initCache(参数)");
+        }
+    }
+    public static void main(String[]arg){
+        //初始化--必须
+        EHCacheUtil.initCacheManager();
+        String[]caches=EHCacheUtil.getAllCaches();
+        for(String cache:caches){
+            System.out.println(cache);
+        }
+//        //放入Test Cache中
+//        EHCacheUtil.initCache("ceshi");
+//        EHCacheUtil.put("F", "hello world");
+//        //--1111
+//        System.out.println(EHCacheUtil.get("F"));
+//    
+//        
+//        EHCacheUtil.initCacheManager();
+//        EHCacheUtil.initCache("Test");
+//        EHCacheUtil.put("F", "hello world1");
+//        
+//        //----2222
+//        System.out.println(EHCacheUtil.get("F"));
+//        
+//        //初始化--必须
+//        EHCacheUtil.initCacheManager();
+//        //放入Test Cache中
+//        EHCacheUtil.initCache("ceshi");
+//        //----3333
+//        System.out.println(EHCacheUtil.get("F"));
+//        
+//        
+//        //初始化--必须
+//        EHCacheUtil.initCacheManager();
+//        //放入Test Cache中
+//        EHCacheUtil.initCache("cassger");
+//        //----
+//        EHCacheUtil.put("F", "fangs");
+//        System.out.println(EHCacheUtil.get("F"));
+    }
+}
+</code></pre></div></div> <p><strong>EHCacheConfig.java</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package com.ttpod.common.tool.cache;
+/**
+ * @className:EHCacheConfig.java
+ * @classDescription:
+ * @author:wei.luo
+ * @createTime:2012-4-23
+ */
+public class EHCacheConfig {
+    /**
+     * 元素最大数量
+     */
+    public static int MAXELEMENTSINMEMORY=50000;
+    /**
+     * 是否把溢出数据持久化到硬盘
+     */
+    public static boolean OVERFLOWTODISK=true;
+    /**
+     * 是否会死亡
+     */
+    public static boolean ETERNAL=false;
+    /**
+     * 缓存的间歇时间
+     */
+    public static int TIMETOIDLESECONDS=600;
+    /**
+     * 存活时间(默认一天)
+     */
+    public static int TIMETOlIVESECONDS=86400;
+    /**
+     * 需要持久化到硬盘否
+     */
+    public static boolean DISKPERSISTENT=false;
+    /**
+     * 内存存取策略
+     */
+    public static String MEMORYSTOREEVICTIONPOLICY="LFU";
+}
 </code></pre></div></div> <h3 id="hibernate中的二级缓存">hibernate中的二级缓存</h3> <p><strong>命名缓存查询</strong><br /> In addition, a QueryCache can be given a specific name in Hibernate using Query.setCacheRegion(String name). The name of the cache in ehcache.xml is then the name given in that method. The name can be whatever you want, but by convention you should use “query.” followed by a descriptive name. E.g.</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;cache</span> <span class="na">name=</span><span class="s">"query.AdministrativeAreasPerCountry"</span>
        <span class="na">maxEntriesLocalHeap=</span><span class="s">"5"</span>
        <span class="na">eternal=</span><span class="s">"false"</span>
@@ -659,7 +659,7 @@ useDedicatedThread=false"/&gt;
             <span class="n">session</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
         <span class="o">}</span>
     <span class="o">}</span>
-</code></pre></div></div> <p>The query.setCacheable(true) line caches the query.Thequery.setCacheRegion(“query.StreetTypes”) line sets the name of the Query Cache. Alex Miller has a good article on the query cache here.</p> <p><strong>程序中配置ehcache</strong><br /> Differences Between Distributed Cache and Standalone or Replicated Cache. <br /> CacheManagers can be configured programmatically with a fluent API. The example below creates a CacheManager with a Terracotta configuration specified in an URL, and creates a defaultCache and a cache named “example”.</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Configuration configuration = new Configuration()
+</code></pre></div></div> <p>The query.setCacheable(true) line caches the query.Thequery.setCacheRegion(“query.StreetTypes”) line sets the name of the Query Cache. Alex Miller has a good article on the query cache here.</p> <p><strong>程序中配置ehcache</strong><br /> Differences Between Distributed Cache and Standalone or Replicated Cache. <br /> CacheManagers can be configured programmatically with a fluent API. The example below creates a CacheManager with a Terracotta configuration specified in an URL, and creates a defaultCache and a cache named “example”.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Configuration configuration = new Configuration()
         .terracotta(new TerracottaClientConfiguration().url("localhost:9510"))
         .defaultCache(new CacheConfiguration("defaultCache", 100))
         .cache(new CacheConfiguration("example", 100)
@@ -667,7 +667,7 @@ useDedicatedThread=false"/&gt;
         .timeToLiveSeconds(120)
         .terracotta(new TerracottaConfiguration()));
         CacheManager manager = new CacheManager(configuration);
-</code></pre></div></div> <p>The above example looks for sampleTerracottaCache. In ehcache.xml, we need to uncomment or add the following line:<code class="highlighter-rouge">&lt;terracottaConfig url="localhost:9510"/&gt;</code><br /> This tells Ehcache to load the Terracotta server config from localhost port 9510. For url configuration options, refer to “Adding an URL Attribute” in Terracotta Clustering Configuration Elements. Note: You must have a Terracotta 3.1.1 or higher server running locally for this example.<br /> Next we want to enable Terracotta clustering for the cache named sampleTerracottaCache. Uncomment or add the following in ehcache.xml.</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;cache</span> <span class="na">name=</span><span class="s">"sampleTerracottaCache"</span>
+</code></pre></div></div> <p>The above example looks for sampleTerracottaCache. In ehcache.xml, we need to uncomment or add the following line:<code class="language-plaintext highlighter-rouge">&lt;terracottaConfig url="localhost:9510"/&gt;</code><br /> This tells Ehcache to load the Terracotta server config from localhost port 9510. For url configuration options, refer to “Adding an URL Attribute” in Terracotta Clustering Configuration Elements. Note: You must have a Terracotta 3.1.1 or higher server running locally for this example.<br /> Next we want to enable Terracotta clustering for the cache named sampleTerracottaCache. Uncomment or add the following in ehcache.xml.</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;cache</span> <span class="na">name=</span><span class="s">"sampleTerracottaCache"</span>
        <span class="na">maxEntriesLocalHeap=</span><span class="s">"1000"</span>
        <span class="na">eternal=</span><span class="s">"false"</span>
        <span class="na">timeToIdleSeconds=</span><span class="s">"3600"</span>

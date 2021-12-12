@@ -191,7 +191,7 @@
         <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="nc">MessageFormat</span><span class="o">.</span><span class="na">format</span> <span class="o">(</span><span class="n">readValue</span><span class="o">(</span><span class="n">filePath</span><span class="o">,</span><span class="n">name</span><span class="o">),</span> <span class="n">obs</span><span class="o">));</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <h3 id="应用单例的方式">应用单例的方式</h3> <p><strong>属性文件(pathConfig.properties)</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lis.interface = http://aaaaa.vvvv.com/lis
+</code></pre></div></div> <h3 id="应用单例的方式">应用单例的方式</h3> <p><strong>属性文件(pathConfig.properties)</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lis.interface = http://aaaaa.vvvv.com/lis
 listenok = true
 listlistenok = true
 property.path = WEB-INF/classes/config/properties/pathConfig.properties
@@ -756,7 +756,7 @@ music.down.pic.path =music/images
     <span class="nt">&lt;/TR&gt;</span>
     <span class="nt">&lt;/TBODY&gt;</span>
 <span class="nt">&lt;/TABLE&gt;</span>
-</code></pre></div></div> <p><strong>截图一张</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_90.jpg" alt="截图一张" /></p> <h3 id="方案二">方案二</h3> <p><strong>说明：</strong>把配置信息，存储在配置的Bean中，再把Bean以集合的形式存储于Map当中，再将Map转成Json字符串，存储于集合当中。<br /> <strong>配置工具类</strong> ： 配置工具类，用于获得配置信息存储配置信息。</p> <p><strong>ConfigUtil.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">musicsns</span><span class="o">.</span><span class="na">util</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>截图一张</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_90.jpg" alt="截图一张" /></p> <h3 id="方案二">方案二</h3> <p><strong>说明：</strong>把配置信息，存储在配置的Bean中，再把Bean以集合的形式存储于Map当中，再将Map转成Json字符串，存储于集合当中。<br /> <strong>配置工具类</strong> ： 配置工具类，用于获得配置信息存储配置信息。</p> <p><strong>ConfigUtil.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.musicsns.util</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.gson.Gson</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.gson.reflect.TypeToken</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.vvvv.musicsns.bean.ConfigBean</span><span class="o">;</span>
@@ -885,7 +885,7 @@ music.down.pic.path =music/images
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>配置名称标识</strong><br /> 配置的名称标识，标识了配置的名称，用于程序拿出指定的名称的配置。</p> <p><strong>FinalConfig.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">musicsns</span><span class="o">.</span><span class="na">config</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>配置名称标识</strong><br /> 配置的名称标识，标识了配置的名称，用于程序拿出指定的名称的配置。</p> <p><strong>FinalConfig.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.musicsns.config</span><span class="o">;</span>
 <span class="cm">/**
  * the config properties defined in this class
  * User: luowei
@@ -897,7 +897,7 @@ music.down.pic.path =music/images
     <span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="no">BBBBB</span> <span class="o">=</span> <span class="s">"bbbbb"</span><span class="o">;</span>
     <span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="no">CCCCC</span> <span class="o">=</span> <span class="s">"ccccc"</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>配置Bean ConfigBean.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">musicsns</span><span class="o">.</span><span class="na">bean</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>配置Bean ConfigBean.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.musicsns.bean</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.Serializable</span><span class="o">;</span>
 <span class="cm">/**
  * config bean ,to store config info
@@ -922,7 +922,7 @@ music.down.pic.path =music/images
      * 描述信息
      */</span>
     <span class="kd">protected</span> <span class="nc">String</span> <span class="n">describe</span><span class="o">;</span>
-<span class="err">…………</span><span class="n">get</span><span class="err">、</span><span class="n">set</span><span class="err">方法…………</span>
+<span class="err">…………</span><span class="n">get</span><span class="err">、</span><span class="n">set方法</span><span class="err">…………</span>
 <span class="o">}</span>
 </code></pre></div></div> <p><strong>使用 config.json</strong></p> <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="nl">"aaaaa"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">

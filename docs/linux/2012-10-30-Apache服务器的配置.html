@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/linux/2012-10-30-Apache%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%85%8D%E7%BD%AE.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Apache服务器的配置</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容：</strong>Windows上Apache虚拟主机的配置、Linux上Https的配置、Apache站点的配置、静态站的配置、Tomcat站点的配置、PHP站点的配置、PythonWeb站点的配置以及域名代理、资源重定位的配置。</p> <h2 id="windows配置apache">Windows配置Apache</h2> <h3 id="编辑httpdconf文件">编辑httpd.conf文件</h3> <p><strong>方式一：配置虚拟主机</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost localhost&gt;
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/linux/2012-10-30-Apache%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%85%8D%E7%BD%AE.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Apache服务器的配置</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容：</strong>Windows上Apache虚拟主机的配置、Linux上Https的配置、Apache站点的配置、静态站的配置、Tomcat站点的配置、PHP站点的配置、PythonWeb站点的配置以及域名代理、资源重定位的配置。</p> <h2 id="windows配置apache">Windows配置Apache</h2> <h3 id="编辑httpdconf文件">编辑httpd.conf文件</h3> <p><strong>方式一：配置虚拟主机</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost localhost&gt;
   #ServerAdmin luowei010101@gmail.com
   DocumentRoot "D:/javascript/js_projects"
   #ServerName vvvv.com
@@ -11,14 +11,14 @@
      Allow from all
   &lt;/Directory&gt;
 &lt;/VirtualHost&gt;
-</code></pre></div></div> <p><strong>方式二：配置目录别名</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Alias /js_test/  "D:/javascript/js_projects/test/"
+</code></pre></div></div> <p><strong>方式二：配置目录别名</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Alias /js_test/  "D:/javascript/js_projects/test/"
 &lt;Directory  "D:/javascript/js_projects/test"&gt;
    Options Indexes MultiViews 
    AllowOverride None 
    Order allow,deny 
    Allow from all 
 &lt;/Directory&gt;
-</code></pre></div></div> <h2 id="unbuntu上配置apache">Unbuntu上配置Apache</h2> <p>在<code class="highlighter-rouge">/etc/apache2/sites-available</code> 添加xxx.conf,比如如下配置：</p> <p><strong>(https配置) webluowei.com</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt; 
+</code></pre></div></div> <h2 id="unbuntu上配置apache">Unbuntu上配置Apache</h2> <p>在<code class="language-plaintext highlighter-rouge">/etc/apache2/sites-available</code> 添加xxx.conf,比如如下配置：</p> <p><strong>(https配置) webluowei.com</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt; 
      ServerAdmin luowei@webluowei.com
      ServerName webluowei.com
      ServerAlias www.webluowei.com
@@ -104,7 +104,7 @@
 &lt;/VirtualHost&gt;
 
 &lt;/IfModule&gt;
-</code></pre></div></div> <p><strong>(Tomcat端口转发) my.webluowei.com.conf</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;   
+</code></pre></div></div> <p><strong>(Tomcat端口转发) my.webluowei.com.conf</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;   
     ServerName my.webluowei.com 
     ProxyIOBufferSize 8192  
     ProxyRequests Off   
@@ -115,7 +115,7 @@
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 &lt;/VirtualHost&gt;  
-</code></pre></div></div> <p><strong>(域名代理) app.webluowei.com.conf</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;   
+</code></pre></div></div> <p><strong>(域名代理) app.webluowei.com.conf</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;   
     ServerName mybrowser.webluowei.com 
     ProxyIOBufferSize 8192  
     ProxyRequests Off   
@@ -125,7 +125,7 @@
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 &lt;/VirtualHost&gt;
-</code></pre></div></div> <p><strong>(资源目录重定位) life.webluowei.com.conf</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;
+</code></pre></div></div> <p><strong>(资源目录重定位) life.webluowei.com.conf</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;
     ServerAdmin abc@rootls.com
     ServerName life.webluowei.com
     ServerAlias life.webluowei.com pua.webluowei.com
@@ -142,7 +142,7 @@
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 
 &lt;/VirtualHost&gt;
-</code></pre></div></div> <p><strong>(图片资源) img.webluowei.com.conf</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;
+</code></pre></div></div> <p><strong>(图片资源) img.webluowei.com.conf</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;
     ServerAdmin luowei@webluowei.com
     ServerName img.webluowei.com 
     ServerAlias img.webluowei.com
@@ -166,7 +166,7 @@
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 &lt;/VirtualHost&gt;
-</code></pre></div></div> <p><strong>(Python WSGI) user.webluowei.com.conf</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;
+</code></pre></div></div> <p><strong>(Python WSGI) user.webluowei.com.conf</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt;
         ServerName user.webluowei.com
         WSGIScriptAlias / /var/www/user.webluowei.com/flaskapp.wsgi
         &lt;Directory /var/www/user.webluowei.com/app/&gt;
@@ -182,7 +182,7 @@
         LogLevel warn
         CustomLog ${APACHE_LOG_DIR}/access_user.webluowei.com.log combined
 &lt;/VirtualHost&gt;
-</code></pre></div></div> <p><strong>(PHP bbs) bbs.webluowei.com</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt; 
+</code></pre></div></div> <p><strong>(PHP bbs) bbs.webluowei.com</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:80&gt; 
      ServerAdmin webmaster@example.com
      ServerName bbs.webluowei.com
      ServerAlias bbs.webluowei.com

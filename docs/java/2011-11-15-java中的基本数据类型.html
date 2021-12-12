@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-11-15-java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java中的基本数据类型</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java编译、环境配置、内存模型、基本数据类型、原码、反码、补码、排队系统、数组二分查找。</p> <h3 id="基本概念">基本概念</h3> <p><strong>编译执行java文件</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\~&gt;javac -d . ch01/HelloWorld.java
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-11-15-java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java中的基本数据类型</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java编译、环境配置、内存模型、基本数据类型、原码、反码、补码、排队系统、数组二分查找。</p> <h3 id="基本概念">基本概念</h3> <p><strong>编译执行java文件</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\~&gt;javac -d . ch01/HelloWorld.java
 C:\~&gt;java ch01.HelloWorld
 
 Hello World!
@@ -6,7 +6,7 @@ Hello World!
 C:\~&gt;java ch01/HelloWorld    这样也可以
 
 Hello World!
-</code></pre></div></div> <p><strong>生成Javadoc:标准的注释文档(html)</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\~&gt;javadoc -d doc ch02
+</code></pre></div></div> <p><strong>生成Javadoc:标准的注释文档(html)</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\~&gt;javadoc -d doc ch02
 C:\~&gt;javadoc -author -version -d doc ch02
 window下默认字符编码:GBK
 linux下的默认字符编码：utf-8
@@ -18,7 +18,7 @@ linux下默认编码是：utf-8
 -author：生成作者
 -version:生成版本
 java api 用javadoc 来生成的
-</code></pre></div></div> <p><strong>java内存模型</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.堆区（heap）：放置新生成的对象
+</code></pre></div></div> <p><strong>java内存模型</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.堆区（heap）：放置新生成的对象
 2.栈区（stack）：存在我们程序运行过程中的变量
 变量：内存节点的值可以被重写
 常量：内存节点的值不可以被重写
@@ -33,11 +33,11 @@ String c = new String ("abc");
 String d = "abc";
 a==b 错 b==c 错 （两个不同的对象） a==d 对
 ==:用来比较地址（对于对象来说），比较值（对于基本类型）
-</code></pre></div></div> <p><strong>java运行环境的搭建</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JDK：JAVA DEVELOPMENT TOOLKIT //java 开发
+</code></pre></div></div> <p><strong>java运行环境的搭建</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JDK：JAVA DEVELOPMENT TOOLKIT //java 开发
 JRE：JAVA RUNTIOME ENVIRONMENT //java 运行环境
 jdk：编译源代码 同时运行class
 jre：运行class文件
-</code></pre></div></div> <p><strong>配置环境变量</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Unix ： PATH：命令搜索路径
+</code></pre></div></div> <p><strong>配置环境变量</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Unix ： PATH：命令搜索路径
 cat .bashrc
 oracle_home :说明了oracle的安装路径
 java_home
@@ -48,7 +48,7 @@ path=$path:$java_home/bin
 
 配置:
 source.bashrc:环境变量立刻生效。
-</code></pre></div></div> <h3 id="java中的类型">java中的类型</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java是强类型语言，在定义变量的时候必须声明变量的类型
+</code></pre></div></div> <h3 id="java中的类型">java中的类型</h3> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java是强类型语言，在定义变量的时候必须声明变量的类型
 弱类型：声明变量不需要指定的类型语言
 html css js 对于js来说是弱类型语言
 在js里面声明任何一个变量都用变量一个声明 var
@@ -340,7 +340,7 @@ Person：name gender age
         <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"printD方法："</span><span class="o">+</span><span class="k">this</span><span class="o">.</span><span class="na">d</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <h3 id="二进制原码反码补码">二进制：原码、反码、补码</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>对于有符号的数而言(Java中全都是有符号的数)
+</code></pre></div></div> <h3 id="二进制原码反码补码">二进制：原码、反码、补码</h3> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>对于有符号的数而言(Java中全都是有符号的数)
 
 二进制的最高位是符号位:0表示正数，1表示负数
 正数的原码，反码，补码都一样(直接为此数二进制数表示)
@@ -377,7 +377,7 @@ java中没有无符号数，换言之，java中的数都是有符号的
 [(-5)的反码]= 【1111111111111111111111111111010】
 [(-5)的补码]= 【1111111111111111111111111111011】
 [{(-5)的补码}按位取反后]=【0000000000000000000000000000100】=4
-</code></pre></div></div> <h3 id="java中的数组">Java中的数组</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>数组：存放相同类型数据的连续的内存空间
+</code></pre></div></div> <h3 id="java中的数组">Java中的数组</h3> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>数组：存放相同类型数据的连续的内存空间
 相同类型 连续的内存空间
 地址号连续
 存储数据（基本类型 对象类型）
@@ -426,7 +426,7 @@ array[2]=new int [8];
 
 减少内存使用 在程序运行期间确定列数
 tdd：test driven development 测试驱动开发 先写测试代码，再写功能代码
-</code></pre></div></div> <h3 id="数组实例项目">数组实例项目</h3> <p><strong>银行排号系统</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>需求描述：描述程序的基本功能.
+</code></pre></div></div> <h3 id="数组实例项目">数组实例项目</h3> <p><strong>银行排号系统</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>需求描述：描述程序的基本功能.
 需求分析：1/3时间 收集客户需要的功能并进行抽象——》生成面向对象里面的类
 银行排号系统：取号机：先到显得
 数据结构：队列：先进先出 FIFO

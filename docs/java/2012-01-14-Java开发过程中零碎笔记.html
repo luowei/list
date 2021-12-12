@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2012-01-14-Java%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%9B%B6%E7%A2%8E%E7%AC%94%E8%AE%B0.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java开发过程中零碎笔记</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>获得当前应用的路径</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"request.getContextPath():"</span><span class="o">+</span><span class="n">request</span><span class="o">.</span><span class="na">getContextPath</span><span class="o">());</span>
 <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"request.getSession().getServletContext().getContextPath():"</span><span class="o">+</span><span class="n">request</span><span class="o">.</span><span class="na">getSession</span><span class="o">().</span><span class="na">getServletContext</span><span class="o">().</span><span class="na">getContextPath</span><span class="o">());</span>
 </code></pre></div></div> <p><strong>mysql授权</strong></p> <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">grant</span> <span class="k">all</span> <span class="k">PRIVILEGES</span> <span class="k">on</span> <span class="o">*</span><span class="p">.</span><span class="o">*</span> <span class="k">to</span> <span class="n">root</span><span class="o">@</span><span class="s1">'%'</span> <span class="n">IDENTIFIED</span> <span class="k">by</span> <span class="s1">'123'</span>
-</code></pre></div></div> <p>jar 文件搜索: <code class="highlighter-rouge">http://www.jarvana.com/jarvana/</code></p> <p><strong>生成javadoc</strong><br /> 生成javadoc中文乱码，在这里配置：<code class="highlighter-rouge">-encoding UTF-8 -charset UTF-8</code></p> <p><strong>找不到符号</strong><br /> 符号： 类 HttpServletRequest<br /> 解决方案：在项目的build path下添加jar包servlet-api.jar，tomcat带的，jdk中没有。</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="no">YICHA_DOWN_XML_IN</span> <span class="o">=</span> <span class="s">"http://60.28.215.67/mXml/tdel.do?pvt=0&amp;tit={0}&amp;id={1}&amp;key={2}"</span><span class="o">;</span>  <span class="c1">//红色标为占位符</span>
+</code></pre></div></div> <p>jar 文件搜索: <code class="language-plaintext highlighter-rouge">http://www.jarvana.com/jarvana/</code></p> <p><strong>生成javadoc</strong><br /> 生成javadoc中文乱码，在这里配置：<code class="language-plaintext highlighter-rouge">-encoding UTF-8 -charset UTF-8</code></p> <p><strong>找不到符号</strong><br /> 符号： 类 HttpServletRequest<br /> 解决方案：在项目的build path下添加jar包servlet-api.jar，tomcat带的，jdk中没有。</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="no">YICHA_DOWN_XML_IN</span> <span class="o">=</span> <span class="s">"http://60.28.215.67/mXml/tdel.do?pvt=0&amp;tit={0}&amp;id={1}&amp;key={2}"</span><span class="o">;</span>  <span class="c1">//红色标为占位符</span>
 <span class="nc">YiChaDown</span> <span class="n">yiChaDown</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">yiChaService</span><span class="o">.</span><span class="na">getYiChaDownList</span><span class="o">(</span><span class="nc">Config</span><span class="o">.</span><span class="na">YICHA_DOWN_XML_IN</span><span class="o">,</span> <span class="n">tit</span><span class="o">,</span> <span class="n">yid</span><span class="o">,</span> <span class="s">" "</span><span class="o">);</span>
 
 <span class="c1">// 先从缓存获取本地歌曲下载地址</span>
@@ -23,14 +23,14 @@
     <span class="nt">&lt;/ul&gt;</span>
 <span class="nt">&lt;/div&gt;</span>
 <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"phonebrands"</span><span class="nt">&gt;&lt;/div&gt;</span>
-</code></pre></div></div> <p>报错信息：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2012-2-10 17:46:43 org.apache.catalina.core.ApplicationContext log
+</code></pre></div></div> <p>报错信息：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2012-2-10 17:46:43 org.apache.catalina.core.ApplicationContext log
 严重: StandardWrapper.Throwable
 org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'musicManageController': Injection of autowired dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Could not autowire field: private com.ttpod.recommend.service.INonLocalService com.ttpod.recommend.view.manage.MusicManageController.nonLocalService; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No matching bean of type [com.ttpod.recommend.service.INonLocalService] found for dependency: expected at least 1 bean which qualifies as autowire candidate for this dependency. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
     at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:285)
     at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1074)
 
 解决方案：在nonLocalService前面加上：@service ,以便系统在使用到这个service时就注入。
-</code></pre></div></div> <p>jar 文件搜索: <code class="highlighter-rouge">http://www.jarvana.com/jarvana/</code></p> <p><strong>注意在 for 循环中用continue</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="o">(</span><span class="nc">Node</span> <span class="nl">fileTypeNode:</span><span class="n">nodeList</span><span class="o">){</span>
+</code></pre></div></div> <p>jar 文件搜索: <code class="language-plaintext highlighter-rouge">http://www.jarvana.com/jarvana/</code></p> <p><strong>注意在 for 循环中用continue</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="o">(</span><span class="nc">Node</span> <span class="nl">fileTypeNode:</span><span class="n">nodeList</span><span class="o">){</span>
         <span class="c1">//文件类型：压缩，高质，普通</span>
         <span class="nc">String</span> <span class="n">fileType</span><span class="o">=</span><span class="n">fileTypeNode</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
         <span class="nc">Items</span> <span class="n">item</span><span class="o">=</span><span class="n">nonLocalDown</span><span class="o">.</span><span class="na">new</span> <span class="nf">Items</span><span class="o">();</span>
@@ -53,12 +53,12 @@ org.springframework.beans.factory.BeanCreationException: Error creating bean wit
         <span class="err">…………</span>
         <span class="n">item</span><span class="o">.</span><span class="na">setFiletype</span><span class="o">(</span><span class="n">fileType</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre></div></div> <h3 id="jscss以及html">js、css以及html</h3> <p><strong>获得当前应用的路径</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>System.out.println("request.getContextPath():"+request.getContextPath());
+</code></pre></div></div> <h3 id="jscss以及html">js、css以及html</h3> <p><strong>获得当前应用的路径</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>System.out.println("request.getContextPath():"+request.getContextPath());
 System.out.println("request.getSession().getServletContext().getContextPath():"+request.getSession().getServletContext().getContextPath());
-</code></pre></div></div> <p><strong>HTML5的figure标签</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-</code></pre></div></div> <p><strong>HTML5的figure标签</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>figure用来代替原来li标签，P标签谁来取代呢？答案就是：figcaption  
+</code></pre></div></div> <p><strong>HTML5的figure标签</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div> <p><strong>HTML5的figure标签</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>figure用来代替原来li标签，P标签谁来取代呢？答案就是：figcaption  
 w3c赋予的定义：figure标签规定独立的流内容（图像、图表、照片、代码等等）。figure 元素的内容应该与主内容相关，但如果被删除，则不应对文档流产生影响。  
-</code></pre></div></div> <p><strong>HTML <code class="highlighter-rouge">&lt;label&gt;</code> 标签的 for 属性</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>定义和用法
+</code></pre></div></div> <p><strong>HTML <code class="language-plaintext highlighter-rouge">&lt;label&gt;</code> 标签的 for 属性</strong></p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>定义和用法
 for 属性规定 label 与哪个表单元素绑定。
 隐式和显式的联系
 标记通常以下面两种方式中的一种来和表单控件相联系：将表单控件作为标记标签的内容，这样的就是隐式形式，或者为 <span class="nt">&lt;label&gt;</span> 标签下的 for 属性命名一个目标表单 id，这样就是显式形式。
@@ -94,7 +94,7 @@ document.all("myFormId").setAttribute("action", "欲赋的action的值");
 下面介绍在jQuery中设置form表单中action的值的方法。
 $("#myFormId").attr("action", "userinfo.shtml");
 【注意】：$("#myFormId").action="XXX";  这种写法是不起作用的!
-</code></pre></div></div> <p><strong>Jquery获取和设置元素value属性</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Jquery提供了获得和设置元素的value的方法。如input， textarea等元素的value值。
+</code></pre></div></div> <p><strong>Jquery获取和设置元素value属性</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Jquery提供了获得和设置元素的value的方法。如input， textarea等元素的value值。
 例子：&lt;input name="a" id="a" value="Hello"&gt;
 1. val（）获取元素的值。jquery不能直接使用value属性去操作元素的值。
 错误操作： var myvalue=$("#a").value;
@@ -124,24 +124,24 @@ $("#myFormId").attr("action", "userinfo.shtml");
     <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">dict.toString():</span><span class="dl">"</span><span class="o">+</span><span class="nx">dict</span><span class="p">[</span><span class="dl">"</span><span class="s2">人</span><span class="dl">"</span><span class="p">]);</span> <span class="c1">//输出 ren</span>
     <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">arr.toString():</span><span class="dl">"</span><span class="o">+</span><span class="nx">arr</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span> <span class="c1">//输出 aaaaaaa,bbbbbb,cccc,ddd</span>
 <span class="nt">&lt;/script&gt;</span>
-</code></pre></div></div> <h3 id="后端java">后端Java</h3> <p><strong>spring mvc注解报错信息：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2012-2-10 17:46:43 org.apache.catalina.core.ApplicationContext log
+</code></pre></div></div> <h3 id="后端java">后端Java</h3> <p><strong>spring mvc注解报错信息：</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2012-2-10 17:46:43 org.apache.catalina.core.ApplicationContext log
 严重: StandardWrapper.Throwable
 org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'musicManageController': Injection of autowired dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Could not autowire field: private com.ttpod.recommend.service.INonLocalService com.ttpod.recommend.view.manage.MusicManageController.nonLocalService; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No matching bean of type [com.ttpod.recommend.service.INonLocalService] found for dependency: expected at least 1 bean which qualifies as autowire candidate for this dependency. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
     at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:285)
     at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1074)
-</code></pre></div></div> <p>解决方案：在nonLocalService前面加上：@service ,以便系统在使用到这个service时就注入。<br /> jar文件搜索: <code class="highlighter-rouge">http://www.jarvana.com/jarvana/</code></p> <p><strong>修改java web 项目名称</strong><br /> 第一种方法：<br /> 打开工程所在目录，找到一个 .mymetadata的文件，用写字板打开，内容大致如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;project-module</span>
-        <span class="na">type=</span><span class="s">"WEB"</span>
-        <span class="na">name=</span><span class="s">"action"</span>
-        <span class="na">id=</span><span class="s">"myeclipse.1242011546906"</span>
-        <span class="na">context-root=</span><span class="s">"/old"</span>
-        <span class="na">j2ee-spec=</span><span class="s">"1.4"</span>
-        <span class="na">archive=</span><span class="s">"old.war"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;attributes&gt;</span>
-        <span class="nt">&lt;attribute</span> <span class="na">name=</span><span class="s">"webrootdir"</span> <span class="na">value=</span><span class="s">"/WebRoot"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/attributes&gt;</span>
-<span class="nt">&lt;/project-module&gt;</span>
-</code></pre></div></div> <p>context-root=”/old” 为发布后的目录名，改为 context-root=”/new” 之后，用eclipse重新发布的目录名就是new了。如果用war的打包方式发布，则将 archive=”old.war”&gt; 改为 archive=”new.war”&gt;。</p> <p>第二种方法更为简单：<br /> 右键点击你的项目，然后选择属性—-&gt;然后点击myeclipse-web选项，修改web context-root名称为你要修改的项目名称和前面重命名的名称一致就可以了。</p> <p><strong>从网络读取图片并保存至本地</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">cn</span><span class="o">.</span><span class="na">cctv</span><span class="o">.</span><span class="na">net</span><span class="o">;</span>
+</code></pre></div></div> <p>解决方案：在nonLocalService前面加上：@service ,以便系统在使用到这个service时就注入。<br /> jar文件搜索: <code class="language-plaintext highlighter-rouge">http://www.jarvana.com/jarvana/</code></p> <p><strong>修改java web 项目名称</strong><br /> 第一种方法：<br /> 打开工程所在目录，找到一个 .mymetadata的文件，用写字板打开，内容大致如下：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project-module
+        type="WEB"
+        name="action"
+        id="myeclipse.1242011546906"
+        context-root="/old"
+        j2ee-spec="1.4"
+        archive="old.war"&gt;
+    &lt;attributes&gt;
+        &lt;attribute name="webrootdir" value="/WebRoot" /&gt;
+    &lt;/attributes&gt;
+&lt;/project-module&gt;
+</code></pre></div></div> <p>context-root=”/old” 为发布后的目录名，改为 context-root=”/new” 之后，用eclipse重新发布的目录名就是new了。如果用war的打包方式发布，则将 archive=”old.war”&gt; 改为 archive=”new.war”&gt;。</p> <p>第二种方法更为简单：<br /> 右键点击你的项目，然后选择属性—-&gt;然后点击myeclipse-web选项，修改web context-root名称为你要修改的项目名称和前面重命名的名称一致就可以了。</p> <p><strong>从网络读取图片并保存至本地</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">cn.cctv.net</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.ByteArrayOutputStream</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.FileOutputStream</span><span class="o">;</span>
@@ -278,7 +278,7 @@ org.springframework.beans.factory.BeanCreationException: Error creating bean wit
             <span class="c1">//</span>
             <span class="c1">// String addr = new String(buf, 0, count);</span>
             <span class="c1">// 将用户输入的URL字符串传入URL类对象</span>
-            <span class="no">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="no">URL</span><span class="o">(</span><span class="n">url</span><span class="err">地址</span><span class="o">);</span>
+            <span class="no">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="no">URL</span><span class="o">(</span><span class="n">url地址</span><span class="o">);</span>
             <span class="c1">// 创建URLConnection对象，用URL的openConnection方法将连接返回给URLConnection的对象</span>
             <span class="c1">// 实际上URL的openConnection的返回值就是一个URLConnection</span>
             <span class="nc">URLConnection</span> <span class="n">c</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="na">openConnection</span><span class="o">();</span>

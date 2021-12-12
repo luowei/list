@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-11-18-Java%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7%E5%8F%8AAPI%E7%9A%84%E4%BD%BF%E7%94%A8.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java中的一些基础特性及API的使用</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java输入/输出编程、网络编程、管道流、文件访问、序列化、Scanner,以及注解、自动装箱拆箱</p> <h3 id="输入输出io">输入/输出(IO)</h3> <p><strong>IO编程步骤</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>三步骤：
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-11-18-Java%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7%E5%8F%8AAPI%E7%9A%84%E4%BD%BF%E7%94%A8.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java中的一些基础特性及API的使用</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java输入/输出编程、网络编程、管道流、文件访问、序列化、Scanner,以及注解、自动装箱拆箱</p> <h3 id="输入输出io">输入/输出(IO)</h3> <p><strong>IO编程步骤</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>三步骤：
 1.制定input &amp; output
 2.对input &amp; output 进行读写
 3.回收input &amp; output 的资源（os级别开辟的资源）
@@ -26,7 +26,7 @@ Scanner: 字符输入
 PrintWriter：字符输出 java.util.
 
 输入输出实例(利用PrintWriter与Scanner)
-</code></pre></div></div> <p><strong>对标准输入输出重定向：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>输出：默认情况是终端。
+</code></pre></div></div> <p><strong>对标准输入输出重定向：</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>输出：默认情况是终端。
 重定向：System.setIN(InputStream in);
 System.setOut(PrintStream out);
 PrintStream ps=new PrintStream(new File("a.txt"));
@@ -40,10 +40,10 @@ System.out.println("HW");HW显示在a.txt中。不显示在终端。
 阀值：对于字节流的操作：主要通过改变缓冲区大小来提高效率
 
 线程通信：PipedInputStream/PipedOutputStream
-</code></pre></div></div> <p><strong>序列化</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>序列化：ObjectOutputStream
+</code></pre></div></div> <p><strong>序列化</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>序列化：ObjectOutputStream
 反序列化：ObjectInputStream
 对于要序列话的对象必须实现java.io.Serializebale
-</code></pre></div></div> <p><strong>两个静态方法：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.将1000个employee放入list中，然后序列化（List）
+</code></pre></div></div> <p><strong>两个静态方法：</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.将1000个employee放入list中，然后序列化（List）
 2.经list反序列化。然后打印出1000个。
 
 transient：对于要序列化的对象，用它修饰属性的话不会被序列化。
@@ -53,7 +53,7 @@ RandomAccessFiles:随机访问文件 可以访问文件中的任意一个字节
 seek(long postition) 0:开始位置
 end：文件的字节总数
 seek(0);read();//读第一个字节内容
-</code></pre></div></div> <h3 id="java网络编程">Java网络编程</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socket:由操作系统来分配和管理
+</code></pre></div></div> <h3 id="java网络编程">Java网络编程</h3> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socket:由操作系统来分配和管理
 port:telnet 23
 oracle:1521
 port：1～1024 系统端口
@@ -283,7 +283,7 @@ OutputStrem=socket.getOutputStream();//获取输出流，用来想服务器发�
         <span class="n">scanner</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>    <span class="c1">//关闭输入流</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>annotation 注解</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>辅助程序运行 在注解中进行程序的配置
+</code></pre></div></div> <p><strong>annotation 注解</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>辅助程序运行 在注解中进行程序的配置
 @Override :以@符号开头+注解类
 
 主流框架产品都支持使用注解进行程序配置
@@ -600,7 +600,7 @@ class:只存在于class文件中
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <h3 id="简易聊天室">简易聊天室</h3> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import java.io.*;
+</code></pre></div></div> <h3 id="简易聊天室">简易聊天室</h3> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;

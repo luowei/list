@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2012-01-22-SpringBoot%E4%BD%BF%E7%94%A8%E5%9F%BA%E4%BA%8EJDBC%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AA%E6%95%B0%E6%8D%AE%E6%BA%90.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-SpringBoot使用基于JDBC配置多个数据源</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/mynote/19.png" alt="SpringBoot" /></p> <blockquote> <p>Spring-Boot’s auto-configurer seems good for simple applications. For example it automatically creates DataSource and JdbcTemplate, when you need to connect to the database. But what about less trivial configuration, when you have several different databases?</p> <p>I found the way to have multiple DataSources for Spring-Boot-based application.</p> <p>In the sample below I have two special (db-related) Configurations, one properties file with connections’ parameters and two Repositories.</p> <p>Each @Repository connects with appropriate database through separate DataSource.</p> </blockquote> <p><strong>application.properties</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spring.ds_items.driverClassName=org.postgresql.Driver 
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2012-01-22-SpringBoot%E4%BD%BF%E7%94%A8%E5%9F%BA%E4%BA%8EJDBC%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AA%E6%95%B0%E6%8D%AE%E6%BA%90.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-SpringBoot使用基于JDBC配置多个数据源</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/mynote/19.png" alt="SpringBoot" /></p> <blockquote> <p>Spring-Boot’s auto-configurer seems good for simple applications. For example it automatically creates DataSource and JdbcTemplate, when you need to connect to the database. But what about less trivial configuration, when you have several different databases?</p> <p>I found the way to have multiple DataSources for Spring-Boot-based application.</p> <p>In the sample below I have two special (db-related) Configurations, one properties file with connections’ parameters and two Repositories.</p> <p>Each @Repository connects with appropriate database through separate DataSource.</p> </blockquote> <p><strong>application.properties</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spring.ds_items.driverClassName=org.postgresql.Driver 
 spring.ds_items.url=jdbc:postgresql://srv0/test 
 spring.ds_items.username=test0 
 spring.ds_items.password=test0 
@@ -7,29 +7,29 @@ spring.ds_users.driverClassName=org.postgresql.Driver
 spring.ds_users.url=jdbc:postgresql://srv1/test 
 spring.ds_users.username=test1 
 spring.ds_users.password=test1 
-</code></pre></div></div> <p><strong>DatabaseItemsConfig.java</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">sb</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">springframework</span><span class="p">.</span><span class="n">boot</span><span class="p">.</span><span class="n">autoconfigure</span><span class="p">.</span><span class="n">jdbc</span><span class="p">.</span><span class="n">TomcatDataSourceConfiguration</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">springframework</span><span class="p">.</span><span class="n">boot</span><span class="p">.</span><span class="n">context</span><span class="p">.</span><span class="n">properties</span><span class="p">.</span><span class="n">ConfigurationProperties</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">springframework</span><span class="p">.</span><span class="n">context</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">Bean</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">springframework</span><span class="p">.</span><span class="n">context</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">Configuration</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">springframework</span><span class="p">.</span><span class="n">jdbc</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">JdbcTemplate</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">javax</span><span class="p">.</span><span class="n">sql</span><span class="p">.</span><span class="n">DataSource</span><span class="p">;</span>
+</code></pre></div></div> <p><strong>DatabaseItemsConfig.java</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package sb;
+import org.springframework.boot.autoconfigure.jdbc.TomcatDataSourceConfiguration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+import javax.sql.DataSource;
 
-<span class="p">@</span><span class="n">Configuration</span>
-<span class="p">@</span><span class="n">ConfigurationProperties</span><span class="p">(</span><span class="n">name</span> <span class="p">=</span> <span class="s2">"spring.ds_items"</span><span class="p">)</span>
-<span class="k">public</span> <span class="n">class</span> <span class="n">DatabaseItemsConfig</span> <span class="n">extends</span> <span class="n">TomcatDataSourceConfiguration</span> <span class="p">{</span>
+@Configuration
+@ConfigurationProperties(name = "spring.ds_items")
+public class DatabaseItemsConfig extends TomcatDataSourceConfiguration {
 
-    <span class="p">@</span><span class="n">Bean</span><span class="p">(</span><span class="n">name</span> <span class="p">=</span> <span class="s2">"dsItems"</span><span class="p">)</span>
-    <span class="k">public</span> <span class="n">DataSource</span> <span class="n">dataSource</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">return</span> <span class="n">super</span><span class="p">.</span><span class="n">dataSource</span><span class="p">();</span>
-    <span class="p">}</span>
+    @Bean(name = "dsItems")
+    public DataSource dataSource() {
+        return super.dataSource();
+    }
 
-    <span class="p">@</span><span class="n">Bean</span><span class="p">(</span><span class="n">name</span> <span class="p">=</span> <span class="s2">"jdbcItems"</span><span class="p">)</span>
-    <span class="k">public</span> <span class="n">JdbcTemplate</span> <span class="n">jdbcTemplate</span><span class="p">(</span><span class="n">DataSource</span> <span class="n">dsItems</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">return</span> <span class="n">new</span> <span class="n">JdbcTemplate</span><span class="p">(</span><span class="n">dsItems</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span> 
-</code></pre></div></div> <p><strong>DatabaseUsersConfig.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">sb</span><span class="o">;</span>
+    @Bean(name = "jdbcItems")
+    public JdbcTemplate jdbcTemplate(DataSource dsItems) {
+        return new JdbcTemplate(dsItems);
+    }
+} 
+</code></pre></div></div> <p><strong>DatabaseUsersConfig.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">sb</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.jdbc.TomcatDataSourceConfiguration</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.boot.context.properties.ConfigurationProperties</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="o">;</span>
@@ -51,7 +51,7 @@ spring.ds_users.password=test1
         <span class="k">return</span> <span class="k">new</span> <span class="nf">JdbcTemplate</span><span class="o">(</span><span class="n">dsUsers</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span> 
-</code></pre></div></div> <p><strong>ItemRepository.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">sb</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>ItemRepository.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">sb</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
@@ -80,7 +80,7 @@ spring.ds_users.password=test1
         <span class="o">}</span>
     <span class="o">};</span>
 <span class="o">}</span> 
-</code></pre></div></div> <p><strong>UserRepository.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">sb</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>UserRepository.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">sb</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
@@ -110,7 +110,7 @@ spring.ds_users.password=test1
         <span class="o">}</span>
     <span class="o">};</span>
 <span class="o">}</span> 
-</code></pre></div></div> <p><strong>Controller.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">sb</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>Controller.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">sb</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
@@ -143,7 +143,7 @@ spring.ds_users.password=test1
         <span class="k">return</span> <span class="n">items</span><span class="o">.</span><span class="na">getItem</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span> 
-</code></pre></div></div> <p><strong>Application.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">sb</span><span class="o">;</span> 
+</code></pre></div></div> <p><strong>Application.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">sb</span><span class="o">;</span> 
  
 <span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="o">;</span> 
 <span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.EnableAutoConfiguration</span><span class="o">;</span> 

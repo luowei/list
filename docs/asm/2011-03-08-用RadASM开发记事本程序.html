@@ -1,399 +1,399 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-08-%E7%94%A8RadASM%E5%BC%80%E5%8F%91%E8%AE%B0%E4%BA%8B%E6%9C%AC%E7%A8%8B%E5%BA%8F.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-用RadASM开发记事本程序</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <blockquote> <p>此记事本程序用普通的Edit控件实现，还有一些小小的bug,不完美的地方，在选择文本的时候，行号未能更新重画，现在也正在思考，水平不够，用RichEdit控件能达到更好的效果，修复一些小的BUG.</p> </blockquote> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">;--------------------------------------------------------------------------------</span>
-<span class="c">;程序作者：luowei</span>
-<span class="c">;开发日期：2011-03-08</span>
-<span class="c">;文件描述：我的应用程序模板</span>
-<span class="c">;注意事项：此份代码使用586指令集</span>
-<span class="c">;更新历史：</span>
-<span class="c">;--------------------------------------------------------------------------------</span>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-08-%E7%94%A8RadASM%E5%BC%80%E5%8F%91%E8%AE%B0%E4%BA%8B%E6%9C%AC%E7%A8%8B%E5%BA%8F.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-用RadASM开发记事本程序</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <blockquote> <p>此记事本程序用普通的Edit控件实现，还有一些小小的bug,不完美的地方，在选择文本的时候，行号未能更新重画，现在也正在思考，水平不够，用RichEdit控件能达到更好的效果，修复一些小的BUG.</p> </blockquote> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">;--------------------------------------------------------------------------------</span>
+<span class="c1">;程序作者：luowei</span>
+<span class="c1">;开发日期：2011-03-08</span>
+<span class="c1">;文件描述：我的应用程序模板</span>
+<span class="c1">;注意事项：此份代码使用586指令集</span>
+<span class="c1">;更新历史：</span>
+<span class="c1">;--------------------------------------------------------------------------------</span>
 
-<span class="p">.</span><span class="mi">586</span>
-<span class="p">.</span><span class="n">model</span> <span class="n">flat</span><span class="p">,</span><span class="n">stdcall</span>
-<span class="n">option</span> <span class="n">casemap</span><span class="o">:</span><span class="n">none</span>
-<span class="n">include</span> <span class="n">windows</span><span class="p">.</span><span class="k">inc</span>
-<span class="n">include</span> <span class="n">user32</span><span class="p">.</span><span class="k">inc</span>
-<span class="n">include</span> <span class="n">kernel32</span><span class="p">.</span><span class="k">inc</span>
-<span class="n">include</span> <span class="n">comdlg32</span><span class="p">.</span><span class="k">inc</span>
-<span class="n">include</span> <span class="n">gdi32</span><span class="p">.</span><span class="k">inc</span>
-<span class="n">includelib</span> <span class="n">user32</span><span class="p">.</span><span class="n">lib</span>
-<span class="n">includelib</span> <span class="n">kernel32</span><span class="p">.</span><span class="n">lib</span>
-<span class="n">includelib</span> <span class="n">comdlg32</span><span class="p">.</span><span class="n">lib</span>
-<span class="n">includelib</span> <span class="n">gdi32</span><span class="p">.</span><span class="n">lib</span>
+<span class="nf">.586</span>
+<span class="nf">.model</span> <span class="nv">flat</span><span class="p">,</span><span class="nv">stdcall</span>
+<span class="nf">option</span> <span class="nv">casemap</span><span class="p">:</span><span class="nv">none</span>
+<span class="nf">include</span> <span class="nv">windows.inc</span>
+<span class="nf">include</span> <span class="nv">user32.inc</span>
+<span class="nf">include</span> <span class="nv">kernel32.inc</span>
+<span class="nf">include</span> <span class="nv">comdlg32.inc</span>
+<span class="nf">include</span> <span class="nv">gdi32.inc</span>
+<span class="nf">includelib</span> <span class="nv">user32.lib</span>
+<span class="nf">includelib</span> <span class="nv">kernel32.lib</span>
+<span class="nf">includelib</span> <span class="nv">comdlg32.lib</span>
+<span class="nf">includelib</span> <span class="nv">gdi32.lib</span>
 
-<span class="n">WinMain</span> <span class="n">proto</span> <span class="o">:</span><span class="n">DWORD</span><span class="p">,</span><span class="o">:</span><span class="n">DWORD</span><span class="p">,</span><span class="o">:</span><span class="n">DWORD</span><span class="p">,</span><span class="o">:</span><span class="n">DWORD</span>
+<span class="nf">WinMain</span> <span class="nv">proto</span> <span class="p">:</span><span class="kt">DWORD</span><span class="p">,:</span><span class="kt">DWORD</span><span class="p">,:</span><span class="kt">DWORD</span><span class="p">,:</span><span class="kt">DWORD</span>
 
-<span class="p">.</span><span class="n">data</span>
-<span class="n">ClassName</span>    <span class="kt">db</span> <span class="s">"MainWinClass"</span><span class="p">,</span><span class="mi">0</span> <span class="c">;窗口类名</span>
-<span class="n">AppName</span>    <span class="kt">db</span> <span class="s">"My Win32ASM Application"</span><span class="p">,</span><span class="mi">0</span> <span class="c">;应用程序标题名</span>
-<span class="n">editClass</span>     <span class="kt">db</span>     <span class="s">"edit"</span><span class="p">,</span><span class="mi">0</span>
-<span class="n">aboutApp</span>     <span class="kt">db</span>     <span class="s">"小记事本，维唯为为，汇编语言编写"</span><span class="p">,</span><span class="mi">0</span>
-<span class="c">;exitStr        db     "是否要退出程序？",0</span>
-<span class="c">;remind     db     "提示",0</span>
+<span class="nf">.data</span>
+<span class="nf">ClassName</span>    <span class="nv">db</span> <span class="err">"</span><span class="nv">MainWinClass</span><span class="s">",0 ;窗口类名
+AppName    db "</span><span class="nv">My</span> <span class="nv">Win32ASM</span> <span class="nv">Application</span><span class="s">",0 ;应用程序标题名
+editClass     db     "</span><span class="nb">edi</span><span class="nv">t</span><span class="s">",0
+aboutApp     db     "</span><span class="err">小记事本，维唯为为，汇编语言编写</span><span class="s">",0
+;exitStr        db     "</span><span class="err">是否要退出程序？"</span><span class="p">,</span><span class="mi">0</span>
+<span class="c1">;remind     db     "提示",0</span>
 
-<span class="c">;调用公共对话框所要的信息</span>
-<span class="n">szFilter</span>     <span class="kt">db</span> <span class="s">"Text File(*.txt)"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">"*.txt"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">"All File(*.*)"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">"*.*"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-<span class="n">szDefExt</span>     <span class="kt">db</span> <span class="s">"txt"</span><span class="p">,</span><span class="mi">0</span>
+<span class="c1">;调用公共对话框所要的信息</span>
+<span class="nf">szFilter</span>     <span class="nv">db</span> <span class="s">"Text File(*.txt)"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">"*.txt"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">"All File(*.*)"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">"*.*"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+<span class="nf">szDefExt</span>     <span class="nv">db</span> <span class="s">"txt"</span><span class="p">,</span><span class="mi">0</span>
 
-<span class="n">strFileBuf</span>     <span class="kt">db</span> <span class="mi">8192</span>    <span class="n">dup</span><span class="p">(</span><span class="o">?</span><span class="p">)</span>
-<span class="c">;有待改善，可通过获取要打开的文件的大小属性动态的分配内存空间</span>
-<span class="c">;用GlobalAlloc函数动态分配，GetFileSize获取文件大小后，再用GlobalReAlloc重新分配缓冲区内存</span>
+<span class="nf">strFileBuf</span>     <span class="nv">db</span> <span class="mi">8192</span>    <span class="nv">dup</span><span class="p">(</span><span class="nv">?</span><span class="p">)</span>
+<span class="c1">;有待改善，可通过获取要打开的文件的大小属性动态的分配内存空间</span>
+<span class="c1">;用GlobalAlloc函数动态分配，GetFileSize获取文件大小后，再用GlobalReAlloc重新分配缓冲区内存</span>
 
-<span class="p">.</span><span class="n">data</span><span class="o">?</span>
-<span class="n">hInstance</span> <span class="n">HINSTANCE</span> <span class="o">?</span>             <span class="c">;应用程序的句柄</span>
-<span class="n">CommandLine</span> <span class="n">LPSTR</span> <span class="o">?</span>             <span class="c">;程序的命令行参数字符串</span>
-<span class="n">hEdit</span>         <span class="n">HWND</span> <span class="o">?</span>                <span class="c">;文本编辑框的窗口句柄</span>
-<span class="n">strFile</span>         <span class="kt">db</span> <span class="n">MAX_PATH</span> <span class="n">dup</span> <span class="p">(</span><span class="o">?</span><span class="p">)</span>     <span class="c">;保存公共对话框中获取的文件名</span>
-<span class="n">lpEditProc</span>    <span class="n">HWND</span> <span class="o">?</span>
+<span class="nf">.data?</span>
+<span class="nf">hInstance</span> <span class="nv">HINSTANCE</span> <span class="nv">?</span>             <span class="c1">;应用程序的句柄</span>
+<span class="nf">CommandLine</span> <span class="nv">LPSTR</span> <span class="nv">?</span>             <span class="c1">;程序的命令行参数字符串</span>
+<span class="nf">hEdit</span>         <span class="nv">HWND</span> <span class="nv">?</span>                <span class="c1">;文本编辑框的窗口句柄</span>
+<span class="nf">strFile</span>         <span class="nv">db</span> <span class="nv">MAX_PATH</span> <span class="nv">dup</span> <span class="p">(</span><span class="nv">?</span><span class="p">)</span>     <span class="c1">;保存公共对话框中获取的文件名</span>
+<span class="nf">lpEditProc</span>    <span class="nv">HWND</span> <span class="nv">?</span>
 
-<span class="p">.</span><span class="n">const</span>
-    <span class="n">APP_ICON</span>                     <span class="k">equ</span> <span class="mi">1200</span> <span class="c">;应用程序的图标</span>
-    <span class="c">;Res\MainMenu.mnu</span>
-    <span class="n">IDR_MENU</span>                    <span class="k">equ</span> <span class="mi">10000</span>
-    <span class="n">IDM_FILE</span>                        <span class="k">equ</span> <span class="mi">10001</span>
-    <span class="n">IDM_FILE_OPEN</span>                    <span class="k">equ</span> <span class="mi">10002</span>
-    <span class="n">IDM_FILE_SAVE</span>                    <span class="k">equ</span> <span class="mi">10003</span>
-    <span class="n">IDM_LINE1</span>                    <span class="k">equ</span> <span class="mi">10004</span>
-    <span class="n">IDM_FILE_EXIT</span>                    <span class="k">equ</span> <span class="mi">10005</span>
-    <span class="n">IDM_EDIT</span>                    <span class="k">equ</span> <span class="mi">10006</span>
-    <span class="n">IDM_EDIT_UNDO</span>                    <span class="k">equ</span> <span class="mi">10007</span>
-    <span class="n">IDM_EDIT_REDO</span>                    <span class="k">equ</span> <span class="mi">10008</span>
-    <span class="n">IDM_LINE2</span>                    <span class="k">equ</span> <span class="mi">10009</span>
-    <span class="n">IDM_EDIT_CUT</span>                    <span class="k">equ</span> <span class="mi">10010</span>
-    <span class="n">IDM_EDIT_COPY</span>                    <span class="k">equ</span> <span class="mi">10011</span>
-    <span class="n">IDM_EDIT_PASTE</span>                    <span class="k">equ</span> <span class="mi">10012</span>
-    <span class="n">IDM_HELP</span>                    <span class="k">equ</span> <span class="mi">10013</span>
-    <span class="n">IDM_HELP_ABOUT</span>                    <span class="k">equ</span> <span class="mi">10014</span>
+<span class="nf">.const</span>
+    <span class="no">APP_ICON</span><span class="kd">                     equ</span> <span class="mi">1200</span> <span class="c1">;应用程序的图标</span>
+    <span class="c1">;Res\MainMenu.mnu</span>
+    <span class="no">IDR_MENU</span><span class="kd">                    equ</span> <span class="mi">10000</span>
+    <span class="no">IDM_FILE</span><span class="kd">                        equ</span> <span class="mi">10001</span>
+    <span class="no">IDM_FILE_OPEN</span><span class="kd">                    equ</span> <span class="mi">10002</span>
+    <span class="no">IDM_FILE_SAVE</span><span class="kd">                    equ</span> <span class="mi">10003</span>
+    <span class="no">IDM_LINE1</span><span class="kd">                    equ</span> <span class="mi">10004</span>
+    <span class="no">IDM_FILE_EXIT</span><span class="kd">                    equ</span> <span class="mi">10005</span>
+    <span class="no">IDM_EDIT</span><span class="kd">                    equ</span> <span class="mi">10006</span>
+    <span class="no">IDM_EDIT_UNDO</span><span class="kd">                    equ</span> <span class="mi">10007</span>
+    <span class="no">IDM_EDIT_REDO</span><span class="kd">                    equ</span> <span class="mi">10008</span>
+    <span class="no">IDM_LINE2</span><span class="kd">                    equ</span> <span class="mi">10009</span>
+    <span class="no">IDM_EDIT_CUT</span><span class="kd">                    equ</span> <span class="mi">10010</span>
+    <span class="no">IDM_EDIT_COPY</span><span class="kd">                    equ</span> <span class="mi">10011</span>
+    <span class="no">IDM_EDIT_PASTE</span><span class="kd">                    equ</span> <span class="mi">10012</span>
+    <span class="no">IDM_HELP</span><span class="kd">                    equ</span> <span class="mi">10013</span>
+    <span class="no">IDM_HELP_ABOUT</span><span class="kd">                    equ</span> <span class="mi">10014</span>
 
-<span class="p">.</span><span class="n">code</span>
-<span class="c">; ---------------------------------------------------------------------------</span>
-<span class="c">;程序入口点</span>
-<span class="n">start</span><span class="o">:</span>
-    <span class="c">;为程序生成一个实例句柄</span>
-    <span class="n">invoke</span> <span class="n">GetModuleHandle</span><span class="p">,</span> <span class="n">NULL</span>
-    <span class="k">mov</span> <span class="n">hInstance</span><span class="p">,</span><span class="n">eax</span>
-    <span class="c">;为程序获取一个命令行参数</span>
-    <span class="n">invoke</span> <span class="n">GetCommandLine</span>
-    <span class="k">mov</span> <span class="n">CommandLine</span><span class="p">,</span><span class="n">eax</span>
-    <span class="c">;调用windows的主函数</span>
-    <span class="n">invoke</span> <span class="n">WinMain</span><span class="p">,</span> <span class="n">hInstance</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="n">CommandLine</span><span class="p">,</span> <span class="n">SW_SHOWDEFAULT</span>
-    <span class="n">invoke</span> <span class="n">ExitProcess</span><span class="p">,</span><span class="n">eax</span>
-<span class="n">_ShowLineNum</span> <span class="n">proc</span> <span class="n">hwndEdit</span><span class="o">:</span><span class="n">HWND</span>
-<span class="c">;功能：显示文本的总行数</span>
-<span class="c">;参数：</span>
-<span class="c">;    hEdit:要显示行号的文本框，这里用RichEdit测试</span>
-<span class="c">;返回值：没有</span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">stClientRect</span><span class="o">:</span><span class="n">RECT</span>    <span class="c">;RichEdit的客户区大小</span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">hDcEdit</span>        <span class="c">;RichEdit的DC（设备环境）</span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">Char_Height</span>        <span class="c">;文本总行数</span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">Line_Count</span>        <span class="c">;字符高度</span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">ClientHeight</span>        <span class="c">;RichEdit的客户区高度</span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">hdcBmp</span>        <span class="c">;与RichEdit兼容的位图dc</span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">hdcCpb</span>            <span class="c">;与RichEdit兼容的Dc</span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">CharFmt</span><span class="o">:</span><span class="n">CHARFORMAT</span>    <span class="c">;RichEdit中的一个结构，用于获取字符的一系列信息</span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">stBuf</span><span class="p">[10]</span><span class="o">:</span><span class="n">byte</span>        <span class="c">;显示行号的缓冲区</span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">szTest</span><span class="p">[64]</span><span class="o">:</span><span class="n">byte</span>        <span class="c">;Test</span>
-    <span class="n">LOCAL</span>    <span class="n">tm</span><span class="o">:</span><span class="n">TEXTMETRIC</span>
+<span class="nf">.code</span>
+<span class="c1">; ---------------------------------------------------------------------------</span>
+<span class="c1">;程序入口点</span>
+<span class="nl">start:</span>
+    <span class="c1">;为程序生成一个实例句柄</span>
+    <span class="nf">invoke</span> <span class="nv">GetModuleHandle</span><span class="p">,</span> <span class="nv">NULL</span>
+    <span class="nf">mov</span> <span class="nv">hInstance</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="c1">;为程序获取一个命令行参数</span>
+    <span class="nf">invoke</span> <span class="nv">GetCommandLine</span>
+    <span class="nf">mov</span> <span class="nv">CommandLine</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="c1">;调用windows的主函数</span>
+    <span class="nf">invoke</span> <span class="nv">WinMain</span><span class="p">,</span> <span class="nv">hInstance</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">CommandLine</span><span class="p">,</span> <span class="nv">SW_SHOWDEFAULT</span>
+    <span class="nf">invoke</span> <span class="nv">ExitProcess</span><span class="p">,</span><span class="nb">eax</span>
+<span class="nf">_ShowLineNum</span> <span class="nv">proc</span> <span class="nv">hwndEdit</span><span class="p">:</span><span class="nv">HWND</span>
+<span class="c1">;功能：显示文本的总行数</span>
+<span class="c1">;参数：</span>
+<span class="c1">;    hEdit:要显示行号的文本框，这里用RichEdit测试</span>
+<span class="c1">;返回值：没有</span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nv">stClientRect</span><span class="p">:</span><span class="nv">RECT</span>    <span class="c1">;RichEdit的客户区大小</span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nv">hDcEdit</span>        <span class="c1">;RichEdit的DC（设备环境）</span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nb">Ch</span><span class="nv">ar_Height</span>        <span class="c1">;文本总行数</span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nv">Line_Count</span>        <span class="c1">;字符高度</span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nb">Cl</span><span class="nv">ientHeight</span>        <span class="c1">;RichEdit的客户区高度</span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nv">hdcBmp</span>        <span class="c1">;与RichEdit兼容的位图dc</span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nv">hdcCpb</span>            <span class="c1">;与RichEdit兼容的Dc</span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nb">Ch</span><span class="nv">arFmt</span><span class="p">:</span><span class="nb">CH</span><span class="nv">ARFORMAT</span>    <span class="c1">;RichEdit中的一个结构，用于获取字符的一系列信息</span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nv">stBuf</span><span class="p">[</span><span class="mi">10</span><span class="p">]:</span><span class="kt">byte</span>        <span class="c1">;显示行号的缓冲区</span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nv">szTest</span><span class="p">[</span><span class="mi">64</span><span class="p">]:</span><span class="kt">byte</span>        <span class="c1">;Test</span>
+    <span class="nf">LOCAL</span>    <span class="nv">tm</span><span class="p">:</span><span class="nv">TEXTMETRIC</span>
 
-    <span class="k">pushad</span>        <span class="c">;保存一下所有的寄存器</span>
+    <span class="nf">pushad</span>        <span class="c1">;保存一下所有的寄存器</span>
 
-    <span class="c">;获取RichEdit的Dc</span>
-    <span class="n">invoke</span> <span class="n">GetDC</span><span class="p">,</span><span class="n">hEdit</span>
-    <span class="k">mov</span> <span class="err">@</span><span class="n">hDcEdit</span><span class="p">,</span><span class="n">eax</span>
-    <span class="c">;获取RichEdit的客户区高度</span>
-    <span class="n">invoke</span> <span class="n">GetClientRect</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">addr</span> <span class="err">@</span><span class="n">stClientRect</span>
-    <span class="k">mov</span> <span class="n">ebx</span><span class="p">,</span> <span class="err">@</span><span class="n">stClientRect</span><span class="p">.</span><span class="n">bottom</span>
-    <span class="k">sub</span> <span class="n">ebx</span><span class="p">,</span> <span class="err">@</span><span class="n">stClientRect</span><span class="p">.</span><span class="n">top</span>
-    <span class="k">mov</span> <span class="err">@</span><span class="n">ClientHeight</span><span class="p">,</span> <span class="n">ebx</span>
-    <span class="c">;创建与RichEdit兼容的Dc</span>
-    <span class="n">invoke</span> <span class="n">CreateCompatibleDC</span><span class="p">,</span><span class="err">@</span><span class="n">hDcEdit</span>
-    <span class="k">mov</span> <span class="err">@</span><span class="n">hdcCpb</span><span class="p">,</span> <span class="n">eax</span>
-    <span class="c">;创建与RichEdit兼容的位图Dc,</span>
-    <span class="n">invoke</span>    <span class="n">CreateCompatibleBitmap</span><span class="p">,</span><span class="err">@</span><span class="n">hDcEdit</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="err">@</span><span class="n">ClientHeight</span>
-    <span class="k">mov</span> <span class="err">@</span><span class="n">hdcBmp</span><span class="p">,</span><span class="n">eax</span>
-    <span class="c">;将位图dc选入RichEdit环境中</span>
-    <span class="n">invoke</span> <span class="n">SelectObject</span><span class="p">,</span><span class="err">@</span><span class="n">hdcCpb</span><span class="p">,</span><span class="err">@</span><span class="n">hdcBmp</span>
-    <span class="c">;创建一个实心画刷，用于下面的FillRect函数。</span>
-    <span class="n">invoke</span>    <span class="n">CreateSolidBrush</span><span class="p">,</span><span class="mi">0000</span><span class="n">a0ffh</span>    <span class="c">;设置画刷的颜色</span>
-    <span class="c">;填充显示行号的dc的背景颜色。</span>
-    <span class="n">invoke</span>    <span class="n">FillRect</span><span class="p">,</span> <span class="err">@</span><span class="n">hdcCpb</span><span class="p">,</span><span class="n">addr</span> <span class="err">@</span><span class="n">stClientRect</span><span class="p">,</span><span class="n">eax</span>
-    <span class="n">invoke</span>    <span class="n">SetBkMode</span><span class="p">,</span> <span class="err">@</span><span class="n">hdcCpb</span><span class="p">,</span><span class="n">TRANSPARENT</span>
-    <span class="c">;获取当前RichEdit文本中的总行数</span>
-    <span class="n">invoke</span>    <span class="n">SendMessage</span><span class="p">,</span> <span class="n">hEdit</span><span class="p">,</span><span class="n">EM_GETLINECOUNT</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-    <span class="k">mov</span>    <span class="err">@</span><span class="n">Line_Count</span><span class="p">,</span> <span class="n">eax</span>
-    <span class="c">;获取字符高度</span>
-    <span class="n">invoke</span>    <span class="n">RtlZeroMemory</span><span class="p">,</span> <span class="n">addr</span> <span class="n">tm</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">tm</span>
-    <span class="n">invoke</span>    <span class="n">GetTextMetrics</span><span class="p">,</span> <span class="err">@</span><span class="n">hDcEdit</span><span class="p">,</span><span class="n">addr</span> <span class="n">tm</span>
-    <span class="k">push</span>    <span class="n">tm</span><span class="p">.</span><span class="n">tmHeight</span>
-    <span class="k">pop</span>    <span class="err">@</span><span class="n">Char_Height</span>
+    <span class="c1">;获取RichEdit的Dc</span>
+    <span class="nf">invoke</span> <span class="nv">GetDC</span><span class="p">,</span><span class="nv">hEdit</span>
+    <span class="nf">mov</span> <span class="err">@</span><span class="nv">hDcEdit</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="c1">;获取RichEdit的客户区高度</span>
+    <span class="nf">invoke</span> <span class="nv">GetClientRect</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">addr</span> <span class="err">@</span><span class="nv">stClientRect</span>
+    <span class="nf">mov</span> <span class="nb">ebx</span><span class="p">,</span> <span class="err">@</span><span class="nv">stClientRect.bottom</span>
+    <span class="nf">sub</span> <span class="nb">ebx</span><span class="p">,</span> <span class="err">@</span><span class="nv">stClientRect.top</span>
+    <span class="nf">mov</span> <span class="err">@</span><span class="nb">Cl</span><span class="nv">ientHeight</span><span class="p">,</span> <span class="nb">ebx</span>
+    <span class="c1">;创建与RichEdit兼容的Dc</span>
+    <span class="nf">invoke</span> <span class="nv">CreateCompatibleDC</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcEdit</span>
+    <span class="nf">mov</span> <span class="err">@</span><span class="nv">hdcCpb</span><span class="p">,</span> <span class="nb">eax</span>
+    <span class="c1">;创建与RichEdit兼容的位图Dc,</span>
+    <span class="nf">invoke</span>    <span class="nv">CreateCompatibleBitmap</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcEdit</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="err">@</span><span class="nb">Cl</span><span class="nv">ientHeight</span>
+    <span class="nf">mov</span> <span class="err">@</span><span class="nv">hdcBmp</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="c1">;将位图dc选入RichEdit环境中</span>
+    <span class="nf">invoke</span> <span class="nv">SelectObject</span><span class="p">,</span><span class="err">@</span><span class="nv">hdcCpb</span><span class="p">,</span><span class="err">@</span><span class="nv">hdcBmp</span>
+    <span class="c1">;创建一个实心画刷，用于下面的FillRect函数。</span>
+    <span class="nf">invoke</span>    <span class="nv">CreateSolidBrush</span><span class="p">,</span><span class="mh">0000a0ffh</span>    <span class="c1">;设置画刷的颜色</span>
+    <span class="c1">;填充显示行号的dc的背景颜色。</span>
+    <span class="nf">invoke</span>    <span class="nv">FillRect</span><span class="p">,</span> <span class="err">@</span><span class="nv">hdcCpb</span><span class="p">,</span><span class="nv">addr</span> <span class="err">@</span><span class="nv">stClientRect</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">invoke</span>    <span class="nv">SetBkMode</span><span class="p">,</span> <span class="err">@</span><span class="nv">hdcCpb</span><span class="p">,</span><span class="nv">TRANSPARENT</span>
+    <span class="c1">;获取当前RichEdit文本中的总行数</span>
+    <span class="nf">invoke</span>    <span class="nv">SendMessage</span><span class="p">,</span> <span class="nv">hEdit</span><span class="p">,</span><span class="nv">EM_GETLINECOUNT</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+    <span class="nf">mov</span>    <span class="err">@</span><span class="nv">Line_Count</span><span class="p">,</span> <span class="nb">eax</span>
+    <span class="c1">;获取字符高度</span>
+    <span class="nf">invoke</span>    <span class="nv">RtlZeroMemory</span><span class="p">,</span> <span class="nv">addr</span> <span class="nv">tm</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">tm</span>
+    <span class="nf">invoke</span>    <span class="nv">GetTextMetrics</span><span class="p">,</span> <span class="err">@</span><span class="nv">hDcEdit</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">tm</span>
+    <span class="nf">push</span>    <span class="nv">tm.tmHeight</span>
+    <span class="nf">pop</span>    <span class="err">@</span><span class="nb">Ch</span><span class="nv">ar_Height</span>
 
-<span class="p">.</span><span class="n">data</span>
-    <span class="n">charFmt</span>    <span class="n">byte</span>    <span class="s">"%4u"</span><span class="p">,</span><span class="mi">0</span>
+<span class="nf">.data</span>
+    <span class="nf">charFmt</span>    <span class="kt">byte</span>    <span class="s">"%4u"</span><span class="p">,</span><span class="mi">0</span>
 
-<span class="p">.</span><span class="n">code</span>
-    <span class="n">invoke</span>    <span class="n">RtlZeroMemory</span><span class="p">,</span><span class="n">addr</span> <span class="err">@</span><span class="n">stBuf</span><span class="p">,</span><span class="n">sizeof</span> <span class="err">@</span><span class="n">stBuf</span>
-    <span class="c">;设置显示行号的前景色</span>
-    <span class="n">invoke</span>    <span class="n">SetTextColor</span><span class="p">,</span><span class="err">@</span><span class="n">hdcCpb</span><span class="p">,</span><span class="mi">0000000</span><span class="n">h</span>
-    <span class="k">mov</span> <span class="n">ebx</span><span class="p">,</span> <span class="err">@</span><span class="n">Char_Height</span>
-    <span class="k">mov</span> <span class="err">@</span><span class="n">Char_Height</span><span class="p">,</span><span class="mi">1</span>
-    <span class="c">;获取文本框中第一个可见的行号，没有这个行号显示不会跟着文本的滚动而滚动</span>
-    <span class="n">invoke</span>    <span class="n">SendMessage</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">EM_GETFIRSTVISIBLELINE</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-    <span class="k">mov</span> <span class="n">edi</span><span class="p">,</span> <span class="n">eax</span>
-    <span class="k">inc</span> <span class="n">edi</span>
-    <span class="c">;在位图dc中循环输出行号</span>
-    <span class="p">.</span><span class="n">while</span>    <span class="n">edi</span><span class="o">&lt;=</span><span class="err">@</span><span class="n">Line_Count</span>
-        <span class="n">invoke</span> <span class="n">wsprintf</span><span class="p">,</span><span class="n">addr</span> <span class="err">@</span><span class="n">stBuf</span><span class="p">,</span><span class="n">addr</span> <span class="n">charFmt</span><span class="p">,</span><span class="n">edi</span>
-        <span class="c">;int wsprintf,lpout(输出缓冲区),lpFmt(格式字符串),...(需要输出的参数)，返回值是写入的长度</span>
-        <span class="n">invoke</span> <span class="n">TextOut</span><span class="p">,</span><span class="err">@</span><span class="n">hdcCpb</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="err">@</span><span class="n">Char_Height</span><span class="p">,</span><span class="n">addr</span> <span class="err">@</span><span class="n">stBuf</span><span class="p">,</span><span class="n">eax</span>
-        <span class="k">mov</span> <span class="n">edx</span><span class="p">,</span><span class="err">@</span><span class="n">Char_Height</span>
-        <span class="k">add</span> <span class="n">edx</span><span class="p">,</span><span class="n">ebx</span>
-        <span class="c">;add    edx, 4    ;这里加上行间距，并不精确。</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">Char_Height</span><span class="p">,</span> <span class="n">edx</span>
-        <span class="k">inc</span>    <span class="n">edi</span>
-        <span class="p">.</span><span class="n">break</span>    <span class="p">.</span><span class="n">if</span>    <span class="n">edx</span><span class="o">&gt;</span><span class="err">@</span><span class="n">ClientHeight</span>    
-    <span class="p">.</span><span class="n">endw</span>
-    <span class="c">;将已"画好"位图真正"贴"到RichEdit中</span>
-    <span class="n">invoke</span> <span class="n">BitBlt</span><span class="p">,</span><span class="err">@</span><span class="n">hDcEdit</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="err">@</span><span class="n">ClientHeight</span><span class="p">,</span><span class="err">@</span><span class="n">hdcCpb</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">SRCCOPY</span>
-    <span class="n">invoke</span> <span class="n">DeleteDC</span><span class="p">,</span><span class="err">@</span><span class="n">hdcCpb</span>
-    <span class="n">invoke</span> <span class="n">ReleaseDC</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="err">@</span><span class="n">hDcEdit</span>
-    <span class="n">invoke</span> <span class="n">DeleteObject</span><span class="p">,</span><span class="err">@</span><span class="n">hdcBmp</span>
-    <span class="k">popad</span>
-    <span class="k">ret</span>
-<span class="n">_ShowLineNum</span> <span class="n">endp</span>
+<span class="nf">.code</span>
+    <span class="nf">invoke</span>    <span class="nv">RtlZeroMemory</span><span class="p">,</span><span class="nv">addr</span> <span class="err">@</span><span class="nv">stBuf</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="err">@</span><span class="nv">stBuf</span>
+    <span class="c1">;设置显示行号的前景色</span>
+    <span class="nf">invoke</span>    <span class="nv">SetTextColor</span><span class="p">,</span><span class="err">@</span><span class="nv">hdcCpb</span><span class="p">,</span><span class="mh">0000000h</span>
+    <span class="nf">mov</span> <span class="nb">ebx</span><span class="p">,</span> <span class="err">@</span><span class="nb">Ch</span><span class="nv">ar_Height</span>
+    <span class="nf">mov</span> <span class="err">@</span><span class="nb">Ch</span><span class="nv">ar_Height</span><span class="p">,</span><span class="mi">1</span>
+    <span class="c1">;获取文本框中第一个可见的行号，没有这个行号显示不会跟着文本的滚动而滚动</span>
+    <span class="nf">invoke</span>    <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">EM_GETFIRSTVISIBLELINE</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+    <span class="nf">mov</span> <span class="nb">edi</span><span class="p">,</span> <span class="nb">eax</span>
+    <span class="nf">inc</span> <span class="nb">edi</span>
+    <span class="c1">;在位图dc中循环输出行号</span>
+    <span class="nf">.while</span>    <span class="nb">edi</span><span class="o">&lt;</span><span class="err">=@</span><span class="nv">Line_Count</span>
+        <span class="nf">invoke</span> <span class="nv">wsprintf</span><span class="p">,</span><span class="nv">addr</span> <span class="err">@</span><span class="nv">stBuf</span><span class="p">,</span><span class="nv">addr</span> <span class="nb">ch</span><span class="nv">arFmt</span><span class="p">,</span><span class="nb">edi</span>
+        <span class="c1">;int wsprintf,lpout(输出缓冲区),lpFmt(格式字符串),...(需要输出的参数)，返回值是写入的长度</span>
+        <span class="nf">invoke</span> <span class="nv">TextOut</span><span class="p">,</span><span class="err">@</span><span class="nv">hdcCpb</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="err">@</span><span class="nb">Ch</span><span class="nv">ar_Height</span><span class="p">,</span><span class="nv">addr</span> <span class="err">@</span><span class="nv">stBuf</span><span class="p">,</span><span class="nb">eax</span>
+        <span class="nf">mov</span> <span class="nb">edx</span><span class="p">,</span><span class="err">@</span><span class="nb">Ch</span><span class="nv">ar_Height</span>
+        <span class="nf">add</span> <span class="nb">edx</span><span class="p">,</span><span class="nb">ebx</span>
+        <span class="c1">;add    edx, 4    ;这里加上行间距，并不精确。</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nb">Ch</span><span class="nv">ar_Height</span><span class="p">,</span> <span class="nb">edx</span>
+        <span class="nf">inc</span>    <span class="nb">edi</span>
+        <span class="nf">.break</span>    <span class="nv">.if</span>    <span class="nb">edx</span><span class="o">&gt;</span><span class="err">@</span><span class="nb">Cl</span><span class="nv">ientHeight</span>    
+    <span class="nf">.endw</span>
+    <span class="c1">;将已"画好"位图真正"贴"到RichEdit中</span>
+    <span class="nf">invoke</span> <span class="nv">BitBlt</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcEdit</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="err">@</span><span class="nb">Cl</span><span class="nv">ientHeight</span><span class="p">,</span><span class="err">@</span><span class="nv">hdcCpb</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nv">SRCCOPY</span>
+    <span class="nf">invoke</span> <span class="nv">DeleteDC</span><span class="p">,</span><span class="err">@</span><span class="nv">hdcCpb</span>
+    <span class="nf">invoke</span> <span class="nv">ReleaseDC</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcEdit</span>
+    <span class="nf">invoke</span> <span class="nv">DeleteObject</span><span class="p">,</span><span class="err">@</span><span class="nv">hdcBmp</span>
+    <span class="nf">popad</span>
+    <span class="nf">ret</span>
+<span class="nf">_ShowLineNum</span> <span class="nv">endp</span>
 
-<span class="n">COMMENT</span> <span class="err">#</span>
-<span class="c">;--------------------------------------------------------------------------------</span>
-<span class="n">BitBlt</span>
-<span class="n">The</span> <span class="n">BitBlt</span> <span class="n">function</span> <span class="n">performs</span> <span class="n">a</span> <span class="n">bit</span><span class="o">-</span><span class="n">block</span> <span class="n">transfer</span> <span class="n">of</span> <span class="n">the</span> <span class="n">color</span> <span class="n">data</span> <span class="n">corresponding</span> <span class="n">to</span> <span class="n">a</span> <span class="n">rectangle</span>
-<span class="n">of</span> <span class="n">pixels</span> <span class="n">from</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">source</span> <span class="n">device</span> <span class="n">context</span> <span class="k">into</span> <span class="n">a</span> <span class="n">destination</span> <span class="n">device</span> <span class="n">context</span><span class="p">.</span>
-<span class="n">BOOL</span> <span class="n">BitBlt</span><span class="p">(</span>
-<span class="n">HDC</span> <span class="n">hdcDest</span><span class="p">,</span> <span class="c1">// handle to destination device context
-</span><span class="k">int</span> <span class="n">nXDest</span><span class="p">,</span> <span class="c1">// x-coordinate of destination rectangle's upper-left
-// corner
-</span><span class="k">int</span> <span class="n">nYDest</span><span class="p">,</span> <span class="c1">// y-coordinate of destination rectangle's upper-left
-// corner
-</span><span class="k">int</span> <span class="n">nWidth</span><span class="p">,</span> <span class="c1">// width of destination rectangle
-</span><span class="k">int</span> <span class="n">nHeight</span><span class="p">,</span> <span class="c1">// height of destination rectangle
-</span><span class="n">HDC</span> <span class="n">hdcSrc</span><span class="p">,</span> <span class="c1">// handle to source device context
-</span><span class="k">int</span> <span class="n">nXSrc</span><span class="p">,</span> <span class="c1">// x-coordinate of source rectangle's upper-left
-// corner
-</span><span class="k">int</span> <span class="n">nYSrc</span><span class="p">,</span> <span class="c1">// y-coordinate of source rectangle's upper-left
-// corner
-</span><span class="n">DWORD</span> <span class="n">dwRop</span> <span class="c1">// raster operation code
-</span><span class="p">)</span><span class="c">;</span>
-<span class="c">;--------------------------------------------------------------------------------</span>
+<span class="nf">COMMENT</span> <span class="err">#</span>
+<span class="c1">;--------------------------------------------------------------------------------</span>
+<span class="nf">BitBlt</span>
+<span class="nf">The</span> <span class="nv">BitBlt</span> <span class="nv">function</span> <span class="nv">performs</span> <span class="nv">a</span> <span class="nv">bit</span><span class="o">-</span><span class="nb">bl</span><span class="nv">ock</span> <span class="nv">transfer</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">color</span> <span class="nv">data</span> <span class="nv">corresponding</span> <span class="nv">to</span> <span class="nv">a</span> <span class="nv">rectangle</span>
+<span class="nf">of</span> <span class="nv">pixels</span> <span class="nv">from</span> <span class="nv">the</span> <span class="nb">sp</span><span class="nv">ecified</span> <span class="nv">source</span> <span class="nv">device</span> <span class="nv">context</span> <span class="nv">into</span> <span class="nv">a</span> <span class="nv">destination</span> <span class="nv">device</span> <span class="nv">context.</span>
+<span class="nf">BOOL</span> <span class="nv">BitBlt</span><span class="p">(</span>
+<span class="nf">HDC</span> <span class="nv">hdcDest</span><span class="p">,</span> <span class="o">//</span> <span class="nv">handle</span> <span class="nv">to</span> <span class="nv">destination</span> <span class="nv">device</span> <span class="nv">context</span>
+<span class="nf">int</span> <span class="nv">nXDest</span><span class="p">,</span> <span class="o">//</span> <span class="nv">x</span><span class="o">-</span><span class="nv">coordinate</span> <span class="nv">of</span> <span class="nv">destination</span> <span class="nv">rectangle</span><span class="err">'</span><span class="nv">s</span> <span class="nv">upper</span><span class="o">-</span><span class="nv">left</span>
+<span class="err">//</span> <span class="nf">corner</span>
+<span class="nf">int</span> <span class="nv">nYDest</span><span class="p">,</span> <span class="o">//</span> <span class="nv">y</span><span class="o">-</span><span class="nv">coordinate</span> <span class="nv">of</span> <span class="nv">destination</span> <span class="nv">rectangle</span><span class="err">'</span><span class="nv">s</span> <span class="nv">upper</span><span class="o">-</span><span class="nv">left</span>
+<span class="err">//</span> <span class="nf">corner</span>
+<span class="nf">int</span> <span class="nv">nWidth</span><span class="p">,</span> <span class="o">//</span> <span class="nv">width</span> <span class="nv">of</span> <span class="nv">destination</span> <span class="nv">rectangle</span>
+<span class="nf">int</span> <span class="nv">nHeight</span><span class="p">,</span> <span class="o">//</span> <span class="nv">height</span> <span class="nv">of</span> <span class="nv">destination</span> <span class="nv">rectangle</span>
+<span class="nf">HDC</span> <span class="nv">hdcSrc</span><span class="p">,</span> <span class="o">//</span> <span class="nv">handle</span> <span class="nv">to</span> <span class="nv">source</span> <span class="nv">device</span> <span class="nv">context</span>
+<span class="nf">int</span> <span class="nv">nXSrc</span><span class="p">,</span> <span class="o">//</span> <span class="nv">x</span><span class="o">-</span><span class="nv">coordinate</span> <span class="nv">of</span> <span class="nv">source</span> <span class="nv">rectangle</span><span class="err">'</span><span class="nv">s</span> <span class="nv">upper</span><span class="o">-</span><span class="nv">left</span>
+<span class="err">//</span> <span class="nf">corner</span>
+<span class="nf">int</span> <span class="nv">nYSrc</span><span class="p">,</span> <span class="o">//</span> <span class="nv">y</span><span class="o">-</span><span class="nv">coordinate</span> <span class="nv">of</span> <span class="nv">source</span> <span class="nv">rectangle</span><span class="err">'</span><span class="nv">s</span> <span class="nv">upper</span><span class="o">-</span><span class="nv">left</span>
+<span class="err">//</span> <span class="nf">corner</span>
+<span class="kd">DW</span><span class="nv">ORD</span> <span class="nv">dwRop</span> <span class="o">//</span> <span class="nv">raster</span> <span class="nv">operation</span> <span class="nv">code</span>
+<span class="err">)</span><span class="c1">;</span>
+<span class="c1">;--------------------------------------------------------------------------------</span>
 <span class="err">#</span>
 
-<span class="n">_SubProcEdit</span> <span class="n">proc</span> <span class="n">hWnd</span><span class="p">,</span><span class="n">uMsg</span><span class="p">,</span><span class="n">wParam</span><span class="p">,</span><span class="n">lParam</span>
-<span class="c">;功能：截获RichEdit的WM_PAINT消息，用于当RichEdit刷新时显示行号。</span>
-<span class="c">;参数：</span>
-<span class="c">;    hWnd,uMsg,wParam,lParam 都为原有Windows发给RichEdit的消息和参数</span>
-<span class="c">;返回值：没有</span>
-<span class="c">;说明：当消息处理完毕后必须把消息回送给默认的RichEdit的窗口过程</span>
-<span class="c">;    lpEditProc为RichEdit的旧窗口地址</span>
-<span class="c">;--------------------------------------------------------------------------------    </span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">stPS</span><span class="o">:</span><span class="n">PAINTSTRUCT</span>
-    <span class="n">LOCAL</span>    <span class="err">@</span><span class="n">stEditRect</span><span class="o">:</span><span class="n">RECT</span>
-    <span class="p">.</span><span class="n">if</span> <span class="n">uMsg</span><span class="o">==</span><span class="n">WM_PAINT</span>
-        <span class="n">invoke</span> <span class="n">CallWindowProc</span><span class="p">,</span><span class="n">lpEditProc</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">uMsg</span><span class="p">,</span><span class="n">wParam</span><span class="p">,</span><span class="n">lParam</span>
-        <span class="n">invoke</span> <span class="n">BeginPaint</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">addr</span> <span class="err">@</span><span class="n">stPS</span>
-        <span class="c">;这个函数实现显示行号</span>
-        <span class="n">invoke</span> <span class="n">_ShowLineNum</span><span class="p">,</span><span class="n">hEdit</span>
-        <span class="n">invoke</span> <span class="n">EndPaint</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">addr</span> <span class="err">@</span><span class="n">stPS</span>
-        <span class="k">ret</span>
-    <span class="p">.</span><span class="n">elseif</span> <span class="n">uMsg</span><span class="o">==</span><span class="n">WM_KEYUP</span> <span class="o">||</span> <span class="n">uMsg</span><span class="o">==</span><span class="n">WM_KEYDOWN</span>
-        <span class="n">invoke</span> <span class="n">GetClientRect</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">addr</span> <span class="err">@</span><span class="n">stEditRect</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">stEditRect</span><span class="p">.</span><span class="n">right</span><span class="p">,</span><span class="mi">45</span>
-        <span class="n">invoke</span> <span class="n">InvalidateRect</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">addr</span> <span class="err">@</span><span class="n">stEditRect</span><span class="p">,</span><span class="n">TRUE</span>
-    <span class="p">.</span><span class="n">endif</span>
-    <span class="n">invoke</span> <span class="n">CallWindowProc</span><span class="p">,</span><span class="n">lpEditProc</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">uMsg</span><span class="p">,</span><span class="n">wParam</span><span class="p">,</span><span class="n">lParam</span>
-    <span class="k">ret</span>
-<span class="n">_SubProcEdit</span> <span class="n">endp</span>
+<span class="nf">_SubProcEdit</span> <span class="nv">proc</span> <span class="nv">hWnd</span><span class="p">,</span><span class="nv">uMsg</span><span class="p">,</span><span class="nv">wParam</span><span class="p">,</span><span class="nv">lParam</span>
+<span class="c1">;功能：截获RichEdit的WM_PAINT消息，用于当RichEdit刷新时显示行号。</span>
+<span class="c1">;参数：</span>
+<span class="c1">;    hWnd,uMsg,wParam,lParam 都为原有Windows发给RichEdit的消息和参数</span>
+<span class="c1">;返回值：没有</span>
+<span class="c1">;说明：当消息处理完毕后必须把消息回送给默认的RichEdit的窗口过程</span>
+<span class="c1">;    lpEditProc为RichEdit的旧窗口地址</span>
+<span class="c1">;--------------------------------------------------------------------------------    </span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nv">stPS</span><span class="p">:</span><span class="nv">PAINTSTRUCT</span>
+    <span class="nf">LOCAL</span>    <span class="err">@</span><span class="nv">stEditRect</span><span class="p">:</span><span class="nv">RECT</span>
+    <span class="nf">.if</span> <span class="nv">uMsg</span><span class="err">==</span><span class="nv">WM_PAINT</span>
+        <span class="nf">invoke</span> <span class="nv">CallWindowProc</span><span class="p">,</span><span class="nv">lpEditProc</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">uMsg</span><span class="p">,</span><span class="nv">wParam</span><span class="p">,</span><span class="nv">lParam</span>
+        <span class="nf">invoke</span> <span class="nv">BeginPaint</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">addr</span> <span class="err">@</span><span class="nv">stPS</span>
+        <span class="c1">;这个函数实现显示行号</span>
+        <span class="nf">invoke</span> <span class="nv">_ShowLineNum</span><span class="p">,</span><span class="nv">hEdit</span>
+        <span class="nf">invoke</span> <span class="nv">EndPaint</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">addr</span> <span class="err">@</span><span class="nv">stPS</span>
+        <span class="nf">ret</span>
+    <span class="nf">.elseif</span> <span class="nv">uMsg</span><span class="err">==</span><span class="nv">WM_KEYUP</span> <span class="o">||</span> <span class="nv">uMsg</span><span class="err">==</span><span class="nv">WM_KEYDOWN</span>
+        <span class="nf">invoke</span> <span class="nv">GetClientRect</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">addr</span> <span class="err">@</span><span class="nv">stEditRect</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">stEditRect.right</span><span class="p">,</span><span class="mi">45</span>
+        <span class="nf">invoke</span> <span class="nv">InvalidateRect</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">addr</span> <span class="err">@</span><span class="nv">stEditRect</span><span class="p">,</span><span class="nv">TRUE</span>
+    <span class="nf">.endif</span>
+    <span class="nf">invoke</span> <span class="nv">CallWindowProc</span><span class="p">,</span><span class="nv">lpEditProc</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">uMsg</span><span class="p">,</span><span class="nv">wParam</span><span class="p">,</span><span class="nv">lParam</span>
+    <span class="nf">ret</span>
+<span class="nf">_SubProcEdit</span> <span class="nv">endp</span>
 
-<span class="n">WinMain</span> <span class="n">proc</span> <span class="n">hInst</span><span class="o">:</span><span class="n">HINSTANCE</span><span class="p">,</span><span class="n">hPrevInst</span><span class="o">:</span><span class="n">HINSTANCE</span><span class="p">,</span><span class="n">CmdLine</span><span class="o">:</span><span class="n">LPSTR</span><span class="p">,</span><span class="n">CmdShow</span><span class="o">:</span><span class="n">DWORD</span>
-    <span class="n">LOCAL</span> <span class="n">wc</span><span class="o">:</span><span class="n">WNDCLASSEX</span>
-    <span class="n">LOCAL</span> <span class="n">msg</span><span class="o">:</span><span class="n">MSG</span>
-    <span class="n">LOCAL</span> <span class="n">hwnd</span><span class="o">:</span><span class="n">HWND</span>
-    <span class="c">;填充windows的窗口结构体</span>
-    <span class="k">mov</span> <span class="n">wc</span><span class="p">.</span><span class="n">cbSize</span><span class="p">,</span><span class="n">SIZEOF</span> <span class="n">WNDCLASSEX</span> <span class="c">;表示窗口结构体的总大小</span>
-    <span class="k">mov</span> <span class="n">wc</span><span class="p">.</span><span class="n">style</span><span class="p">,</span> <span class="n">CS_HREDRAW</span> <span class="k">or</span> <span class="n">CS_VREDRAW</span> <span class="c">;窗口类型</span>
-    <span class="k">mov</span> <span class="n">wc</span><span class="p">.</span><span class="n">lpfnWndProc</span><span class="p">,</span> <span class="n">OFFSET</span> <span class="n">WndProc</span> <span class="c">;OFFSET表示这个函数的首地址，相当于传指针</span>
-    <span class="k">mov</span> <span class="n">wc</span><span class="p">.</span><span class="n">cbClsExtra</span><span class="p">,</span><span class="n">NULL</span> <span class="c">;窗口类的附加数据</span>
-    <span class="k">mov</span> <span class="n">wc</span><span class="p">.</span><span class="n">cbWndExtra</span><span class="p">,</span><span class="n">NULL</span> <span class="c">;窗口类的附加数据</span>
-    <span class="k">push</span> <span class="n">hInstance</span> <span class="c">;传递程序的实例句柄给窗口类</span>
-    <span class="k">pop</span> <span class="n">wc</span><span class="p">.</span><span class="n">hInstance</span>
-    <span class="k">mov</span> <span class="n">wc</span><span class="p">.</span><span class="n">hbrBackground</span><span class="p">,</span><span class="n">COLOR_BTNFACE</span><span class="o">+</span><span class="mi">1</span> <span class="c">;创建窗口的背景</span>
-    <span class="k">mov</span> <span class="n">wc</span><span class="p">.</span><span class="n">lpszMenuName</span><span class="p">,</span><span class="n">IDR_MENU</span>    <span class="c">;为此窗口建立一个主菜单</span>
-    <span class="k">mov</span> <span class="n">wc</span><span class="p">.</span><span class="n">lpszClassName</span><span class="p">,</span><span class="n">OFFSET</span> <span class="n">ClassName</span> <span class="c">;窗口类的名称</span>
-    <span class="n">invoke</span> <span class="n">LoadIcon</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="n">APP_ICON</span>    <span class="c">;为此窗口建立一个图标</span>
-    <span class="k">mov</span> <span class="n">wc</span><span class="p">.</span><span class="n">hIcon</span><span class="p">,</span><span class="n">eax</span>    
-    <span class="k">mov</span> <span class="n">wc</span><span class="p">.</span><span class="n">hIconSm</span><span class="p">,</span><span class="n">eax</span>
-    <span class="n">invoke</span> <span class="n">LoadCursor</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="n">IDC_ARROW</span>    <span class="c">;指定窗口上的鼠标指针类型</span>
-    <span class="k">mov</span> <span class="n">wc</span><span class="p">.</span><span class="n">hCursor</span><span class="p">,</span><span class="n">eax</span>
-    <span class="c">;向Windows注册一个窗口</span>
-    <span class="n">invoke</span> <span class="n">RegisterClassEx</span><span class="p">,</span> <span class="n">addr</span> <span class="n">wc</span> <span class="c">;注册窗口类</span>
-    <span class="c">;创建一个窗口</span>
-    <span class="n">INVOKE</span> <span class="n">CreateWindowEx</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="n">ADDR</span> <span class="n">ClassName</span><span class="p">,</span><span class="n">ADDR</span> <span class="n">AppName</span><span class="p">,</span><span class="err">\</span>
-    <span class="n">WS_OVERLAPPEDWINDOW</span><span class="p">,</span><span class="n">CW_USEDEFAULT</span><span class="p">,</span><span class="err">\</span>
-    <span class="n">CW_USEDEFAULT</span><span class="p">,</span><span class="n">CW_USEDEFAULT</span><span class="p">,</span><span class="n">CW_USEDEFAULT</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="err">\</span>
-    <span class="n">hInst</span><span class="p">,</span><span class="n">NULL</span>
-    <span class="k">mov</span> <span class="n">hwnd</span><span class="p">,</span><span class="n">eax</span> <span class="c">;把窗口句柄赋值给hwnd变量</span>
-    <span class="n">invoke</span> <span class="n">ShowWindow</span><span class="p">,</span> <span class="n">hwnd</span><span class="p">,</span><span class="n">SW_SHOWNORMAL</span> <span class="c">;显示窗口</span>
-    <span class="n">invoke</span> <span class="n">UpdateWindow</span><span class="p">,</span> <span class="n">hwnd</span> <span class="c">;刷新一个窗口</span>
-    <span class="c">;消息循环</span>
-    <span class="p">.</span><span class="n">WHILE</span> <span class="n">TRUE</span>
-        <span class="n">invoke</span> <span class="n">GetMessage</span><span class="p">,</span> <span class="n">ADDR</span> <span class="n">msg</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-        <span class="p">.</span><span class="n">BREAK</span> <span class="p">.</span><span class="n">IF</span> <span class="p">(</span><span class="err">!</span><span class="n">eax</span><span class="p">)</span> <span class="c">;如果获取的消息的返回值为空</span>
-        <span class="n">invoke</span> <span class="n">TranslateMessage</span><span class="p">,</span> <span class="n">ADDR</span> <span class="n">msg</span> <span class="c">;转换消息</span>
-        <span class="n">invoke</span> <span class="n">DispatchMessage</span><span class="p">,</span> <span class="n">ADDR</span> <span class="n">msg</span> <span class="c">;分发消息</span>
-    <span class="p">.</span><span class="n">ENDW</span>
-    <span class="k">mov</span> <span class="n">eax</span><span class="p">,</span><span class="n">msg</span><span class="p">.</span><span class="n">wParam</span>
-    <span class="k">ret</span>
-<span class="n">WinMain</span> <span class="n">endp</span>
+<span class="nf">WinMain</span> <span class="nv">proc</span> <span class="nv">hInst</span><span class="p">:</span><span class="nv">HINSTANCE</span><span class="p">,</span><span class="nv">hPrevInst</span><span class="p">:</span><span class="nv">HINSTANCE</span><span class="p">,</span><span class="nv">CmdLine</span><span class="p">:</span><span class="nv">LPSTR</span><span class="p">,</span><span class="nv">CmdShow</span><span class="p">:</span><span class="kt">DWORD</span>
+    <span class="nf">LOCAL</span> <span class="nv">wc</span><span class="p">:</span><span class="nv">WNDCLASSEX</span>
+    <span class="nf">LOCAL</span> <span class="nv">msg</span><span class="p">:</span><span class="nv">MSG</span>
+    <span class="nf">LOCAL</span> <span class="nv">hwnd</span><span class="p">:</span><span class="nv">HWND</span>
+    <span class="c1">;填充windows的窗口结构体</span>
+    <span class="nf">mov</span> <span class="nv">wc.cbSize</span><span class="p">,</span><span class="nb">SI</span><span class="nv">ZEOF</span> <span class="nv">WNDCLASSEX</span> <span class="c1">;表示窗口结构体的总大小</span>
+    <span class="nf">mov</span> <span class="nv">wc.style</span><span class="p">,</span> <span class="nb">CS</span><span class="nv">_HREDRAW</span> <span class="nv">or</span> <span class="nb">CS</span><span class="nv">_VREDRAW</span> <span class="c1">;窗口类型</span>
+    <span class="nf">mov</span> <span class="nv">wc.lpfnWndProc</span><span class="p">,</span> <span class="nv">OFFSET</span> <span class="nv">WndProc</span> <span class="c1">;OFFSET表示这个函数的首地址，相当于传指针</span>
+    <span class="nf">mov</span> <span class="nv">wc.cbClsExtra</span><span class="p">,</span><span class="nv">NULL</span> <span class="c1">;窗口类的附加数据</span>
+    <span class="nf">mov</span> <span class="nv">wc.cbWndExtra</span><span class="p">,</span><span class="nv">NULL</span> <span class="c1">;窗口类的附加数据</span>
+    <span class="nf">push</span> <span class="nv">hInstance</span> <span class="c1">;传递程序的实例句柄给窗口类</span>
+    <span class="nf">pop</span> <span class="nv">wc.hInstance</span>
+    <span class="nf">mov</span> <span class="nv">wc.hbrBackground</span><span class="p">,</span><span class="nv">COLOR_BTNFACE</span><span class="o">+</span><span class="mi">1</span> <span class="c1">;创建窗口的背景</span>
+    <span class="nf">mov</span> <span class="nv">wc.lpszMenuName</span><span class="p">,</span><span class="nv">IDR_MENU</span>    <span class="c1">;为此窗口建立一个主菜单</span>
+    <span class="nf">mov</span> <span class="nv">wc.lpszClassName</span><span class="p">,</span><span class="nv">OFFSET</span> <span class="nb">Cl</span><span class="nv">assName</span> <span class="c1">;窗口类的名称</span>
+    <span class="nf">invoke</span> <span class="nv">LoadIcon</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">APP_ICON</span>    <span class="c1">;为此窗口建立一个图标</span>
+    <span class="nf">mov</span> <span class="nv">wc.hIcon</span><span class="p">,</span><span class="nb">eax</span>    
+    <span class="nf">mov</span> <span class="nv">wc.hIconSm</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">invoke</span> <span class="nv">LoadCursor</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">IDC_ARROW</span>    <span class="c1">;指定窗口上的鼠标指针类型</span>
+    <span class="nf">mov</span> <span class="nv">wc.hCursor</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="c1">;向Windows注册一个窗口</span>
+    <span class="nf">invoke</span> <span class="nv">RegisterClassEx</span><span class="p">,</span> <span class="nv">addr</span> <span class="nv">wc</span> <span class="c1">;注册窗口类</span>
+    <span class="c1">;创建一个窗口</span>
+    <span class="nf">INVOKE</span> <span class="nv">CreateWindowEx</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">ADDR</span> <span class="nb">Cl</span><span class="nv">assName</span><span class="p">,</span><span class="nv">ADDR</span> <span class="nv">AppName</span><span class="p">,</span><span class="err">\</span>
+    <span class="nf">WS_OVERLAPPEDWINDOW</span><span class="p">,</span><span class="nv">CW_USEDEFAULT</span><span class="p">,</span><span class="err">\</span>
+    <span class="nf">CW_USEDEFAULT</span><span class="p">,</span><span class="nv">CW_USEDEFAULT</span><span class="p">,</span><span class="nv">CW_USEDEFAULT</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="err">\</span>
+    <span class="nf">hInst</span><span class="p">,</span><span class="nv">NULL</span>
+    <span class="nf">mov</span> <span class="nv">hwnd</span><span class="p">,</span><span class="nb">eax</span> <span class="c1">;把窗口句柄赋值给hwnd变量</span>
+    <span class="nf">invoke</span> <span class="nv">ShowWindow</span><span class="p">,</span> <span class="nv">hwnd</span><span class="p">,</span><span class="nv">SW_SHOWNORMAL</span> <span class="c1">;显示窗口</span>
+    <span class="nf">invoke</span> <span class="nv">UpdateWindow</span><span class="p">,</span> <span class="nv">hwnd</span> <span class="c1">;刷新一个窗口</span>
+    <span class="c1">;消息循环</span>
+    <span class="nf">.WHILE</span> <span class="nv">TRUE</span>
+        <span class="nf">invoke</span> <span class="nv">GetMessage</span><span class="p">,</span> <span class="nv">ADDR</span> <span class="nv">msg</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+        <span class="nf">.BREAK</span> <span class="nv">.IF</span> <span class="p">(</span><span class="err">!</span><span class="nb">eax</span><span class="p">)</span> <span class="c1">;如果获取的消息的返回值为空</span>
+        <span class="nf">invoke</span> <span class="nv">TranslateMessage</span><span class="p">,</span> <span class="nv">ADDR</span> <span class="nv">msg</span> <span class="c1">;转换消息</span>
+        <span class="nf">invoke</span> <span class="nb">Disp</span><span class="nv">atchMessage</span><span class="p">,</span> <span class="nv">ADDR</span> <span class="nv">msg</span> <span class="c1">;分发消息</span>
+    <span class="nf">.ENDW</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span><span class="nv">msg.wParam</span>
+    <span class="nf">ret</span>
+<span class="nf">WinMain</span> <span class="nv">endp</span>
 
-<span class="n">WndProc</span> <span class="n">proc</span> <span class="n">hWnd</span><span class="o">:</span><span class="n">HWND</span><span class="p">,</span> <span class="n">uMsg</span><span class="o">:</span><span class="n">UINT</span><span class="p">,</span> <span class="n">wParam</span><span class="o">:</span><span class="n">WPARAM</span><span class="p">,</span> <span class="n">lParam</span><span class="o">:</span><span class="n">LPARAM</span>
-    <span class="n">LOCAL</span>    <span class="n">winRect</span><span class="o">:</span><span class="n">RECT</span>
-    <span class="n">LOCAL</span>    <span class="n">editWidth</span><span class="o">:</span><span class="n">DWORD</span>
-    <span class="n">LOCAL</span>    <span class="n">editHeight</span><span class="o">:</span><span class="n">DWORD</span>
-    <span class="n">LOCAL</span>     <span class="n">ofn</span><span class="o">:</span><span class="n">OPENFILENAME</span>    <span class="c">;定义一个打开文件的结构体</span>
-    <span class="n">LOCAL</span>     <span class="n">hFile</span><span class="o">:</span><span class="n">HANDLE</span>
-    <span class="n">LOCAL</span>     <span class="n">bytesRead</span><span class="o">:</span><span class="n">DWORD</span>
-    <span class="n">LOCAL</span>     <span class="n">bytesWrite</span><span class="o">:</span><span class="n">DWORD</span>
-    <span class="n">LOCAL</span>     <span class="n">textLen</span><span class="o">:</span><span class="n">DWORD</span>
+<span class="nf">WndProc</span> <span class="nv">proc</span> <span class="nv">hWnd</span><span class="p">:</span><span class="nv">HWND</span><span class="p">,</span> <span class="nv">uMsg</span><span class="p">:</span><span class="nv">UINT</span><span class="p">,</span> <span class="nv">wParam</span><span class="p">:</span><span class="nv">WPARAM</span><span class="p">,</span> <span class="nv">lParam</span><span class="p">:</span><span class="nv">LPARAM</span>
+    <span class="nf">LOCAL</span>    <span class="nv">winRect</span><span class="p">:</span><span class="nv">RECT</span>
+    <span class="nf">LOCAL</span>    <span class="nb">edi</span><span class="nv">tWidth</span><span class="p">:</span><span class="kt">DWORD</span>
+    <span class="nf">LOCAL</span>    <span class="nb">edi</span><span class="nv">tHeight</span><span class="p">:</span><span class="kt">DWORD</span>
+    <span class="nf">LOCAL</span>     <span class="nv">ofn</span><span class="p">:</span><span class="nv">OPENFILENAME</span>    <span class="c1">;定义一个打开文件的结构体</span>
+    <span class="nf">LOCAL</span>     <span class="nv">hFile</span><span class="p">:</span><span class="nv">HANDLE</span>
+    <span class="nf">LOCAL</span>     <span class="kt">byte</span><span class="nv">sRead</span><span class="p">:</span><span class="kt">DWORD</span>
+    <span class="nf">LOCAL</span>     <span class="kt">byte</span><span class="nv">sWrite</span><span class="p">:</span><span class="kt">DWORD</span>
+    <span class="nf">LOCAL</span>     <span class="nv">textLen</span><span class="p">:</span><span class="kt">DWORD</span>
     
-    <span class="p">.</span><span class="n">IF</span> <span class="n">uMsg</span><span class="o">==</span><span class="n">WM_DESTROY</span>
-        <span class="n">invoke</span> <span class="n">PostQuitMessage</span><span class="p">,</span><span class="n">NULL</span>
+    <span class="nf">.IF</span> <span class="nv">uMsg</span><span class="err">==</span><span class="nv">WM_DESTROY</span>
+        <span class="nf">invoke</span> <span class="nv">PostQuitMessage</span><span class="p">,</span><span class="nv">NULL</span>
         
-    <span class="p">.</span><span class="n">ELSEIF</span> <span class="n">uMsg</span><span class="o">==</span><span class="n">WM_CREATE</span>
-        <span class="c">;为窗口建立一个图标</span>
-        <span class="n">invoke</span> <span class="n">LoadIcon</span><span class="p">,</span><span class="n">hInstance</span><span class="p">,</span><span class="n">APP_ICON</span>
-        <span class="n">invoke</span> <span class="n">SendMessage</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">WM_SETICON</span><span class="p">,</span><span class="n">ICON_BIG</span><span class="p">,</span><span class="n">eax</span> <span class="c">;发送设置图标消息</span>
-        <span class="c">;创建一个文本编辑框</span>
-        <span class="n">invoke</span> <span class="n">CreateWindowEx</span><span class="p">,</span><span class="n">WS_EX_CLIENTEDGE</span><span class="p">,</span><span class="n">offset</span> <span class="n">editClass</span><span class="p">,</span><span class="err">\</span>
-        <span class="n">NULL</span><span class="p">,</span><span class="n">WS_CHILDWINDOW</span> <span class="k">OR</span> <span class="n">WS_VISIBLE</span> <span class="k">OR</span> <span class="n">WS_VSCROLL</span> <span class="k">OR</span> <span class="n">WS_HSCROLL</span> <span class="err">\</span>
-        <span class="k">OR</span> <span class="n">ES_AUTOHSCROLL</span> <span class="k">OR</span> <span class="n">ES_AUTOVSCROLL</span> <span class="k">OR</span> <span class="n">ES_MULTILINE</span> <span class="k">OR</span> <span class="n">WS_MAXIMIZE</span><span class="p">,</span><span class="err">\</span>
-        <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="n">hInstance</span><span class="p">,</span><span class="n">NULL</span>
-        <span class="k">mov</span> <span class="n">hEdit</span><span class="p">,</span><span class="n">eax</span>
-        <span class="c">;设置RichEdit的文本编辑区域，留空一部分用于显示行号</span>
-        <span class="n">invoke</span> <span class="n">SendMessage</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">EM_SETMARGINS</span><span class="p">,</span><span class="n">EC_LEFTMARGIN</span> <span class="k">OR</span> <span class="n">EC_RIGHTMARGIN</span><span class="p">,</span><span class="mi">00050005</span><span class="n">h</span><span class="o">+</span><span class="mi">40</span>
-        <span class="c">;利用窗口子类技术，</span>
-        <span class="n">invoke</span> <span class="n">SetWindowLong</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">GWL_WNDPROC</span><span class="p">,</span><span class="n">addr</span> <span class="n">_SubProcEdit</span>
-        <span class="k">mov</span> <span class="n">lpEditProc</span><span class="p">,</span><span class="n">eax</span>        <span class="c">;保存原来的RichEdit的窗口地址</span>
-        <span class="c">;invoke SendMessage,hEdit,EM_SETLIMITTEXT,81920,0</span>
-        <span class="c">;使窗口及窗口控件的大小随窗口的改变而改变</span>
+    <span class="nf">.ELSEIF</span> <span class="nv">uMsg</span><span class="err">==</span><span class="nv">WM_CREATE</span>
+        <span class="c1">;为窗口建立一个图标</span>
+        <span class="nf">invoke</span> <span class="nv">LoadIcon</span><span class="p">,</span><span class="nv">hInstance</span><span class="p">,</span><span class="nv">APP_ICON</span>
+        <span class="nf">invoke</span> <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">WM_SETICON</span><span class="p">,</span><span class="nv">ICON_BIG</span><span class="p">,</span><span class="nb">eax</span> <span class="c1">;发送设置图标消息</span>
+        <span class="c1">;创建一个文本编辑框</span>
+        <span class="nf">invoke</span> <span class="nv">CreateWindowEx</span><span class="p">,</span><span class="nv">WS_EX_CLIENTEDGE</span><span class="p">,</span><span class="nv">offset</span> <span class="nb">edi</span><span class="nv">tClass</span><span class="p">,</span><span class="err">\</span>
+        <span class="nf">NULL</span><span class="p">,</span><span class="nv">WS_CHILDWINDOW</span> <span class="nv">OR</span> <span class="nv">WS_VISIBLE</span> <span class="nv">OR</span> <span class="nv">WS_VSCROLL</span> <span class="nv">OR</span> <span class="nv">WS_HSCROLL</span> <span class="err">\</span>
+        <span class="nf">OR</span> <span class="nb">ES</span><span class="nv">_AUTOHSCROLL</span> <span class="nv">OR</span> <span class="nb">ES</span><span class="nv">_AUTOVSCROLL</span> <span class="nv">OR</span> <span class="nb">ES</span><span class="nv">_MULTILINE</span> <span class="nv">OR</span> <span class="nv">WS_MAXIMIZE</span><span class="p">,</span><span class="err">\</span>
+        <span class="err">0,0,300,300,</span><span class="nf">hWnd</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">hInstance</span><span class="p">,</span><span class="nv">NULL</span>
+        <span class="nf">mov</span> <span class="nv">hEdit</span><span class="p">,</span><span class="nb">eax</span>
+        <span class="c1">;设置RichEdit的文本编辑区域，留空一部分用于显示行号</span>
+        <span class="nf">invoke</span> <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">EM_SETMARGINS</span><span class="p">,</span><span class="nv">EC_LEFTMARGIN</span> <span class="nv">OR</span> <span class="nv">EC_RIGHTMARGIN</span><span class="p">,</span><span class="mh">00050005h</span><span class="o">+</span><span class="mi">40</span>
+        <span class="c1">;利用窗口子类技术，</span>
+        <span class="nf">invoke</span> <span class="nv">SetWindowLong</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">GWL_WNDPROC</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">_SubProcEdit</span>
+        <span class="nf">mov</span> <span class="nv">lpEditProc</span><span class="p">,</span><span class="nb">eax</span>        <span class="c1">;保存原来的RichEdit的窗口地址</span>
+        <span class="c1">;invoke SendMessage,hEdit,EM_SETLIMITTEXT,81920,0</span>
+        <span class="c1">;使窗口及窗口控件的大小随窗口的改变而改变</span>
         
-    <span class="p">.</span><span class="n">ELSEIF</span> <span class="n">uMsg</span><span class="o">==</span><span class="n">WM_SIZE</span>
-        <span class="c">;获取当前窗体的x,y,top,bottom</span>
-        <span class="c">;invoke GetWindowRect,hWnd,addr winRect ;获取整个窗口区域大小</span>
-        <span class="n">invoke</span> <span class="n">GetClientRect</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">addr</span> <span class="n">winRect</span> <span class="c">;获取客户区域大小</span>
-        <span class="c">;计算出当前窗体的宽度和高度</span>
-        <span class="k">mov</span> <span class="n">eax</span><span class="p">,</span><span class="n">winRect</span><span class="p">.</span><span class="n">right</span>
-        <span class="k">sub</span> <span class="n">eax</span><span class="p">,</span><span class="n">winRect</span><span class="p">.</span><span class="n">left</span>
-        <span class="c">;sub eax,6</span>
-        <span class="k">mov</span> <span class="n">editWidth</span><span class="p">,</span><span class="n">eax</span>
-        <span class="k">mov</span> <span class="n">eax</span><span class="p">,</span><span class="n">winRect</span><span class="p">.</span><span class="n">bottom</span>
-        <span class="k">sub</span> <span class="n">eax</span><span class="p">,</span><span class="n">winRect</span><span class="p">.</span><span class="n">top</span>
-        <span class="c">;sub eax,28</span>
-        <span class="k">mov</span> <span class="n">editHeight</span><span class="p">,</span><span class="n">eax</span>
-        <span class="c">;改变文本编辑框的宽度和高度</span>
-        <span class="n">invoke</span> <span class="n">MoveWindow</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">editWidth</span><span class="p">,</span><span class="n">editHeight</span><span class="p">,</span><span class="n">TRUE</span>
+    <span class="nf">.ELSEIF</span> <span class="nv">uMsg</span><span class="err">==</span><span class="nv">WM_SIZE</span>
+        <span class="c1">;获取当前窗体的x,y,top,bottom</span>
+        <span class="c1">;invoke GetWindowRect,hWnd,addr winRect ;获取整个窗口区域大小</span>
+        <span class="nf">invoke</span> <span class="nv">GetClientRect</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">winRect</span> <span class="c1">;获取客户区域大小</span>
+        <span class="c1">;计算出当前窗体的宽度和高度</span>
+        <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span><span class="nv">winRect.right</span>
+        <span class="nf">sub</span> <span class="nb">eax</span><span class="p">,</span><span class="nv">winRect.left</span>
+        <span class="c1">;sub eax,6</span>
+        <span class="nf">mov</span> <span class="nb">edi</span><span class="nv">tWidth</span><span class="p">,</span><span class="nb">eax</span>
+        <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span><span class="nv">winRect.bottom</span>
+        <span class="nf">sub</span> <span class="nb">eax</span><span class="p">,</span><span class="nv">winRect.top</span>
+        <span class="c1">;sub eax,28</span>
+        <span class="nf">mov</span> <span class="nb">edi</span><span class="nv">tHeight</span><span class="p">,</span><span class="nb">eax</span>
+        <span class="c1">;改变文本编辑框的宽度和高度</span>
+        <span class="nf">invoke</span> <span class="nv">MoveWindow</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">edi</span><span class="nv">tWidth</span><span class="p">,</span><span class="nb">edi</span><span class="nv">tHeight</span><span class="p">,</span><span class="nv">TRUE</span>
         
-    <span class="p">.</span><span class="n">ELSEIF</span>    <span class="n">uMsg</span><span class="o">==</span><span class="n">WM_COMMAND</span>
-        <span class="k">mov</span> <span class="n">eax</span><span class="p">,</span><span class="n">wParam</span>
-        <span class="c">;菜单响应---------------------------------------------------------------</span>
-        <span class="p">.</span><span class="n">if</span> <span class="n">ax</span><span class="o">==</span><span class="n">IDM_FILE_OPEN</span>
-            <span class="c">;初始化公共对话框结构体</span>
-            <span class="n">invoke</span> <span class="n">RtlZeroMemory</span><span class="p">,</span><span class="n">addr</span> <span class="n">ofn</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">ofn</span>
-            <span class="n">invoke</span> <span class="n">RtlZeroMemory</span><span class="p">,</span><span class="n">offset</span> <span class="n">strFile</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">strFile</span> <span class="c">;对文件名变量清零</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">lStructSize</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">ofn</span>
-            <span class="k">push</span> <span class="n">hWnd</span>        <span class="c">;ofn.hwndOwner=hWnd赋值操作</span>
-            <span class="k">pop</span> <span class="n">ofn</span><span class="p">.</span><span class="n">hwndOwner</span>        <span class="c">;两个内存变量不能直接赋值</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFile</span><span class="p">,</span> <span class="n">offset</span> <span class="n">strFile</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">nMaxFile</span><span class="p">,</span> <span class="n">MAX_PATH</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFilter</span><span class="p">,</span> <span class="n">offset</span> <span class="n">szFilter</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">nFilterIndex</span><span class="p">,</span> <span class="mi">1</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFileTitle</span><span class="p">,</span> <span class="n">NULL</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">nMaxFileTitle</span><span class="p">,</span> <span class="mi">0</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">lpstrInitialDir</span><span class="p">,</span> <span class="n">NULL</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">Flags</span><span class="p">,</span> <span class="n">OFN_PATHMUSTEXIST</span> <span class="k">OR</span> <span class="n">OFN_FILEMUSTEXIST</span>
-            <span class="c">;调用打开文件的公共对话框</span>
-            <span class="n">invoke</span> <span class="n">GetOpenFileName</span><span class="p">,</span> <span class="n">addr</span> <span class="n">ofn</span>
-            <span class="p">.</span><span class="n">if</span> <span class="n">eax</span><span class="o">==</span><span class="n">TRUE</span>
-                <span class="c">;invoke MessageBox,hWnd,offset strFile,addr AppName,MB_OK OR MB_ICONINFORMATION</span>
-                <span class="c">;对这个文件进行处理</span>
-                <span class="n">invoke</span> <span class="n">CreateFile</span><span class="p">,</span><span class="n">offset</span> <span class="n">strFile</span><span class="p">,</span><span class="n">GENERIC_READ</span><span class="p">,</span><span class="n">FILE_SHARE_READ</span> <span class="k">OR</span> <span class="n">FILE_SHARE_WRITE</span><span class="p">,</span><span class="err">\</span>
-                <span class="n">NULL</span><span class="p">,</span><span class="n">OPEN_EXISTING</span><span class="p">,</span><span class="n">FILE_ATTRIBUTE_NORMAL</span><span class="p">,</span><span class="n">NULL</span>
-                <span class="p">.</span><span class="n">if</span> <span class="n">eax</span> <span class="err">!</span><span class="o">=</span> <span class="n">INVALID_HANDLE_VALUE</span>
-                    <span class="k">mov</span> <span class="n">hFile</span> <span class="p">,</span><span class="n">eax</span>
-                    <span class="c">;读内容之前要清空缓冲区</span>
-                    <span class="n">invoke</span> <span class="n">RtlZeroMemory</span><span class="p">,</span><span class="n">offset</span> <span class="n">strFileBuf</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">strFileBuf</span>
-                    <span class="c">;读取文件内容到缓冲区strFileBuf中</span>
-                    <span class="n">invoke</span> <span class="n">ReadFile</span><span class="p">,</span><span class="n">hFile</span><span class="p">,</span><span class="n">offset</span> <span class="n">strFileBuf</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">strFileBuf</span><span class="p">,</span><span class="n">addr</span> <span class="n">bytesRead</span><span class="p">,</span><span class="n">NULL</span>
-                    <span class="c">;清空原有的文本内容，然后将strFileBuf中的内容显示到文本框</span>
-                    <span class="n">invoke</span> <span class="n">SendMessage</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">WM_CLEAR</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-                    <span class="n">invoke</span> <span class="n">SetWindowText</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">offset</span> <span class="n">strFileBuf</span>
-                    <span class="c">;关闭当前的文件句柄</span>
-                    <span class="n">invoke</span> <span class="n">CloseHandle</span><span class="p">,</span><span class="n">hFile</span>
-                <span class="p">.</span><span class="n">endif</span>    
-            <span class="p">.</span><span class="n">endif</span>
-        <span class="p">.</span><span class="n">elseif</span> <span class="n">ax</span><span class="o">==</span><span class="n">IDM_FILE_SAVE</span>
-            <span class="c">;初始化公共对话框结构体</span>
-            <span class="n">invoke</span> <span class="n">RtlZeroMemory</span><span class="p">,</span><span class="n">addr</span> <span class="n">ofn</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">ofn</span>
-            <span class="n">invoke</span> <span class="n">RtlZeroMemory</span><span class="p">,</span><span class="n">offset</span> <span class="n">strFile</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">strFile</span> <span class="c">;对文件名变量清零</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">lStructSize</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">ofn</span>
-            <span class="k">push</span> <span class="n">hWnd</span>        <span class="c">;ofn.hwndOwner=hWnd赋值操作</span>
-            <span class="k">pop</span> <span class="n">ofn</span><span class="p">.</span><span class="n">hwndOwner</span>        <span class="c">;两个内存变量不能直接赋值</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFile</span><span class="p">,</span> <span class="n">offset</span> <span class="n">strFile</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">nMaxFile</span><span class="p">,</span> <span class="n">MAX_PATH</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFilter</span><span class="p">,</span> <span class="n">offset</span> <span class="n">szFilter</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">nFilterIndex</span><span class="p">,</span> <span class="mi">1</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFileTitle</span><span class="p">,</span> <span class="n">NULL</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">nMaxFileTitle</span><span class="p">,</span> <span class="mi">0</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">lpstrInitialDir</span><span class="p">,</span> <span class="n">NULL</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">lpstrDefExt</span><span class="p">,</span><span class="n">offset</span> <span class="n">szDefExt</span> <span class="c">;添加扩展名</span>
-            <span class="k">mov</span> <span class="n">ofn</span><span class="p">.</span><span class="n">Flags</span><span class="p">,</span> <span class="n">OFN_OVERWRITEPROMPT</span> <span class="k">OR</span> <span class="n">OFN_EXPLORER</span>
-            <span class="c">;调用打开文件的公共对话框</span>
-            <span class="n">invoke</span> <span class="n">GetSaveFileName</span><span class="p">,</span> <span class="n">addr</span> <span class="n">ofn</span>
-            <span class="p">.</span><span class="n">if</span> <span class="n">eax</span><span class="o">==</span><span class="n">TRUE</span>
-                <span class="c">;invoke MessageBox,hWnd,offset strFile,addr AppName,MB_OK OR MB_ICONINFORMATION</span>
-                <span class="c">;打开文件</span>
-                <span class="n">invoke</span> <span class="n">CreateFile</span><span class="p">,</span><span class="n">offset</span> <span class="n">strFile</span><span class="p">,</span><span class="n">GENERIC_WRITE</span><span class="p">,</span><span class="n">FILE_SHARE_READ</span><span class="p">,</span><span class="err">\</span>
-                <span class="n">NULL</span><span class="p">,</span><span class="n">CREATE_ALWAYS</span><span class="p">,</span><span class="n">FILE_ATTRIBUTE_NORMAL</span><span class="p">,</span><span class="n">NULL</span>
-                <span class="p">.</span><span class="n">if</span> <span class="n">eax</span> <span class="err">!</span><span class="o">=</span> <span class="n">INVALID_HANDLE_VALUE</span>
-                    <span class="k">mov</span> <span class="n">hFile</span><span class="p">,</span><span class="n">eax</span>    <span class="c">;获取文件句柄</span>
-                    <span class="n">invoke</span> <span class="n">RtlZeroMemory</span><span class="p">,</span><span class="n">offset</span> <span class="n">strFileBuf</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">strFileBuf</span>    <span class="c">;清空缓冲区</span>
-                    <span class="n">invoke</span> <span class="n">GetWindowTextLength</span><span class="p">,</span><span class="n">hEdit</span>    <span class="c">;获取文本框内容长度</span>
-                    <span class="k">mov</span> <span class="n">textLen</span><span class="p">,</span> <span class="n">eax</span>
-                    <span class="n">invoke</span> <span class="n">GetWindowText</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">offset</span> <span class="n">strFileBuf</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">strFileBuf</span>    <span class="c">;将文本框内容传送到缓冲区</span>
-                    <span class="c">;将文本内容写入文件</span>
-                    <span class="n">invoke</span> <span class="n">WriteFile</span><span class="p">,</span><span class="n">hFile</span><span class="p">,</span><span class="n">offset</span> <span class="n">strFileBuf</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">textLen</span><span class="p">,</span><span class="n">addr</span> <span class="n">bytesWrite</span><span class="p">,</span><span class="n">NULL</span>
-                    <span class="n">invoke</span> <span class="n">CloseHandle</span><span class="p">,</span><span class="n">hFile</span>    <span class="c">;关闭文件句柄</span>
-                <span class="p">.</span><span class="n">endif</span>
-            <span class="p">.</span><span class="n">endif</span>
-        <span class="p">.</span><span class="n">elseif</span> <span class="n">ax</span><span class="o">==</span><span class="n">IDM_FILE_EXIT</span>
-            <span class="n">invoke</span> <span class="n">DestroyWindow</span><span class="p">,</span><span class="n">hWnd</span>
-            <span class="n">invoke</span> <span class="n">PostQuitMessage</span><span class="p">,</span><span class="n">NULL</span>
-        <span class="p">.</span><span class="n">elseif</span> <span class="n">ax</span><span class="o">==</span><span class="n">IDM_EDIT_UNDO</span>
-            <span class="n">invoke</span> <span class="n">SendMessage</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">EM_UNDO</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-        <span class="p">.</span><span class="n">elseif</span> <span class="n">ax</span><span class="o">==</span><span class="n">IDM_EDIT_REDO</span>
-            <span class="n">invoke</span> <span class="n">SendMessage</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">EM_REDO</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-        <span class="p">.</span><span class="n">elseif</span> <span class="n">ax</span><span class="o">==</span><span class="n">IDM_EDIT_CUT</span>
-            <span class="n">invoke</span> <span class="n">SendMessage</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">WM_CUT</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-        <span class="p">.</span><span class="n">elseif</span> <span class="n">ax</span><span class="o">==</span><span class="n">IDM_EDIT_COPY</span>
-            <span class="n">invoke</span> <span class="n">SendMessage</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">WM_COPY</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-        <span class="p">.</span><span class="n">elseif</span> <span class="n">ax</span><span class="o">==</span><span class="n">IDM_EDIT_PASTE</span>
-            <span class="n">invoke</span> <span class="n">SendMessage</span><span class="p">,</span><span class="n">hEdit</span><span class="p">,</span><span class="n">WM_PASTE</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-        <span class="p">.</span><span class="n">elseif</span> <span class="n">ax</span><span class="o">==</span><span class="n">IDM_HELP_ABOUT</span> <span class="c">;这些ID号只用了eax当中的低字节部分</span>
-            <span class="n">invoke</span> <span class="n">MessageBox</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">addr</span> <span class="n">aboutApp</span><span class="p">,</span><span class="n">addr</span> <span class="n">AppName</span><span class="p">,</span><span class="n">MB_OK</span> <span class="k">OR</span> <span class="n">MB_ICONINFORMATION</span>
-        <span class="p">.</span><span class="n">endif</span>
-    <span class="p">.</span><span class="n">ELSE</span>
+    <span class="nf">.ELSEIF</span>    <span class="nv">uMsg</span><span class="err">==</span><span class="nv">WM_COMMAND</span>
+        <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span><span class="nv">wParam</span>
+        <span class="c1">;菜单响应---------------------------------------------------------------</span>
+        <span class="nf">.if</span> <span class="nb">ax</span><span class="err">==</span><span class="nv">IDM_FILE_OPEN</span>
+            <span class="c1">;初始化公共对话框结构体</span>
+            <span class="nf">invoke</span> <span class="nv">RtlZeroMemory</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">ofn</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">ofn</span>
+            <span class="nf">invoke</span> <span class="nv">RtlZeroMemory</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">strFile</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">strFile</span> <span class="c1">;对文件名变量清零</span>
+            <span class="nf">mov</span> <span class="nv">ofn.lStructSize</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">ofn</span>
+            <span class="nf">push</span> <span class="nv">hWnd</span>        <span class="c1">;ofn.hwndOwner=hWnd赋值操作</span>
+            <span class="nf">pop</span> <span class="nv">ofn.hwndOwner</span>        <span class="c1">;两个内存变量不能直接赋值</span>
+            <span class="nf">mov</span> <span class="nv">ofn.lpstrFile</span><span class="p">,</span> <span class="nv">offset</span> <span class="nv">strFile</span>
+            <span class="nf">mov</span> <span class="nv">ofn.nMaxFile</span><span class="p">,</span> <span class="nv">MAX_PATH</span>
+            <span class="nf">mov</span> <span class="nv">ofn.lpstrFilter</span><span class="p">,</span> <span class="nv">offset</span> <span class="nv">szFilter</span>
+            <span class="nf">mov</span> <span class="nv">ofn.nFilterIndex</span><span class="p">,</span> <span class="mi">1</span>
+            <span class="nf">mov</span> <span class="nv">ofn.lpstrFileTitle</span><span class="p">,</span> <span class="nv">NULL</span>
+            <span class="nf">mov</span> <span class="nv">ofn.nMaxFileTitle</span><span class="p">,</span> <span class="mi">0</span>
+            <span class="nf">mov</span> <span class="nv">ofn.lpstrInitialDir</span><span class="p">,</span> <span class="nv">NULL</span>
+            <span class="nf">mov</span> <span class="nv">ofn.Flags</span><span class="p">,</span> <span class="nv">OFN_PATHMUSTEXIST</span> <span class="nv">OR</span> <span class="nv">OFN_FILEMUSTEXIST</span>
+            <span class="c1">;调用打开文件的公共对话框</span>
+            <span class="nf">invoke</span> <span class="nv">GetOpenFileName</span><span class="p">,</span> <span class="nv">addr</span> <span class="nv">ofn</span>
+            <span class="nf">.if</span> <span class="nb">eax</span><span class="err">==</span><span class="nv">TRUE</span>
+                <span class="c1">;invoke MessageBox,hWnd,offset strFile,addr AppName,MB_OK OR MB_ICONINFORMATION</span>
+                <span class="c1">;对这个文件进行处理</span>
+                <span class="nf">invoke</span> <span class="nv">CreateFile</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">strFile</span><span class="p">,</span><span class="nv">GENERIC_READ</span><span class="p">,</span><span class="nv">FILE_SHARE_READ</span> <span class="nv">OR</span> <span class="nv">FILE_SHARE_WRITE</span><span class="p">,</span><span class="err">\</span>
+                <span class="nf">NULL</span><span class="p">,</span><span class="nv">OPEN_EXISTING</span><span class="p">,</span><span class="nv">FILE_ATTRIBUTE_NORMAL</span><span class="p">,</span><span class="nv">NULL</span>
+                <span class="nf">.if</span> <span class="nb">eax</span> <span class="err">!=</span> <span class="nv">INVALID_HANDLE_VALUE</span>
+                    <span class="nf">mov</span> <span class="nv">hFile</span> <span class="p">,</span><span class="nb">eax</span>
+                    <span class="c1">;读内容之前要清空缓冲区</span>
+                    <span class="nf">invoke</span> <span class="nv">RtlZeroMemory</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">strFileBuf</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">strFileBuf</span>
+                    <span class="c1">;读取文件内容到缓冲区strFileBuf中</span>
+                    <span class="nf">invoke</span> <span class="nv">ReadFile</span><span class="p">,</span><span class="nv">hFile</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">strFileBuf</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">strFileBuf</span><span class="p">,</span><span class="nv">addr</span> <span class="kt">byte</span><span class="nv">sRead</span><span class="p">,</span><span class="nv">NULL</span>
+                    <span class="c1">;清空原有的文本内容，然后将strFileBuf中的内容显示到文本框</span>
+                    <span class="nf">invoke</span> <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">WM_CLEAR</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+                    <span class="nf">invoke</span> <span class="nv">SetWindowText</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">strFileBuf</span>
+                    <span class="c1">;关闭当前的文件句柄</span>
+                    <span class="nf">invoke</span> <span class="nb">Cl</span><span class="nv">oseHandle</span><span class="p">,</span><span class="nv">hFile</span>
+                <span class="nf">.endif</span>    
+            <span class="nf">.endif</span>
+        <span class="nf">.elseif</span> <span class="nb">ax</span><span class="err">==</span><span class="nv">IDM_FILE_SAVE</span>
+            <span class="c1">;初始化公共对话框结构体</span>
+            <span class="nf">invoke</span> <span class="nv">RtlZeroMemory</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">ofn</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">ofn</span>
+            <span class="nf">invoke</span> <span class="nv">RtlZeroMemory</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">strFile</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">strFile</span> <span class="c1">;对文件名变量清零</span>
+            <span class="nf">mov</span> <span class="nv">ofn.lStructSize</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">ofn</span>
+            <span class="nf">push</span> <span class="nv">hWnd</span>        <span class="c1">;ofn.hwndOwner=hWnd赋值操作</span>
+            <span class="nf">pop</span> <span class="nv">ofn.hwndOwner</span>        <span class="c1">;两个内存变量不能直接赋值</span>
+            <span class="nf">mov</span> <span class="nv">ofn.lpstrFile</span><span class="p">,</span> <span class="nv">offset</span> <span class="nv">strFile</span>
+            <span class="nf">mov</span> <span class="nv">ofn.nMaxFile</span><span class="p">,</span> <span class="nv">MAX_PATH</span>
+            <span class="nf">mov</span> <span class="nv">ofn.lpstrFilter</span><span class="p">,</span> <span class="nv">offset</span> <span class="nv">szFilter</span>
+            <span class="nf">mov</span> <span class="nv">ofn.nFilterIndex</span><span class="p">,</span> <span class="mi">1</span>
+            <span class="nf">mov</span> <span class="nv">ofn.lpstrFileTitle</span><span class="p">,</span> <span class="nv">NULL</span>
+            <span class="nf">mov</span> <span class="nv">ofn.nMaxFileTitle</span><span class="p">,</span> <span class="mi">0</span>
+            <span class="nf">mov</span> <span class="nv">ofn.lpstrInitialDir</span><span class="p">,</span> <span class="nv">NULL</span>
+            <span class="nf">mov</span> <span class="nv">ofn.lpstrDefExt</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">szDefExt</span> <span class="c1">;添加扩展名</span>
+            <span class="nf">mov</span> <span class="nv">ofn.Flags</span><span class="p">,</span> <span class="nv">OFN_OVERWRITEPROMPT</span> <span class="nv">OR</span> <span class="nv">OFN_EXPLORER</span>
+            <span class="c1">;调用打开文件的公共对话框</span>
+            <span class="nf">invoke</span> <span class="nv">GetSaveFileName</span><span class="p">,</span> <span class="nv">addr</span> <span class="nv">ofn</span>
+            <span class="nf">.if</span> <span class="nb">eax</span><span class="err">==</span><span class="nv">TRUE</span>
+                <span class="c1">;invoke MessageBox,hWnd,offset strFile,addr AppName,MB_OK OR MB_ICONINFORMATION</span>
+                <span class="c1">;打开文件</span>
+                <span class="nf">invoke</span> <span class="nv">CreateFile</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">strFile</span><span class="p">,</span><span class="nv">GENERIC_WRITE</span><span class="p">,</span><span class="nv">FILE_SHARE_READ</span><span class="p">,</span><span class="err">\</span>
+                <span class="nf">NULL</span><span class="p">,</span><span class="nv">CREATE_ALWAYS</span><span class="p">,</span><span class="nv">FILE_ATTRIBUTE_NORMAL</span><span class="p">,</span><span class="nv">NULL</span>
+                <span class="nf">.if</span> <span class="nb">eax</span> <span class="err">!=</span> <span class="nv">INVALID_HANDLE_VALUE</span>
+                    <span class="nf">mov</span> <span class="nv">hFile</span><span class="p">,</span><span class="nb">eax</span>    <span class="c1">;获取文件句柄</span>
+                    <span class="nf">invoke</span> <span class="nv">RtlZeroMemory</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">strFileBuf</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">strFileBuf</span>    <span class="c1">;清空缓冲区</span>
+                    <span class="nf">invoke</span> <span class="nv">GetWindowTextLength</span><span class="p">,</span><span class="nv">hEdit</span>    <span class="c1">;获取文本框内容长度</span>
+                    <span class="nf">mov</span> <span class="nv">textLen</span><span class="p">,</span> <span class="nb">eax</span>
+                    <span class="nf">invoke</span> <span class="nv">GetWindowText</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">strFileBuf</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">strFileBuf</span>    <span class="c1">;将文本框内容传送到缓冲区</span>
+                    <span class="c1">;将文本内容写入文件</span>
+                    <span class="nf">invoke</span> <span class="nv">WriteFile</span><span class="p">,</span><span class="nv">hFile</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">strFileBuf</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">textLen</span><span class="p">,</span><span class="nv">addr</span> <span class="kt">byte</span><span class="nv">sWrite</span><span class="p">,</span><span class="nv">NULL</span>
+                    <span class="nf">invoke</span> <span class="nb">Cl</span><span class="nv">oseHandle</span><span class="p">,</span><span class="nv">hFile</span>    <span class="c1">;关闭文件句柄</span>
+                <span class="nf">.endif</span>
+            <span class="nf">.endif</span>
+        <span class="nf">.elseif</span> <span class="nb">ax</span><span class="err">==</span><span class="nv">IDM_FILE_EXIT</span>
+            <span class="nf">invoke</span> <span class="nv">DestroyWindow</span><span class="p">,</span><span class="nv">hWnd</span>
+            <span class="nf">invoke</span> <span class="nv">PostQuitMessage</span><span class="p">,</span><span class="nv">NULL</span>
+        <span class="nf">.elseif</span> <span class="nb">ax</span><span class="err">==</span><span class="nv">IDM_EDIT_UNDO</span>
+            <span class="nf">invoke</span> <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">EM_UNDO</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+        <span class="nf">.elseif</span> <span class="nb">ax</span><span class="err">==</span><span class="nv">IDM_EDIT_REDO</span>
+            <span class="nf">invoke</span> <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">EM_REDO</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+        <span class="nf">.elseif</span> <span class="nb">ax</span><span class="err">==</span><span class="nv">IDM_EDIT_CUT</span>
+            <span class="nf">invoke</span> <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">WM_CUT</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+        <span class="nf">.elseif</span> <span class="nb">ax</span><span class="err">==</span><span class="nv">IDM_EDIT_COPY</span>
+            <span class="nf">invoke</span> <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">WM_COPY</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+        <span class="nf">.elseif</span> <span class="nb">ax</span><span class="err">==</span><span class="nv">IDM_EDIT_PASTE</span>
+            <span class="nf">invoke</span> <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">WM_PASTE</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+        <span class="nf">.elseif</span> <span class="nb">ax</span><span class="err">==</span><span class="nv">IDM_HELP_ABOUT</span> <span class="c1">;这些ID号只用了eax当中的低字节部分</span>
+            <span class="nf">invoke</span> <span class="nv">MessageBox</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">aboutApp</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">AppName</span><span class="p">,</span><span class="nv">MB_OK</span> <span class="nv">OR</span> <span class="nv">MB_ICONINFORMATION</span>
+        <span class="nf">.endif</span>
+    <span class="nf">.ELSE</span>
     
-        <span class="n">invoke</span> <span class="n">DefWindowProc</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">uMsg</span><span class="p">,</span><span class="n">wParam</span><span class="p">,</span><span class="n">lParam</span>        
-        <span class="k">ret</span>
-    <span class="p">.</span><span class="n">ENDIF</span>
+        <span class="nf">invoke</span> <span class="nv">DefWindowProc</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">uMsg</span><span class="p">,</span><span class="nv">wParam</span><span class="p">,</span><span class="nv">lParam</span>        
+        <span class="nf">ret</span>
+    <span class="nf">.ENDIF</span>
     
-    <span class="k">xor</span> <span class="n">eax</span><span class="p">,</span><span class="n">eax</span>
-    <span class="k">ret</span>
-<span class="n">WndProc</span> <span class="n">endp</span>
+    <span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">ret</span>
+<span class="nf">WndProc</span> <span class="nv">endp</span>
 
-<span class="n">end</span> <span class="n">start</span>
+<span class="nf">end</span> <span class="nv">start</span>
 
 </code></pre></div></div> <p>OK , ^_^ !!!!!!!!!</p> <p>此程序参考自<a href="http://www.boobooke.com/m2/">jhkdiy老师的Win32Asm与RadAsm汇编开发教程</a></p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-08-%25E7%2594%25A8RadASM%25E5%25BC%2580%25E5%258F%2591%25E8%25AE%25B0%25E4%25BA%258B%25E6%259C%25AC%25E7%25A8%258B%25E5%25BA%258F.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=ASM-用RadASM开发记事本程序 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-08-%25E7%2594%25A8RadASM%25E5%25BC%2580%25E5%258F%2591%25E8%25AE%25B0%25E4%25BA%258B%25E6%259C%25AC%25E7%25A8%258B%25E5%25BA%258F.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-08-%25E7%2594%25A8RadASM%25E5%25BC%2580%25E5%258F%2591%25E8%25AE%25B0%25E4%25BA%258B%25E6%259C%25AC%25E7%25A8%258B%25E5%25BA%258F.html&amp;title=ASM-用RadASM开发记事本程序 - 知不知&amp;summary=用RadASM开发记事本程序&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-08-%25E7%2594%25A8RadASM%25E5%25BC%2580%25E5%258F%2591%25E8%25AE%25B0%25E4%25BA%258B%25E6%259C%25AC%25E7%25A8%258B%25E5%25BA%258F.html&amp;text=ASM-用RadASM开发记事本程序 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-08-%25E7%2594%25A8RadASM%25E5%25BC%2580%25E5%258F%2591%25E8%25AE%25B0%25E4%25BA%258B%25E6%259C%25AC%25E7%25A8%258B%25E5%25BA%258F.html&amp;t=ASM-用RadASM开发记事本程序 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-08-%25E7%2594%25A8RadASM%25E5%25BC%2580%25E5%258F%2591%25E8%25AE%25B0%25E4%25BA%258B%25E6%259C%25AC%25E7%25A8%258B%25E5%25BA%258F.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('ASM-用RadASM开发记事本程序'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>

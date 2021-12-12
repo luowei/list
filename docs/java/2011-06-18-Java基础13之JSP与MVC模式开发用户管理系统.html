@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-06-18-Java%E5%9F%BA%E7%A1%8013%E4%B9%8BJSP%E4%B8%8EMVC%E6%A8%A1%E5%BC%8F%E5%BC%80%E5%8F%91%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础13之JSP与MVC模式开发用户管理系统</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>使用JSP+JavaBean模式与MVC模式开发用户管理系统。</p> <p><strong>Jsp内置对象</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_44.jpg" alt="文件结构" /></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.out //向客户端输出数据，字节流
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-06-18-Java%E5%9F%BA%E7%A1%8013%E4%B9%8BJSP%E4%B8%8EMVC%E6%A8%A1%E5%BC%8F%E5%BC%80%E5%8F%91%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础13之JSP与MVC模式开发用户管理系统</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>使用JSP+JavaBean模式与MVC模式开发用户管理系统。</p> <p><strong>Jsp内置对象</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_44.jpg" alt="文件结构" /></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.out //向客户端输出数据，字节流
 out.println("");
 
 2.request //接收客户端的http请求 &lt;-----&gt;servlet中的HttpServletRequest
@@ -72,7 +72,7 @@ jsp中：session.setMaxInactive(20);
             <span class="o">--&gt;</span>
 <span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
-<span class="nc">Hello</span><span class="o">,</span><span class="err">维唯为为</span> <span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<span class="nc">Hello</span><span class="o">,</span><span class="n">维唯为为</span> <span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
 </code></pre></div></div> <h3 id="jspjavabeanjava文件模式开发用户管理系统">Jsp+javaBean(java文件)模式开发用户管理系统</h3> <p><strong>1. jsp+java_class模式下的用户管理系统模型图</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_45.jpg" alt="jsp+java" /></p> <p><strong>2.登录界面_UserManagerSys/src/webRoot/login.jsp</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">language</span><span class="o">=</span><span class="s">"java"</span> <span class="kn">import</span><span class="err">="</span><span class="nn">java.util.*</span><span class="s">" pageEncoding="</span><span class="n">gb2312</span><span class="s">"%&gt;
@@ -96,11 +96,11 @@ jsp中：session.setMaxInactive(20);
 <span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">body</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
-    <span class="err">用户登录</span> <span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+    <span class="n">用户登录</span> <span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s">"loginCl.jsp"</span> <span class="n">method</span><span class="o">=</span><span class="s">"post"</span><span class="o">&gt;</span>
-        <span class="err">用户名：</span><span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"username"</span><span class="o">/&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
-        <span class="err">密</span><span class="o">&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span><span class="err">码：</span><span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"password"</span> <span class="n">name</span><span class="o">=</span><span class="s">"passwd"</span><span class="o">/&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+        <span class="n">用户名</span><span class="err">：</span><span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"username"</span><span class="o">/&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+        <span class="n">密</span><span class="o">&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span><span class="n">码</span><span class="err">：</span><span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"password"</span> <span class="n">name</span><span class="o">=</span><span class="s">"passwd"</span><span class="o">/&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
         <span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"submit"</span> <span class="n">value</span><span class="o">=</span><span class="s">"登录"</span><span class="o">/&gt;</span>
         <span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"reset"</span> <span class="n">value</span><span class="o">=</span><span class="s">"重置"</span><span class="o">/&gt;</span>
     <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
@@ -167,11 +167,11 @@ jsp中：session.setMaxInactive(20);
 <span class="o">&lt;%</span>
     <span class="nc">String</span> <span class="n">u</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"username"</span><span class="o">);</span>
 <span class="o">%&gt;</span>
-<span class="err">登录成功！维唯为为恭喜你！</span><span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
-<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"login.jsp"</span><span class="o">&gt;</span><span class="err">返回重新登录</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+<span class="n">登录成功</span><span class="err">！</span><span class="n">维唯为为恭喜你</span><span class="err">！</span><span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"login.jsp"</span><span class="o">&gt;</span><span class="n">返回重新登录</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="err">用户信息列表</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">用户信息列表</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
     <span class="o">&lt;%</span>
         <span class="c1">//定义分页用到的变量</span>
         <span class="kt">int</span> <span class="n">pageNow</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span>
@@ -188,7 +188,7 @@ jsp中：session.setMaxInactive(20);
         <span class="c1">//显示</span>
     <span class="o">%&gt;</span>
     <span class="o">&lt;</span><span class="n">table</span> <span class="n">border</span><span class="o">=</span><span class="s">"1"</span><span class="o">&gt;</span>
-        <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">用户</span><span class="n">id</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">用户名</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">密码</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">邮箱</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">级别</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">用户id</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">用户名</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">密码</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">邮箱</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">级别</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
         <span class="o">&lt;%</span>
             <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">al</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>
             <span class="o">{</span>    <span class="c1">//从al中取出UserBean</span>
@@ -231,7 +231,7 @@ jsp中：session.setMaxInactive(20);
  * 这是一个处理类，有些人把它叫做BO,主要是封装对user表的各种操作，(主要
  * 是增，删，修，查...)
  */</span>
-<span class="kn">package</span> <span class="n">user</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">user.model</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserBeanCl</span> <span class="o">{</span>
@@ -382,7 +382,7 @@ jsp中：session.setMaxInactive(20);
  * 这是一个javabean,对应user表，代表数据
  * 他的一个实例(对象),对应users的一条
  */</span>
-<span class="kn">package</span> <span class="n">user</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">user.model</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserBean</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getUserId</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">userId</span><span class="o">;</span>
@@ -423,7 +423,7 @@ jsp中：session.setMaxInactive(20);
 </code></pre></div></div> <p><strong>5.model层_UserManagerSys/src/user.model/ConnDB.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 得到数据库的连接
  */</span>
-<span class="kn">package</span> <span class="n">user</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">user.model</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConnDB</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
@@ -509,7 +509,7 @@ jsp中：session.setMaxInactive(20);
       <span class="k">AND</span> <span class="n">s</span><span class="p">.</span><span class="n">color</span> <span class="o">&lt;&gt;</span> <span class="s1">'white'</span><span class="p">;</span>
 <span class="o">#</span><span class="c1">----------------------------------------------------------</span>
 <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">users</span> <span class="k">order</span> <span class="k">by</span> <span class="n">useId</span> <span class="k">limit</span> <span class="mi">5</span><span class="p">;</span>
-</code></pre></div></div> <h3 id="界面层view层">界面层(View层)</h3> <p><strong>登录界面_UserManageSys2/WebRoot/WEB-INF/login.jsp</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_48.jpg" alt="登录界面" /></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span> <span class="err">登录界面</span> <span class="o">--&gt;</span>
+</code></pre></div></div> <h3 id="界面层view层">界面层(View层)</h3> <p><strong>登录界面_UserManageSys2/WebRoot/WEB-INF/login.jsp</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_48.jpg" alt="登录界面" /></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span> <span class="n">登录界面</span> <span class="o">--&gt;</span>
 <span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">language</span><span class="o">=</span><span class="s">"java"</span> <span class="kn">import</span><span class="err">="</span><span class="nn">java.util.*</span><span class="s">" pageEncoding="</span><span class="n">gb2312</span><span class="s">"%&gt;
 &lt;%
     String path = request.getContextPath();
@@ -541,18 +541,18 @@ jsp中：session.setMaxInactive(20);
             <span class="o">}</span>
         <span class="o">}</span>
     <span class="o">%&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/1.gif"</span><span class="o">/&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
-    <span class="err">用户登录</span> <span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+    <span class="n">用户登录</span> <span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s">"LoginClServlet"</span> <span class="n">method</span><span class="o">=</span><span class="s">"post"</span><span class="o">&gt;</span>
-        <span class="err">用户名：</span><span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"username"</span><span class="o">/&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
-        <span class="err">密</span><span class="o">&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span><span class="err">码：</span><span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"password"</span> <span class="n">name</span><span class="o">=</span><span class="s">"passwd"</span><span class="o">/&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+        <span class="n">用户名</span><span class="err">：</span><span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"username"</span><span class="o">/&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+        <span class="n">密</span><span class="o">&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span><span class="n">码</span><span class="err">：</span><span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"password"</span> <span class="n">name</span><span class="o">=</span><span class="s">"passwd"</span><span class="o">/&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
         <span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"submit"</span> <span class="n">value</span><span class="o">=</span><span class="s">"登录"</span><span class="o">/&gt;</span>
         <span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"reset"</span> <span class="n">value</span><span class="o">=</span><span class="s">"重置"</span><span class="o">/&gt;</span>
     <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/logo.gif"</span><span class="o">/&gt;</span>
 <span class="o">&lt;/</span><span class="n">center</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
@@ -594,7 +594,7 @@ jsp中：session.setMaxInactive(20);
 <span class="o">%&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
-</code></pre></div></div> <p><strong>主界面_UserManageSys2/WebRoot/WEB-INF/Main.jsp</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_49.jpg" alt="主界面" /></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span><span class="err">主界面</span> <span class="o">--&gt;</span>
+</code></pre></div></div> <p><strong>主界面_UserManageSys2/WebRoot/WEB-INF/Main.jsp</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_49.jpg" alt="主界面" /></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span><span class="n">主界面</span> <span class="o">--&gt;</span>
 <span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">language</span><span class="o">=</span><span class="s">"java"</span> <span class="kn">import</span><span class="err">="</span><span class="nn">java.util.*</span><span class="s">" pageEncoding="</span><span class="n">gb2312</span><span class="s">"%&gt;
 &lt;%
     String path = request.getContextPath();
@@ -620,23 +620,23 @@ jsp中：session.setMaxInactive(20);
     <span class="c1">//System.out.println("Main.jsp得到的username="+u);</span>
 <span class="o">%&gt;</span>
 <span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/1.gif"</span><span class="o">/&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="err">请选择操作</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"UserClServlet?pageNow=1&amp;flag=fenye&amp;username=&lt;%=u %&gt;"</span> <span class="o">&gt;</span><span class="err">管理用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-    <span class="o">&lt;!--</span> <span class="n">flag</span><span class="err">标志告诉控制器，进行分页</span> <span class="o">--&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">注意这里变量</span><span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;</span><span class="err">要放在双引号里边，直接赋给</span><span class="n">username</span> <span class="o">--&gt;</span>
-    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"addUser.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="err">添加用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"#"</span><span class="o">&gt;</span><span class="err">查找用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"#"</span><span class="o">&gt;</span><span class="err">注销用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">请选择操作</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"UserClServlet?pageNow=1&amp;flag=fenye&amp;username=&lt;%=u %&gt;"</span> <span class="o">&gt;</span><span class="n">管理用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">flag标志告诉控制器</span><span class="err">，</span><span class="n">进行分页</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">注意这里变量</span><span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;</span><span class="n">要放在双引号里边</span><span class="err">，</span><span class="n">直接赋给username</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"addUser.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="n">添加用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"#"</span><span class="o">&gt;</span><span class="n">查找用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"#"</span><span class="o">&gt;</span><span class="n">注销用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/logo.gif"</span><span class="o">/&gt;</span>
 <span class="o">&lt;/</span><span class="n">center</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
-</code></pre></div></div> <p><strong>欢迎界面_UserManageSys2/WebRoot/WEB-INF/wel.jsp</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_50.jpg" alt="欢迎界面" /></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span><span class="err">欢迎界面</span> <span class="o">--&gt;</span>
+</code></pre></div></div> <p><strong>欢迎界面_UserManageSys2/WebRoot/WEB-INF/wel.jsp</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_50.jpg" alt="欢迎界面" /></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span><span class="n">欢迎界面</span> <span class="o">--&gt;</span>
 <span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">language</span><span class="o">=</span><span class="s">"java"</span> <span class="kn">import</span><span class="err">="</span><span class="nn">java.util.*</span><span class="o">,</span><span class="n">java</span><span class="o">.</span><span class="na">sql</span><span class="o">.*,</span><span class="n">user</span><span class="o">.</span><span class="na">model</span><span class="o">.*</span><span class="s">" pageEncoding="</span><span class="n">gb2312</span><span class="s">"%&gt;
 &lt;%
     String path = request.getContextPath();
@@ -679,13 +679,13 @@ jsp中：session.setMaxInactive(20);
         <span class="k">return</span> <span class="o">;</span>
     <span class="o">}</span>
 <span class="o">%&gt;</span>
-<span class="err">登录成功！维唯为为恭喜你！</span><span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-<span class="n">session</span><span class="err">得到的用户名为：</span><span class="o">&lt;%=</span><span class="n">userName</span> <span class="o">%&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"login.jsp"</span><span class="o">&gt;</span><span class="err">返回重新登录</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span>
-<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"Main.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="err">返回主界面</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+<span class="n">登录成功</span><span class="err">！</span><span class="n">维唯为为恭喜你</span><span class="err">！</span><span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+<span class="n">session得到的用户名为</span><span class="err">：</span><span class="o">&lt;%=</span><span class="n">userName</span> <span class="o">%&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"login.jsp"</span><span class="o">&gt;</span><span class="n">返回重新登录</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span>
+<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"Main.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="n">返回主界面</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="err">用户信息列表</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">用户信息列表</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
     <span class="o">&lt;%</span>
         <span class="c1">//调用UserBeanCl的方法(创建一个UserBeanCl的实例，然后调用它的某个方法)，完成分布显示</span>
         <span class="c1">//UserBeanCl ubc=new UserBeanCl();</span>
@@ -704,8 +704,8 @@ jsp中：session.setMaxInactive(20);
         <span class="kt">int</span> <span class="n">pageNow</span><span class="o">=</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">s_pageNow</span><span class="o">);</span>
     <span class="o">%&gt;</span>
     <span class="o">&lt;</span><span class="n">table</span> <span class="n">border</span><span class="o">=</span><span class="s">"1"</span><span class="o">&gt;</span>
-        <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">用户</span><span class="n">id</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">用户名</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">密码</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
-            <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">邮箱</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">级别</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">修改用户</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">删除用户</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">用户id</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">用户名</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">密码</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">邮箱</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">级别</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">修改用户</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">删除用户</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
         <span class="o">&lt;%</span>
             <span class="c1">//定义一个颜色数组</span>
             <span class="nc">String</span> <span class="o">[]</span><span class="n">color</span><span class="o">={</span><span class="s">"silver"</span><span class="o">,</span><span class="s">"pink"</span><span class="o">};</span>
@@ -718,9 +718,9 @@ jsp中：session.setMaxInactive(20);
             <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;&lt;%=</span><span class="n">ub</span><span class="o">.</span><span class="na">getGrade</span><span class="o">()</span> <span class="o">%&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
             <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"updateUser.jsp?username=&lt;%=u%&gt;&amp;pageNow=&lt;%=pageNow %&gt;&amp;userId=&lt;%=ub.getUserId()
                      %&gt;&amp;userName=&lt;%=ub.getUsername() %&gt;&amp;passWd=&lt;%=ub.getPasswd() %&gt;&amp;email=&lt;%=ub.getEmail()
-                     %&gt;&amp;grade=&lt;%=ub.getGrade() %&gt;"</span><span class="o">&gt;</span><span class="err">修改用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+                     %&gt;&amp;grade=&lt;%=ub.getGrade() %&gt;"</span><span class="o">&gt;</span><span class="n">修改用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
             <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"return msg()"</span> <span class="n">href</span><span class="o">=</span><span class="s">"UserClServlet?username=&lt;%=u%&gt;&amp;pageNow=&lt;%=pageNow
-                     %&gt;&amp;flag=delUser&amp;userid=&lt;%=ub.getUserId() %&gt;"</span><span class="o">&gt;</span><span class="err">删除用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+                     %&gt;&amp;flag=delUser&amp;userid=&lt;%=ub.getUserId() %&gt;"</span><span class="o">&gt;</span><span class="n">删除用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
         <span class="o">&lt;%</span>
             <span class="o">}</span>
         <span class="o">%&gt;</span>
@@ -747,7 +747,7 @@ jsp中：session.setMaxInactive(20);
         <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;a href=UserClServlet?flag=fenye&amp;pageNow="</span><span class="o">+</span><span class="n">pageCount</span><span class="o">+</span><span class="s">"&amp;username="</span><span class="o">+</span><span class="n">u</span><span class="o">+</span><span class="s">"&gt;尾页&lt;/a&gt;"</span><span class="o">);</span>
     <span class="o">%&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/logo.gif"</span><span class="o">/&gt;</span>
 <span class="o">&lt;/</span><span class="n">center</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
@@ -778,26 +778,26 @@ jsp中：session.setMaxInactive(20);
     <span class="c1">//String flag=request.getParameter("flag");</span>
     <span class="c1">//System.out.println("Main.jsp得到的username="+u);</span>
 <span class="o">%&gt;</span>
-<span class="err">欢迎您：</span><span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
-<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"Main.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="err">返回主界面</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
-<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"UserClServlet?username=&lt;%=u %&gt;&amp;UserClServlet=&lt;%=u %&gt;&amp;pageNow=&lt;%=pageNow %&gt;&amp;flag=fenye"</span><span class="o">&gt;</span><span class="err">返回上一页</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+<span class="n">欢迎您</span><span class="err">：</span><span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"Main.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="n">返回主界面</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"UserClServlet?username=&lt;%=u %&gt;&amp;UserClServlet=&lt;%=u %&gt;&amp;pageNow=&lt;%=pageNow %&gt;&amp;flag=fenye"</span><span class="o">&gt;</span><span class="n">返回上一页</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/1.gif"</span><span class="o">/&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="err">修改用户信息</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">修改用户信息</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s">"UserClServlet?pageNow=1&amp;flag=updateUser&amp;username=&lt;%=u %&gt;"</span> <span class="n">method</span><span class="o">=</span><span class="s">"post"</span><span class="o">&gt;</span>
         <span class="o">&lt;</span><span class="n">table</span> <span class="n">border</span><span class="o">=</span><span class="s">"1"</span><span class="o">&gt;</span>
-            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">用户</span><span class="nc">Id</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">readonly</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"userId"</span> <span class="n">value</span><span class="o">=</span><span class="s">"&lt;%=request.getParameter("</span><span class="n">userId</span><span class="s">") %&gt;"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
-            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">用户名</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"userName"</span> <span class="n">value</span><span class="o">=</span><span class="s">"&lt;%=request.getParameter("</span><span class="n">userName</span><span class="s">") %&gt;"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
-            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"silver"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">密码</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"passWd"</span> <span class="n">value</span><span class="o">=</span><span class="s">"&lt;%=request.getParameter("</span><span class="n">passWd</span><span class="s">") %&gt;"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
-            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">电子邮件</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"email"</span> <span class="n">value</span><span class="o">=</span><span class="s">"&lt;%=request.getParameter("</span><span class="n">email</span><span class="s">") %&gt;"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
-            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"silver"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">级别</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"grade"</span> <span class="n">value</span><span class="o">=</span><span class="s">"&lt;%=request.getParameter("</span><span class="n">grade</span><span class="s">") %&gt;"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">用户Id</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">readonly</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"userId"</span> <span class="n">value</span><span class="o">=</span><span class="s">"&lt;%=request.getParameter("</span><span class="n">userId</span><span class="s">") %&gt;"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">用户名</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"userName"</span> <span class="n">value</span><span class="o">=</span><span class="s">"&lt;%=request.getParameter("</span><span class="n">userName</span><span class="s">") %&gt;"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"silver"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">密码</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"passWd"</span> <span class="n">value</span><span class="o">=</span><span class="s">"&lt;%=request.getParameter("</span><span class="n">passWd</span><span class="s">") %&gt;"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">电子邮件</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"email"</span> <span class="n">value</span><span class="o">=</span><span class="s">"&lt;%=request.getParameter("</span><span class="n">email</span><span class="s">") %&gt;"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"silver"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">级别</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"grade"</span> <span class="n">value</span><span class="o">=</span><span class="s">"&lt;%=request.getParameter("</span><span class="n">grade</span><span class="s">") %&gt;"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
         <span class="o">&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
         <span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"submit"</span> <span class="n">value</span><span class="o">=</span><span class="s">"修改信息"</span><span class="o">/&gt;&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span>
     <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/logo.gif"</span><span class="o">/&gt;</span>
 <span class="o">&lt;/</span><span class="n">center</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
@@ -826,30 +826,30 @@ jsp中：session.setMaxInactive(20);
     <span class="nc">String</span> <span class="n">u</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">"username"</span><span class="o">);</span>
     <span class="c1">//System.out.println("Main.jsp得到的username="+u);</span>
 <span class="o">%&gt;</span>
-<span class="err">欢迎您：</span><span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
-<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"Main.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="err">返回主界面</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+<span class="n">欢迎您</span><span class="err">：</span><span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"Main.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="n">返回主界面</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/1.gif"</span><span class="o">/&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="err">请输入用户信息</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">请输入用户信息</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s">"UserClServlet?pageNow=1&amp;flag=addUser&amp;username=&lt;%=u %&gt;"</span> <span class="n">method</span><span class="o">=</span><span class="s">"post"</span><span class="o">&gt;</span>
         <span class="o">&lt;</span><span class="n">table</span> <span class="n">border</span><span class="o">=</span><span class="s">"1"</span><span class="o">&gt;</span>
-            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">用户名</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"userName"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
-            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"silver"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">密码</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"password"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
-            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">电子邮件</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"email"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
-            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"silver"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">级别</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"grade"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">用户名</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"userName"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"silver"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">密码</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"password"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"pink"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">电子邮件</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"email"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">tr</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"silver"</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">级别</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"grade"</span><span class="o">/&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
         <span class="o">&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
         <span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"submit"</span> <span class="n">value</span><span class="o">=</span><span class="s">"添加用户"</span><span class="o">/&gt;&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span>
         <span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"reset"</span> <span class="n">value</span><span class="o">=</span><span class="s">" 重 置 "</span><span class="o">/&gt;</span>
     <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/logo.gif"</span><span class="o">/&gt;</span>
 <span class="o">&lt;/</span><span class="n">center</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
-</code></pre></div></div> <p><strong>操作成功界面_UserManageSys2/WebRoot/WEB-INF/suc.jsp</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_53.jpg" alt="操作成功界面" /></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span> <span class="err">登录界面</span> <span class="o">--&gt;</span>
+</code></pre></div></div> <p><strong>操作成功界面_UserManageSys2/WebRoot/WEB-INF/suc.jsp</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_53.jpg" alt="操作成功界面" /></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span> <span class="n">登录界面</span> <span class="o">--&gt;</span>
 <span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">language</span><span class="o">=</span><span class="s">"java"</span> <span class="kn">import</span><span class="err">="</span><span class="nn">java.util.*</span><span class="s">" pageEncoding="</span><span class="n">gb2312</span><span class="s">"%&gt;
 &lt;%
     String path = request.getContextPath();
@@ -871,7 +871,7 @@ jsp中：session.setMaxInactive(20);
 <span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">body</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"ff9900"</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/1.gif"</span><span class="o">/&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
     <span class="o">&lt;%</span>
@@ -879,18 +879,18 @@ jsp中：session.setMaxInactive(20);
         <span class="c1">//String pageNow=request.getParameter("pageNow");</span>
         <span class="c1">//String flag=request.getParameter("flag");</span>
     <span class="o">%&gt;</span>
-    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="err">恭喜你</span> <span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;</span><span class="err">，操作成功！</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"Main.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="err">返回主界面</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">恭喜你</span> <span class="o">&lt;%=</span><span class="n">u</span> <span class="o">%&gt;</span><span class="err">，</span><span class="n">操作成功</span><span class="err">！</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"Main.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="n">返回主界面</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
     <span class="o">&lt;!--</span>
-        <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"addUser.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="err">返回上一页</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"addUser.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="n">返回上一页</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
         <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/logo.gif"</span><span class="o">/&gt;</span>
 <span class="o">&lt;/</span><span class="n">center</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
-</code></pre></div></div> <p><strong>操作失败界面_UserManageSys2/WebRoot/WEB-INF/err.jsp</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_54.jpg" alt="操作失败界面" /></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span> <span class="err">登录界面</span> <span class="o">--&gt;</span>
+</code></pre></div></div> <p><strong>操作失败界面_UserManageSys2/WebRoot/WEB-INF/err.jsp</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_54.jpg" alt="操作失败界面" /></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span> <span class="n">登录界面</span> <span class="o">--&gt;</span>
 <span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">language</span><span class="o">=</span><span class="s">"java"</span> <span class="kn">import</span><span class="err">="</span><span class="nn">java.util.*</span><span class="s">" pageEncoding="</span><span class="n">gb2312</span><span class="s">"%&gt;
 &lt;%
     String path = request.getContextPath();
@@ -912,7 +912,7 @@ jsp中：session.setMaxInactive(20);
 <span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">body</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">"ff9900"</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/1.gif"</span><span class="o">/&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
     <span class="o">&lt;%</span>
@@ -920,13 +920,13 @@ jsp中：session.setMaxInactive(20);
         <span class="c1">//String pageNow=request.getParameter("pageNow");</span>
         <span class="c1">//String flag=request.getParameter("flag");</span>
     <span class="o">%&gt;</span>
-    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="err">操作不成功！</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"Main.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="err">返回主界面</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">操作不成功</span><span class="err">！</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"Main.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="n">返回主界面</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
     <span class="o">&lt;!--</span>
-        <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"addUser.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="err">返回上一页</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"addUser.jsp?username=&lt;%=u %&gt;"</span><span class="o">&gt;</span><span class="n">返回上一页</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
         <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">引入一张图片</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">引入一张图片</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">"imgs/logo.gif"</span><span class="o">/&gt;</span>
 <span class="o">&lt;/</span><span class="n">center</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
@@ -935,7 +935,7 @@ jsp中：session.setMaxInactive(20);
  * 这是一个控制器，主要完成对用户身份的验证
  * 控制器本身是不会去完成业务逻辑，它主要是去调用模型完成对数据的处理
  */</span>
-<span class="kn">package</span> <span class="n">user</span><span class="o">.</span><span class="na">controller</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">user.controller</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">user.model.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
@@ -1013,7 +1013,7 @@ jsp中：session.setMaxInactive(20);
 </code></pre></div></div> <p><strong>处理用户的服务_UserManageSys2/ src/user.controller/UserClServer.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 这个控制器，将处理用户的分页显示，用户的删除，修改，添加
  */</span>
-<span class="kn">package</span> <span class="n">user</span><span class="o">.</span><span class="na">controller</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">user.controller</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
@@ -1138,7 +1138,7 @@ jsp中：session.setMaxInactive(20);
  * 这是一个javabean,对应user表，代表数据
  * 他的一个实例(对象),对应users的一条
  */</span>
-<span class="kn">package</span> <span class="n">user</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">user.model</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserBean</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getUserId</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">userId</span><span class="o">;</span>
@@ -1180,7 +1180,7 @@ jsp中：session.setMaxInactive(20);
  * 这是一个处理类，有些人把它叫做BO,主要是封装对user表的各种操作，(主要
  * 是增，删，修，查...)
  */</span>
-<span class="kn">package</span> <span class="n">user</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">user.model</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.UnsupportedEncodingException</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
@@ -1414,7 +1414,7 @@ jsp中：session.setMaxInactive(20);
 </code></pre></div></div> <p><strong>工具类_UserManageSys2/ src/user.model/Tools.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 工具类
  */</span>
-<span class="kn">package</span> <span class="n">user</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">user.model</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Tools</span> <span class="o">{</span>
     <span class="cm">/**提供一个方法，将乱码转成gb2312,gbk,utf-8
      *
@@ -1436,7 +1436,7 @@ jsp中：session.setMaxInactive(20);
 </code></pre></div></div> <p><strong>连接数据库_UserManageSys2/ src/user.model/ConnDB.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 得到数据库的连接
  */</span>
-<span class="kn">package</span> <span class="n">user</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">user.model</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConnDB</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>

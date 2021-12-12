@@ -1,17 +1,17 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/iOS/2019-08-20-%E4%BD%BF%E7%94%A8cocoapod%E9%85%8D%E7%BD%AE%E6%89%93%E5%8C%85%E9%9D%99%E6%80%81%E5%BA%93%E5%8F%8Aframework.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>使用cocoapod配置打包静态库及framework</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h2 id="安装cocoapods与cocoapods-packager">安装cocoapods与cocoapods-packager</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo gem install cocoapods -n /usr/local/bin
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/iOS/2019-08-20-%E4%BD%BF%E7%94%A8cocoapod%E9%85%8D%E7%BD%AE%E6%89%93%E5%8C%85%E9%9D%99%E6%80%81%E5%BA%93%E5%8F%8Aframework.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>使用cocoapod配置打包静态库及framework</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h2 id="安装cocoapods与cocoapods-packager">安装cocoapods与cocoapods-packager</h2> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo gem install cocoapods -n /usr/local/bin
 sudo gem install cocoapods-packager -n /usr/local/bin
-</code></pre></div></div> <h2 id="使用pod生成库文件">使用pod生成库文件</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pod package MyTest.podspec --force --no-mangle --configuration=Release
+</code></pre></div></div> <h2 id="使用pod生成库文件">使用pod生成库文件</h2> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pod package MyTest.podspec --force --no-mangle --configuration=Release
 pod package MyTest.podspec --force --no-mangle --embedded --configuration=Release
-</code></pre></div></div> <h2 id="使用xcode构建生成的库文件debug与release需要合并库文件">使用xcode构建生成的库文件，Debug与Release需要合并库文件</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lipo -create Release-iphoneos/MyTest/MyTest.framework/MyTest  Release-iphonesimulator/MyTest/MyTest.framework/MyTest   -output   MyTest_SDK/MyTest.framework/MyTest
+</code></pre></div></div> <h2 id="使用xcode构建生成的库文件debug与release需要合并库文件">使用xcode构建生成的库文件，Debug与Release需要合并库文件</h2> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lipo -create Release-iphoneos/MyTest/MyTest.framework/MyTest  Release-iphonesimulator/MyTest/MyTest.framework/MyTest   -output   MyTest_SDK/MyTest.framework/MyTest
 
 lipo -create ~/.../Products/Release-iphoneos/MyTest/MyTest.framework/MyTest  ~/.../Products/Release-iphonesimulator/MyTest/MyTest.framework/MyTest   -output   /Users/luowei/Desktop/MyTest_SDK/MyTest.framework/MyTest
-</code></pre></div></div> <h2 id="合并命令">合并命令</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rm -rf /Users/luowei/Projects/Projects_Test/MyTest/MyTest-1.5.0/ios/MyTest.framework
+</code></pre></div></div> <h2 id="合并命令">合并命令</h2> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rm -rf /Users/luowei/Projects/Projects_Test/MyTest/MyTest-1.5.0/ios/MyTest.framework
 
 cp -rf /Users/luowei/Library/Developer/Xcode/DerivedData/MyTest-esmvdzoxkzgfquduflcqukmvksbc/Build/Products/Release-iphoneos/MyTest/MyTest.framework /Users/luowei/Projects/Projects_Test/MyTest/MyTest-1.5.0/ios/
 
 lipo -create ~/.../Products/Release-iphoneos/MyTest/MyTest.framework/MyTest  ~/.../Products/Release-iphonesimulator/MyTest/MyTest.framework/MyTest -output /Users/luowei/Projects/Projects_Test/MyTest/MyTest-1.5.0/ios/MyTest.framework/MyTest
-</code></pre></div></div> <h2 id="使用pod-package将原有的源码打包为静态库">使用pod package将原有的源码打包为静态库</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pod package APodSpec.podspec --library 
-</code></pre></div></div> <h2 id="源码库的podspecs示例">源码库的PodSpecs示例</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pod::Spec.new do |s|
+</code></pre></div></div> <h2 id="使用pod-package将原有的源码打包为静态库">使用pod package将原有的源码打包为静态库</h2> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pod package APodSpec.podspec --library 
+</code></pre></div></div> <h2 id="源码库的podspecs示例">源码库的PodSpecs示例</h2> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pod::Spec.new do |s|
   s.name             = 'MyTest'
   s.version          = '1.5.0'
   s.summary          = 'A short description of MyTest.'
@@ -68,7 +68,7 @@ lipo -create ~/.../Products/Release-iphoneos/MyTest/MyTest.framework/MyTest  ~/.
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~&gt; 2.3'
 end
-</code></pre></div></div> <h2 id="生成库的pod配置示例">生成库的Pod配置示例</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pod::Spec.new do |s|
+</code></pre></div></div> <h2 id="生成库的pod配置示例">生成库的Pod配置示例</h2> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pod::Spec.new do |s|
   s.name = "MyTest"
   s.version = "1.5.0"
   s.summary = "A short description of MyTest."
@@ -83,7 +83,7 @@ end
   s.ios.deployment_target    = '9.0'
   s.ios.vendored_framework   = 'ios/MyTest.framework'
 end
-</code></pre></div></div> <h2 id="构建脚本">构建脚本</h2> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 指定打包的workspace文件
+</code></pre></div></div> <h2 id="构建脚本">构建脚本</h2> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 指定打包的workspace文件
 WORKSPACE='./Example/MyTest.xcworkspace'
 # 指定打包的scheme
 SCHEME='MyTest'

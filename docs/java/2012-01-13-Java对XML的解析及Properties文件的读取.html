@@ -26,7 +26,7 @@
         <span class="nt">&lt;AVAILABILITY&gt;</span>051799<span class="nt">&lt;/AVAILABILITY&gt;</span>
     <span class="nt">&lt;/PLANT&gt;</span>
 <span class="nt">&lt;/CATALOG&gt;</span>
-</code></pre></div></div> <p><strong>DOMTest.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">dom</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>DOMTest.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">dom</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.xml.parsers.DocumentBuilderFactory</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.xml.parsers.DocumentBuilder</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.w3c.dom.*</span><span class="o">;</span>
@@ -147,7 +147,7 @@
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">light</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">price</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">availability</span><span class="o">;</span>
-    <span class="err">…………</span><span class="n">set</span><span class="err">、</span><span class="n">get</span><span class="err">方法…………</span>
+    <span class="err">…………</span><span class="n">set</span><span class="err">、</span><span class="n">get方法</span><span class="err">…………</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">toString</span><span class="o">()</span>
     <span class="o">{</span>
@@ -156,7 +156,7 @@
                 <span class="o">+</span><span class="n">availability</span><span class="o">+</span><span class="s">"]"</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <h3 id="stax下用8种方式操作xml">Stax下用8种方式操作Xml</h3> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">itat</span><span class="o">.</span><span class="na">stax</span><span class="o">;</span>
+</code></pre></div></div> <h3 id="stax下用8种方式操作xml">Stax下用8种方式操作Xml</h3> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">org.itat.stax</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.w3c.dom.Document</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.w3c.dom.Element</span><span class="o">;</span>
@@ -447,7 +447,7 @@
 <span class="n">picname</span> <span class="o">=</span> <span class="n">clock</span><span class="o">.</span><span class="na">jpg</span>
 <span class="n">username</span> <span class="o">=</span> <span class="n">scott</span>
 <span class="n">password</span> <span class="o">=</span> <span class="n">luowei</span>
-</code></pre></div></div> <p><strong>PropertiesTest.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">pros</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>PropertiesTest.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">pros</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.Properties</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">PropertiesTest</span>
@@ -477,7 +477,7 @@
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <h3 id="sax方式解析xml">Sax方式解析xml</h3> <p><strong>MatchTest.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">sax</span><span class="o">;</span>
+</code></pre></div></div> <h3 id="sax方式解析xml">Sax方式解析xml</h3> <p><strong>MatchTest.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">sax</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
@@ -630,7 +630,7 @@
     <span class="kd">private</span> <span class="nc">Date</span> <span class="n">date</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">Team</span> <span class="n">firstTeam</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">Team</span> <span class="n">secondTeam</span><span class="o">;</span>
-<span class="err">…………</span><span class="n">set</span><span class="err">、</span><span class="n">get</span><span class="err">方法…………</span>
+<span class="err">…………</span><span class="n">set</span><span class="err">、</span><span class="n">get方法</span><span class="err">…………</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">toString</span><span class="o">()</span>
     <span class="o">{</span>
@@ -641,7 +641,7 @@
 <span class="o">{</span>
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">score</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
-<span class="err">…………</span><span class="n">set</span><span class="err">、</span><span class="n">get</span><span class="err">方法…………</span>
+<span class="err">…………</span><span class="n">set</span><span class="err">、</span><span class="n">get方法</span><span class="err">…………</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">toString</span><span class="o">()</span>
     <span class="o">{</span>
@@ -696,7 +696,7 @@
         <span class="nt">&lt;/address&gt;</span>
     <span class="nt">&lt;/student&gt;</span>
 <span class="nt">&lt;/students&gt;</span>
-</code></pre></div></div> <p><strong>SAXTest.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">sax</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>SAXTest.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">sax</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.xml.parsers.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.xml.sax.helpers.DefaultHandler</span><span class="o">;</span>

@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-06-20-Java%E5%9F%BA%E7%A1%8015%E4%B9%8B%E6%93%8D%E4%BD%9COracle%E6%95%B0%E6%8D%AE%E5%BA%93.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础15之操作Oracle数据库</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong> 使用Java操作Oracle数据库、处理事务以及存储过程等</p> <p><strong>文件结构(java操作oracle数据库)</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_58.jpg" alt="文件结构" /></p> <p><strong>TestMyOracle/src/com.oracle/TestOra.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 演示如何使用Jdbc_obdb桥接方式操作oracle
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">oracle</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.oracle</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestOra</span> <span class="o">{</span>
     <span class="cm">/**
@@ -44,7 +44,7 @@
 </code></pre></div></div> <p><strong>TestMyOracle/src/com.oracle/TestOra2.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 使用jdbc连接oracle
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">oracle</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.oracle</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestOra2</span> <span class="o">{</span>
     <span class="cm">/**
@@ -87,7 +87,7 @@
 </code></pre></div></div> <p><strong>TestMyOracle/src/com.test1/TestTrans.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 测试事务的案例
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.Connection</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.DriverManager</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.ResultSet</span><span class="o">;</span>
@@ -164,7 +164,7 @@
  end;
  /
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test2</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test2</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestOraclePro</span>
 <span class="o">{</span>
@@ -231,7 +231,7 @@
  end;
  /
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test3</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test3</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test1</span>
 <span class="o">{</span>
@@ -288,7 +288,7 @@
  end;
  /
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test3</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test3</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test2</span>
 <span class="o">{</span>
@@ -349,7 +349,7 @@
  end;
  /
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test3</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test3</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test3</span>
 <span class="o">{</span>
@@ -419,7 +419,7 @@
  end;
  /
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test3</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test3</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test4</span>
 <span class="o">{</span>
@@ -516,7 +516,7 @@
  end;
  /
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test1</span>
 <span class="o">{</span>
@@ -595,9 +595,9 @@
     <span class="o">--&gt;</span>
 <span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
-<span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="n">oracle</span><span class="err">分页案例</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="n">oracle分页案例</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">table</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">用户名</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="err">薪水</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">用户名</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="n">薪水</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
     <span class="o">&lt;%</span>
         <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
         <span class="nc">Statement</span> <span class="n">sm</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>

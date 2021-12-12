@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-06-14-Java%E5%9F%BA%E7%A1%8009%E4%B9%8BJava%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9A%84%E5%BA%94%E7%94%A8.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础09之Java网络编程的应用</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java网络编程的应用，创建一个基于socket连接的客户端程序，可以连接服务器端，并接收与发送信息，分别实现半双工通信与全双工通信。</p> <h3 id="文件结构">文件结构</h3> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_28.jpg" alt="文件结构" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_29.jpg" alt="文件结构" /></p> <p><strong>Java网络编程_netTest1Client/com.test1/MyClient1.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 这是一个客户端程序，可以连接服务器端
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClient1</span> <span class="o">{</span>
@@ -37,7 +37,7 @@
  * 这是第一个服务器端程序，让它在9999端口监听
  * 可以接收从客户端发来的信息
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyServer1</span> <span class="o">{</span>
@@ -72,7 +72,7 @@
  * 半双工通信
  * 功能：客户端
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClient2</span> <span class="o">{</span>
@@ -122,7 +122,7 @@
  * 半双工通信
  * 功能：一个服务器端，在9999端口上监听
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>
@@ -179,7 +179,7 @@
  * 全双工通信
  * 客户
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.event.ActionEvent</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.event.ActionListener</span><span class="o">;</span>
@@ -247,7 +247,7 @@
  * 全双工通信
  * 服务器端
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.event.ActionEvent</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.event.ActionListener</span><span class="o">;</span>
@@ -320,7 +320,7 @@
 </code></pre></div></div> <p><strong>Java网络编程_netTestClient/com.test1/MyServer.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 功能：网络这间利用 对象流
  */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
@@ -352,7 +352,7 @@
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>Java网络编程_netTestClient/com.common/User.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">common</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>Java网络编程_netTestClient/com.common/User.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.common</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span><span class="o">{</span>
     <span class="c1">//将这个类实现序列化</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
@@ -371,7 +371,7 @@
     <span class="o">}</span>
 <span class="o">}</span>
 
-</code></pre></div></div> <p><strong>Java网络编程_netTestClient/com.test1/MyClient.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>Java网络编程_netTestClient/com.test1/MyClient.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.common.User</span><span class="o">;</span>
@@ -402,7 +402,7 @@
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>Java网络编程_netTestClient/com.common/User.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">common</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>Java网络编程_netTestClient/com.common/User.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.common</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span><span class="o">{</span>
     <span class="c1">//将这个类实现序列化</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>

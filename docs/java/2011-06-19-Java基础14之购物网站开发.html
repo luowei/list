@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-06-19-Java%E5%9F%BA%E7%A1%8014%E4%B9%8B%E8%B4%AD%E7%89%A9%E7%BD%91%E7%AB%99%E5%BC%80%E5%8F%91.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础14之购物网站开发</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong> 使用基础的Java Web技术开发购物网站。</p> <p><strong>文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_55.jpg" alt="文件结构" /></p> <p><strong>购物网开发过程</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>开发步骤：
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-06-19-Java%E5%9F%BA%E7%A1%8014%E4%B9%8B%E8%B4%AD%E7%89%A9%E7%BD%91%E7%AB%99%E5%BC%80%E5%8F%91.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础14之购物网站开发</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong> 使用基础的Java Web技术开发购物网站。</p> <p><strong>文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_55.jpg" alt="文件结构" /></p> <p><strong>购物网开发过程</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>开发步骤：
     1.界面(模仿)
     2.数据库(表的设计)[界面(功能)--&gt;猜出表？？？]
     3.建立web工程，ShoppingSite
@@ -196,7 +196,7 @@
     <span class="o">&lt;</span><span class="n">meta</span> <span class="n">http</span><span class="o">-</span><span class="n">equiv</span><span class="o">=</span><span class="s">"expires"</span> <span class="n">content</span><span class="o">=</span><span class="s">"0"</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">meta</span> <span class="n">http</span><span class="o">-</span><span class="n">equiv</span><span class="o">=</span><span class="s">"keywords"</span> <span class="n">content</span><span class="o">=</span><span class="s">"keyword1,keyword2,keyword3"</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">meta</span> <span class="n">http</span><span class="o">-</span><span class="n">equiv</span><span class="o">=</span><span class="s">"description"</span> <span class="n">content</span><span class="o">=</span><span class="s">"This is my page"</span><span class="o">&gt;</span>
-    <span class="o">&lt;!--</span> <span class="err">要引用</span><span class="n">css</span><span class="err">，之前这里的注释符号要去掉</span> <span class="o">--&gt;</span>
+    <span class="o">&lt;!--</span> <span class="n">要引用css</span><span class="err">，</span><span class="n">之前这里的注释符号要去掉</span> <span class="o">--&gt;</span>
     <span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s">"stylesheet"</span> <span class="n">type</span><span class="o">=</span><span class="s">"text/css"</span> <span class="n">href</span><span class="o">=</span><span class="s">"css/my.css"</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">body</span> <span class="n">topmargin</span><span class="o">=</span><span class="s">"0"</span> <span class="n">background</span><span class="o">=</span><span class="s">"img/bg.jpg"</span><span class="o">&gt;</span>
@@ -227,7 +227,7 @@
     String path = request.getContextPath();
     String basePath = request.getScheme()+"</span><span class="o">:</span><span class="c1">//"+request.getServerName()+":"+request.getServerPort()+path+"/";</span>
 <span class="o">%&gt;</span>
-<span class="o">&lt;!--</span> <span class="err">只把</span><span class="n">table</span><span class="err">引入即可</span> <span class="o">--&gt;</span>
+<span class="o">&lt;!--</span> <span class="n">只把table引入即可</span> <span class="o">--&gt;</span>
 <span class="o">&lt;</span><span class="n">table</span> <span class="n">width</span><span class="o">=</span><span class="s">"100%"</span> <span class="n">border</span><span class="o">=</span><span class="s">"0"</span> <span class="n">cellpadding</span><span class="o">=</span><span class="s">"1"</span> <span class="n">cellspacing</span><span class="o">=</span><span class="s">"1"</span> <span class="kd">class</span><span class="err">="</span><span class="nc">abc</span><span class="s">"&gt;
     &lt;tr&gt;
         &lt;td height="</span><span class="mi">10</span><span class="s">" colspan="</span><span class="mi">3</span><span class="s">" bgcolor="</span><span class="err">#</span><span class="no">FF9999</span><span class="s">"&gt;&lt;/td&gt;
@@ -288,7 +288,7 @@
         &lt;td align="</span><span class="n">center</span><span class="s">"&gt;邮编：417000 客服信箱：luowei505050@126.com&lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
-        &lt;td align="</span><span class="n">center</span><span class="err">"</span><span class="o">&gt;</span><span class="nc">Copyright</span> <span class="err">为为购物网</span> <span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+        &lt;td align="</span><span class="n">center</span><span class="err">"</span><span class="o">&gt;</span><span class="nc">Copyright</span> <span class="n">为为购物网</span> <span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
     <span class="o">&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
@@ -520,8 +520,8 @@
                     &lt;td height="</span><span class="mi">72</span><span class="s">" align="</span><span class="n">left</span><span class="s">" valign="</span><span class="n">top</span><span class="s">"&gt;简介：&lt;%=gb.getGoodsIntro() %&gt;&lt;/td&gt;
                 &lt;/tr&gt;
                 &lt;tr&gt;
-                    &lt;td height="</span><span class="mi">33</span><span class="s">" colspan="</span><span class="mi">2</span><span class="s">"&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit</span><span class="s">" onclick="</span><span class="n">addGoods</span><span class="o">(&lt;%=</span><span class="n">gb</span><span class="o">.</span><span class="na">getGoodsId</span><span class="o">()</span> <span class="o">%&gt;)</span><span class="s">" value="</span> <span class="err">购买</span> <span class="s">"&gt;
-                        &lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit2</span><span class="s">" onclick="</span><span class="n">returnHall</span><span class="o">()</span><span class="s">" value="</span><span class="err">返回购物大厅</span><span class="s">"&gt;&lt;/td&gt;
+                    &lt;td height="</span><span class="mi">33</span><span class="s">" colspan="</span><span class="mi">2</span><span class="s">"&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit</span><span class="s">" onclick="</span><span class="n">addGoods</span><span class="o">(&lt;%=</span><span class="n">gb</span><span class="o">.</span><span class="na">getGoodsId</span><span class="o">()</span> <span class="o">%&gt;)</span><span class="s">" value="</span> <span class="n">购买</span> <span class="s">"&gt;
+                        &lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit2</span><span class="s">" onclick="</span><span class="n">returnHall</span><span class="o">()</span><span class="s">" value="</span><span class="n">返回购物大厅</span><span class="s">"&gt;&lt;/td&gt;
                 &lt;/tr&gt;
                 &lt;tr&gt;
                     &lt;td height="</span><span class="mi">32</span><span class="s">" colspan="</span><span class="mi">2</span><span class="s">"&gt;&amp;nbsp;&lt;/td&gt;
@@ -599,7 +599,7 @@
                         &lt;td width="</span><span class="mi">25</span><span class="o">%</span><span class="s">"&gt;￥&lt;%=gb.getGoodsPrice() %&gt;&lt;/td&gt;
                         &lt;td width="</span><span class="mi">10</span><span class="o">%</span><span class="s">"&gt;
                             &lt;input type="</span><span class="n">hidden</span><span class="s">" name="</span><span class="n">goodsId</span><span class="s">" value="</span><span class="o">&lt;%=</span><span class="n">gb</span><span class="o">.</span><span class="na">getGoodsId</span><span class="o">()</span> <span class="o">%&gt;</span><span class="s">"/&gt;&lt;!-- 货物id --&gt;
-                            &lt;%//System.out.println("</span><span class="n">showMycart</span><span class="o">.</span><span class="na">jsp</span><span class="err">中得到</span><span class="n">goodsId</span><span class="o">=</span><span class="s">"+gb.getGoodsId()); %&gt;
+                            &lt;%//System.out.println("</span><span class="n">showMycart</span><span class="o">.</span><span class="na">jsp中得到goodsId</span><span class="o">=</span><span class="s">"+gb.getGoodsId()); %&gt;
                             &lt;input name="</span><span class="n">newNums</span><span class="s">" type="</span><span class="n">text</span><span class="s">" size="</span><span class="mi">8</span><span class="s">" value="</span><span class="o">&lt;%=</span><span class="n">mbo</span><span class="o">.</span><span class="na">getGoodsNumById</span><span class="o">(</span><span class="n">gb</span><span class="o">.</span><span class="na">getGoodsId</span><span class="o">()+</span><span class="s">""</span><span class="o">)</span> <span class="o">%&gt;</span><span class="s">"/&gt; &lt;!-- 货物数量 --&gt;
                         &lt;/td&gt;
                         &lt;td width="</span><span class="mi">10</span><span class="o">%</span><span class="s">"&gt;&lt;a href="</span><span class="nc">ShoppingClServlet</span><span class="o">?</span><span class="n">type</span><span class="o">=</span><span class="n">delGoods</span><span class="o">&amp;</span><span class="n">goodsId</span><span class="o">=&lt;%=</span><span class="n">gb</span><span class="o">.</span><span class="na">getGoodsId</span><span class="o">()</span> <span class="o">%&gt;</span><span class="s">"&gt;删除&lt;/a&gt;&lt;/td&gt;
@@ -610,8 +610,8 @@
                     %&gt;
                     &lt;tr align="</span><span class="n">center</span><span class="s">"&gt;
                         &lt;td width="</span><span class="mi">20</span><span class="o">%</span><span class="s">"&gt;&amp;nbsp;&lt;/td&gt;
-                        &lt;td width="</span><span class="mi">25</span><span class="o">%</span><span class="s">"&gt;&lt;input type="</span><span class="n">button</span><span class="s">" name="</span><span class="nc">Submit</span><span class="s">" onclick="</span><span class="n">delAll</span><span class="o">()</span><span class="s">" value="</span><span class="err">删除全部书籍</span><span class="s">"&gt;&lt;/td&gt;
-                        &lt;td width="</span><span class="mi">25</span><span class="o">%</span><span class="s">"&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit2</span><span class="s">" value="</span><span class="err">修</span> <span class="err">改</span> <span class="err">数</span> <span class="err">量</span><span class="s">"&gt;&lt;/td&gt;
+                        &lt;td width="</span><span class="mi">25</span><span class="o">%</span><span class="s">"&gt;&lt;input type="</span><span class="n">button</span><span class="s">" name="</span><span class="nc">Submit</span><span class="s">" onclick="</span><span class="n">delAll</span><span class="o">()</span><span class="s">" value="</span><span class="n">删除全部书籍</span><span class="s">"&gt;&lt;/td&gt;
+                        &lt;td width="</span><span class="mi">25</span><span class="o">%</span><span class="s">"&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit2</span><span class="s">" value="</span><span class="n">修</span> <span class="n">改</span> <span class="n">数</span> <span class="n">量</span><span class="s">"&gt;&lt;/td&gt;
                         &lt;td colspan="</span><span class="mi">3</span><span class="s">"&gt;&amp;nbsp;&lt;/td&gt;
                     &lt;/tr&gt;
                     &lt;tr&gt;
@@ -679,8 +679,8 @@
                                 &lt;td align="</span><span class="n">left</span><span class="s">"&gt;&lt;input name="</span><span class="n">passwd</span><span class="s">" type="</span><span class="n">text</span><span class="s">" size="</span><span class="mi">12</span><span class="s">" maxlength="</span><span class="mi">16</span><span class="s">"&gt;&lt;/td&gt;
                             &lt;/tr&gt;
                             &lt;tr align="</span><span class="n">center</span><span class="s">"&gt;
-                                &lt;td width="</span><span class="mi">45</span><span class="o">%</span><span class="s">"&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit</span><span class="s">" value="</span><span class="err">用户登录</span><span class="s">"&gt;&lt;/td&gt;
-                                &lt;td &gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit2</span><span class="s">" value="</span><span class="err">用户注册</span><span class="s">"&gt;&lt;/td&gt;
+                                &lt;td width="</span><span class="mi">45</span><span class="o">%</span><span class="s">"&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit</span><span class="s">" value="</span><span class="n">用户登录</span><span class="s">"&gt;&lt;/td&gt;
+                                &lt;td &gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit2</span><span class="s">" value="</span><span class="n">用户注册</span><span class="s">"&gt;&lt;/td&gt;
                             &lt;/tr&gt;
                         &lt;/table&gt;&lt;/form&gt;&lt;/td&gt;
             &lt;/tr&gt;
@@ -764,8 +764,8 @@
                         &lt;td align="</span><span class="n">left</span><span class="s">"&gt;&lt;input type="</span><span class="n">text</span><span class="s">" name="</span><span class="n">textfield22222</span><span class="s">" value="</span><span class="o">&lt;%=</span><span class="n">ub</span><span class="o">.</span><span class="na">getPostcode</span><span class="o">()</span> <span class="o">%&gt;</span><span class="s">"&gt;&lt;/td&gt;
                     &lt;/tr&gt;
                     &lt;tr&gt;
-                        &lt;td width="</span><span class="mi">50</span><span class="o">%</span><span class="s">" align="</span><span class="n">right</span><span class="s">"&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit</span><span class="s">" value="</span><span class="o">&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span><span class="err">完成订单</span><span class="o">&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span><span class="s">"&gt;&lt;/td&gt;
-                        &lt;td&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit2</span><span class="s">" value="</span><span class="err">修改个人信息</span><span class="s">"&gt;&lt;/td&gt;
+                        &lt;td width="</span><span class="mi">50</span><span class="o">%</span><span class="s">" align="</span><span class="n">right</span><span class="s">"&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit</span><span class="s">" value="</span><span class="o">&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span><span class="n">完成订单</span><span class="o">&amp;</span><span class="n">nbsp</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span><span class="s">"&gt;&lt;/td&gt;
+                        &lt;td&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit2</span><span class="s">" value="</span><span class="n">修改个人信息</span><span class="s">"&gt;&lt;/td&gt;
                     &lt;/tr&gt;
                 &lt;/table&gt; &lt;/td&gt;
             &lt;/tr&gt;
@@ -798,7 +798,7 @@
                         &lt;td colspan="</span><span class="mi">4</span><span class="s">"&gt;您选择了价值￥&lt;%=mcb.returnAllPrices() %&gt;元的商品。&lt;/td&gt;
                     &lt;/tr&gt;
                     &lt;tr align="</span><span class="n">center</span><span class="s">"&gt;
-                        &lt;td colspan="</span><span class="mi">4</span><span class="s">"&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit3</span><span class="s">" value="</span><span class="err">修改我的购物车</span><span class="s">"&gt;&lt;/td&gt;
+                        &lt;td colspan="</span><span class="mi">4</span><span class="s">"&gt;&lt;input type="</span><span class="n">submit</span><span class="s">" name="</span><span class="nc">Submit3</span><span class="s">" value="</span><span class="n">修改我的购物车</span><span class="s">"&gt;&lt;/td&gt;
                     &lt;/tr&gt;
                 &lt;/table&gt; &lt;/td&gt;
             &lt;/tr&gt;
@@ -891,7 +891,7 @@
 <span class="o">&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
-</code></pre></div></div> <p><strong>Controller_src/Shop.servlet/ShowGoodsClServlet.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">servlet</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>Controller_src/Shop.servlet/ShowGoodsClServlet.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">Shop.servlet</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.servlet.ServletException</span><span class="o">;</span>
@@ -955,7 +955,7 @@
         <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>Controller_src/Shop.servlet/ShoppingClServlet.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">servlet</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>Controller_src/Shop.servlet/ShoppingClServlet.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">Shop.servlet</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
@@ -1052,7 +1052,7 @@
         <span class="k">this</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>Controller_src/Shop.servlet/LoginCl.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">servlet</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>Controller_src/Shop.servlet/LoginCl.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">Shop.servlet</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
@@ -1119,7 +1119,7 @@
  * 这个控制器用于检测用户是否登录过，如果没有登录就进入登录界面
  * 如果登录过，就直接进入显示用户信息和购物车情况的页面
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">servlet</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.servlet</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
@@ -1181,7 +1181,7 @@
 </code></pre></div></div> <p><strong>Controller_src/Shop.servlet/OrderClServlet.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 处理订单
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">servlet</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.servlet</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.servlet.ServletException</span><span class="o">;</span>
@@ -1244,7 +1244,7 @@
  * 这是一个model类
  * 完成得到一个数据库连接
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.model</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConnDB</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">Connection</span> <span class="n">ct</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
@@ -1264,7 +1264,7 @@
 </code></pre></div></div> <p><strong>model_src/Shop.model/ GoodsBean.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 这是一个model类 &lt;----&gt;goods表
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.model</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GoodsBean</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getGoodsId</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">goodsId</span><span class="o">;</span>
@@ -1326,7 +1326,7 @@
 </code></pre></div></div> <p><strong>model_src/Shop.model/ GoodsBeanBO.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 这是一个model类，处理与goods表相关的业务逻辑
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.model</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GoodsBeanBO</span> <span class="o">{</span>
@@ -1460,7 +1460,7 @@
 </code></pre></div></div> <p><strong>model_src/Shop.model/Test.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * hashmap使用的简单案例
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.model</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="o">[]</span><span class="n">args</span><span class="o">)</span>
@@ -1487,7 +1487,7 @@
  * 这是一个BO（model）
  * 用于处理与购物相关的业务逻辑(可以把它看成是一个购物车)
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.model</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.Connection</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.PreparedStatement</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.ResultSet</span><span class="o">;</span>
@@ -1634,7 +1634,7 @@
 </code></pre></div></div> <p><strong>model_src/Shop.model/UserBean.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 对用户表的映射
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.model</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserBean</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getUserid</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">userid</span><span class="o">;</span>
@@ -1703,7 +1703,7 @@
 </code></pre></div></div> <p><strong>model_src/Shop.model/Test.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  *此model 处理与user表相关的业务逻辑
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.model</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.Connection</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.PreparedStatement</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.ResultSet</span><span class="o">;</span>
@@ -1803,7 +1803,7 @@
 </code></pre></div></div> <p><strong>model_src/Shop.model/OrderBean.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 对orders表的映射
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.model</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">OrderBean</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getOrdersId</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">ordersId</span><span class="o">;</span>
@@ -1851,7 +1851,7 @@
 </code></pre></div></div> <p><strong>model_src/Shop.model/OrderBeanBO.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 对Orders表及orderDetail表的业务逻辑
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.model</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.Connection</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.PreparedStatement</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.sql.ResultSet</span><span class="o">;</span>
@@ -1980,7 +1980,7 @@
 </code></pre></div></div> <p><strong>model_src/Shop.model/ OrderDetailBean.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 映射orderDetail表
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.model</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">OrderDetailBean</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getOrdersId</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">ordersId</span><span class="o">;</span>
@@ -2008,7 +2008,7 @@
  * 这是一个最全的javaBean
  * 显示订单详细信息时，要用它
  */</span>
-<span class="kn">package</span> <span class="nc">Shop</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">Shop.model</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">OrderInfoBean</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getUserid</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">userid</span><span class="o">;</span>

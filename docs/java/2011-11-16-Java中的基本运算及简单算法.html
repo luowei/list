@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-11-16-Java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97%E5%8F%8A%E7%AE%80%E5%8D%95%E7%AE%97%E6%B3%95.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java中的基本运算及简单算法</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java面向对象基础，日期处理、方法的重载和重写、类的属性和方法的访问控制、类与方法的修饰符、集合、反射、内部类、异常、GUI图形编程、多线程、求两个数的最大公约数与最大公倍数、常见的位运算等。</p> <h3 id="java面向对象基础">Java面向对象基础</h3> <p><strong>面向对象的思想：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>封装、继承、多态
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-11-16-Java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97%E5%8F%8A%E7%AE%80%E5%8D%95%E7%AE%97%E6%B3%95.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java中的基本运算及简单算法</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>主要内容有：</strong>Java面向对象基础，日期处理、方法的重载和重写、类的属性和方法的访问控制、类与方法的修饰符、集合、反射、内部类、异常、GUI图形编程、多线程、求两个数的最大公约数与最大公倍数、常见的位运算等。</p> <h3 id="java面向对象基础">Java面向对象基础</h3> <p><strong>面向对象的思想：</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>封装、继承、多态
 
 1.封装：隐藏对象的属性和方法 private
 2.继承：对象重用 减少代码冗余 extends，单继承 将父类的属性和方法 继承到子类中
@@ -11,7 +11,7 @@ protected：自己访问 子父类之间 相同包下
 无：自己访问 相同的包下
 
 单例模式：在整个虚拟机中只有一个类的实例
-</code></pre></div></div> <p><strong>专门处理日期</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java.util.Date 濒临灭绝
+</code></pre></div></div> <p><strong>专门处理日期</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java.util.Date 濒临灭绝
 java.util.Calendar 不能new
 //指向系统当前时间
 Calendar cal=Calendar.getInstance()
@@ -19,12 +19,12 @@ Calendar cal=Calendar.getInstance()
 cal.get(Calendar.YEAR);
 //获取月份
 cal.get(Calendar.MONTH);
-</code></pre></div></div> <p><strong>extends</strong> 后只能有一个父类：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>this 表示当前类的实例
+</code></pre></div></div> <p><strong>extends</strong> 后只能有一个父类：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>this 表示当前类的实例
 this.属性
 this.方法（参数）
 this（）；调用构造函数
 this（参数）：
-</code></pre></div></div> <p><strong>方法的重载和重写</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>重载：在一个类内有多个相同（名字上）的方法
+</code></pre></div></div> <p><strong>方法的重载和重写</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>重载：在一个类内有多个相同（名字上）的方法
 参数类型不同。参数个数不同。参数的顺序不同。
 返回值：返回值是否相同对重载不构成影响
 
@@ -33,7 +33,7 @@ Person{
     public void print(String message){}
     public void print(int level){}
 }
-</code></pre></div></div> <p><strong>构造函数也可以重载：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>重写：发生在子类 。重新定义父类中的方法。
+</code></pre></div></div> <p><strong>构造函数也可以重载：</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>重写：发生在子类 。重新定义父类中的方法。
 方法签名要跟父类相同
 方法签名：返回值+方法名+方法参数（个数，顺序，类型 都相同）
 super：访问父类中的属性和方法
@@ -41,24 +41,24 @@ super.父类属性
 super.父类方法（参数）
 super()//父类的构造器
 super（参数）//调用父类的重载构造器
-</code></pre></div></div> <p><strong>方法的参数传递</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.值传递：对于基本的参数类型 值拷贝（把外围的值拷贝到方法内供方法使用，对方法外的变量不构成影响）
+</code></pre></div></div> <p><strong>方法的参数传递</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.值传递：对于基本的参数类型 值拷贝（把外围的值拷贝到方法内供方法使用，对方法外的变量不构成影响）
 2.引用传递：地址值
-</code></pre></div></div> <p><strong>类的初始化：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>静态初始化代码段： static {}
+</code></pre></div></div> <p><strong>类的初始化：</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>静态初始化代码段： static {}
 实例初始化代码段: {}
-</code></pre></div></div> <p><strong>接口：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interface 来声明。只允许定义常量 （public static final String str="abc"）和 空方法（抽象方法,没有实现）
+</code></pre></div></div> <p><strong>接口：</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interface 来声明。只允许定义常量 （public static final String str="abc"）和 空方法（抽象方法,没有实现）
 
 public interface Test {
     public void test(String test);
 }
 
 接口的作用：用来描述规范，被其他的接口或者类 实现或者继承
-</code></pre></div></div> <p><strong>具体的类 实现（implements）</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>接口（一个或者多个，多个之间用"，"分割），必须实现接口内的所有方法
+</code></pre></div></div> <p><strong>具体的类 实现（implements）</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>接口（一个或者多个，多个之间用"，"分割），必须实现接口内的所有方法
 接口 继承(extends) 接口
 接口不能被实例化。接口在一定程度上弥补类java的单继承
-</code></pre></div></div> <p>抽象类：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>如果一个类没有完全的实现接口中的所有的方法，必须把没有实现的方法声明为抽象方法。。（abstract）
+</code></pre></div></div> <p>抽象类：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>如果一个类没有完全的实现接口中的所有的方法，必须把没有实现的方法声明为抽象方法。。（abstract）
 如果一个类中有一个抽象方法，那么该类必须被声明为抽象类（public abstract class）
 功能更普通类是一样，抽象类可以分担子类的一本分功能
-</code></pre></div></div> <p>方法 实例化 创建引用</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>实体类： 全部实现 可以 是
+</code></pre></div></div> <p>方法 实例化 创建引用</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>实体类： 全部实现 可以 是
 抽象类： 部分实现 不可以 是
 接口： 全部不实现      不可以 是
 
@@ -77,7 +77,7 @@ casting： 类型转换，引用或者类类型
 向下转换：要显示的强制类型转换
 上：father
 下：son
-</code></pre></div></div> <p><strong>例：员工管理：</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>对于员工：cr（retravel）ud
+</code></pre></div></div> <p><strong>例：员工管理：</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>对于员工：cr（retravel）ud
 DML insert
 DDL drop
 存放员工的数据结构-》queue
@@ -88,7 +88,7 @@ find（int id）；
 update 更新
 delete
 }
-</code></pre></div></div> <p><strong>Java中类的属性和方法的访问控制</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>类没有protected和private修饰符
+</code></pre></div></div> <p><strong>Java中类的属性和方法的访问控制</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>类没有protected和private修饰符
 被public 修饰的类，可以被其它包中的类访问
 没有被public 修饰的类，不能被其它包中的类访问
 同一包中，不能访问其它类的private 属性和方法
@@ -108,18 +108,18 @@ delete
 不同包中，无法访问父类的protected 属性和方法
 不同包中，可以访问父类的public 属性和方法
 可以看到，类中的默认的属性和方法为protected修饰的
-</code></pre></div></div> <p><strong>static</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.修饰属性：所有的类的实习共享同一个属性
+</code></pre></div></div> <p><strong>static</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.修饰属性：所有的类的实习共享同一个属性
 2.修饰方法：类名.方法名（调用方法）
 3.{};用来初始化类的static属性
 
 规则：
 static修饰的方法不能访问非static变量（成员变量）
 static修饰的方法不能访问非static方法（成员方法）
-</code></pre></div></div> <p><strong>Final修饰符</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>final：提高程序的健壮性
+</code></pre></div></div> <p><strong>Final修饰符</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>final：提高程序的健壮性
 1.修饰类 该类不能被继承 （java.long.String 不能有子类）
 2.修饰属性，改属性为常量 （程序运行期间值不能被改变的叫常量） 常量的赋值：在第一次被赋值之后，永远不能改变。常量的命名：全部大写 用下划线分隔 MAX_SIZE
 3.修饰方法 该方法不能被重写
-</code></pre></div></div> <p><strong>StringBuffer</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>StringBuffer 提高效率
+</code></pre></div></div> <p><strong>StringBuffer</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>StringBuffer 提高效率
 缓存：提高效率
 String : 做频繁的字符串连接操作，非常浪费系统空间
 String str="abc";
@@ -155,7 +155,7 @@ public boolean equals(Object obj){
 }
 
 代码覆盖率:测试用例是否可以覆盖（执行）所有代码
-</code></pre></div></div> <h3 id="java集合反射内部类异常">Java集合、反射、内部类、异常</h3> <p><strong>集合（collection）</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>管理若干个对象
+</code></pre></div></div> <h3 id="java集合反射内部类异常">Java集合、反射、内部类、异常</h3> <p><strong>集合（collection）</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>管理若干个对象
 List:管理重复对象
 1.Aarraylist：基于数组的实现
 2.LinkedList:基于链表的实现
@@ -165,7 +165,7 @@ Set：管理不可重复的对象
 2.TreeSet:排序（自定义规则）
 
 Map：做检索功能。键值对。key-&gt;value
-</code></pre></div></div> <p><strong>对集合进行遍历</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>迭代器：
+</code></pre></div></div> <p><strong>对集合进行遍历</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>迭代器：
 java.util.Iterator{
     boolean hasNext();//判断是否存在下一个元素
     Object nest();//取下一个元素
@@ -203,7 +203,7 @@ key value 可以是任何的object
 map遍历的两种方式：
 1.获取map中所有的key值 ：map.keySet();
 2.Map.Entry封装了key 和value
-</code></pre></div></div> <p><strong>反射：reflection</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>使用反射来处理class文件
+</code></pre></div></div> <p><strong>反射：reflection</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>使用反射来处理class文件
 java.lang.reflect.*;
 Class{//描述一个类
 Field//描述类中的属性
@@ -222,7 +222,7 @@ Constructor//描述类的构造函数
 3、类名.class Class clz=Person.class;
 4.类名.getSuperClass() Class clazz=p1.getSuperclass();
 5.primitive wraper classes的.TYPE语法,用于得到基本类类型：class clazz=Integer.TYPE;
-</code></pre></div></div> <p><strong>动态的创建类</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>不通过new来创建类的对象的实例：通过字符串形式命名，将类名迁移到配置文件中（通常是文本文件形式），根据横序的运行，动态的创建类得实例
+</code></pre></div></div> <p><strong>动态的创建类</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>不通过new来创建类的对象的实例：通过字符串形式命名，将类名迁移到配置文件中（通常是文本文件形式），根据横序的运行，动态的创建类得实例
 Constructor constructor =clz.getConstructor(String.class, boolean.class, int.class);
 Object obj=constructor.newInstance("briup-000",false,100);
 System.out.println("Constructor a new instance without new :" +obj);
@@ -238,7 +238,7 @@ System.out.println("Constructor a new instance without new :" +obj);
 局部内部类：
 类可以写在任意的地方
 
-</code></pre></div></div> <p><strong>异常(Exception)</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.异常
+</code></pre></div></div> <p><strong>异常(Exception)</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.异常
 异常：程序无法正常运行 程序当中的错误
 异常处理的机制：遇到异常代码，jvm寻找异常处理，如果找不到异常处理语句，则将该异常抛出至上层代码，如此反复，直至抛给虚拟机，终止程序运行
 
@@ -267,7 +267,7 @@ UersNotFoundException:找不到数据的用户
 if(user==null)
 throw new UserNotFoundException;
 throw new NullPointerException;
-</code></pre></div></div> <p><strong>断言</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>断言：在程序运行过程中进行debug
+</code></pre></div></div> <p><strong>断言</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>断言：在程序运行过程中进行debug
 偏向于测试
 assert 布尔表达式(返回false的时候抛出AssertionError)；
 assert 布尔表达式："断言信息"；
@@ -285,7 +285,7 @@ public class AssertTest{
 }
 
 判断程序运行的参数是否是"briup"，如果不是则抛出异常
-</code></pre></div></div> <p><strong>GUI 图形编程</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>容器：用来存放组件或者子容器
+</code></pre></div></div> <p><strong>GUI 图形编程</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>容器：用来存放组件或者子容器
 顶级容器：只能存放组件或者其它子容器（javax.swing.Jframe）
 子容器：可以被其他容器所包含 也可以包含其他组件或者容器（javax.swing.JPanel）
 组件：按钮。文本框。菜单 在javax.swing.*;包下
@@ -294,7 +294,7 @@ public class AssertTest{
 1.FlowLayout 流式布局 组件顺序拜访
 2.BorderLayout 边框布局 5个部分：south north west east center
 3.GridLayout 表格布局 以行和列的形式将组件组织在一起
-</code></pre></div></div> <p><strong>多线程</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java优点：跨平台 多线程
+</code></pre></div></div> <p><strong>多线程</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java优点：跨平台 多线程
 进程：在os运行一个程序 用来完成一个独立完整的任务 至少要有一个线程（主线程）
 线程：将一个完整的任务分解成若干的独立的小任务来完成 （本质）更多的抢占cpu的时间片，达到并怕执行的效果
 

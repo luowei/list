@@ -1,228 +1,228 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-10-RadASM%E7%BC%96%E5%86%99%E6%8B%BE%E8%89%B2%E5%99%A8.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-使用RadASM编写拾色器</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p>code格式化highlight输出参考：<a href="http://tinker.kotaweaver.com/blog/?p=152">http://tinker.kotaweaver.com/blog/?p=152</a></p> <p>配置RadASM编译器，选masm,在RadASM中新建-&gt; Win32 App –&gt;DialogAsMain.tpl ，取名Dlg_Test,再打开 Dlg_Test.dlg中编辑资源，如下图：</p> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/c/asm/05.jpg" alt="asm" /></p> <p>对话框控件属性设置：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Name :IDD_DIALOG ; 
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-10-RadASM%E7%BC%96%E5%86%99%E6%8B%BE%E8%89%B2%E5%99%A8.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-使用RadASM编写拾色器</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p>code格式化highlight输出参考：<a href="http://tinker.kotaweaver.com/blog/?p=152">http://tinker.kotaweaver.com/blog/?p=152</a></p> <p>配置RadASM编译器，选masm,在RadASM中新建-&gt; Win32 App –&gt;DialogAsMain.tpl ，取名Dlg_Test,再打开 Dlg_Test.dlg中编辑资源，如下图：</p> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/c/asm/05.jpg" alt="asm" /></p> <p>对话框控件属性设置：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Name :IDD_DIALOG ; 
 Caption:拾色器 ; 
 MaxButton:False ; 
 SizeBorder:False ; 
 TopMost:True ;  
-</code></pre></div></div> <p>打开project -&gt; Resourcee添加一个图标资源，取名IDI_APP_MAIN。<br /> 在Dlg_Test.Rc中编辑，添加图标：</p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="n">define</span>    <span class="n">IDI_WIN_MAIN</span>    <span class="mi">100</span>
-<span class="n">IDI_WIN_MAIN</span>    <span class="n">ICON</span>    <span class="s">"Res/main2.ico"</span>
-<span class="err">#</span><span class="n">include</span> <span class="s">"Res/Dlg_TestMnu.rc"</span>
-<span class="err">#</span><span class="n">include</span> <span class="s">"Res/Dlg_TestRes.rc"</span>
-<span class="err">#</span><span class="n">include</span> <span class="s">"Res/Dlg_TestDlg.rc"</span>
-</code></pre></div></div> <p><strong>头文件：Dlg_Test.inc</strong></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">include</span> <span class="n">windows</span><span class="p">.</span><span class="k">inc</span>
-<span class="n">include</span> <span class="n">user32</span><span class="p">.</span><span class="k">inc</span>
-<span class="n">include</span> <span class="n">kernel32</span><span class="p">.</span><span class="k">inc</span>
-<span class="n">include</span> <span class="n">shell32</span><span class="p">.</span><span class="k">inc</span>
-<span class="n">include</span> <span class="n">comctl32</span><span class="p">.</span><span class="k">inc</span>
-<span class="n">include</span> <span class="n">comdlg32</span><span class="p">.</span><span class="k">inc</span>
-<span class="n">include</span> <span class="n">gdi32</span><span class="p">.</span><span class="k">inc</span>
+</code></pre></div></div> <p>打开project -&gt; Resourcee添加一个图标资源，取名IDI_APP_MAIN。<br /> 在Dlg_Test.Rc中编辑，添加图标：</p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="nf">define</span>    <span class="nv">IDI_WIN_MAIN</span>    <span class="mi">100</span>
+<span class="nf">IDI_WIN_MAIN</span>    <span class="nv">ICON</span>    <span class="err">"</span><span class="nv">Res</span><span class="o">/</span><span class="nv">main2.ico</span><span class="err">"</span>
+<span class="err">#</span><span class="nf">include</span> <span class="err">"</span><span class="nv">Res</span><span class="o">/</span><span class="nb">Dl</span><span class="nv">g_TestMnu.rc</span><span class="err">"</span>
+<span class="err">#</span><span class="nf">include</span> <span class="s">"Res/Dlg_TestRes.rc"</span>
+<span class="err">#</span><span class="nf">include</span> <span class="s">"Res/Dlg_TestDlg.rc"</span>
+</code></pre></div></div> <p><strong>头文件：Dlg_Test.inc</strong></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">include</span> <span class="nv">windows.inc</span>
+<span class="nf">include</span> <span class="nv">user32.inc</span>
+<span class="nf">include</span> <span class="nv">kernel32.inc</span>
+<span class="nf">include</span> <span class="nv">shell32.inc</span>
+<span class="nf">include</span> <span class="nv">comctl32.inc</span>
+<span class="nf">include</span> <span class="nv">comdlg32.inc</span>
+<span class="nf">include</span> <span class="nv">gdi32.inc</span>
 
-<span class="n">includelib</span> <span class="n">user32</span><span class="p">.</span><span class="n">lib</span>
-<span class="n">includelib</span> <span class="n">kernel32</span><span class="p">.</span><span class="n">lib</span>
-<span class="n">includelib</span> <span class="n">shell32</span><span class="p">.</span><span class="n">lib</span>
-<span class="n">includelib</span> <span class="n">comctl32</span><span class="p">.</span><span class="n">lib</span>
-<span class="n">includelib</span> <span class="n">comdlg32</span><span class="p">.</span><span class="n">lib</span>
-<span class="n">includelib</span> <span class="n">gdi32</span><span class="p">.</span><span class="n">lib</span>
+<span class="nf">includelib</span> <span class="nv">user32.lib</span>
+<span class="nf">includelib</span> <span class="nv">kernel32.lib</span>
+<span class="nf">includelib</span> <span class="nv">shell32.lib</span>
+<span class="nf">includelib</span> <span class="nv">comctl32.lib</span>
+<span class="nf">includelib</span> <span class="nv">comdlg32.lib</span>
+<span class="nf">includelib</span> <span class="nv">gdi32.lib</span>
 
-<span class="n">WinMain</span>                <span class="n">PROTO</span> <span class="o">:</span><span class="n">DWORD</span><span class="p">,</span><span class="o">:</span><span class="n">DWORD</span><span class="p">,</span><span class="o">:</span><span class="n">DWORD</span><span class="p">,</span><span class="o">:</span><span class="n">DWORD</span>
-<span class="n">WndProc</span>                <span class="n">PROTO</span> <span class="o">:</span><span class="n">DWORD</span><span class="p">,</span><span class="o">:</span><span class="n">DWORD</span><span class="p">,</span><span class="o">:</span><span class="n">DWORD</span><span class="p">,</span><span class="o">:</span><span class="n">DWORD</span>
+<span class="nf">WinMain</span>                <span class="nv">PROTO</span> <span class="p">:</span><span class="kt">DWORD</span><span class="p">,:</span><span class="kt">DWORD</span><span class="p">,:</span><span class="kt">DWORD</span><span class="p">,:</span><span class="kt">DWORD</span>
+<span class="nf">WndProc</span>                <span class="nv">PROTO</span> <span class="p">:</span><span class="kt">DWORD</span><span class="p">,:</span><span class="kt">DWORD</span><span class="p">,:</span><span class="kt">DWORD</span><span class="p">,:</span><span class="kt">DWORD</span>
 
-<span class="n">IDD_DIALOG</span>            <span class="k">equ</span> <span class="mi">1000</span>
-<span class="n">IDM_MENU</span>            <span class="k">equ</span> <span class="mi">10000</span>
-<span class="n">IDM_FILE_EXIT</span>        <span class="k">equ</span> <span class="mi">10001</span>
-<span class="n">IDM_HELP_ABOUT</span>        <span class="k">equ</span> <span class="mi">10101</span>
-<span class="n">IDI_APP_MAIN</span>        <span class="k">EQU</span> <span class="mi">0</span>
-<span class="n">IDI_WIN_MAIN</span>        <span class="k">EQU</span> <span class="mi">100</span>
-<span class="n">IDC_IMG_SHOWPIC</span>                    <span class="k">equ</span> <span class="mi">1001</span>
-<span class="n">IDC_STC_POS_X</span>                    <span class="k">equ</span> <span class="mi">1002</span>
-<span class="n">IDC_STC_POS_Y</span>                    <span class="k">equ</span> <span class="mi">1003</span>
-<span class="n">IDC_EDT_POS_X</span>                    <span class="k">equ</span> <span class="mi">1004</span>
-<span class="n">IDC_EDT_POS_Y</span>                    <span class="k">equ</span> <span class="mi">1005</span>
-<span class="n">IDC_IMG_COLOR</span>                    <span class="k">equ</span> <span class="mi">1006</span>
-<span class="n">IDC_EDT_RED</span>                        <span class="k">equ</span> <span class="mi">1010</span>
-<span class="n">IDC_EDT_GREEN</span>                    <span class="k">equ</span> <span class="mi">1011</span>
-<span class="n">IDC_EDT_BLUE</span>                    <span class="k">equ</span> <span class="mi">1012</span>
+<span class="no">IDD_DIALOG</span><span class="kd">            equ</span> <span class="mi">1000</span>
+<span class="no">IDM_MENU</span><span class="kd">            equ</span> <span class="mi">10000</span>
+<span class="no">IDM_FILE_EXIT</span><span class="kd">        equ</span> <span class="mi">10001</span>
+<span class="no">IDM_HELP_ABOUT</span><span class="kd">        equ</span> <span class="mi">10101</span>
+<span class="no">IDI_APP_MAIN</span><span class="kd">        EQU</span> <span class="mi">0</span>
+<span class="no">IDI_WIN_MAIN</span><span class="kd">        EQU</span> <span class="mi">100</span>
+<span class="no">IDC_IMG_SHOWPIC</span><span class="kd">                    equ</span> <span class="mi">1001</span>
+<span class="no">IDC_STC_POS_X</span><span class="kd">                    equ</span> <span class="mi">1002</span>
+<span class="no">IDC_STC_POS_Y</span><span class="kd">                    equ</span> <span class="mi">1003</span>
+<span class="no">IDC_EDT_POS_X</span><span class="kd">                    equ</span> <span class="mi">1004</span>
+<span class="no">IDC_EDT_POS_Y</span><span class="kd">                    equ</span> <span class="mi">1005</span>
+<span class="no">IDC_IMG_COLOR</span><span class="kd">                    equ</span> <span class="mi">1006</span>
+<span class="no">IDC_EDT_RED</span><span class="kd">                        equ</span> <span class="mi">1010</span>
+<span class="no">IDC_EDT_GREEN</span><span class="kd">                    equ</span> <span class="mi">1011</span>
+<span class="no">IDC_EDT_BLUE</span><span class="kd">                    equ</span> <span class="mi">1012</span>
 
-<span class="p">.</span><span class="n">const</span>
-<span class="n">ClassName</span>            <span class="kt">db</span> <span class="err">'</span><span class="n">DLGCLASS</span><span class="err">'</span><span class="p">,</span><span class="mi">0</span>
-<span class="n">AppName</span>                <span class="kt">db</span> <span class="err">'</span><span class="n">Dialog</span> <span class="n">as</span> <span class="n">main</span><span class="err">'</span><span class="p">,</span><span class="mi">0</span>
-<span class="n">AboutMsg</span>            <span class="kt">db</span> <span class="err">'</span><span class="n">MASM32</span> <span class="n">RadASM</span> <span class="n">Dialog</span> <span class="n">as</span> <span class="n">main</span><span class="err">'</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="err">'</span><span class="n">Copyright</span> <span class="o">?</span><span class="n">MASM32</span> <span class="mi">2001</span><span class="err">'</span><span class="p">,</span><span class="mi">0</span>
+<span class="nf">.const</span>
+<span class="nf">ClassName</span>            <span class="nv">db</span> <span class="s">'DLGCLASS'</span><span class="p">,</span><span class="mi">0</span>
+<span class="nf">AppName</span>                <span class="nv">db</span> <span class="err">'</span><span class="nb">Dial</span><span class="nv">og</span> <span class="nv">as</span> <span class="nv">main</span><span class="s">',0
+AboutMsg            db '</span><span class="nv">MASM32</span> <span class="nv">RadASM</span> <span class="nb">Dial</span><span class="nv">og</span> <span class="nv">as</span> <span class="nv">main</span><span class="s">',13,10,'</span><span class="nv">Copyright</span> <span class="nv">?MASM32</span> <span class="mi">2001</span><span class="err">'</span><span class="p">,</span><span class="mi">0</span>
 
-<span class="p">.</span><span class="n">data</span><span class="o">?</span>
-<span class="n">hInstance</span>            <span class="kt">dd</span> <span class="o">?</span>
-<span class="n">CommandLine</span>            <span class="kt">dd</span> <span class="o">?</span>
-<span class="n">hWnd</span>                <span class="kt">dd</span> <span class="o">?</span>
-</code></pre></div></div> <p><strong>源文件：Dlg_Test.asm</strong></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">.</span><span class="mi">386</span>
-<span class="p">.</span><span class="n">model</span> <span class="n">flat</span><span class="p">,</span><span class="n">stdcall</span>
-<span class="n">option</span> <span class="n">casemap</span><span class="o">:</span><span class="n">none</span>
+<span class="nf">.data?</span>
+<span class="nf">hInstance</span>            <span class="nv">dd</span> <span class="nv">?</span>
+<span class="nf">CommandLine</span>            <span class="nv">dd</span> <span class="nv">?</span>
+<span class="nf">hWnd</span>                <span class="nv">dd</span> <span class="nv">?</span>
+</code></pre></div></div> <p><strong>源文件：Dlg_Test.asm</strong></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">.386</span>
+<span class="nf">.model</span> <span class="nv">flat</span><span class="p">,</span><span class="nv">stdcall</span>
+<span class="nf">option</span> <span class="nv">casemap</span><span class="p">:</span><span class="nv">none</span>
 
-<span class="n">include</span> <span class="n">Dlg_Test</span><span class="p">.</span><span class="k">inc</span>
+<span class="nf">include</span> <span class="nb">Dl</span><span class="nv">g_Test.inc</span>
 
-<span class="p">.</span><span class="n">code</span>
-<span class="n">start</span><span class="o">:</span>
-    <span class="n">invoke</span> <span class="n">GetModuleHandle</span><span class="p">,</span><span class="n">NULL</span>
-    <span class="k">mov</span> <span class="n">hInstance</span><span class="p">,</span><span class="n">eax</span>
-    <span class="n">invoke</span> <span class="n">GetCommandLine</span>
-    <span class="n">invoke</span> <span class="n">InitCommonControls</span>
-    <span class="k">mov</span>        <span class="n">CommandLine</span><span class="p">,</span><span class="n">eax</span>
-    <span class="n">invoke</span> <span class="n">WinMain</span><span class="p">,</span><span class="n">hInstance</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="n">CommandLine</span><span class="p">,</span><span class="n">SW_SHOWDEFAULT</span>
-    <span class="n">invoke</span> <span class="n">ExitProcess</span><span class="p">,</span><span class="n">eax</span>
+<span class="nf">.code</span>
+<span class="nl">start:</span>
+    <span class="nf">invoke</span> <span class="nv">GetModuleHandle</span><span class="p">,</span><span class="nv">NULL</span>
+    <span class="nf">mov</span> <span class="nv">hInstance</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">invoke</span> <span class="nv">GetCommandLine</span>
+    <span class="nf">invoke</span> <span class="nv">InitCommonControls</span>
+    <span class="nf">mov</span>        <span class="nv">CommandLine</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">invoke</span> <span class="nv">WinMain</span><span class="p">,</span><span class="nv">hInstance</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">CommandLine</span><span class="p">,</span><span class="nv">SW_SHOWDEFAULT</span>
+    <span class="nf">invoke</span> <span class="nv">ExitProcess</span><span class="p">,</span><span class="nb">eax</span>
 
-<span class="n">WinMain</span> <span class="n">proc</span> <span class="n">hInst</span><span class="o">:</span><span class="n">HINSTANCE</span><span class="p">,</span><span class="n">hPrevInst</span><span class="o">:</span><span class="n">HINSTANCE</span><span class="p">,</span><span class="n">CmdLine</span><span class="o">:</span><span class="n">LPSTR</span><span class="p">,</span><span class="n">CmdShow</span><span class="o">:</span><span class="n">DWORD</span>
-    <span class="n">LOCAL</span>    <span class="n">wc</span><span class="o">:</span><span class="n">WNDCLASSEX</span>
-    <span class="n">LOCAL</span>    <span class="n">msg</span><span class="o">:</span><span class="n">MSG</span>
-    <span class="k">mov</span>        <span class="n">wc</span><span class="p">.</span><span class="n">cbSize</span><span class="p">,</span><span class="n">sizeof</span> <span class="n">WNDCLASSEX</span>
-    <span class="k">mov</span>        <span class="n">wc</span><span class="p">.</span><span class="n">style</span><span class="p">,</span><span class="n">CS_HREDRAW</span> <span class="k">or</span> <span class="n">CS_VREDRAW</span>
-    <span class="k">mov</span>        <span class="n">wc</span><span class="p">.</span><span class="n">lpfnWndProc</span><span class="p">,</span><span class="n">offset</span> <span class="n">WndProc</span>
-    <span class="k">mov</span>        <span class="n">wc</span><span class="p">.</span><span class="n">cbClsExtra</span><span class="p">,</span><span class="n">NULL</span>
-    <span class="k">mov</span>        <span class="n">wc</span><span class="p">.</span><span class="n">cbWndExtra</span><span class="p">,</span><span class="n">DLGWINDOWEXTRA</span>
-    <span class="k">push</span>    <span class="n">hInst</span>
-    <span class="k">pop</span>        <span class="n">wc</span><span class="p">.</span><span class="n">hInstance</span>
-    <span class="k">mov</span>        <span class="n">wc</span><span class="p">.</span><span class="n">hbrBackground</span><span class="p">,</span><span class="n">COLOR_BTNFACE</span><span class="o">+</span><span class="mi">1</span>
-    <span class="k">mov</span>        <span class="n">wc</span><span class="p">.</span><span class="n">lpszMenuName</span><span class="p">,</span><span class="n">IDM_MENU</span>
-    <span class="k">mov</span>        <span class="n">wc</span><span class="p">.</span><span class="n">lpszClassName</span><span class="p">,</span><span class="n">offset</span> <span class="n">ClassName</span>
-    <span class="n">invoke</span> <span class="n">LoadIcon</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="n">IDI_APPLICATION</span>
-    <span class="k">mov</span>        <span class="n">wc</span><span class="p">.</span><span class="n">hIcon</span><span class="p">,</span><span class="n">eax</span>
-    <span class="k">mov</span>        <span class="n">wc</span><span class="p">.</span><span class="n">hIconSm</span><span class="p">,</span><span class="n">eax</span>
-    <span class="n">invoke</span> <span class="n">LoadCursor</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="n">IDC_ARROW</span>
-    <span class="k">mov</span>        <span class="n">wc</span><span class="p">.</span><span class="n">hCursor</span><span class="p">,</span><span class="n">eax</span>
-    <span class="n">invoke</span> <span class="n">RegisterClassEx</span><span class="p">,</span><span class="n">addr</span> <span class="n">wc</span>
-    <span class="n">invoke</span> <span class="n">CreateDialogParam</span><span class="p">,</span><span class="n">hInstance</span><span class="p">,</span><span class="n">IDD_DIALOG</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="n">addr</span> <span class="n">WndProc</span><span class="p">,</span><span class="n">NULL</span>
-    <span class="n">invoke</span> <span class="n">ShowWindow</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">SW_SHOWNORMAL</span>
-    <span class="n">invoke</span> <span class="n">UpdateWindow</span><span class="p">,</span><span class="n">hWnd</span>
-    <span class="p">.</span><span class="n">while</span> <span class="n">TRUE</span>
-        <span class="n">invoke</span> <span class="n">GetMessage</span><span class="p">,</span><span class="n">addr</span> <span class="n">msg</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-     <span class="p">.</span><span class="n">BREAK</span> <span class="p">.</span><span class="n">if</span> <span class="err">!</span><span class="n">eax</span>
-        <span class="n">invoke</span> <span class="n">TranslateMessage</span><span class="p">,</span><span class="n">addr</span> <span class="n">msg</span>
-        <span class="n">invoke</span> <span class="n">DispatchMessage</span><span class="p">,</span><span class="n">addr</span> <span class="n">msg</span>
-    <span class="p">.</span><span class="n">endw</span>
-    <span class="k">mov</span>        <span class="n">eax</span><span class="p">,</span><span class="n">msg</span><span class="p">.</span><span class="n">wParam</span>
-    <span class="k">ret</span>
-<span class="n">WinMain</span> <span class="n">endp</span>
+<span class="nf">WinMain</span> <span class="nv">proc</span> <span class="nv">hInst</span><span class="p">:</span><span class="nv">HINSTANCE</span><span class="p">,</span><span class="nv">hPrevInst</span><span class="p">:</span><span class="nv">HINSTANCE</span><span class="p">,</span><span class="nv">CmdLine</span><span class="p">:</span><span class="nv">LPSTR</span><span class="p">,</span><span class="nv">CmdShow</span><span class="p">:</span><span class="kt">DWORD</span>
+    <span class="nf">LOCAL</span>    <span class="nv">wc</span><span class="p">:</span><span class="nv">WNDCLASSEX</span>
+    <span class="nf">LOCAL</span>    <span class="nv">msg</span><span class="p">:</span><span class="nv">MSG</span>
+    <span class="nf">mov</span>        <span class="nv">wc.cbSize</span><span class="p">,</span><span class="nb">si</span><span class="nv">zeof</span> <span class="nv">WNDCLASSEX</span>
+    <span class="nf">mov</span>        <span class="nv">wc.style</span><span class="p">,</span><span class="nb">CS</span><span class="nv">_HREDRAW</span> <span class="nv">or</span> <span class="nb">CS</span><span class="nv">_VREDRAW</span>
+    <span class="nf">mov</span>        <span class="nv">wc.lpfnWndProc</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">WndProc</span>
+    <span class="nf">mov</span>        <span class="nv">wc.cbClsExtra</span><span class="p">,</span><span class="nv">NULL</span>
+    <span class="nf">mov</span>        <span class="nv">wc.cbWndExtra</span><span class="p">,</span><span class="nb">DL</span><span class="nv">GWINDOWEXTRA</span>
+    <span class="nf">push</span>    <span class="nv">hInst</span>
+    <span class="nf">pop</span>        <span class="nv">wc.hInstance</span>
+    <span class="nf">mov</span>        <span class="nv">wc.hbrBackground</span><span class="p">,</span><span class="nv">COLOR_BTNFACE</span><span class="o">+</span><span class="mi">1</span>
+    <span class="nf">mov</span>        <span class="nv">wc.lpszMenuName</span><span class="p">,</span><span class="nv">IDM_MENU</span>
+    <span class="nf">mov</span>        <span class="nv">wc.lpszClassName</span><span class="p">,</span><span class="nv">offset</span> <span class="nb">Cl</span><span class="nv">assName</span>
+    <span class="nf">invoke</span> <span class="nv">LoadIcon</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">IDI_APPLICATION</span>
+    <span class="nf">mov</span>        <span class="nv">wc.hIcon</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">mov</span>        <span class="nv">wc.hIconSm</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">invoke</span> <span class="nv">LoadCursor</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">IDC_ARROW</span>
+    <span class="nf">mov</span>        <span class="nv">wc.hCursor</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">invoke</span> <span class="nv">RegisterClassEx</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">wc</span>
+    <span class="nf">invoke</span> <span class="nv">CreateDialogParam</span><span class="p">,</span><span class="nv">hInstance</span><span class="p">,</span><span class="nv">IDD_DIALOG</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">WndProc</span><span class="p">,</span><span class="nv">NULL</span>
+    <span class="nf">invoke</span> <span class="nv">ShowWindow</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">SW_SHOWNORMAL</span>
+    <span class="nf">invoke</span> <span class="nv">UpdateWindow</span><span class="p">,</span><span class="nv">hWnd</span>
+    <span class="nf">.while</span> <span class="nv">TRUE</span>
+        <span class="nf">invoke</span> <span class="nv">GetMessage</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">msg</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+     <span class="nf">.BREAK</span> <span class="nv">.if</span> <span class="err">!</span><span class="nb">eax</span>
+        <span class="nf">invoke</span> <span class="nv">TranslateMessage</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">msg</span>
+        <span class="nf">invoke</span> <span class="nb">Disp</span><span class="nv">atchMessage</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">msg</span>
+    <span class="nf">.endw</span>
+    <span class="nf">mov</span>        <span class="nb">eax</span><span class="p">,</span><span class="nv">msg.wParam</span>
+    <span class="nf">ret</span>
+<span class="nf">WinMain</span> <span class="nv">endp</span>
 
-<span class="n">WndProc</span> <span class="n">proc</span> <span class="n">hWin</span><span class="o">:</span><span class="n">HWND</span><span class="p">,</span><span class="n">uMsg</span><span class="o">:</span><span class="n">UINT</span><span class="p">,</span><span class="n">wParam</span><span class="o">:</span><span class="n">WPARAM</span><span class="p">,</span><span class="n">lParam</span><span class="o">:</span><span class="n">LPARAM</span>
-    <span class="c">;保存光标的坐标值</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">stPoint</span><span class="o">:</span><span class="n">POINT</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">hDcShowPic</span><span class="o">:</span><span class="n">HDC</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">hDcScreen</span><span class="o">:</span><span class="n">HDC</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">hDcShowColor</span><span class="o">:</span><span class="n">HDC</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">dwDx</span><span class="o">:</span><span class="n">DWORD</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">dwDy</span><span class="o">:</span><span class="n">DWORD</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">colorRect</span><span class="o">:</span><span class="n">RECT</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">hColorWin</span><span class="o">:</span><span class="n">HWND</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">dwColor</span><span class="o">:</span><span class="n">DWORD</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">hBrush</span><span class="o">:</span><span class="n">HBRUSH</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">hBrushOld</span><span class="o">:</span><span class="n">HBRUSH</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">colorRed</span><span class="o">:</span><span class="n">byte</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">colorGreen</span><span class="o">:</span><span class="n">byte</span>
-    <span class="n">LOCAL</span> <span class="err">@</span><span class="n">colorBlue</span><span class="o">:</span><span class="n">byte</span>
-    <span class="k">mov</span>        <span class="n">eax</span><span class="p">,</span><span class="n">uMsg</span>
+<span class="nf">WndProc</span> <span class="nv">proc</span> <span class="nv">hWin</span><span class="p">:</span><span class="nv">HWND</span><span class="p">,</span><span class="nv">uMsg</span><span class="p">:</span><span class="nv">UINT</span><span class="p">,</span><span class="nv">wParam</span><span class="p">:</span><span class="nv">WPARAM</span><span class="p">,</span><span class="nv">lParam</span><span class="p">:</span><span class="nv">LPARAM</span>
+    <span class="c1">;保存光标的坐标值</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">stPoint</span><span class="p">:</span><span class="nv">POINT</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">hDcShowPic</span><span class="p">:</span><span class="nv">HDC</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">hDcScreen</span><span class="p">:</span><span class="nv">HDC</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">hDcShowColor</span><span class="p">:</span><span class="nv">HDC</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">dwDx</span><span class="p">:</span><span class="kt">DWORD</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">dwDy</span><span class="p">:</span><span class="kt">DWORD</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">colorRect</span><span class="p">:</span><span class="nv">RECT</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">hColorWin</span><span class="p">:</span><span class="nv">HWND</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">dwColor</span><span class="p">:</span><span class="kt">DWORD</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">hBrush</span><span class="p">:</span><span class="nv">HBRUSH</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">hBrushOld</span><span class="p">:</span><span class="nv">HBRUSH</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">colorRed</span><span class="p">:</span><span class="kt">byte</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">colorGreen</span><span class="p">:</span><span class="kt">byte</span>
+    <span class="nf">LOCAL</span> <span class="err">@</span><span class="nv">colorBlue</span><span class="p">:</span><span class="kt">byte</span>
+    <span class="nf">mov</span>        <span class="nb">eax</span><span class="p">,</span><span class="nv">uMsg</span>
 
-    <span class="p">.</span><span class="n">if</span> <span class="n">eax</span><span class="o">==</span><span class="n">WM_INITDIALOG</span>
-        <span class="c">;保存对话框的窗口句柄</span>
-        <span class="k">push</span>    <span class="n">hWin</span>
-        <span class="k">pop</span>        <span class="n">hWnd</span>
-        <span class="c">;设置主窗口的图标</span>
-        <span class="n">invoke</span> <span class="n">LoadIcon</span><span class="p">,</span><span class="n">hInstance</span><span class="p">,</span><span class="n">IDI_WIN_MAIN</span>
-        <span class="n">invoke</span> <span class="n">SendMessage</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">WM_SETICON</span><span class="p">,</span><span class="n">ICON_BIG</span><span class="p">,</span><span class="n">eax</span>
-        <span class="c">;使得窗口总在最前显示</span>
-        <span class="n">invoke</span> <span class="n">SetWindowPos</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">HWND_TOPMOST</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">SWP_NOMOVE</span> <span class="k">or</span> <span class="n">SWP_NOSIZE</span>
-        <span class="c">;设置定时器</span>
-        <span class="n">invoke</span> <span class="n">SetTimer</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">NULL</span>
+    <span class="nf">.if</span> <span class="nb">eax</span><span class="err">==</span><span class="nv">WM_INITDIALOG</span>
+        <span class="c1">;保存对话框的窗口句柄</span>
+        <span class="nf">push</span>    <span class="nv">hWin</span>
+        <span class="nf">pop</span>        <span class="nv">hWnd</span>
+        <span class="c1">;设置主窗口的图标</span>
+        <span class="nf">invoke</span> <span class="nv">LoadIcon</span><span class="p">,</span><span class="nv">hInstance</span><span class="p">,</span><span class="nv">IDI_WIN_MAIN</span>
+        <span class="nf">invoke</span> <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">WM_SETICON</span><span class="p">,</span><span class="nv">ICON_BIG</span><span class="p">,</span><span class="nb">eax</span>
+        <span class="c1">;使得窗口总在最前显示</span>
+        <span class="nf">invoke</span> <span class="nv">SetWindowPos</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">HWND_TOPMOST</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nv">SWP_NOMOVE</span> <span class="nv">or</span> <span class="nv">SWP_NOSIZE</span>
+        <span class="c1">;设置定时器</span>
+        <span class="nf">invoke</span> <span class="nv">SetTimer</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="nv">NULL</span>
 
-    <span class="p">.</span><span class="n">elseif</span> <span class="n">eax</span>    <span class="o">==</span> <span class="n">WM_TIMER</span>
-        <span class="c">;响应定时器的消息</span>
-        <span class="c">;获取当前光标的坐标值</span>
-        <span class="n">invoke</span> <span class="n">GetCursorPos</span><span class="p">,</span><span class="n">addr</span> <span class="err">@</span><span class="n">stPoint</span>
+    <span class="nf">.elseif</span> <span class="nb">eax</span>    <span class="err">==</span> <span class="nv">WM_TIMER</span>
+        <span class="c1">;响应定时器的消息</span>
+        <span class="c1">;获取当前光标的坐标值</span>
+        <span class="nf">invoke</span> <span class="nv">GetCursorPos</span><span class="p">,</span><span class="nv">addr</span> <span class="err">@</span><span class="nv">stPoint</span>
 
-        <span class="c">;将x，y的坐标显示到对话框</span>
-        <span class="n">invoke</span> <span class="n">SetDlgItemInt</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">IDC_EDT_POS_X</span><span class="p">,</span><span class="err">@</span><span class="n">stPoint</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="n">FALSE</span>
-        <span class="n">invoke</span> <span class="n">SetDlgItemInt</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">IDC_EDT_POS_Y</span><span class="p">,</span><span class="err">@</span><span class="n">stPoint</span><span class="p">.</span><span class="n">y</span><span class="p">,</span><span class="n">FALSE</span>
+        <span class="c1">;将x，y的坐标显示到对话框</span>
+        <span class="nf">invoke</span> <span class="nv">SetDlgItemInt</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">IDC_EDT_POS_X</span><span class="p">,</span><span class="err">@</span><span class="nv">stPoint.x</span><span class="p">,</span><span class="nv">FALSE</span>
+        <span class="nf">invoke</span> <span class="nv">SetDlgItemInt</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">IDC_EDT_POS_Y</span><span class="p">,</span><span class="err">@</span><span class="nv">stPoint.y</span><span class="p">,</span><span class="nv">FALSE</span>
 
-        <span class="c">;向XY坐标靠前一点</span>
-        <span class="k">mov</span> <span class="n">eax</span><span class="p">,</span><span class="err">@</span><span class="n">stPoint</span><span class="p">.</span><span class="n">x</span>
-        <span class="k">sub</span> <span class="n">eax</span><span class="p">,</span><span class="mi">12</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">dwDx</span><span class="p">,</span><span class="n">eax</span>
-        <span class="k">mov</span> <span class="n">eax</span><span class="p">,</span><span class="err">@</span><span class="n">stPoint</span><span class="p">.</span><span class="n">y</span>
-        <span class="k">sub</span> <span class="n">eax</span><span class="p">,</span><span class="mi">12</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">dwDy</span><span class="p">,</span><span class="n">eax</span>
+        <span class="c1">;向XY坐标靠前一点</span>
+        <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span><span class="err">@</span><span class="nv">stPoint.x</span>
+        <span class="nf">sub</span> <span class="nb">eax</span><span class="p">,</span><span class="mi">12</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">dwDx</span><span class="p">,</span><span class="nb">eax</span>
+        <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span><span class="err">@</span><span class="nv">stPoint.y</span>
+        <span class="nf">sub</span> <span class="nb">eax</span><span class="p">,</span><span class="mi">12</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">dwDy</span><span class="p">,</span><span class="nb">eax</span>
 
-        <span class="c">;获取整个屏幕的DC</span>
-        <span class="n">invoke</span> <span class="n">GetDC</span><span class="p">,</span><span class="n">NULL</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">hDcScreen</span><span class="p">,</span><span class="n">eax</span>
+        <span class="c1">;获取整个屏幕的DC</span>
+        <span class="nf">invoke</span> <span class="nv">GetDC</span><span class="p">,</span><span class="nv">NULL</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">hDcScreen</span><span class="p">,</span><span class="nb">eax</span>
 
-        <span class="c">;获取显示屏幕制定区域的窗口DC</span>
-        <span class="n">invoke</span> <span class="n">GetDlgItem</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">IDC_IMG_SHOWPIC</span> <span class="c">;获取图片框控件的句柄</span>
-        <span class="n">invoke</span> <span class="n">GetDC</span><span class="p">,</span><span class="n">eax</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">hDcShowPic</span><span class="p">,</span><span class="n">eax</span>
+        <span class="c1">;获取显示屏幕制定区域的窗口DC</span>
+        <span class="nf">invoke</span> <span class="nv">GetDlgItem</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">IDC_IMG_SHOWPIC</span> <span class="c1">;获取图片框控件的句柄</span>
+        <span class="nf">invoke</span> <span class="nv">GetDC</span><span class="p">,</span><span class="nb">eax</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">hDcShowPic</span><span class="p">,</span><span class="nb">eax</span>
 
-        <span class="c">;将屏幕指定区域绘制到指定的窗口DC中</span>
-        <span class="n">invoke</span> <span class="n">StretchBlt</span><span class="p">,</span><span class="err">@</span><span class="n">hDcShowPic</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="err">@</span><span class="n">hDcScreen</span><span class="p">,</span><span class="err">@</span><span class="n">dwDx</span><span class="p">,</span><span class="err">@</span><span class="n">dwDy</span><span class="p">,</span><span class="mi">24</span><span class="p">,</span><span class="mi">24</span><span class="p">,</span><span class="n">SRCCOPY</span>
+        <span class="c1">;将屏幕指定区域绘制到指定的窗口DC中</span>
+        <span class="nf">invoke</span> <span class="nv">StretchBlt</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcShowPic</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcScreen</span><span class="p">,</span><span class="err">@</span><span class="nv">dwDx</span><span class="p">,</span><span class="err">@</span><span class="nv">dwDy</span><span class="p">,</span><span class="mi">24</span><span class="p">,</span><span class="mi">24</span><span class="p">,</span><span class="nv">SRCCOPY</span>
 
-        <span class="c">;向图片屏幕指定区域绘制到指定的窗口DC中</span>
-        <span class="c">;创建一个黑色的实心画笔</span>
-        <span class="n">invoke</span> <span class="n">CreatePen</span><span class="p">,</span><span class="n">PS_SOLID</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span>    <span class="c">;这里可以设置画笔的类型、宽度、颜色</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">hBrush</span><span class="p">,</span><span class="n">eax</span>
-        <span class="n">invoke</span> <span class="n">MoveToEx</span><span class="p">,</span><span class="err">@</span><span class="n">hDcShowPic</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span><span class="n">NULL</span>    <span class="c">;将始点移到点(0,80)</span>
-        <span class="n">invoke</span> <span class="n">LineTo</span><span class="p">,</span><span class="err">@</span><span class="n">hDcShowPic</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">80</span>        <span class="c">;画水平线，从点(0,80)画到(160,80)</span>
-        <span class="n">invoke</span> <span class="n">MoveToEx</span><span class="p">,</span><span class="err">@</span><span class="n">hDcShowPic</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">NULL</span>    <span class="c">;将始点移到点(80,0)</span>
-        <span class="n">invoke</span> <span class="n">LineTo</span><span class="p">,</span><span class="err">@</span><span class="n">hDcShowPic</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span><span class="mi">160</span>        <span class="c">;;画垂直线，从点(80,0)画到(80,160)</span>
+        <span class="c1">;向图片屏幕指定区域绘制到指定的窗口DC中</span>
+        <span class="c1">;创建一个黑色的实心画笔</span>
+        <span class="nf">invoke</span> <span class="nv">CreatePen</span><span class="p">,</span><span class="nv">PS_SOLID</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span>    <span class="c1">;这里可以设置画笔的类型、宽度、颜色</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">hBrush</span><span class="p">,</span><span class="nb">eax</span>
+        <span class="nf">invoke</span> <span class="nv">MoveToEx</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcShowPic</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span><span class="nv">NULL</span>    <span class="c1">;将始点移到点(0,80)</span>
+        <span class="nf">invoke</span> <span class="nv">LineTo</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcShowPic</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">80</span>        <span class="c1">;画水平线，从点(0,80)画到(160,80)</span>
+        <span class="nf">invoke</span> <span class="nv">MoveToEx</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcShowPic</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nv">NULL</span>    <span class="c1">;将始点移到点(80,0)</span>
+        <span class="nf">invoke</span> <span class="nv">LineTo</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcShowPic</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span><span class="mi">160</span>        <span class="c1">;;画垂直线，从点(80,0)画到(80,160)</span>
 
-        <span class="c">;显示当前鼠标指向的颜色值</span>
-        <span class="n">invoke</span> <span class="n">GetDlgItem</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">IDC_IMG_COLOR</span> <span class="c">;获取控件的句柄</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">hColorWin</span><span class="p">,</span><span class="n">eax</span>
-        <span class="n">invoke</span> <span class="n">GetDC</span><span class="p">,</span><span class="n">eax</span>    <span class="c">;由控件的句柄获取这个图片框控件的DC</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">hDcShowColor</span><span class="p">,</span><span class="n">eax</span>
+        <span class="c1">;显示当前鼠标指向的颜色值</span>
+        <span class="nf">invoke</span> <span class="nv">GetDlgItem</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">IDC_IMG_COLOR</span> <span class="c1">;获取控件的句柄</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">hColorWin</span><span class="p">,</span><span class="nb">eax</span>
+        <span class="nf">invoke</span> <span class="nv">GetDC</span><span class="p">,</span><span class="nb">eax</span>    <span class="c1">;由控件的句柄获取这个图片框控件的DC</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">hDcShowColor</span><span class="p">,</span><span class="nb">eax</span>
 
-        <span class="c">;构造显示颜色值的图片框的坐标</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">colorRect</span><span class="p">.</span><span class="n">left</span><span class="p">,</span><span class="mi">0</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">colorRect</span><span class="p">.</span><span class="n">top</span><span class="p">,</span><span class="mi">0</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">colorRect</span><span class="p">.</span><span class="n">right</span><span class="p">,</span><span class="mi">118</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">colorRect</span><span class="p">.</span><span class="n">bottom</span><span class="p">,</span><span class="mi">22</span>
+        <span class="c1">;构造显示颜色值的图片框的坐标</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">colorRect.left</span><span class="p">,</span><span class="mi">0</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">colorRect.top</span><span class="p">,</span><span class="mi">0</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">colorRect.right</span><span class="p">,</span><span class="mi">118</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">colorRect.bottom</span><span class="p">,</span><span class="mi">22</span>
 
-        <span class="c">;获取屏幕上鼠标所指向的点的颜色值</span>
-        <span class="n">invoke</span> <span class="n">GetPixel</span><span class="p">,</span><span class="err">@</span><span class="n">hDcScreen</span><span class="p">,</span><span class="err">@</span><span class="n">stPoint</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="err">@</span><span class="n">stPoint</span><span class="p">.</span><span class="n">y</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">dwColor</span><span class="p">,</span><span class="n">eax</span>
+        <span class="c1">;获取屏幕上鼠标所指向的点的颜色值</span>
+        <span class="nf">invoke</span> <span class="nv">GetPixel</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcScreen</span><span class="p">,</span><span class="err">@</span><span class="nv">stPoint.x</span><span class="p">,</span><span class="err">@</span><span class="nv">stPoint.y</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">dwColor</span><span class="p">,</span><span class="nb">eax</span>
 
-        <span class="c">;为当前获取的颜色值创建一个实心画刷</span>
-        <span class="n">invoke</span> <span class="n">CreateSolidBrush</span><span class="p">,</span><span class="err">@</span><span class="n">dwColor</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">hBrush</span><span class="p">,</span><span class="n">eax</span>
+        <span class="c1">;为当前获取的颜色值创建一个实心画刷</span>
+        <span class="nf">invoke</span> <span class="nv">CreateSolidBrush</span><span class="p">,</span><span class="err">@</span><span class="nv">dwColor</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">hBrush</span><span class="p">,</span><span class="nb">eax</span>
 
-        <span class="c">;在显示颜色的图片框中填充画刷指定的颜色值</span>
-        <span class="c">;即把在指定的区域用这个画刷(hBrush)在指定的DC(hDcShowColor)上填充颜色</span>
-        <span class="n">invoke</span> <span class="n">FillRect</span><span class="p">,</span><span class="err">@</span><span class="n">hDcShowColor</span><span class="p">,</span><span class="n">addr</span> <span class="err">@</span><span class="n">colorRect</span><span class="p">,</span><span class="err">@</span><span class="n">hBrush</span>
+        <span class="c1">;在显示颜色的图片框中填充画刷指定的颜色值</span>
+        <span class="c1">;即把在指定的区域用这个画刷(hBrush)在指定的DC(hDcShowColor)上填充颜色</span>
+        <span class="nf">invoke</span> <span class="nv">FillRect</span><span class="p">,</span><span class="err">@</span><span class="nv">hDcShowColor</span><span class="p">,</span><span class="nv">addr</span> <span class="err">@</span><span class="nv">colorRect</span><span class="p">,</span><span class="err">@</span><span class="nv">hBrush</span>
 
-        <span class="c">;拆解32位的颜色值到三个字节类型的变量中，然后显示</span>
-        <span class="k">mov</span> <span class="n">eax</span><span class="p">,</span><span class="err">@</span><span class="n">dwColor</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">colorRed</span><span class="p">,</span><span class="n">al</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">colorGreen</span><span class="p">,</span><span class="n">ah</span>
-        <span class="k">ror</span> <span class="n">eax</span><span class="p">,</span><span class="mi">16</span>    <span class="c">;将eax中的值循环右移16位</span>
-        <span class="k">mov</span> <span class="err">@</span><span class="n">colorBlue</span><span class="p">,</span><span class="n">al</span>
-        <span class="n">invoke</span> <span class="n">SetDlgItemInt</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">IDC_EDT_RED</span><span class="p">,</span><span class="err">@</span><span class="n">colorRed</span><span class="p">,</span><span class="n">FALSE</span>
-        <span class="n">invoke</span> <span class="n">SetDlgItemInt</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">IDC_EDT_GREEN</span><span class="p">,</span><span class="err">@</span><span class="n">colorGreen</span><span class="p">,</span><span class="n">FALSE</span>
-        <span class="n">invoke</span> <span class="n">SetDlgItemInt</span><span class="p">,</span><span class="n">hWnd</span><span class="p">,</span><span class="n">IDC_EDT_BLUE</span><span class="p">,</span><span class="err">@</span><span class="n">colorBlue</span><span class="p">,</span><span class="n">FALSE</span>
+        <span class="c1">;拆解32位的颜色值到三个字节类型的变量中，然后显示</span>
+        <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span><span class="err">@</span><span class="nv">dwColor</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">colorRed</span><span class="p">,</span><span class="nb">al</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">colorGreen</span><span class="p">,</span><span class="nb">ah</span>
+        <span class="nf">ror</span> <span class="nb">eax</span><span class="p">,</span><span class="mi">16</span>    <span class="c1">;将eax中的值循环右移16位</span>
+        <span class="nf">mov</span> <span class="err">@</span><span class="nv">colorBlue</span><span class="p">,</span><span class="nb">al</span>
+        <span class="nf">invoke</span> <span class="nv">SetDlgItemInt</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">IDC_EDT_RED</span><span class="p">,</span><span class="err">@</span><span class="nv">colorRed</span><span class="p">,</span><span class="nv">FALSE</span>
+        <span class="nf">invoke</span> <span class="nv">SetDlgItemInt</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">IDC_EDT_GREEN</span><span class="p">,</span><span class="err">@</span><span class="nv">colorGreen</span><span class="p">,</span><span class="nv">FALSE</span>
+        <span class="nf">invoke</span> <span class="nv">SetDlgItemInt</span><span class="p">,</span><span class="nv">hWnd</span><span class="p">,</span><span class="nv">IDC_EDT_BLUE</span><span class="p">,</span><span class="err">@</span><span class="nv">colorBlue</span><span class="p">,</span><span class="nv">FALSE</span>
 
-    <span class="p">.</span><span class="n">elseif</span> <span class="n">eax</span><span class="o">==</span><span class="n">WM_COMMAND</span>
-        <span class="k">mov</span>        <span class="n">eax</span><span class="p">,</span><span class="n">wParam</span>
-        <span class="k">and</span>        <span class="n">eax</span><span class="p">,</span><span class="mi">0</span><span class="n">FFFFh</span>
-        <span class="p">.</span><span class="n">if</span> <span class="n">eax</span><span class="o">==</span><span class="n">IDM_FILE_EXIT</span>
-            <span class="n">invoke</span> <span class="n">SendMessage</span><span class="p">,</span><span class="n">hWin</span><span class="p">,</span><span class="n">WM_CLOSE</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
-        <span class="p">.</span><span class="n">elseif</span> <span class="n">eax</span><span class="o">==</span><span class="n">IDM_HELP_ABOUT</span>
-            <span class="n">invoke</span> <span class="n">ShellAbout</span><span class="p">,</span><span class="n">hWin</span><span class="p">,</span><span class="n">addr</span> <span class="n">AppName</span><span class="p">,</span><span class="n">addr</span> <span class="n">AboutMsg</span><span class="p">,</span><span class="n">NULL</span>
-        <span class="p">.</span><span class="n">endif</span>
-    <span class="c">;.elseif eax==WM_SIZE</span>
-    <span class="p">.</span><span class="n">elseif</span> <span class="n">eax</span><span class="o">==</span><span class="n">WM_CLOSE</span>
-        <span class="n">invoke</span> <span class="n">DestroyWindow</span><span class="p">,</span><span class="n">hWin</span>
-    <span class="p">.</span><span class="n">elseif</span> <span class="n">uMsg</span><span class="o">==</span><span class="n">WM_DESTROY</span>
-        <span class="n">invoke</span> <span class="n">PostQuitMessage</span><span class="p">,</span><span class="n">NULL</span>
-    <span class="p">.</span><span class="n">else</span>
-        <span class="n">invoke</span> <span class="n">DefWindowProc</span><span class="p">,</span><span class="n">hWin</span><span class="p">,</span><span class="n">uMsg</span><span class="p">,</span><span class="n">wParam</span><span class="p">,</span><span class="n">lParam</span>
-        <span class="k">ret</span>
-    <span class="p">.</span><span class="n">endif</span>
-    <span class="k">xor</span> <span class="n">eax</span><span class="p">,</span><span class="n">eax</span>
-    <span class="k">ret</span>
+    <span class="nf">.elseif</span> <span class="nb">eax</span><span class="err">==</span><span class="nv">WM_COMMAND</span>
+        <span class="nf">mov</span>        <span class="nb">eax</span><span class="p">,</span><span class="nv">wParam</span>
+        <span class="nf">and</span>        <span class="nb">eax</span><span class="p">,</span><span class="mh">0FFFFh</span>
+        <span class="nf">.if</span> <span class="nb">eax</span><span class="err">==</span><span class="nv">IDM_FILE_EXIT</span>
+            <span class="nf">invoke</span> <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hWin</span><span class="p">,</span><span class="nv">WM_CLOSE</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+        <span class="nf">.elseif</span> <span class="nb">eax</span><span class="err">==</span><span class="nv">IDM_HELP_ABOUT</span>
+            <span class="nf">invoke</span> <span class="nv">ShellAbout</span><span class="p">,</span><span class="nv">hWin</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">AppName</span><span class="p">,</span><span class="nv">addr</span> <span class="nv">AboutMsg</span><span class="p">,</span><span class="nv">NULL</span>
+        <span class="nf">.endif</span>
+    <span class="c1">;.elseif eax==WM_SIZE</span>
+    <span class="nf">.elseif</span> <span class="nb">eax</span><span class="err">==</span><span class="nv">WM_CLOSE</span>
+        <span class="nf">invoke</span> <span class="nv">DestroyWindow</span><span class="p">,</span><span class="nv">hWin</span>
+    <span class="nf">.elseif</span> <span class="nv">uMsg</span><span class="err">==</span><span class="nv">WM_DESTROY</span>
+        <span class="nf">invoke</span> <span class="nv">PostQuitMessage</span><span class="p">,</span><span class="nv">NULL</span>
+    <span class="nf">.else</span>
+        <span class="nf">invoke</span> <span class="nv">DefWindowProc</span><span class="p">,</span><span class="nv">hWin</span><span class="p">,</span><span class="nv">uMsg</span><span class="p">,</span><span class="nv">wParam</span><span class="p">,</span><span class="nv">lParam</span>
+        <span class="nf">ret</span>
+    <span class="nf">.endif</span>
+    <span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">ret</span>
     
-<span class="n">WndProc</span> <span class="n">endp</span>
+<span class="nf">WndProc</span> <span class="nv">endp</span>
 
 
-<span class="n">end</span> <span class="n">start</span>
+<span class="nf">end</span> <span class="nv">start</span>
 </code></pre></div></div> <p>效果图：<br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/c/asm/06.jpg" alt="asm" /></p> <p>参考自<a href="http://www.boobooke.com/m2/">jhkdiy老师的Win32Asm与RadAsm汇编开发教程</a></p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-10-RadASM%25E7%25BC%2596%25E5%2586%2599%25E6%258B%25BE%25E8%2589%25B2%25E5%2599%25A8.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=ASM-使用RadASM编写拾色器 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-10-RadASM%25E7%25BC%2596%25E5%2586%2599%25E6%258B%25BE%25E8%2589%25B2%25E5%2599%25A8.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-10-RadASM%25E7%25BC%2596%25E5%2586%2599%25E6%258B%25BE%25E8%2589%25B2%25E5%2599%25A8.html&amp;title=ASM-使用RadASM编写拾色器 - 知不知&amp;summary=使用RadASM编写拾色器&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-10-RadASM%25E7%25BC%2596%25E5%2586%2599%25E6%258B%25BE%25E8%2589%25B2%25E5%2599%25A8.html&amp;text=ASM-使用RadASM编写拾色器 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-10-RadASM%25E7%25BC%2596%25E5%2586%2599%25E6%258B%25BE%25E8%2589%25B2%25E5%2599%25A8.html&amp;t=ASM-使用RadASM编写拾色器 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-10-RadASM%25E7%25BC%2596%25E5%2586%2599%25E6%258B%25BE%25E8%2589%25B2%25E5%2599%25A8.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('ASM-使用RadASM编写拾色器'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/docker/2019-08-25-MongoDB%E4%B8%8ERedis%E5%9C%A8doker%E4%B8%8A%E7%9A%84%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>MongoDB与Redis在doker上的安装配置</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h2 id="mongodb">MongoDB</h2> <p><strong>参考：</strong></p> <ul class="task-list"> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />mvertes/alpine-mongo：<a href="https://hub.docker.com/r/mvertes/alpine-mongo">https://hub.docker.com/r/mvertes/alpine-mongo</a></li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />MongoDB 教程：<a href="http://www.runoob.com/mongodb/mongodb-tutorial.html">http://www.runoob.com/mongodb/mongodb-tutorial.html</a></li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />Redis: [https://hub.docker.com/<em>/redis?tab=description](https://hub.docker.com/</em>/redis?tab=description)</li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />redis默认配置：<a href="http://download.redis.io/redis-stable/redis.conf">http://download.redis.io/redis-stable/redis.conf</a></li> </ul> <p><strong>创建网络 net-mysql</strong> <br /> <code class="highlighter-rouge">docker network create -d bridge network_backend</code></p> <p><strong>创建mongod容器</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --rm -it \
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/docker/2019-08-25-MongoDB%E4%B8%8ERedis%E5%9C%A8doker%E4%B8%8A%E7%9A%84%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>MongoDB与Redis在doker上的安装配置</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h2 id="mongodb">MongoDB</h2> <p><strong>参考：</strong></p> <ul class="task-list"> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />mvertes/alpine-mongo：<a href="https://hub.docker.com/r/mvertes/alpine-mongo">https://hub.docker.com/r/mvertes/alpine-mongo</a></li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />MongoDB 教程：<a href="http://www.runoob.com/mongodb/mongodb-tutorial.html">http://www.runoob.com/mongodb/mongodb-tutorial.html</a></li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />Redis: [https://hub.docker.com/<em>/redis?tab=description](https://hub.docker.com/</em>/redis?tab=description)</li> <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />redis默认配置：<a href="http://download.redis.io/redis-stable/redis.conf">http://download.redis.io/redis-stable/redis.conf</a></li> </ul> <p><strong>创建网络 net-mysql</strong> <br /> <code class="language-plaintext highlighter-rouge">docker network create -d bridge network_backend</code></p> <p><strong>创建mongod容器</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --rm -it \
     --name my-mongo \
     --network network_backend \
     -p 27017:27017 \
@@ -16,7 +16,7 @@ docker run --rm -it \
     -v $PWD/log:/var/log/mongodb \
     mvertes/alpine-mongo \
     mongod --bind_ip 0.0.0.0
-</code></pre></div></div> <p><strong>连接mongodb,添加用户</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --rm -it \
+</code></pre></div></div> <p><strong>连接mongodb,添加用户</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --rm -it \
     --network network_backend \
     mvertes/alpine-mongo \
     mongo --host my-mongo 
@@ -56,7 +56,7 @@ db.createUser({
         {role:"read",db:"admin"}
     ]
 })
-</code></pre></div></div> <p><strong>开启登录认证</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --rm -it \
+</code></pre></div></div> <p><strong>开启登录认证</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --rm -it \
     --name my-mongo \
     --network network_backend \
     -p 27017:27017 \
@@ -78,7 +78,7 @@ docker run -d \
     mongod --bind_ip 0.0.0.0 --auth
 
 # docker exec -it my-mongo sh 
-</code></pre></div></div> <p><strong>授权登录</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --rm -it \
+</code></pre></div></div> <p><strong>授权登录</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --rm -it \
     --network network_backend \
     mvertes/alpine-mongo \
     mongo --host my-mongo \
@@ -98,7 +98,7 @@ docker run --rm -it \
         --authenticationDatabase admin 
 
 &gt; show dbs;
-</code></pre></div></div> <p><strong>使用userAdminAnyDatabase以上权限用户登录后，给mongo数据库授权</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>use db_biz
+</code></pre></div></div> <p><strong>使用userAdminAnyDatabase以上权限用户登录后，给mongo数据库授权</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>use db_biz
 db.createUser({
     user:"mongo",
     pwd:"xxxxxxxxxxxxx",
@@ -135,7 +135,7 @@ db.createUser({
 })
 
 db.collection_test.insert({"name":"你好collection_test!"})
-</code></pre></div></div> <p><strong>MongoDB常用命令</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>创建数据库使用`use xxx`命令即可
+</code></pre></div></div> <p><strong>MongoDB常用命令</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>创建数据库使用`use xxx`命令即可
 use db_test
 
 列出所有数据库
@@ -166,7 +166,7 @@ db.collection_b.drop()
 删除数据库
 use db_test
 db.dropDatabase()
-</code></pre></div></div> <hr /> <h3 id="redis">Redis</h3> <p><strong>运行Redis</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --rm -it\
+</code></pre></div></div> <hr /> <h3 id="redis">Redis</h3> <p><strong>运行Redis</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --rm -it\
     --name my-redis \
     --network network_backend \
     -p 6379:6379 \

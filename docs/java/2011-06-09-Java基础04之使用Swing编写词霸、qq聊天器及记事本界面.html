@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-06-09-Java%E5%9F%BA%E7%A1%8004%E4%B9%8B%E4%BD%BF%E7%94%A8Swing%E7%BC%96%E5%86%99%E8%AF%8D%E9%9C%B8%E3%80%81qq%E8%81%8A%E5%A4%A9%E5%99%A8%E5%8F%8A%E8%AE%B0%E4%BA%8B%E6%9C%AC%E7%95%8C%E9%9D%A2.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础04之使用Swing编写词霸、qq聊天器及记事本界面</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>项目文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_18.jpg" alt="项目文件结构" /></p> <p><strong>主要内容有：</strong>使用Java swing的布局，如BorderLayout、流式布局、宫格布局以及布局管理器，Java swing编写自定面板、复选框、单选框、列表组件、滚动组件、词霸小应用、qq聊天器、qq登录界面、记事本界面。</p> <h3 id="布局管理器">布局管理器</h3> <p><strong>布局管理器Demo8_1.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2011-06-09-Java%E5%9F%BA%E7%A1%8004%E4%B9%8B%E4%BD%BF%E7%94%A8Swing%E7%BC%96%E5%86%99%E8%AF%8D%E9%9C%B8%E3%80%81qq%E8%81%8A%E5%A4%A9%E5%99%A8%E5%8F%8A%E8%AE%B0%E4%BA%8B%E6%9C%AC%E7%95%8C%E9%9D%A2.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Java基础04之使用Swing编写词霸、qq聊天器及记事本界面</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>项目文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_18.jpg" alt="项目文件结构" /></p> <p><strong>主要内容有：</strong>使用Java swing的布局，如BorderLayout、流式布局、宫格布局以及布局管理器，Java swing编写自定面板、复选框、单选框、列表组件、滚动组件、词霸小应用、qq聊天器、qq登录界面、记事本界面。</p> <h3 id="布局管理器">布局管理器</h3> <p><strong>布局管理器Demo8_1.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.JButton</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.JFrame</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo8_1</span> <span class="kd">extends</span> <span class="nc">JFrame</span>         <span class="c1">//继承JFrame</span>
@@ -42,7 +42,7 @@
 * 5.对窗体设置
 * 6.显示窗体
 */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo8_2</span> <span class="kd">extends</span> <span class="nc">JFrame</span><span class="o">{</span>
@@ -81,7 +81,7 @@
 </code></pre></div></div> <p><strong>Demo8_3.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
 * 功能：流式：流式布局案例
 */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo8_3</span> <span class="kd">extends</span> <span class="nc">JFrame</span><span class="o">{</span>
@@ -129,7 +129,7 @@
 </code></pre></div></div> <p><strong>swing编程实战Demo8_4.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
 * 风格布局
 */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo8_4</span> <span class="kd">extends</span> <span class="nc">JFrame</span><span class="o">{</span>
@@ -169,7 +169,7 @@
 </code></pre></div></div> <p><strong>Demo8_5.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
 * 多种布局管理器的使用
 */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo8_5</span> <span class="kd">extends</span> <span class="nc">JFrame</span> <span class="o">{</span>
@@ -209,7 +209,7 @@
         <span class="k">this</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>Demo8_6.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>Demo8_6.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo8_6</span> <span class="kd">extends</span> <span class="nc">JFrame</span><span class="o">{</span>
@@ -259,7 +259,7 @@
 </code></pre></div></div> <p><strong>Demo8_7.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
 * 复选框或单选框的案例
 */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo8_7</span> <span class="kd">extends</span> <span class="nc">JFrame</span><span class="o">{</span>
@@ -317,7 +317,7 @@
 </code></pre></div></div> <p><strong>Demo8_8.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
 * JCombobox/JList/JScrollPane
 */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo8_8</span> <span class="kd">extends</span> <span class="nc">JFrame</span> <span class="o">{</span>
@@ -362,7 +362,7 @@
 </code></pre></div></div> <p><strong>Demo8_9.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
 * 词霸
 */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo8_9</span> <span class="kd">extends</span> <span class="nc">JFrame</span><span class="o">{</span>
@@ -397,7 +397,7 @@
 </code></pre></div></div> <p><strong>Demo8_10.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
 * qq聊天器
 */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo8_10</span> <span class="kd">extends</span> <span class="nc">JFrame</span><span class="o">{</span>
@@ -441,7 +441,7 @@
 </code></pre></div></div> <p><strong>Demo8_11.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
 * qq登录界面制作
 */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo8_11</span> <span class="kd">extends</span> <span class="nc">JFrame</span><span class="o">{</span>
@@ -532,7 +532,7 @@
 </code></pre></div></div> <p><strong>Demo8_12.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
 * 记事本界面
 */</span>
-<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">test1</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">com.test1</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.event.*</span><span class="o">;</span>

@@ -1,77 +1,77 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-12-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E4%B8%AD%E6%96%AD%E7%A8%8B%E5%BA%8F.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-一个简单的中断程序</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p>在Masm for Windows 下调试：</p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">DATAS</span> <span class="n">SEGMENT</span>
-<span class="c">;此处输入数据段代码</span>
-<span class="n">DATAS</span> <span class="n">ENDS</span>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-12-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E4%B8%AD%E6%96%AD%E7%A8%8B%E5%BA%8F.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-一个简单的中断程序</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p>在Masm for Windows 下调试：</p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">DATAS</span> <span class="ow">SEG</span><span class="nv">MENT</span>
+<span class="c1">;此处输入数据段代码</span>
+<span class="nf">DATAS</span> <span class="nv">ENDS</span>
 
-<span class="n">STACKS</span> <span class="n">SEGMENT</span>
-<span class="c">;此处输入堆栈段代码</span>
-<span class="n">STACKS</span> <span class="n">ENDS</span>
+<span class="nf">STACKS</span> <span class="ow">SEG</span><span class="nv">MENT</span>
+<span class="c1">;此处输入堆栈段代码</span>
+<span class="nf">STACKS</span> <span class="nv">ENDS</span>
 
-<span class="n">CODES</span> <span class="n">SEGMENT</span>
-<span class="n">ASSUME</span> <span class="n">CS</span><span class="o">:</span><span class="n">CODES</span><span class="p">,</span><span class="n">DS</span><span class="o">:</span><span class="n">DATAS</span><span class="p">,</span><span class="n">SS</span><span class="o">:</span><span class="n">STACKS</span>
-<span class="n">START</span><span class="o">:</span>
-<span class="k">MOV</span> <span class="n">AX</span><span class="p">,</span><span class="n">DATAS</span>
-<span class="k">MOV</span> <span class="n">DS</span><span class="p">,</span><span class="n">AX</span>
-<span class="c">;系统默认在内存0000:000到0000:03FE专门存放中断向量表</span>
-<span class="c">;第一步：把中断向量表中0号表项的内容进行修改，</span>
-<span class="c">;指向我们自己指定的中断处理程序的入口地址</span>
-<span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">0</span>
-<span class="k">mov</span> <span class="n">ds</span><span class="p">,</span><span class="n">ax</span>
-<span class="c">;中断向量表每个表项占四个字节，低字节放偏移地址，高字节放段地址</span>
-<span class="k">mov</span> <span class="n">word</span> <span class="n">ptr</span> <span class="n">ds</span><span class="o">:</span><span class="p">[0],</span><span class="mi">0200</span><span class="n">h</span>
-<span class="k">mov</span> <span class="n">word</span> <span class="n">ptr</span> <span class="n">ds</span><span class="o">:</span><span class="p">[2],</span><span class="mi">0</span>
+<span class="nf">CODES</span> <span class="ow">SEG</span><span class="nv">MENT</span>
+<span class="nf">ASSUME</span> <span class="nb">CS</span><span class="p">:</span><span class="nv">CODES</span><span class="p">,</span><span class="nb">DS</span><span class="p">:</span><span class="nv">DATAS</span><span class="p">,</span><span class="nb">SS</span><span class="p">:</span><span class="nv">STACKS</span>
+<span class="nl">START:</span>
+<span class="nf">MOV</span> <span class="nb">AX</span><span class="p">,</span><span class="nv">DATAS</span>
+<span class="nf">MOV</span> <span class="nb">DS</span><span class="p">,</span><span class="nb">AX</span>
+<span class="c1">;系统默认在内存0000:000到0000:03FE专门存放中断向量表</span>
+<span class="c1">;第一步：把中断向量表中0号表项的内容进行修改，</span>
+<span class="c1">;指向我们自己指定的中断处理程序的入口地址</span>
+<span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mi">0</span>
+<span class="nf">mov</span> <span class="nb">ds</span><span class="p">,</span><span class="nb">ax</span>
+<span class="c1">;中断向量表每个表项占四个字节，低字节放偏移地址，高字节放段地址</span>
+<span class="nf">mov</span> <span class="kt">word</span> <span class="nv">ptr</span> <span class="nb">ds</span><span class="p">:[</span><span class="mi">0</span><span class="p">],</span><span class="mh">0200h</span>
+<span class="nf">mov</span> <span class="kt">word</span> <span class="nv">ptr</span> <span class="nb">ds</span><span class="p">:[</span><span class="mi">2</span><span class="p">],</span><span class="mi">0</span>
 
-<span class="c">;第三步，把自己写的0号中断处理程序拷贝到中断向量表在0号表项</span>
-<span class="c">;所指向的内存地址中0000:0200</span>
-<span class="c">;设置程序的源地址，源地址由DS:SI组成，目的地址由ES:DI组成</span>
-<span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="n">cs</span>
-<span class="k">mov</span> <span class="n">ds</span><span class="p">,</span><span class="n">ax</span>
-<span class="k">mov</span> <span class="n">si</span><span class="p">,</span><span class="n">offset</span> <span class="n">int0</span>    <span class="c">;程序所在地址，即源地址：ds:si</span>
-<span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">0</span>
-<span class="k">mov</span> <span class="n">es</span><span class="p">,</span><span class="n">ax</span>            <span class="c">;设置目的地址</span>
-<span class="k">mov</span> <span class="n">di</span><span class="p">,</span><span class="mi">200</span><span class="n">h</span>
-<span class="k">mov</span> <span class="n">cx</span><span class="p">,</span><span class="n">offset</span> <span class="n">int0end</span><span class="o">-</span><span class="n">offset</span> <span class="n">int0</span>
-<span class="c">;CLD指令设置数据拷贝方向是从低字节向高字节，si,di自动增量，STD相反</span>
-<span class="k">cld</span>
-<span class="kr">rep</span> <span class="k">movsb</span>
+<span class="c1">;第三步，把自己写的0号中断处理程序拷贝到中断向量表在0号表项</span>
+<span class="c1">;所指向的内存地址中0000:0200</span>
+<span class="c1">;设置程序的源地址，源地址由DS:SI组成，目的地址由ES:DI组成</span>
+<span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="nb">cs</span>
+<span class="nf">mov</span> <span class="nb">ds</span><span class="p">,</span><span class="nb">ax</span>
+<span class="nf">mov</span> <span class="nb">si</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">int0</span>    <span class="c1">;程序所在地址，即源地址：ds:si</span>
+<span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mi">0</span>
+<span class="nf">mov</span> <span class="nb">es</span><span class="p">,</span><span class="nb">ax</span>            <span class="c1">;设置目的地址</span>
+<span class="nf">mov</span> <span class="nb">di</span><span class="p">,</span><span class="mh">200h</span>
+<span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="nv">offset</span> <span class="nv">int0end</span><span class="o">-</span><span class="nv">offset</span> <span class="nv">int0</span>
+<span class="c1">;CLD指令设置数据拷贝方向是从低字节向高字节，si,di自动增量，STD相反</span>
+<span class="nf">cld</span>
+<span class="nf">rep</span> <span class="nv">movsb</span>
 
-<span class="c">;第四步，利用代码自动引发0号中断处理程序</span>
-<span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">100</span><span class="n">h</span>
-<span class="k">mov</span> <span class="n">bh</span><span class="p">,</span><span class="mi">1</span>
-<span class="k">div</span> <span class="n">bh</span>    <span class="c">;除数为1，产生除法溢出错误，中断！调用自己写的中断程序</span>
+<span class="c1">;第四步，利用代码自动引发0号中断处理程序</span>
+<span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mh">100h</span>
+<span class="nf">mov</span> <span class="nb">bh</span><span class="p">,</span><span class="mi">1</span>
+<span class="nf">div</span> <span class="nb">bh</span>    <span class="c1">;除数为1，产生除法溢出错误，中断！调用自己写的中断程序</span>
 
-<span class="c">;第二步：编写自己的中断处理程序，实现在屏幕中央显示字符串的功能</span>
-<span class="n">int0</span><span class="o">:</span><span class="k">jmp</span> <span class="n">short</span> <span class="n">int0start</span>    <span class="c">;这行代码占两个字节</span>
-    <span class="kt">db</span> <span class="s">"I am student !"</span>
-<span class="n">int0start</span><span class="o">:</span><span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="mi">0</span><span class="n">b800h</span>
-<span class="k">mov</span> <span class="n">es</span><span class="p">,</span><span class="n">ax</span>    <span class="c">;配置显存首地址</span>
-<span class="c">;要把"I am student !"一个拷贝到显存地址空间中</span>
-<span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="n">cs</span>    <span class="c">;把代码段中的内容送到数据段当中去</span>
-<span class="k">mov</span> <span class="n">ds</span><span class="p">,</span><span class="n">ax</span>    <span class="c">;0中断程序没区分代码段和数据段</span>
+<span class="c1">;第二步：编写自己的中断处理程序，实现在屏幕中央显示字符串的功能</span>
+<span class="nl">int0:</span><span class="nf">jmp</span> <span class="nv">short</span> <span class="nv">int0start</span>    <span class="c1">;这行代码占两个字节</span>
+    <span class="kd">db</span> <span class="err">"</span><span class="nv">I</span> <span class="nv">am</span> <span class="nv">student</span> <span class="err">!"</span>
+<span class="nl">int0start:</span><span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="mh">0b800h</span>
+<span class="nf">mov</span> <span class="nb">es</span><span class="p">,</span><span class="nb">ax</span>    <span class="c1">;配置显存首地址</span>
+<span class="c1">;要把"I am student !"一个拷贝到显存地址空间中</span>
+<span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="nb">cs</span>    <span class="c1">;把代码段中的内容送到数据段当中去</span>
+<span class="nf">mov</span> <span class="nb">ds</span><span class="p">,</span><span class="nb">ax</span>    <span class="c1">;0中断程序没区分代码段和数据段</span>
 
-<span class="k">mov</span> <span class="n">si</span><span class="p">,</span><span class="mi">202</span><span class="n">h</span>    <span class="c">;因jump short int0start占两字节</span>
-<span class="k">mov</span> <span class="n">di</span><span class="p">,</span><span class="mi">12</span><span class="o">*</span><span class="mi">160</span><span class="o">+</span><span class="mi">36</span><span class="o">*</span><span class="mi">2</span>    
-<span class="c">;一个屏幕最大是24行、80列，每行80个字，36是中央偏左一点</span>
+<span class="nf">mov</span> <span class="nb">si</span><span class="p">,</span><span class="mh">202h</span>    <span class="c1">;因jump short int0start占两字节</span>
+<span class="nf">mov</span> <span class="nb">di</span><span class="p">,</span><span class="mi">12</span><span class="o">*</span><span class="mi">160</span><span class="o">+</span><span class="mi">36</span><span class="o">*</span><span class="mi">2</span>    
+<span class="c1">;一个屏幕最大是24行、80列，每行80个字，36是中央偏左一点</span>
 
-<span class="k">mov</span> <span class="n">cx</span><span class="p">,</span><span class="mi">14</span>    <span class="c">;"I am student !" 点14个字节</span>
+<span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mi">14</span>    <span class="c1">;"I am student !" 点14个字节</span>
 
-    <span class="c">;---------字体属性----------</span>
-    <span class="c">;| 7 6 5 4 3 2 1 0 |</span>
-    <span class="c">;| B L R G B I R G B |</span>
-    <span class="c">;| 闪烁 背景色 高亮 前景色 |</span>
-    <span class="c">;---------------------------</span>
-    <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">10100100</span><span class="n">b</span> <span class="c">;绿底红字</span>
+    <span class="c1">;---------字体属性----------</span>
+    <span class="c1">;| 7 6 5 4 3 2 1 0 |</span>
+    <span class="c1">;| B L R G B I R G B |</span>
+    <span class="c1">;| 闪烁 背景色 高亮 前景色 |</span>
+    <span class="c1">;---------------------------</span>
+    <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mb">10100100b</span> <span class="c1">;绿底红字</span>
 
-<span class="n">s</span><span class="o">:</span><span class="k">mov</span> <span class="n">al</span><span class="p">,</span><span class="n">byte</span> <span class="n">ptr</span> <span class="n">ds</span><span class="o">:</span><span class="p">[si]</span>    <span class="c">;将第一个字符存到al中</span>
-    <span class="k">mov</span> <span class="n">es</span><span class="o">:</span><span class="p">[di],</span><span class="n">al</span>    <span class="c">;拷贝字符</span>
-    <span class="k">mov</span> <span class="n">es</span><span class="o">:</span><span class="err">[</span><span class="n">di</span><span class="o">+</span><span class="mi">1</span><span class="err">]</span><span class="p">,</span><span class="n">ah</span> <span class="c">;拷贝字符属性</span>
-    <span class="k">inc</span> <span class="n">si</span>        <span class="c">;源地址指针后移1个字符</span>
-    <span class="k">add</span> <span class="n">di</span><span class="p">,</span><span class="mi">2</span>    <span class="c">;显存地址加2字节</span>
-    <span class="k">loop</span> <span class="n">s</span>
+<span class="nl">s:</span><span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span><span class="kt">byte</span> <span class="nv">ptr</span> <span class="nb">ds</span><span class="p">:[</span><span class="nb">si</span><span class="p">]</span>    <span class="c1">;将第一个字符存到al中</span>
+    <span class="nf">mov</span> <span class="nb">es</span><span class="p">:[</span><span class="nb">di</span><span class="p">],</span><span class="nb">al</span>    <span class="c1">;拷贝字符</span>
+    <span class="nf">mov</span> <span class="nb">es</span><span class="p">:[</span><span class="nb">di</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="nb">ah</span> <span class="c1">;拷贝字符属性</span>
+    <span class="nf">inc</span> <span class="nb">si</span>        <span class="c1">;源地址指针后移1个字符</span>
+    <span class="nf">add</span> <span class="nb">di</span><span class="p">,</span><span class="mi">2</span>    <span class="c1">;显存地址加2字节</span>
+    <span class="nf">loop</span> <span class="nv">s</span>
     
-<span class="k">MOV</span> <span class="n">AH</span><span class="p">,</span><span class="mi">4</span><span class="n">CH</span>
-<span class="k">INT</span> <span class="mi">21</span><span class="n">H</span>
-<span class="n">int0end</span><span class="o">:</span><span class="k">nop</span> <span class="c">;nop是空操作指令，占一个字节</span>
+<span class="nf">MOV</span> <span class="nb">AH</span><span class="p">,</span><span class="mh">4CH</span>
+<span class="nf">INT</span> <span class="mh">21H</span>
+<span class="nl">int0end:</span><span class="nf">nop</span> <span class="c1">;nop是空操作指令，占一个字节</span>
 
-<span class="n">CODES</span> <span class="n">ENDS</span>
-<span class="n">END</span> <span class="n">START</span>
+<span class="nf">CODES</span> <span class="nv">ENDS</span>
+<span class="nf">END</span> <span class="nv">START</span>
 </code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584%25E4%25B8%25AD%25E6%2596%25AD%25E7%25A8%258B%25E5%25BA%258F.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=ASM-一个简单的中断程序 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584%25E4%25B8%25AD%25E6%2596%25AD%25E7%25A8%258B%25E5%25BA%258F.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584%25E4%25B8%25AD%25E6%2596%25AD%25E7%25A8%258B%25E5%25BA%258F.html&amp;title=ASM-一个简单的中断程序 - 知不知&amp;summary=一个简单的中断程序&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584%25E4%25B8%25AD%25E6%2596%25AD%25E7%25A8%258B%25E5%25BA%258F.html&amp;text=ASM-一个简单的中断程序 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584%25E4%25B8%25AD%25E6%2596%25AD%25E7%25A8%258B%25E5%25BA%258F.html&amp;t=ASM-一个简单的中断程序 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25B8%2580%25E4%25B8%25AA%25E7%25AE%2580%25E5%258D%2595%25E7%259A%2584%25E4%25B8%25AD%25E6%2596%25AD%25E7%25A8%258B%25E5%25BA%258F.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('ASM-一个简单的中断程序'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>

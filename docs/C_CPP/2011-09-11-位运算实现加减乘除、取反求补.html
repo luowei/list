@@ -185,12 +185,12 @@
     <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">16</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span><span class="k">if</span><span class="p">(</span><span class="n">b</span><span class="o">&amp;</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="p">)</span><span class="n">c</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">a</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="p">));}</span>
     <span class="k">return</span> <span class="n">c</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div></div> <h3 id="计算机乘法除法原理">计算机乘法除法原理</h3> <p><strong>1.乘法</strong><br /> 由于计算机中，所有数值都是用2的N次方来表示的:2^n0+2^n1+2^n2+2^n3+2^n4…..<br /> 因此x<em>y,(x)</em>(2^n0+2^n1+2^n2+2^n3+2^n4)=(x<em>2^n0)+(x</em>2^n1)+(x<em>2^n2)+(x</em>2^n3)+(x*2^n4)+……即(x左移n0)+(x左移n1)+(x左移n2)+(x左移n3)+(x左移n4)+……</p> <p>用15(x)<em>13(y)来举例，15</em>13 为1111*1101</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a.首先y的最低位为1(2^0)，x左移0位得到1111  
+</code></pre></div></div> <h3 id="计算机乘法除法原理">计算机乘法除法原理</h3> <p><strong>1.乘法</strong><br /> 由于计算机中，所有数值都是用2的N次方来表示的:2^n0+2^n1+2^n2+2^n3+2^n4…..<br /> 因此x<em>y,(x)</em>(2^n0+2^n1+2^n2+2^n3+2^n4)=(x<em>2^n0)+(x</em>2^n1)+(x<em>2^n2)+(x</em>2^n3)+(x*2^n4)+……即(x左移n0)+(x左移n1)+(x左移n2)+(x左移n3)+(x左移n4)+……</p> <p>用15(x)<em>13(y)来举例，15</em>13 为1111*1101</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a.首先y的最低位为1(2^0)，x左移0位得到1111  
 b.然后y的最低第二位为0，没有2^1存在，因此本次无运算(结果可以看作为0)  
 c.然后y的最低第三位为1(2^2)，x左移2位得到111100  
 d.然后y的最低第四位为1(2^3)，x左移3位得到1111000  
 e.把a、b、c、d的结果相加1111+0+111100+1111000=11000011(195),该结果就是乘法的结果  
-</code></pre></div></div> <p>特别的，x*y中，如果y是2的N次方，因此相当于x右移N位。</p> <p><strong>2.除法(加减交替法)</strong><br /> x/y其实就是，x不断减y的过程。小学时候学的长长除法就是这个原理。<br /> 用二进制的除法x/y，比十进制容易写，商不是0即是1，而且如果除数大于除数的1倍，商就是标记在另一个位上面了。</p> <p>二进制除法x/y=0.1001/0.1011手工计算如下：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            0.11  
+</code></pre></div></div> <p>特别的，x*y中，如果y是2的N次方，因此相当于x右移N位。</p> <p><strong>2.除法(加减交替法)</strong><br /> x/y其实就是，x不断减y的过程。小学时候学的长长除法就是这个原理。<br /> 用二进制的除法x/y，比十进制容易写，商不是0即是1，而且如果除数大于除数的1倍，商就是标记在另一个位上面了。</p> <p>二进制除法x/y=0.1001/0.1011手工计算如下：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            0.11  
        _______
 0.1001/0.1001
          10010(后面补0)
@@ -205,7 +205,7 @@ e.把a、b、c、d的结果相加1111+0+111100+1111000=11000011(195),该结果�
 设ri表示第i次运算后所得的余数,则：
 若ri&gt;0，则商1，余数和商左移1位，再减去除数，即ri+1=2ri-y
 若ri&lt;0，则商0，余数和商左移1位，再加上除数，即ri+1=2ri+y
-</code></pre></div></div> <p>用85/6来举例,85/6=1010101/110</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a.101(0101)左移1位到第3位都小于110，因此商=000  
+</code></pre></div></div> <p>用85/6来举例,85/6=1010101/110</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a.101(0101)左移1位到第3位都小于110，因此商=000  
 b.1010(101)左移四位是1010,比110大，商=0001,余数=1010-110=100(101)  
 c.余数100(101)左移一位是1001,比110大，商=00011,余数=1001-110=11(01)  
 d.余数11(01)左移一位是110,等于110，商=000111,余数=0(1)  

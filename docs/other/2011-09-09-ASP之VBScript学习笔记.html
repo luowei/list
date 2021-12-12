@@ -111,7 +111,7 @@ Author:罗维
     <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/vbscript"</span><span class="nt">&gt;</span> 
         <span class="nx">dim</span> <span class="nx">num1</span><span class="p">,</span><span class="nx">num2</span><span class="p">,</span><span class="nx">num3</span> 
     <span class="dl">'</span><span class="s1">-------------------------------------------------- 
-        function getnum()    </span><span class="dl">'</span><span class="err">获取输入框的数字</span> 
+        function getnum()    </span><span class="dl">'</span><span class="nx">获取输入框的数字</span> 
             <span class="nx">num1</span><span class="o">=</span><span class="nx">cDbl</span><span class="p">(</span><span class="nx">form1</span><span class="p">.</span><span class="nx">num1</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span> 
             <span class="k">if</span> <span class="nx">num1</span><span class="o">=</span><span class="nx">Empty</span> <span class="nx">or</span> <span class="p">(</span><span class="nx">not</span> <span class="nx">isNumeric</span><span class="p">(</span><span class="nx">num1</span><span class="p">))</span> <span class="nx">then</span> 
                 <span class="nx">MsgBox</span><span class="p">(</span><span class="dl">"</span><span class="s2">第一个输入框的数字有误</span><span class="dl">"</span><span class="p">)</span> 
@@ -125,7 +125,7 @@ Author:罗维
             <span class="nx">getnum</span><span class="o">=</span><span class="kc">true</span> 
         <span class="nx">end</span> <span class="kd">function</span> 
     <span class="dl">'</span><span class="s1">--------------------------------------------------     
-        function Add()    </span><span class="dl">'</span><span class="err">加法运算</span> 
+        function Add()    </span><span class="dl">'</span><span class="nx">加法运算</span> 
             <span class="k">if</span> <span class="nx">getnum</span> <span class="nx">then</span> 
                 <span class="nx">Add</span><span class="o">=</span><span class="nx">num1</span><span class="o">+</span><span class="nx">num2</span> 
             <span class="k">else</span> 
@@ -133,7 +133,7 @@ Author:罗维
             <span class="nx">end</span> <span class="k">if</span> 
         <span class="nx">end</span> <span class="kd">function</span> 
     <span class="dl">'</span><span class="s1">--------------------------------------------------     
-        function Substract()    </span><span class="dl">'</span><span class="err">减法运算</span> 
+        function Substract()    </span><span class="dl">'</span><span class="nx">减法运算</span> 
             <span class="k">if</span> <span class="nx">getnum</span> <span class="nx">then</span> 
                 <span class="nx">Substract</span><span class="o">=</span><span class="nx">num1</span><span class="o">-</span><span class="nx">num2</span> 
             <span class="k">else</span> 
@@ -141,7 +141,7 @@ Author:罗维
             <span class="nx">end</span> <span class="k">if</span> 
         <span class="nx">end</span> <span class="kd">function</span> 
     <span class="dl">'</span><span class="s1">--------------------------------------------------     
-        function Multiply()    </span><span class="dl">'</span><span class="err">乘法运算</span> 
+        function Multiply()    </span><span class="dl">'</span><span class="nx">乘法运算</span> 
             <span class="k">if</span> <span class="nx">getnum</span> <span class="nx">then</span> 
                 <span class="nx">Multiply</span><span class="o">=</span><span class="nx">num1</span><span class="o">*</span><span class="nx">num2</span> 
             <span class="k">else</span> 
@@ -149,7 +149,7 @@ Author:罗维
             <span class="nx">end</span> <span class="k">if</span> 
         <span class="nx">end</span> <span class="kd">function</span> 
     <span class="dl">'</span><span class="s1">--------------------------------------------------     
-        function Divide()    </span><span class="dl">'</span><span class="err">除法运算</span> 
+        function Divide()    </span><span class="dl">'</span><span class="nx">除法运算</span> 
             <span class="k">if</span> <span class="nx">getnum</span> <span class="nx">then</span> 
                 <span class="k">if</span><span class="p">(</span><span class="nx">num2</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="nx">then</span> 
                     <span class="nx">MsgBox</span> <span class="dl">"</span><span class="s2">被除数为零！</span><span class="dl">"</span> 
@@ -162,7 +162,7 @@ Author:罗维
         <span class="nx">end</span> <span class="kd">function</span> 
     <span class="dl">'</span><span class="s1">--------------------------------------------------     
         function opt() 
-</span><span class="dl">'</span><span class="err">方式一</span> 
+</span><span class="dl">'</span><span class="nx">方式一</span> 
 <span class="dl">'</span><span class="s1">            if form1.operate.value="+" then 
 </span><span class="dl">'</span>                <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">Add</span> 
 <span class="dl">'</span><span class="s1">            elseif form1.operate.value="-" then 
@@ -178,7 +178,7 @@ Author:罗维
 <span class="dl">'</span><span class="s1">                    form1.result.value=Divide 
 </span><span class="dl">'</span>                <span class="nx">end</span> <span class="k">if</span> 
 <span class="dl">'</span><span class="s1">            end if 
-</span><span class="dl">'</span><span class="err">方式二</span> 
+</span><span class="dl">'</span><span class="nx">方式二</span> 
             <span class="nx">select</span> <span class="k">case</span> <span class="nx">form1</span><span class="p">.</span><span class="nx">operate</span><span class="p">.</span><span class="nx">value</span> 
                 <span class="k">case</span> <span class="dl">"</span><span class="s2">+</span><span class="dl">"</span> 
                     <span class="nx">form1</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">value</span><span class="o">=</span><span class="nx">Add</span> 

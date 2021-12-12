@@ -1,102 +1,102 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-12-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%BC%96%E7%A8%8B.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-保护模式下编程</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="保护模式下编程">保护模式下编程</h3> <p><strong>1.在保护模式下32位CPU仍然可以用20位地址来实现32位地址线寻址</strong></p> <blockquote> <p>16位CPU: 16位段寄存器+16位偏移地址 (经地址加法器) -&gt; 20位物理内存地址 32位CPU: 32位地址的内存段信息存入在一张内存表中，只需将表的索引存入16寄存器当中即可 保存表中索引的段寄存器称为：段选择子 表中每个表示32位内存段信息称为：段描述符（保存了段的地址和段的长度）。 <br /> 整张表称为：段描述符表 段选择子16位，其中高13位用来表示描述符表中的索引，其低3位用表示段描述符中所指向的段描述符的属性</p> </blockquote> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/c/asm/01.jpg" alt="asm" /></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">;启动程序在屏幕中央打印一行字符串</span>
-<span class="err">[</span><span class="n">BITS</span> <span class="mi">16</span><span class="err">]</span>
-<span class="n">org</span> <span class="mi">07</span><span class="n">c00h</span>    <span class="c">;指明程序开始地址是07c00h,而不是原来 的00000</span>
-<span class="c">;int 汇编指令    int 10h</span>
-<span class="k">jmp</span> <span class="n">main</span>
-<span class="n">gdt_table_start</span><span class="o">:</span>    <span class="c">;告诉编译器段描述符开始</span>
-    <span class="c">;Intel规定描述符表的第一个描述符必须是空描述符</span>
-    <span class="n">gdt_null</span><span class="o">:</span>
-        <span class="kt">dd</span> <span class="mi">0</span><span class="n">h</span>
-        <span class="kt">dd</span> <span class="mi">0</span><span class="n">h</span>    <span class="c">;Intel规定段描述符表的第一个表项必须为0</span>
-    <span class="n">gdt_data_addr</span>    <span class="k">equ</span>    <span class="err">$</span><span class="o">-</span><span class="n">gdt_table_start</span>    <span class="c">;数据段的开始位置</span>
-    <span class="n">gdt_data</span><span class="err">：</span>    <span class="c">;数据段描述符</span>
-        <span class="n">dw</span> <span class="mi">07</span><span class="n">ffh</span> <span class="c">;段界限</span>
-        <span class="n">dw</span> <span class="mi">0</span><span class="n">h</span>    <span class="c">;段基地址18位</span>
-        <span class="kt">db</span> <span class="mi">10010010</span><span class="n">b</span>    <span class="c">;段描述符的第六个字节属性（数据段）</span>
-        <span class="kt">db</span> <span class="mi">1100000</span><span class="n">b</span>    <span class="c">;段描述符的第七个字节属性</span>
-        <span class="kt">db</span> <span class="mi">0</span>    <span class="c">;段描述符的最后一个字节也就是段基地址</span>
-    <span class="n">gdt_video_addr</span> <span class="k">equ</span> <span class="err">$</span><span class="o">-</span><span class="n">gdt_table_start</span>
-    <span class="n">gdt_video</span><span class="o">:</span>    <span class="c">;用来描述显存地址空间的段描述符</span>
-        <span class="n">dw</span>    <span class="mi">0</span><span class="n">FFH</span>    <span class="c">;显存段界限就是1M</span>
-        <span class="n">dw</span>    <span class="mi">8000</span><span class="n">H</span>
-        <span class="kt">db</span>    <span class="mi">0</span><span class="n">BH</span>
-        <span class="kt">db</span>    <span class="mi">10010010</span><span class="n">b</span>
-        <span class="kt">db</span>    <span class="mi">11000000</span><span class="n">b</span>
-        <span class="kt">db</span>    <span class="mi">0</span>
-    <span class="n">gdt_code_addr</span>    <span class="k">equ</span>    <span class="err">$</span><span class="o">-</span><span class="n">gdt_table_start</span>    <span class="c">;代码段的开始位置</span>
-    <span class="n">gdt_code</span><span class="o">:</span>
-        <span class="n">dw</span> <span class="mi">07</span><span class="n">ff</span>    <span class="c">;段界限</span>
-        <span class="n">dw</span> <span class="mi">1</span><span class="n">h</span>    <span class="c">;段基地址0~18位</span>
-        <span class="kt">db</span> <span class="mi">80</span><span class="n">h</span>    <span class="c">;段基地址19~23位</span>
-        <span class="kt">db</span> <span class="mi">10011010</span><span class="n">b</span>    <span class="c">;段描述符的第六个字节（代码段）</span>
-        <span class="kt">db</span> <span class="mi">11000000</span><span class="n">b</span>    <span class="c">;段描述符的第七个字节</span>
-        <span class="kt">db</span> <span class="mi">0</span>            <span class="c">;段基地址的第二部分</span>
-<span class="n">gdt_table_end</span><span class="o">:</span>
-</code></pre></div></div> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/c/asm/02.jpg" alt="asm" /></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">;通过lgdt指令可以把GDTR描述表的大小和起始地址存入gdtr寄存器中</span>
-<span class="n">gdtr_addr</span><span class="o">:</span>
-    <span class="n">dw</span> <span class="n">gdt_table_end</span><span class="o">-</span><span class="n">gdt_table_start</span><span class="o">-</span><span class="mi">1</span>    <span class="c">;段描述表长度</span>
-    <span class="kt">dd</span> <span class="n">gdt_table_start</span>    <span class="c">;段描述表基地址</span>
-<span class="c">;lgdt [gdtr_addr]    ;让CPU读取gdtr_addr所指向内存内容保存到gdtr寄存器当中</span>
-<span class="c">;A20地址线，切换到保护模式时，A20地址线必须开启。地址回绕作用，放弃32位CPU地址线的高12位。?</span>
-<span class="c">;端口的读写操作：</span>
-    <span class="c">;in     accume port    ;将端口的内容读到寄存器AL或AX当中，其中accume只能是AL或AX。</span>
-    <span class="c">;out port accume    ;将accume中的内容写到端口中，这里accume可以是其它寄存器</span>
-<span class="c">;开启A20地址线</span>
-<span class="n">main</span><span class="o">:</span>
-    <span class="c">;修改数据段描述跟段基地址有关的字节，初始化数据段描述符的基地址</span>
-    <span class="k">xor</span> <span class="n">eax</span><span class="p">,</span><span class="n">eax</span>    <span class="c">;清空eax</span>
-    <span class="k">add</span> <span class="n">eax</span><span class="p">,</span><span class="n">data_32</span>    <span class="c">;将32位地址信息拷贝到eax中</span>
-    <span class="k">mov</span> <span class="n">word</span> <span class="err">[</span><span class="n">gdt_data</span><span class="o">+</span><span class="mi">2</span><span class="err">]</span><span class="p">,</span><span class="n">ax</span>    <span class="c">;把ax中的内容拷贝到段描述符的第3、4两个字节当中，因是word类型的拷贝?</span>
-    <span class="k">shr</span> <span class="n">eax</span><span class="p">,</span><span class="mi">16</span>    <span class="c">;右移16位</span>
-    <span class="k">mov</span> <span class="n">byte</span> <span class="err">[</span><span class="n">gdt_data</span><span class="o">+</span><span class="mi">4</span><span class="err">]</span><span class="p">,</span><span class="n">al</span>    <span class="c">;将先前eax中的第5个字节移到段描述符当中</span>
-    <span class="k">mov</span> <span class="n">byte</span> <span class="err">[</span><span class="n">gdt_data</span><span class="o">+</span><span class="mi">7</span><span class="err">]</span><span class="p">,</span><span class="n">ah</span>    <span class="c">;将先前eax中的第8个字节移到段描述符当中</span>
-    <span class="c">;修改代码段描述跟段基地址有关的字节，初始化数据段描述符的基地址</span>
-    <span class="k">xor</span> <span class="n">eax</span><span class="p">,</span><span class="n">eax</span>
-    <span class="k">add</span> <span class="n">eax</span><span class="p">,</span><span class="n">code_32</span>
-    <span class="k">mov</span> <span class="n">word</span> <span class="err">[</span><span class="n">gdt_code</span><span class="o">+</span><span class="mi">2</span><span class="err">]</span>
-    <span class="k">shr</span> <span class="n">eax</span><span class="p">,</span><span class="mi">16</span>
-    <span class="k">mov</span> <span class="n">byte</span> <span class="err">[</span><span class="n">gdt_code</span><span class="o">+</span><span class="mi">4</span><span class="err">]</span><span class="p">,</span><span class="n">al</span>
-    <span class="k">mov</span> <span class="n">byte</span> <span class="err">[</span><span class="n">gdt_code</span><span class="o">+</span><span class="mi">7</span><span class="err">]</span><span class="p">,</span><span class="n">ah</span>
-    <span class="c">;在转放保护模式之前，必须废除原来的中断向量表，用cli指令可以废除实模式下的中断向量表</span>
-    <span class="k">cli</span>
-    <span class="k">lgdt</span> <span class="err">[</span><span class="n">gdtr_addr</span><span class="err">]</span>    <span class="c">;让CPU读取gdtr_addr所指向内存内容保存到gdtr寄存器当中</span>
-    <span class="n">enable_a20</span><span class="o">:</span>
-        <span class="k">in</span> <span class="n">al</span><span class="p">,</span><span class="mi">92</span><span class="n">h</span>    <span class="c">;只要往0x92号端口中写入信息就可以开启A20地址线</span>
-        <span class="k">or</span> <span class="n">al</span><span class="p">,</span><span class="mi">00000010</span><span class="n">b</span>    <span class="c">;00000010表示开启A20地址线的数据</span>
-        <span class="k">out</span> <span class="mi">92</span><span class="n">h</span><span class="p">,</span><span class="n">al</span>        <span class="c">;把设置好的数据写进0x92号端口当中</span>
-<span class="c">;转入保护模式,只要将CR0寄存器的第1位(PE位)置为1即可</span>
-</code></pre></div></div> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/c/asm/03.jpg" alt="asm" /></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">;80386提供了4个32位的控制寄存器CR0~CR3，其中CR0中的某些位是用来标志是否要进入保护模式</span>
-<span class="c">;CR1寄存器保留没有被使用</span>
-<span class="c">;CR2和CR3用于分页机制</span>
-<span class="c">;CR0的PE位控制分段管理机制，PE=0,CPU运行于实模式；PE=1,CPU运行于保护模式</span>
-<span class="c">;CR0的PG位控制分段管理机,PG=0，禁止分页管理机制;PG=1，启用分页管理机制。</span>
-    <span class="k">mov</span> <span class="n">eax</span><span class="p">,</span><span class="n">cr0</span>
-    <span class="k">or</span> <span class="n">eax</span><span class="p">,</span><span class="mi">1</span>    <span class="c">;用于把CR0寄存器的第1置为1</span>
-    <span class="k">mov</span> <span class="n">cr0</span><span class="p">,</span><span class="n">eax</span>    <span class="c">;把CR0寄存器的第1置为1</span>
-<span class="c">;跳转到保护模式中</span>
-    <span class="k">jmp</span> <span class="n">gdt_code_addr</span><span class="o">:</span><span class="mi">0</span>
-<span class="c">;在保护模式下编程(在屏幕中央打印hello world)</span>
-<span class="err">[</span><span class="n">BITS</span> <span class="mi">32</span><span class="err">]</span>
-    <span class="n">data_32</span><span class="o">:</span>
-        <span class="kt">db</span>    <span class="s">"hello world"</span>
-    <span class="n">code_32</span><span class="o">:</span>
-        <span class="k">MOV</span> <span class="n">ax</span><span class="p">,</span><span class="n">gdt_data_addr</span>
-        <span class="k">mov</span> <span class="n">ds</span><span class="p">,</span><span class="n">ax</span>
-        <span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="n">gdt_video_addr</span>
-        <span class="k">mov</span> <span class="n">gs</span><span class="p">,</span><span class="n">ax</span>
-        <span class="k">mov</span> <span class="n">cx</span><span class="p">,</span><span class="mi">11</span>
-        <span class="k">mov</span> <span class="n">edi</span><span class="p">,(</span><span class="mi">80</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="mi">12</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span>    <span class="c">;在屏幕中央显示</span>
-        <span class="k">mov</span> <span class="n">bx</span><span class="p">,</span><span class="mi">0</span>
-        <span class="k">mov</span> <span class="n">ah</span><span class="p">,</span><span class="mi">0</span><span class="n">ch</span>
-        <span class="n">s</span><span class="o">:</span><span class="k">mov</span> <span class="n">al</span><span class="p">,</span><span class="err">[</span><span class="n">ds</span><span class="o">:</span><span class="n">bx</span><span class="err">]</span>
-        <span class="k">mov</span> <span class="err">[</span><span class="n">gs</span><span class="o">:</span><span class="n">edi</span><span class="err">]</span>
-        <span class="k">mov</span> <span class="err">[</span><span class="n">gs</span><span class="o">:</span><span class="n">edi</span><span class="o">+</span><span class="mi">1</span><span class="err">]</span><span class="p">,</span><span class="n">ah</span>
-        <span class="k">inc</span> <span class="n">bx</span>
-        <span class="k">add</span> <span class="n">edi</span><span class="p">,</span><span class="mi">2</span>
-        <span class="k">loop</span> <span class="n">s</span>
-        <span class="k">jmp</span> <span class="err">$</span>    <span class="c">;死循环</span>
-        <span class="n">times</span> <span class="mi">510</span><span class="o">-</span><span class="p">(</span><span class="err">$</span><span class="o">-</span><span class="err">$$</span><span class="p">)</span>    <span class="kt">db</span> <span class="mi">0</span>
-        <span class="n">dw</span> <span class="mi">0</span><span class="n">aa55h</span>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/asm/2011-03-12-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%BC%96%E7%A8%8B.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>ASM-保护模式下编程</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h3 id="保护模式下编程">保护模式下编程</h3> <p><strong>1.在保护模式下32位CPU仍然可以用20位地址来实现32位地址线寻址</strong></p> <blockquote> <p>16位CPU: 16位段寄存器+16位偏移地址 (经地址加法器) -&gt; 20位物理内存地址 32位CPU: 32位地址的内存段信息存入在一张内存表中，只需将表的索引存入16寄存器当中即可 保存表中索引的段寄存器称为：段选择子 表中每个表示32位内存段信息称为：段描述符（保存了段的地址和段的长度）。 <br /> 整张表称为：段描述符表 段选择子16位，其中高13位用来表示描述符表中的索引，其低3位用表示段描述符中所指向的段描述符的属性</p> </blockquote> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/c/asm/01.jpg" alt="asm" /></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">;启动程序在屏幕中央打印一行字符串</span>
+<span class="err">[</span><span class="k">BITS</span> <span class="mi">16</span><span class="p">]</span>
+<span class="nf">org</span> <span class="mh">07c00h</span>    <span class="c1">;指明程序开始地址是07c00h,而不是原来 的00000</span>
+<span class="c1">;int 汇编指令    int 10h</span>
+<span class="nf">jmp</span> <span class="nv">main</span>
+<span class="nl">gdt_table_start:</span>    <span class="c1">;告诉编译器段描述符开始</span>
+    <span class="c1">;Intel规定描述符表的第一个描述符必须是空描述符</span>
+    <span class="nl">gdt_null:</span>
+        <span class="kd">dd</span> <span class="mh">0h</span>
+        <span class="kd">dd</span> <span class="mh">0h</span>    <span class="c1">;Intel规定段描述符表的第一个表项必须为0</span>
+    <span class="no">gdt_data_addr</span><span class="kd">    equ</span>    <span class="kc">$</span><span class="o">-</span><span class="nv">gdt_table_start</span>    <span class="c1">;数据段的开始位置</span>
+    <span class="nf">gdt_data</span><span class="err">：</span>    <span class="c1">;数据段描述符</span>
+        <span class="kd">dw</span> <span class="mh">07ffh</span> <span class="c1">;段界限</span>
+        <span class="kd">dw</span> <span class="mh">0h</span>    <span class="c1">;段基地址18位</span>
+        <span class="kd">db</span> <span class="mb">10010010b</span>    <span class="c1">;段描述符的第六个字节属性（数据段）</span>
+        <span class="kd">db</span> <span class="mb">1100000b</span>    <span class="c1">;段描述符的第七个字节属性</span>
+        <span class="kd">db</span> <span class="mi">0</span>    <span class="c1">;段描述符的最后一个字节也就是段基地址</span>
+    <span class="no">gdt_video_addr</span><span class="kd"> equ</span> <span class="kc">$</span><span class="o">-</span><span class="nv">gdt_table_start</span>
+    <span class="nl">gdt_video:</span>    <span class="c1">;用来描述显存地址空间的段描述符</span>
+        <span class="kd">dw</span>    <span class="mh">0FFH</span>    <span class="c1">;显存段界限就是1M</span>
+        <span class="kd">dw</span>    <span class="mh">8000H</span>
+        <span class="kd">db</span>    <span class="mh">0BH</span>
+        <span class="kd">db</span>    <span class="mb">10010010b</span>
+        <span class="kd">db</span>    <span class="mb">11000000b</span>
+        <span class="kd">db</span>    <span class="mi">0</span>
+    <span class="no">gdt_code_addr</span><span class="kd">    equ</span>    <span class="kc">$</span><span class="o">-</span><span class="nv">gdt_table_start</span>    <span class="c1">;代码段的开始位置</span>
+    <span class="nl">gdt_code:</span>
+        <span class="kd">dw</span> <span class="mi">07</span><span class="nv">ff</span>    <span class="c1">;段界限</span>
+        <span class="kd">dw</span> <span class="mh">1h</span>    <span class="c1">;段基地址0~18位</span>
+        <span class="kd">db</span> <span class="mh">80h</span>    <span class="c1">;段基地址19~23位</span>
+        <span class="kd">db</span> <span class="mb">10011010b</span>    <span class="c1">;段描述符的第六个字节（代码段）</span>
+        <span class="kd">db</span> <span class="mb">11000000b</span>    <span class="c1">;段描述符的第七个字节</span>
+        <span class="kd">db</span> <span class="mi">0</span>            <span class="c1">;段基地址的第二部分</span>
+<span class="nl">gdt_table_end:</span>
+</code></pre></div></div> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/c/asm/02.jpg" alt="asm" /></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">;通过lgdt指令可以把GDTR描述表的大小和起始地址存入gdtr寄存器中</span>
+<span class="nl">gdtr_addr:</span>
+    <span class="kd">dw</span> <span class="nv">gdt_table_end</span><span class="o">-</span><span class="nv">gdt_table_start</span><span class="o">-</span><span class="mi">1</span>    <span class="c1">;段描述表长度</span>
+    <span class="kd">dd</span> <span class="nv">gdt_table_start</span>    <span class="c1">;段描述表基地址</span>
+<span class="c1">;lgdt [gdtr_addr]    ;让CPU读取gdtr_addr所指向内存内容保存到gdtr寄存器当中</span>
+<span class="c1">;A20地址线，切换到保护模式时，A20地址线必须开启。地址回绕作用，放弃32位CPU地址线的高12位。?</span>
+<span class="c1">;端口的读写操作：</span>
+    <span class="c1">;in     accume port    ;将端口的内容读到寄存器AL或AX当中，其中accume只能是AL或AX。</span>
+    <span class="c1">;out port accume    ;将accume中的内容写到端口中，这里accume可以是其它寄存器</span>
+<span class="c1">;开启A20地址线</span>
+<span class="nl">main:</span>
+    <span class="c1">;修改数据段描述跟段基地址有关的字节，初始化数据段描述符的基地址</span>
+    <span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span><span class="nb">eax</span>    <span class="c1">;清空eax</span>
+    <span class="nf">add</span> <span class="nb">eax</span><span class="p">,</span><span class="nv">data_32</span>    <span class="c1">;将32位地址信息拷贝到eax中</span>
+    <span class="nf">mov</span> <span class="kt">word</span> <span class="p">[</span><span class="nv">gdt_data</span><span class="o">+</span><span class="mi">2</span><span class="p">],</span><span class="nb">ax</span>    <span class="c1">;把ax中的内容拷贝到段描述符的第3、4两个字节当中，因是word类型的拷贝?</span>
+    <span class="nf">shr</span> <span class="nb">eax</span><span class="p">,</span><span class="mi">16</span>    <span class="c1">;右移16位</span>
+    <span class="nf">mov</span> <span class="kt">byte</span> <span class="p">[</span><span class="nv">gdt_data</span><span class="o">+</span><span class="mi">4</span><span class="p">],</span><span class="nb">al</span>    <span class="c1">;将先前eax中的第5个字节移到段描述符当中</span>
+    <span class="nf">mov</span> <span class="kt">byte</span> <span class="p">[</span><span class="nv">gdt_data</span><span class="o">+</span><span class="mi">7</span><span class="p">],</span><span class="nb">ah</span>    <span class="c1">;将先前eax中的第8个字节移到段描述符当中</span>
+    <span class="c1">;修改代码段描述跟段基地址有关的字节，初始化数据段描述符的基地址</span>
+    <span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">add</span> <span class="nb">eax</span><span class="p">,</span><span class="nv">code_32</span>
+    <span class="nf">mov</span> <span class="kt">word</span> <span class="p">[</span><span class="nv">gdt_code</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+    <span class="nf">shr</span> <span class="nb">eax</span><span class="p">,</span><span class="mi">16</span>
+    <span class="nf">mov</span> <span class="kt">byte</span> <span class="p">[</span><span class="nv">gdt_code</span><span class="o">+</span><span class="mi">4</span><span class="p">],</span><span class="nb">al</span>
+    <span class="nf">mov</span> <span class="kt">byte</span> <span class="p">[</span><span class="nv">gdt_code</span><span class="o">+</span><span class="mi">7</span><span class="p">],</span><span class="nb">ah</span>
+    <span class="c1">;在转放保护模式之前，必须废除原来的中断向量表，用cli指令可以废除实模式下的中断向量表</span>
+    <span class="nf">cli</span>
+    <span class="nf">lgdt</span> <span class="p">[</span><span class="nv">gdtr_addr</span><span class="p">]</span>    <span class="c1">;让CPU读取gdtr_addr所指向内存内容保存到gdtr寄存器当中</span>
+    <span class="nl">enable_a20:</span>
+        <span class="nf">in</span> <span class="nb">al</span><span class="p">,</span><span class="mh">92h</span>    <span class="c1">;只要往0x92号端口中写入信息就可以开启A20地址线</span>
+        <span class="nf">or</span> <span class="nb">al</span><span class="p">,</span><span class="mb">00000010b</span>    <span class="c1">;00000010表示开启A20地址线的数据</span>
+        <span class="nf">out</span> <span class="mh">92h</span><span class="p">,</span><span class="nb">al</span>        <span class="c1">;把设置好的数据写进0x92号端口当中</span>
+<span class="c1">;转入保护模式,只要将CR0寄存器的第1位(PE位)置为1即可</span>
+</code></pre></div></div> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/c/asm/03.jpg" alt="asm" /></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">;80386提供了4个32位的控制寄存器CR0~CR3，其中CR0中的某些位是用来标志是否要进入保护模式</span>
+<span class="c1">;CR1寄存器保留没有被使用</span>
+<span class="c1">;CR2和CR3用于分页机制</span>
+<span class="c1">;CR0的PE位控制分段管理机制，PE=0,CPU运行于实模式；PE=1,CPU运行于保护模式</span>
+<span class="c1">;CR0的PG位控制分段管理机,PG=0，禁止分页管理机制;PG=1，启用分页管理机制。</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span><span class="nb">cr0</span>
+    <span class="nf">or</span> <span class="nb">eax</span><span class="p">,</span><span class="mi">1</span>    <span class="c1">;用于把CR0寄存器的第1置为1</span>
+    <span class="nf">mov</span> <span class="nb">cr0</span><span class="p">,</span><span class="nb">eax</span>    <span class="c1">;把CR0寄存器的第1置为1</span>
+<span class="c1">;跳转到保护模式中</span>
+    <span class="nf">jmp</span> <span class="nv">gdt_code_addr</span><span class="p">:</span><span class="mi">0</span>
+<span class="c1">;在保护模式下编程(在屏幕中央打印hello world)</span>
+<span class="err">[</span><span class="k">BITS</span> <span class="mi">32</span><span class="p">]</span>
+    <span class="nl">data_32:</span>
+        <span class="kd">db</span>    <span class="s">"hello world"</span>
+    <span class="nl">code_32:</span>
+        <span class="nf">MOV</span> <span class="nb">ax</span><span class="p">,</span><span class="nv">gdt_data_addr</span>
+        <span class="nf">mov</span> <span class="nb">ds</span><span class="p">,</span><span class="nb">ax</span>
+        <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="nv">gdt_video_addr</span>
+        <span class="nf">mov</span> <span class="nb">gs</span><span class="p">,</span><span class="nb">ax</span>
+        <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mi">11</span>
+        <span class="nf">mov</span> <span class="nb">edi</span><span class="p">,(</span><span class="mi">80</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="mi">12</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span>    <span class="c1">;在屏幕中央显示</span>
+        <span class="nf">mov</span> <span class="nb">bx</span><span class="p">,</span><span class="mi">0</span>
+        <span class="nf">mov</span> <span class="nb">ah</span><span class="p">,</span><span class="mh">0ch</span>
+        <span class="nl">s:</span><span class="nf">mov</span> <span class="nb">al</span><span class="p">,[</span><span class="nb">ds</span><span class="p">:</span><span class="nb">bx</span><span class="p">]</span>
+        <span class="nf">mov</span> <span class="p">[</span><span class="nb">gs</span><span class="p">:</span><span class="nb">edi</span><span class="p">]</span>
+        <span class="nf">mov</span> <span class="p">[</span><span class="nb">gs</span><span class="p">:</span><span class="nb">edi</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="nb">ah</span>
+        <span class="nf">inc</span> <span class="nb">bx</span>
+        <span class="nf">add</span> <span class="nb">edi</span><span class="p">,</span><span class="mi">2</span>
+        <span class="nf">loop</span> <span class="nv">s</span>
+        <span class="nf">jmp</span> <span class="kc">$</span>    <span class="c1">;死循环</span>
+        <span class="kd">times</span> <span class="mi">510</span><span class="o">-</span><span class="p">(</span><span class="kc">$</span><span class="o">-</span><span class="kc">$$</span><span class="p">)</span>    <span class="nv">db</span> <span class="mi">0</span>
+        <span class="kd">dw</span> <span class="mh">0aa55h</span>
 </code></pre></div></div> <p>ok ! ^_^.</p> <blockquote> <p>1.启动虚拟机，用nasm boot.asm -o boot.bin 编译 2.把程序写到软盘镜像里去，用编译好的写入文件程序写入: ./write_image boot.bin boot.img 3.将boot.img复制到自己在Bochs-2.4.6目录下建的文件夹下，并修改run.bat</p> </blockquote> <hr /> <p>其中write_image.c,可以在rad hat的vi编辑器这样写：</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include&lt;stdio.h&gt;
 #include&lt;fcnt.h&gt;
 #include&lt;sys/types.h&gt;
@@ -122,23 +122,23 @@
     <span class="n">printf</span><span class="p">(</span><span class="s">"wrinte image OK !"</span><span class="p">);</span>
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div></div> <p>保存成write_image.c，然后编译：<code class="highlighter-rouge">gcc write_image.c -o write_image</code>. 用虚拟软盘制作工具，制作一个虚拟软盘（取名boot.img），最后再用它将引导程序写入boot.img.</p> <p>^_^ ok!<br /> 启动程序有问题的话，可以用bocsh虚拟机对操作系统进行调试。</p> <p><strong>bocsh的调试功能bocshdbg</strong></p> <blockquote> <p>continue(c) 程序继续运行直到遇到断点为止 step(s) 音步跟踪 vbreak(vb) 在虚拟地址上设置一个断点 pbreak(b) 在物理地址上设置一个断点 lbreak(lb) 在线性地址上设置一个断点 disassemble 反汇编指令</p> </blockquote> <p><strong>2.一个在屏幕中央显示一行字符串的引导程(实模式下写)</strong></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">;启动程序在屏幕中央打印一行字符串</span>
+</code></pre></div></div> <p>保存成write_image.c，然后编译：<code class="language-plaintext highlighter-rouge">gcc write_image.c -o write_image</code>. 用虚拟软盘制作工具，制作一个虚拟软盘（取名boot.img），最后再用它将引导程序写入boot.img.</p> <p>^_^ ok!<br /> 启动程序有问题的话，可以用bocsh虚拟机对操作系统进行调试。</p> <p><strong>bocsh的调试功能bocshdbg</strong></p> <blockquote> <p>continue(c) 程序继续运行直到遇到断点为止 step(s) 音步跟踪 vbreak(vb) 在虚拟地址上设置一个断点 pbreak(b) 在物理地址上设置一个断点 lbreak(lb) 在线性地址上设置一个断点 disassemble 反汇编指令</p> </blockquote> <p><strong>2.一个在屏幕中央显示一行字符串的引导程(实模式下写)</strong></p> <div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">;启动程序在屏幕中央打印一行字符串</span>
 
-<span class="n">org</span> <span class="mi">07</span><span class="n">c00h</span>    <span class="c">;指明程序开始地址是07c00h,而不是原来 的00000</span>
-<span class="c">;int 汇编指令    int 10h</span>
-    <span class="k">mov</span> <span class="n">ax</span><span class="p">,</span><span class="n">cs</span>
-    <span class="k">mov</span> <span class="n">es</span><span class="p">,</span><span class="n">ax</span>
-    <span class="k">mov</span> <span class="n">bp</span><span class="p">,</span><span class="n">msgstr</span>    <span class="c">;es:bp指向的内容就是我们要显示的字符串地址?</span>
-    <span class="k">mov</span> <span class="n">cx</span><span class="p">,</span><span class="mi">12</span>    <span class="c">;字符串长度</span>
-    <span class="k">mov</span> <span class="n">dh</span><span class="p">,</span><span class="mi">12</span>    <span class="c">;显示起始行号</span>
-    <span class="k">mov</span> <span class="n">dl</span><span class="p">,</span><span class="mi">36</span>    <span class="c">;显示的列号</span>
-    <span class="k">mov</span> <span class="n">bh</span><span class="p">,</span><span class="mi">0</span>    <span class="c">;显示的页数，在第0页显示</span>
-    <span class="k">mov</span> <span class="n">al</span><span class="p">,</span><span class="mi">1</span>    <span class="c">;串结构</span>
-    <span class="k">mov</span> <span class="n">bl</span><span class="p">,</span><span class="mi">0</span><span class="n">c</span>    <span class="c">;黑底红字</span>
-    <span class="n">msgstr</span><span class="o">:</span> <span class="kt">db</span> <span class="s">"hello my os"</span>
-    <span class="k">int</span> <span class="mi">10</span><span class="n">h</span>        <span class="c">;BIOS中断</span>
-    <span class="n">times</span> <span class="mi">510</span><span class="o">-</span><span class="p">(</span><span class="err">$</span><span class="o">-</span><span class="err">$$</span><span class="p">)</span> <span class="kt">db</span> <span class="mi">0</span> <span class="c">;重复N次每次填充值为0</span>
-    <span class="c">;因为BIOS的第一个扇区是512字节，当最后两字节是55AA时，它就是引导程序?</span>
-    <span class="n">dw</span> <span class="mi">55</span><span class="n">aaH</span>
-    <span class="k">jmp</span> <span class="err">$</span>    <span class="c">;为了不让程序结束，设置一个死循环，不断跳转到当前位置</span>
-</code></pre></div></div> <p>在Linux操作系统下，用nasm 进行编译，命令：# <code class="highlighter-rouge">nasm boot.asm -o boot.bin</code> <br /> 用 ndisasm boot.bin 可以进行反编译.</p> <p>参考自大灰狼之视频教程<a href="http://www.boobooke.com/m2/">《零基础汇编汇编视频课程》</a>.</p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=ASM-保护模式下编程 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html&amp;title=ASM-保护模式下编程 - 知不知&amp;summary=保护模式下编程&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html&amp;text=ASM-保护模式下编程 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html&amp;t=ASM-保护模式下编程 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('ASM-保护模式下编程'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
+<span class="nf">org</span> <span class="mh">07c00h</span>    <span class="c1">;指明程序开始地址是07c00h,而不是原来 的00000</span>
+<span class="c1">;int 汇编指令    int 10h</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span><span class="nb">cs</span>
+    <span class="nf">mov</span> <span class="nb">es</span><span class="p">,</span><span class="nb">ax</span>
+    <span class="nf">mov</span> <span class="nb">bp</span><span class="p">,</span><span class="nv">msgstr</span>    <span class="c1">;es:bp指向的内容就是我们要显示的字符串地址?</span>
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mi">12</span>    <span class="c1">;字符串长度</span>
+    <span class="nf">mov</span> <span class="nb">dh</span><span class="p">,</span><span class="mi">12</span>    <span class="c1">;显示起始行号</span>
+    <span class="nf">mov</span> <span class="nb">dl</span><span class="p">,</span><span class="mi">36</span>    <span class="c1">;显示的列号</span>
+    <span class="nf">mov</span> <span class="nb">bh</span><span class="p">,</span><span class="mi">0</span>    <span class="c1">;显示的页数，在第0页显示</span>
+    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mi">1</span>    <span class="c1">;串结构</span>
+    <span class="nf">mov</span> <span class="nb">bl</span><span class="p">,</span><span class="mi">0</span><span class="nv">c</span>    <span class="c1">;黑底红字</span>
+    <span class="nl">msgstr:</span> <span class="kd">db</span> <span class="s">"hello my os"</span>
+    <span class="nf">int</span> <span class="mh">10h</span>        <span class="c1">;BIOS中断</span>
+    <span class="kd">times</span> <span class="mi">510</span><span class="o">-</span><span class="p">(</span><span class="kc">$</span><span class="o">-</span><span class="kc">$$</span><span class="p">)</span> <span class="nv">db</span> <span class="mi">0</span> <span class="c1">;重复N次每次填充值为0</span>
+    <span class="c1">;因为BIOS的第一个扇区是512字节，当最后两字节是55AA时，它就是引导程序?</span>
+    <span class="kd">dw</span> <span class="mh">55aaH</span>
+    <span class="nf">jmp</span> <span class="kc">$</span>    <span class="c1">;为了不让程序结束，设置一个死循环，不断跳转到当前位置</span>
+</code></pre></div></div> <p>在Linux操作系统下，用nasm 进行编译，命令：# <code class="language-plaintext highlighter-rouge">nasm boot.asm -o boot.bin</code> <br /> 用 ndisasm boot.bin 可以进行反编译.</p> <p>参考自大灰狼之视频教程<a href="http://www.boobooke.com/m2/">《零基础汇编汇编视频课程》</a>.</p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=ASM-保护模式下编程 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html&amp;title=ASM-保护模式下编程 - 知不知&amp;summary=保护模式下编程&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html&amp;text=ASM-保护模式下编程 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html&amp;t=ASM-保护模式下编程 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocs%2Fasm%2F2011-03-12-%25E4%25BF%259D%25E6%258A%25A4%25E6%25A8%25A1%25E5%25BC%258F%25E4%25B8%258B%25E7%25BC%2596%25E7%25A8%258B.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('ASM-保护模式下编程'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>

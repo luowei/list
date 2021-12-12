@@ -1,5 +1,5 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2012-01-10-Struts%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E6%8B%A6%E6%88%AA%E5%99%A8%E3%80%81%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%B8%8B%E8%BD%BD%E3%80%81xml%E3%80%81json.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Struts学习笔记之拦截器、文件上传下载、xml、json</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_69.jpg" alt="文件结构" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_70.jpg" alt="文件结构" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_71.jpg" alt="文件结构" /></p> <p><strong>Struts2应用的分层体系架构</strong> 要点：<br /> 1.将处理逻辑放到service里，如Action层不准许出现在sql语句，session、request不允许传到service层去。</p> <p>示例：<br /> LoginAction.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
-<span class="err">……该导入的包……</span>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docs/java/2012-01-10-Struts%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E6%8B%A6%E6%88%AA%E5%99%A8%E3%80%81%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%B8%8B%E8%BD%BD%E3%80%81xml%E3%80%81json.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Java-Struts学习笔记之拦截器、文件上传下载、xml、json</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <p><strong>文件结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_69.jpg" alt="文件结构" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_70.jpg" alt="文件结构" /><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_71.jpg" alt="文件结构" /></p> <p><strong>Struts2应用的分层体系架构</strong> 要点：<br /> 1.将处理逻辑放到service里，如Action层不准许出现在sql语句，session、request不允许传到service层去。</p> <p>示例：<br /> LoginAction.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.struts2.struts2</span><span class="o">;</span>
+<span class="err">……</span><span class="n">该导入的包</span><span class="err">……</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">LoginAction</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
 <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">username</span><span class="o">;</span>
@@ -7,7 +7,7 @@
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">Date</span> <span class="n">date</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">LoginService</span> <span class="n">loginService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LoginServiceImpl</span><span class="o">();</span>
-    <span class="err">……</span><span class="n">Set</span><span class="err">与</span><span class="n">get</span><span class="err">方法……</span>
+    <span class="err">……</span><span class="nc">Set与get方法</span><span class="err">……</span>
     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>
     <span class="o">{</span>    <span class="c1">//业务逻辑不写到Action里</span>
         <span class="c1">//        if(!"hello".equals(username))</span>
@@ -35,12 +35,12 @@
     <span class="o">}</span>
 <span class="err">………………</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>LoginService.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">.</span><span class="na">service</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>LoginService.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.struts2.service</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">LoginService</span>
 <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isLogin</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">,</span> <span class="nc">String</span> <span class="n">password</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>LoginServiceImpl.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">.</span><span class="na">service</span><span class="o">.</span><span class="na">impl</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>LoginServiceImpl.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.struts2.service.impl</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.struts2.service.LoginService</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">LoginServiceImpl</span> <span class="kd">implements</span> <span class="nc">LoginService</span>
 <span class="o">{</span>
@@ -59,7 +59,7 @@
     &lt;result name="</span><span class="n">input</span><span class="err">"</span><span class="o">&gt;/</span><span class="n">login</span><span class="o">.</span><span class="na">jsp</span><span class="o">&lt;/</span><span class="n">result</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">action</span><span class="o">&gt;</span>
 <span class="err">…………</span>
-</code></pre></div></div> <p><strong>Struts2的模型驱动(model driven)</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点：
+</code></pre></div></div> <p><strong>Struts2的模型驱动(model driven)</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点：
 1.属性驱动(propertity driven)与模型驱动的区别：之前的都是属性驱动，属性驱动与模型驱动的处理方式差不多，但它们导致的结果却不同，属性驱动是在接收的请求后，将对象里的值一个一个的 set 好，此时并没有new 出一个整的对象。而模型驱动是在接收到用户提交表单请求后，就将对象创建好了，并把对象的值也设定好了，可以直接拿对象来用了。
 2.实现了ModelDriven接口的Action的执行过程
 
@@ -72,7 +72,7 @@
 2）模型驱动更加符合面向对象的编程风格，使得我们获得的是对象而不是一个个离散的值。
 小结：推荐使用属性驱动编写 Action。
 Preparable接口的作用是让 Action完成一些初始化工作，这些初始化工作是放在 Preparable接口的prepare方法中完成的，该方法会在execute方法执行之前得到调用。
-</code></pre></div></div> <p>示例：<br /> <strong>Person.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">.</span><span class="na">bean</span><span class="o">;</span>
+</code></pre></div></div> <p>示例：<br /> <strong>Person.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.struts2.bean</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span>
 <span class="o">{</span>
@@ -80,9 +80,9 @@ Preparable接口的作用是让 Action完成一些初始化工作，这些初始
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">password</span><span class="o">;</span>
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">Date</span> <span class="n">date</span><span class="o">;</span>
-    <span class="err">……</span><span class="n">get</span><span class="err">、</span><span class="n">set</span><span class="err">方法……</span>
+    <span class="err">……</span><span class="n">get</span><span class="err">、</span><span class="n">set方法</span><span class="err">……</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>LoginAction2.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>LoginAction2.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.struts2.struts2</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionSupport</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ModelDriven</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.Preparable</span><span class="o">;</span>
@@ -123,18 +123,18 @@ Preparable接口的作用是让 Action完成一些初始化工作，这些初始
  …………
 </code></pre></div></div> <p><strong>result.jsp</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">…………</span>
 <span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
-    <span class="nl">username:</span> <span class="err">$</span><span class="o">{</span><span class="n">requestScope</span><span class="o">.</span><span class="na">username</span> <span class="o">}&lt;</span><span class="n">br</span><span class="o">&gt;&lt;!--</span> <span class="n">requestScope</span><span class="err">相当于</span><span class="n">request</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">()</span> <span class="o">--&gt;</span>
+    <span class="nl">username:</span> <span class="err">$</span><span class="o">{</span><span class="n">requestScope</span><span class="o">.</span><span class="na">username</span> <span class="o">}&lt;</span><span class="n">br</span><span class="o">&gt;&lt;!--</span> <span class="n">requestScope相当于request</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">()</span> <span class="o">--&gt;</span>
     <span class="nl">password:</span> <span class="err">$</span><span class="o">{</span><span class="n">requestScope</span><span class="o">.</span><span class="na">password</span> <span class="o">}&lt;</span><span class="n">br</span><span class="o">&gt;</span>
     <span class="nl">age:</span> <span class="err">$</span><span class="o">{</span><span class="n">requestScope</span><span class="o">.</span><span class="na">age</span> <span class="o">}&lt;</span><span class="n">br</span><span class="o">&gt;</span>
     <span class="nl">date:</span> <span class="err">$</span><span class="o">{</span><span class="n">requestScope</span><span class="o">.</span><span class="na">date</span> <span class="o">}&lt;</span><span class="n">br</span><span class="o">&gt;</span>
-    <span class="nl">session:</span> <span class="err">$</span><span class="o">{</span><span class="n">sessionScope</span><span class="o">.</span><span class="na">hello</span> <span class="o">}&lt;!--</span> <span class="err">取得通过</span><span class="n">ServletActionContext</span><span class="err">方式获取的</span><span class="n">session</span> <span class="o">--&gt;</span>
+    <span class="nl">session:</span> <span class="err">$</span><span class="o">{</span><span class="n">sessionScope</span><span class="o">.</span><span class="na">hello</span> <span class="o">}&lt;!--</span> <span class="n">取得通过ServletActionContext方式获取的session</span> <span class="o">--&gt;</span>
 <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
 <span class="err">…………</span>
-</code></pre></div></div> <p><strong>服务器端代码的单元测试</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点：
+</code></pre></div></div> <p><strong>服务器端代码的单元测试</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点：
 服务器端代码的单元测试有两种模式
 1） 容器内测试（Jetty）
 2） Mock 测试 （ 继承 HttpServletRequest 、 HttpSession 、HttpServletResponse等Servlet API） 。
-</code></pre></div></div> <p><strong>防止表单重复提交</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点：
+</code></pre></div></div> <p><strong>防止表单重复提交</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点：
 1. 采取请求转发的方式完成表单内容的添加会造成内容的重复插入。采取重定向的方式实现数据的添加不会导致数据的重复插入(即：重定向到一个list查询Action)。
 2. 因为struts.xml文件中&lt;package name="struts2" extends="struts-default"&gt;,所以继续了struts-default中的结果类型。
 
@@ -179,14 +179,14 @@ password: <span class="nt">&lt;s:property</span> <span class="na">value=</span><
 usernameAndPassword: <span class="nt">&lt;s:property</span> <span class="na">value=</span><span class="s">"usernameAndPassword"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/body&gt;</span>
 …………
-</code></pre></div></div> <p>Action1.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+</code></pre></div></div> <p>Action1.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.struts2.struts2</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionSupport</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Action1</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
 <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">username</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">password</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">usernameAndPassword</span><span class="o">;</span>
-    <span class="err">……</span><span class="n">set</span><span class="err">、</span><span class="n">get</span><span class="err">方法……</span>
+    <span class="err">……</span><span class="n">set</span><span class="err">、</span><span class="n">get方法</span><span class="err">……</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>
     <span class="o">{</span>
@@ -194,14 +194,14 @@ usernameAndPassword: <span class="nt">&lt;s:property</span> <span class="na">val
         <span class="k">return</span> <span class="no">SUCCESS</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p>Action2.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+</code></pre></div></div> <p>Action2.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.struts2.struts2</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionSupport</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Action2</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
 <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">username</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">password</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">usernameAndPassword</span><span class="o">;</span>
-    <span class="err">………</span><span class="n">get</span><span class="err">、</span><span class="n">set</span><span class="err">方法………</span>
+    <span class="err">………</span><span class="n">get</span><span class="err">、</span><span class="n">set方法</span><span class="err">………</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>
     <span class="o">{</span>
@@ -243,31 +243,31 @@ usernameAndPassword: <span class="nt">&lt;s:property</span> <span class="na">val
     <span class="nt">&lt;/s:form&gt;</span>
 <span class="nt">&lt;/body&gt;</span>
 …………
-</code></pre></div></div> <p>TokenAction.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+</code></pre></div></div> <p>TokenAction.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.struts2.struts2</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionSupport</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TokenAction</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
 <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">username</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">password</span><span class="o">;</span>
-    <span class="err">……</span><span class="n">get</span><span class="err">、</span><span class="n">set</span><span class="err">方法……</span>
+    <span class="err">……</span><span class="n">get</span><span class="err">、</span><span class="n">set方法</span><span class="err">……</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>
     <span class="o">{</span>
         <span class="k">return</span> <span class="no">SUCCESS</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>   
-</code></pre></div></div> <p>tokenSuccess.jsp</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
+</code></pre></div></div> <p>tokenSuccess.jsp</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
 &lt;body&gt;
 username: &lt;s:property value="username"/&gt;&lt;br&gt;
 password: &lt;s:property value="password"/&gt;
 &lt;/body&gt;
 …………
-</code></pre></div></div> <p>tokenFail.jsp</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
+</code></pre></div></div> <p>tokenFail.jsp</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
 &lt;body&gt;
 不要重复提交表单
 &lt;/body&gt;
 …………
-</code></pre></div></div> <p>struts.xml</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
+</code></pre></div></div> <p>struts.xml</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
 &lt;action name="token" class="com.struts2.struts2.TokenAction"&gt;
     &lt;result name="success"&gt;/tokenSuccess.jsp&lt;/result&gt;
     &lt;result name="invalid.token"&gt;/tokenFail.jsp&lt;/result&gt;
@@ -275,7 +275,7 @@ password: &lt;s:property value="password"/&gt;
     &lt;interceptor-ref name="defaultStack"&gt;&lt;/interceptor-ref&gt;
 &lt;/action&gt;
 …………
-</code></pre></div></div> <p><strong>struts2拦截器</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点：  
+</code></pre></div></div> <p><strong>struts2拦截器</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点：  
 拦截器（Interceptor） ：拦截器是Struts2的核心，Struts2的众多功能都是通过拦截器来实现的；
 拦截器在服务器被启动时，被初始化，调用init方法；
 
@@ -283,7 +283,7 @@ password: &lt;s:property value="password"/&gt;
 1）编写实现Interceptor 接口的类。
 2）在struts.xml 文件中定义拦截器。
 3）在action中使用拦截器
-</code></pre></div></div> <p><strong>首先编写拦截器类（TheInterceptor1）</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">struts2</span><span class="o">.</span><span class="na">interceptor</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>首先编写拦截器类（TheInterceptor1）</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.struts2.interceptor</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionInvocation</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.interceptor.Interceptor</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TheInterceptor1</span> <span class="kd">implements</span> <span class="nc">Interceptor</span>
@@ -331,7 +331,7 @@ password: &lt;s:property value="password"/&gt;
         <span class="nt">&lt;/action&gt;</span>
     <span class="nt">&lt;/package&gt;</span>
 <span class="nt">&lt;/struts&gt;</span>
-</code></pre></div></div> <p>一旦定义了自己的拦截器，将其配置到 action上后，我们需要在action的最后加上默认的拦截器栈：defaultStack。</p> <p><strong>示例2</strong><br /> 项目源包 ： struts2sd</p> <p>要点：</p> <ol> <li>定义拦截器时可以直接继承AbstractInterceptor 抽象类（该类实现了 Interceptor 接口，并且对 init 和 destroy 方法进行了空实现） ，然后实现其抽象方法 intercept即可；</li> <li>方法过滤拦截器（可以对指定方法进行拦截的拦截器）；</li> <li>在方法过滤拦截器中，如果既没有指定 includeMethods 参数，也没有指定execludeMethods 参数，那么所有的方法都会被拦截，也就是说所有的方法都被认为是 includeMethods 的；如果仅仅指定了 includeMethods，那么只会拦截 includeMethods 中的方法，没有包含在includeMethods 中的方法就不会被拦截。</li> </ol> <p><strong>TheInterceptor2.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">interceptor</span><span class="o">;</span>
+</code></pre></div></div> <p>一旦定义了自己的拦截器，将其配置到 action上后，我们需要在action的最后加上默认的拦截器栈：defaultStack。</p> <p><strong>示例2</strong><br /> 项目源包 ： struts2sd</p> <p>要点：</p> <ol> <li>定义拦截器时可以直接继承AbstractInterceptor 抽象类（该类实现了 Interceptor 接口，并且对 init 和 destroy 方法进行了空实现） ，然后实现其抽象方法 intercept即可；</li> <li>方法过滤拦截器（可以对指定方法进行拦截的拦截器）；</li> <li>在方法过滤拦截器中，如果既没有指定 includeMethods 参数，也没有指定execludeMethods 参数，那么所有的方法都会被拦截，也就是说所有的方法都被认为是 includeMethods 的；如果仅仅指定了 includeMethods，那么只会拦截 includeMethods 中的方法，没有包含在includeMethods 中的方法就不会被拦截。</li> </ol> <p><strong>TheInterceptor2.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.interceptor</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionInvocation</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.interceptor.AbstractInterceptor</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TheInterceptor2</span> <span class="kd">extends</span> <span class="nc">AbstractInterceptor</span>
@@ -378,7 +378,7 @@ password: &lt;s:property value="password"/&gt;
 <span class="nt">&lt;interceptor-ref</span> <span class="na">name=</span><span class="s">"defaultStack"</span><span class="nt">&gt;&lt;/interceptor-ref&gt;</span>
 <span class="nt">&lt;/action&gt;</span>
 …………
-</code></pre></div></div> <p><strong>TheInterceptor3</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">interceptor</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>TheInterceptor3</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.interceptor</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionInvocation</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.interceptor.MethodFilterInterceptor</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.vvvv.listener.TheListener</span><span class="o">;</span>
@@ -445,7 +445,7 @@ password: &lt;s:property value="password"/&gt;
     <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">"usernameAndPassword"</span><span class="nt">&gt;</span>${usernameAndPassword}<span class="nt">&lt;/param&gt;</span>
 <span class="nt">&lt;/result&gt;</span>
 …………
-</code></pre></div></div> <p><strong>LoginInterceptor.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">interceptor</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>LoginInterceptor.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.interceptor</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.Action</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionInvocation</span><span class="o">;</span>
@@ -469,7 +469,7 @@ password: &lt;s:property value="password"/&gt;
         <span class="k">return</span> <span class="n">invocation</span><span class="o">.</span><span class="na">invoke</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p>同时，也可以在一个Struts.xml中有多个package ，例如，可以将前台的Action放到一个package里，将后台的一个package放到另一个包里面。</p> <p>也可以将配置文件拆分开来，写到多个配置文件中，例如：</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;struts&gt;
+</code></pre></div></div> <p>同时，也可以在一个Struts.xml中有多个package ，例如，可以将前台的Action放到一个package里，将后台的一个package放到另一个包里面。</p> <p>也可以将配置文件拆分开来，写到多个配置文件中，例如：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;struts&gt;
     &lt;include file="xxx.xml"&gt;&lt;/include&gt;
     …………
 </code></pre></div></div> <p>struts-2.3.1-all.zip\struts-2.3.1\apps\struts2-mailreader.war\WEB-INF\src\java\struts.xml</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span>
@@ -490,7 +490,7 @@ password: &lt;s:property value="password"/&gt;
     <span class="nt">&lt;/action&gt;</span>
 <span class="nt">&lt;/package&gt;</span>
 …………
-</code></pre></div></div> <p><strong>NamespaceAction(命名空间)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>NamespaceAction(命名空间)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.struts2</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.opensymphony.xwork2.ActionSupport</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">NamespaceAction</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
 <span class="o">{</span>
@@ -500,7 +500,7 @@ password: &lt;s:property value="password"/&gt;
         <span class="k">return</span> <span class="no">SUCCESS</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>实现文件上传</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点：  
+</code></pre></div></div> <p><strong>实现文件上传</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点：  
 1. 进行文件上传时，必须将表单的 method属性设为post，将enctype属性设为multipart/form-data。  
 2. Struts2在进行文件上传操作时，实际上是通过两个步骤实现的：  
 
@@ -517,7 +517,7 @@ name:<span class="nt">&lt;s:property</span> <span class="na">value=</span><span 
 <span class="nt">&lt;br&gt;</span>
 type:<span class="nt">&lt;s:property</span> <span class="na">value=</span><span class="s">"fileContentType"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/body&gt;</span>
-</code></pre></div></div> <p><strong>通过servlet实现对文件的上传</strong><br /> UploadServlet.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">servlet</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>通过servlet实现对文件的上传</strong><br /> UploadServlet.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.servlet</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
@@ -588,7 +588,7 @@ type:<span class="nt">&lt;s:property</span> <span class="na">value=</span><span 
         <span class="n">req</span><span class="o">.</span><span class="na">getRequestDispatcher</span><span class="o">(</span><span class="s">"fileUploadResult.jsp"</span><span class="o">).</span><span class="na">forward</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="n">resp</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>Struts2的配置文件</strong><br /> WEB-INF/lib/struts2-core-2.2.1.1.jar/org.apache.struts2/default.properties</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
+</code></pre></div></div> <p><strong>Struts2的配置文件</strong><br /> WEB-INF/lib/struts2-core-2.2.1.1.jar/org.apache.struts2/default.properties</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
 ### This can be used to set your default locale and encoding scheme
 # struts.locale=en_US
 struts.i18n.encoding=UTF-8        //指定了国际化的默认编码格式
@@ -613,7 +613,7 @@ struts.action.extension=action,,    //指定了表单提交的文件的后缀名
     <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
 <span class="nt">&lt;/form&gt;</span>
 …………
-</code></pre></div></div> <p>fileUploadResult.jsp</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
+</code></pre></div></div> <p>fileUploadResult.jsp</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>…………
 &lt;body&gt;
     username: &lt;s:property value="username"/&gt;&lt;br&gt;
     name:&lt;s:property value="fileFileName"/&gt;
@@ -621,7 +621,7 @@ struts.action.extension=action,,    //指定了表单提交的文件的后缀名
     type:&lt;s:property value="fileContentType"/&gt;
 &lt;/body&gt;
 …………
-</code></pre></div></div> <p>UploadAction.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+</code></pre></div></div> <p>UploadAction.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.struts2</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.FileInputStream</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.FileOutputStream</span><span class="o">;</span>
@@ -635,7 +635,7 @@ struts.action.extension=action,,    //指定了表单提交的文件的后缀名
     <span class="kd">private</span> <span class="nc">File</span> <span class="n">file</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">fileFileName</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">fileContentType</span><span class="o">;</span>
-    <span class="err">…………</span><span class="n">set</span><span class="err">、</span><span class="n">get</span><span class="err">方法…………</span>
+    <span class="err">…………</span><span class="n">set</span><span class="err">、</span><span class="n">get方法</span><span class="err">…………</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>
     <span class="o">{</span>
@@ -660,7 +660,7 @@ struts.action.extension=action,,    //指定了表单提交的文件的后缀名
         <span class="k">return</span> <span class="no">SUCCESS</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p>struts.properties</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#定义文件的拓展名
+</code></pre></div></div> <p>struts.properties</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#定义文件的拓展名
 struts.action.extension=action
 #指定上传文件的缓存目录
 struts.multipart.saveDir=c:/vvvv
@@ -683,7 +683,7 @@ username: <span class="nt">&lt;s:property</span> <span class="na">value=</span><
     file: <span class="nt">&lt;s:property</span> <span class="na">value=</span><span class="s">"#f.toUpperCase()"</span><span class="nt">/&gt;&lt;br&gt;</span><span class="c">&lt;!-- ognl表达示 --&gt;</span>
 <span class="nt">&lt;/s:iterator&gt;</span>
 <span class="nt">&lt;/body&gt;</span>
-</code></pre></div></div> <p>UploadAction2.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+</code></pre></div></div> <p>UploadAction2.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.struts2</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.FileInputStream</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.FileOutputStream</span><span class="o">;</span>
@@ -698,7 +698,7 @@ username: <span class="nt">&lt;s:property</span> <span class="na">value=</span><
     <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">File</span><span class="o">&gt;</span> <span class="n">file</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">fileFileName</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">fileContentType</span><span class="o">;</span>
-    <span class="err">…………</span><span class="n">set</span><span class="err">、</span><span class="n">get</span><span class="err">方法…………</span>
+    <span class="err">…………</span><span class="n">set</span><span class="err">、</span><span class="n">get方法</span><span class="err">…………</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>
     <span class="o">{</span>
@@ -732,54 +732,54 @@ username: <span class="nt">&lt;s:property</span> <span class="na">value=</span><
         <span class="nt">&lt;/result&gt;</span>
     <span class="nt">&lt;/action&gt;</span>
 <span class="nt">&lt;/package&gt;</span>
-</code></pre></div></div> <p>downloadFile.jsp</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;body&gt;
+</code></pre></div></div> <p>downloadFile.jsp</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;body&gt;
     &lt;a href="downloadFile2.action?number=1"&gt;下载文件&lt;/a&gt;
 &lt;/body&gt;
-</code></pre></div></div> <p>downloadAction2.java</p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">com</span><span class="p">.</span><span class="n">vvvv</span><span class="p">.</span><span class="n">struts2</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">InputStream</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">struts2</span><span class="p">.</span><span class="n">ServletActionContext</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">com</span><span class="p">.</span><span class="n">opensymphony</span><span class="p">.</span><span class="n">xwork2</span><span class="p">.</span><span class="n">ActionSupport</span><span class="p">;</span>
-<span class="k">public</span> <span class="n">class</span> <span class="n">DownloadAction2</span> <span class="n">extends</span> <span class="n">ActionSupport</span>
-<span class="p">{</span>
-    <span class="n">private</span> <span class="n">int</span> <span class="n">number</span><span class="p">;</span>
-    <span class="n">private</span> <span class="k">String</span> <span class="n">filename</span><span class="p">;</span>
-    <span class="err">…………</span><span class="n">get</span><span class="err">、</span><span class="n">set</span><span class="err">方法…………</span>
-    <span class="k">public</span> <span class="n">InputStream</span> <span class="n">getDownloadFile</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="n">try</span>
-        <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="m">1</span> <span class="p">==</span> <span class="n">number</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="p">//</span><span class="err">动态的修改文件的名字</span>
-                <span class="n">this</span><span class="p">.</span><span class="n">filename</span> <span class="p">=</span> <span class="s2">"中文.txt"</span><span class="p">;</span>
-                <span class="p">//</span><span class="err">转码</span>
-                <span class="n">this</span><span class="p">.</span><span class="n">filename</span> <span class="p">=</span> <span class="n">new</span> <span class="k">String</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">filename</span><span class="p">.</span><span class="n">getBytes</span><span class="p">(</span><span class="s2">"gbk"</span><span class="p">),</span>
-                        <span class="s2">"8859_1"</span><span class="p">);</span>
-                <span class="n">return</span> <span class="n">ServletActionContext</span><span class="p">.</span><span class="n">getServletContext</span><span class="p">()</span>
-                        <span class="p">.</span><span class="n">getResourceAsStream</span><span class="p">(</span><span class="s2">"/upload/中文.txt"</span><span class="p">);</span>
-            <span class="p">}</span>
-            <span class="k">else</span>
-            <span class="p">{</span>
-                <span class="n">this</span><span class="p">.</span><span class="n">filename</span> <span class="p">=</span> <span class="s2">"CaptureSprite.exe"</span><span class="p">;</span>
-                <span class="n">return</span> <span class="n">ServletActionContext</span><span class="p">.</span><span class="n">getServletContext</span><span class="p">()</span>
-                        <span class="p">.</span><span class="n">getResourceAsStream</span><span class="p">(</span><span class="s2">"/upload/CaptureSprite.exe"</span><span class="p">);</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
-        <span class="p">{</span>
-        <span class="p">}</span>
-        <span class="n">return</span> <span class="n">null</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="p">@</span><span class="n">Override</span>
-    <span class="k">public</span> <span class="k">String</span> <span class="n">execute</span><span class="p">()</span> <span class="n">throws</span> <span class="n">Exception</span>
-    <span class="p">{</span>
-        <span class="n">return</span> <span class="n">SUCCESS</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div></div> <p><strong>基于注解的配置</strong></p> <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点
+</code></pre></div></div> <p>downloadAction2.java</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package com.vvvv.struts2;
+import java.io.InputStream;
+import org.apache.struts2.ServletActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+public class DownloadAction2 extends ActionSupport
+{
+    private int number;
+    private String filename;
+    …………get、set方法…………
+    public InputStream getDownloadFile()
+    {
+        try
+        {
+            if (1 == number)
+            {
+                //动态的修改文件的名字
+                this.filename = "中文.txt";
+                //转码
+                this.filename = new String(this.filename.getBytes("gbk"),
+                        "8859_1");
+                return ServletActionContext.getServletContext()
+                        .getResourceAsStream("/upload/中文.txt");
+            }
+            else
+            {
+                this.filename = "CaptureSprite.exe";
+                return ServletActionContext.getServletContext()
+                        .getResourceAsStream("/upload/CaptureSprite.exe");
+            }
+        }
+        catch (Exception ex)
+        {
+        }
+        return null;
+    }
+    @Override
+    public String execute() throws Exception
+    {
+        return SUCCESS;
+    }
+}
+</code></pre></div></div> <p><strong>基于注解的配置</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>要点
 在项目中引入名为：struts2-convention-plugin-2.2.1.1.jar的jar 包，并删除掉struts.xml
 打开struts2-convention-plugi-xxx.jar的结构如下：
-</code></pre></div></div> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_72.jpg" alt="文件结构" /></p> <p>编辑LoginAction.java,</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">struts2</span><span class="o">;</span>
+</code></pre></div></div> <p><img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_72.jpg" alt="文件结构" /></p> <p>编辑LoginAction.java,</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.struts2</span><span class="o">;</span>
 <span class="nd">@ParentPackage</span><span class="o">(</span><span class="s">"struts-default"</span><span class="o">)</span>
 <span class="nd">@Action</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"login"</span><span class="o">,</span> <span class="n">results</span> <span class="o">=</span> <span class="o">{</span>
         <span class="nd">@Result</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"success"</span><span class="o">,</span> <span class="n">location</span> <span class="o">=</span> <span class="s">"/login.jsp"</span><span class="o">),</span>
@@ -796,8 +796,8 @@ username: <span class="nt">&lt;s:property</span> <span class="na">value=</span><
     <span class="kd">private</span> <span class="nc">LoginService</span> <span class="n">loginService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LoginServi</span>
     <span class="err">…………</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>Struts2异步处理xml</strong> <br /> 项目文件结构<br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_73.jpg" alt="文件结构" /></p> <p>要点： 向项目中导入dom4j.jar包</p> <p>GetXMLAction.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">action</span><span class="o">.</span><span class="na">xml</span><span class="o">;</span>
-<span class="err">…………</span><span class="n">get</span><span class="err">、</span><span class="n">set</span><span class="err">方法…………</span>
+</code></pre></div></div> <p><strong>Struts2异步处理xml</strong> <br /> 项目文件结构<br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/java/base/article_73.jpg" alt="文件结构" /></p> <p>要点： 向项目中导入dom4j.jar包</p> <p>GetXMLAction.java</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.action.xml</span><span class="o">;</span>
+<span class="err">…………</span><span class="n">get</span><span class="err">、</span><span class="n">set方法</span><span class="err">…………</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GetXMLAction</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
 <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
@@ -860,14 +860,14 @@ username: <span class="nt">&lt;s:property</span> <span class="na">value=</span><
         <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>People.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">action</span><span class="o">.</span><span class="na">xml</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>People.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.action.xml</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">People</span>
 <span class="o">{</span>
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">address</span><span class="o">;</span>
-    <span class="err">…………</span><span class="n">get</span><span class="err">、</span><span class="n">set</span><span class="err">方法…………</span>
+    <span class="err">…………</span><span class="n">get</span><span class="err">、</span><span class="n">set方法</span><span class="err">…………</span>
 <span class="o">}</span>
 </code></pre></div></div> <p><strong>Struts2异步处理Json</strong><br /> 要点<br /> 向项目中导入Json插件，struts2-json-plugin-xxx.jar</p> <p>getJson.jsp</p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"scripts/jquery-1.4.4.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
@@ -898,8 +898,8 @@ username: <span class="nt">&lt;s:property</span> <span class="na">value=</span><
 <span class="nt">&lt;/select&gt;</span>
 <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">value=</span><span class="s">"get json content from server"</span> <span class="na">id=</span><span class="s">"button1"</span><span class="nt">&gt;</span>
 <span class="nt">&lt;/body&gt;</span>
-</code></pre></div></div> <p><strong>GetJsonAction.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">action</span><span class="o">.</span><span class="na">json</span><span class="o">;</span>
-<span class="err">…………</span><span class="n">get</span><span class="err">、</span><span class="n">set</span><span class="err">方法…………</span>
+</code></pre></div></div> <p><strong>GetJsonAction.java</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.action.json</span><span class="o">;</span>
+<span class="err">…………</span><span class="n">get</span><span class="err">、</span><span class="n">set方法</span><span class="err">…………</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GetJsonAction</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
 <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
@@ -931,14 +931,14 @@ username: <span class="nt">&lt;s:property</span> <span class="na">value=</span><
         <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div></div> <p><strong>GetJsonAction2.java(利用struts2的插件)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">vvvv</span><span class="o">.</span><span class="na">action</span><span class="o">.</span><span class="na">json</span><span class="o">;</span>
+</code></pre></div></div> <p><strong>GetJsonAction2.java(利用struts2的插件)</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.vvvv.action.json</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GetJsonAction2</span> <span class="kd">extends</span> <span class="nc">ActionSupport</span>
 <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">address</span><span class="o">;</span>
-    <span class="err">…………</span><span class="n">get</span><span class="err">、</span><span class="n">set</span><span class="err">方法…………</span>
+    <span class="err">…………</span><span class="n">get</span><span class="err">、</span><span class="n">set方法</span><span class="err">…………</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">execute</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span>
     <span class="o">{</span>
