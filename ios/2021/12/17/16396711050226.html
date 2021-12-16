@@ -1,0 +1,161 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/ios/2021/12/17/16396711050226.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Swift笔记 - 03.枚举类型、可选项</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="swift笔记---03枚举类型可选项">Swift笔记 - 03.枚举类型、可选项</h1> <h2 id="枚举的关联值">枚举的关联值</h2> <ul> <li>有时会将枚举的成员值跟其他类型的关联存储在一起，会非常有用 ```swift enum Score { case points(Int) case grade (Character) }</li> </ul> <p>var score = Score.points(96) score = .grade(“A”)</p> <p>switch score { case let .points(i): print(i, “points”) case let .grade(i): print(“grade”, i) } // grade A</p> <p>enum Date { case digit(year: Int, month: Int, day: Int) case string(String) } var date = Date.digit (year: 2011, month: 9, day: 10) date = .string(“2011-09-10”) switch date { case .digit(let year, let month, let day) : print(year, month, day) case let .string(value): print(value) }</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>* 必要时`let`也可以改为`var`
+
+## 枚举原始值
+* 枚举成员可以使用相同类型的默认值预先关联，这个默认值叫做：原始值
+```swift
+enum PokerSuit: Character {
+    case spade = "♠️"
+    case heart = "♥️️"
+    case diamond = "♦️"
+    case club = "♣️"
+}
+var suit = PokerSuit.spade
+print(suit) // spade
+print(suit.rawValue) // ♠️
+print(PokerSuit.club.rawValue) // ♣️
+
+enum Grade: String {
+    case perfect = "A️"
+    case great = "B"
+    case good = "C"
+    case bad = "D"
+}
+print(Grade.perfect.rawValue) // A
+print(Grade.great.rawValue) // B
+print(Grade.good.rawValue) // C
+print(Grade.bad.rawValue) // D
+</code></pre></div></div> <ul> <li>如果枚举的原始值类型是Int、String,Swift会自动分配原始值 ```swift enum Direction: String { case north = “north” case south = “south” case east = “east” case west = “west” }</li> </ul> <p>// 等价于 enum Direction: String { case north, south, east, west } print(Direction.north) // north print(Direction.north.rawValue) // north</p> <p>enum Season: Int { case spring, summer, autumn, winter } print (Season.spring.rawValue) // 0 print(Season.summer.rawValue) // 1 print (Season.autumn.rawValue) // 2 print (Season.winter.rawValue) // 3</p> <p>enum Season: Int { case spring = 1, summer, autumn = 4, winter } print(Season.spring.rawValue) // 1 print (Season.summer.rawValue) // 2 print (Season.autumn.rawValue) // 4 print(Season.winter.rawValue) // 5</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+## 递归枚举
+```swift
+indirect enum ArithExpr {
+    case number(Int)
+    case sum(ArithExpr, ArithExpr)
+    case difference(ArithExpr, ArithExpr)
+}
+
+enum ArithExpr {
+    case number(Int)
+    indirect case sum(ArithExpr, ArithExpr)
+    indirect case difference (ArithExpr, ArithExpr)
+}
+
+let five = ArithExpr.number(5)
+let four = ArithExpr.number(4)
+let two = ArithExpr.number(2)
+let sum = ArithExpr.sum(five, four)
+let difference = ArithExpr.difference(sum, two)
+
+func calculate(_ expr: ArithExpr) -&gt; Int {
+    switch expr {
+    case let .number(value):
+        return value
+    case let .sum(left, right):
+        return calculate(left) + calculate(right)
+    case let .difference(left, right):
+        return calculate(left) - calculate(right)
+    }
+}
+calculate(difference)
+</code></pre></div></div> <h2 id="可选项">可选项</h2> <p><strong>可选项绑定</strong></p> <ul> <li>可以使用可选项鄉定来判断可选项是否包含值</li> <li>如果包含就自动解包，把值赋给一个临时的常量(<code class="language-plaintext highlighter-rouge">let</code>)或者变量(<code class="language-plaintext highlighter-rouge">var</code>)，并返回<code class="language-plaintext highlighter-rouge">true</code>，否则返回<code class="language-plaintext highlighter-rouge">false</code></li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="k">let</span> <span class="nv">number</span> <span class="o">=</span> <span class="kt">Int</span> <span class="p">(</span><span class="s">"123"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"字符串转换整数成功：</span><span class="se">\(</span><span class="n">number</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+    <span class="c1">//number是强制解包之后的Int值</span>
+    <span class="c1">//number作用域仅限于这个大括号</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"字符串转换整数失败"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">//字符串转换整数成功：123</span>
+
+
+<span class="kd">enum</span> <span class="kt">Season</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">spring</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">summer</span><span class="p">,</span> <span class="n">autumn</span><span class="p">,</span> <span class="n">winter</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="k">let</span> <span class="nv">season</span> <span class="o">=</span> <span class="kt">Season</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">6</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="n">season</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nv">spring</span><span class="p">:</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"the season is spring"</span><span class="p">)</span>
+    <span class="k">default</span><span class="p">:</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"the season is other"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"no such season"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">// no such season</span>
+
+
+<span class="k">if</span> <span class="k">let</span> <span class="nv">first</span> <span class="o">=</span> <span class="kt">Int</span> <span class="p">(</span><span class="s">"4"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">second</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="s">"42"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">first</span> <span class="o">&lt;</span> <span class="n">second</span> <span class="o">&amp;&amp;</span> <span class="n">second</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">first</span><span class="se">)</span><span class="s"> &lt; </span><span class="se">\(</span><span class="n">second</span><span class="se">)</span><span class="s"> &lt; 100"</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// 4 &lt; 42 &lt; 100</span>
+
+
+<span class="k">if</span> <span class="k">let</span> <span class="nv">first</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="s">"4"</span><span class="p">),</span>
+   <span class="k">let</span> <span class="nv">second</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="s">"42"</span><span class="p">),</span>
+   <span class="n">first</span> <span class="o">&lt;</span> <span class="n">second</span> <span class="o">&amp;&amp;</span> <span class="n">second</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">second</span><span class="se">)</span><span class="s"> &lt; </span><span class="se">\(</span><span class="n">second</span><span class="se">)</span><span class="s"> &lt; 100"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">// 4 &lt; 42 &lt; 100</span>
+
+
+<span class="c1">//遍历数组，将遇到的正数都加起来，如果遇到负数或者非数字，停止遍历</span>
+<span class="k">var</span> <span class="nv">strs</span><span class="o">=</span><span class="p">[</span><span class="s">"1o"</span><span class="p">,</span><span class="s">"20"</span><span class="p">,</span><span class="s">"abc"</span><span class="p">,</span><span class="s">"-20"</span><span class="p">,</span><span class="s">"30"</span><span class="p">]</span>
+
+<span class="k">var</span> <span class="nv">index</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">var</span> <span class="nv">sum</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="k">let</span> <span class="nv">num</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="n">strs</span><span class="p">[</span><span class="n">index</span><span class="p">]),</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+    <span class="n">sum</span> <span class="o">+=</span> <span class="n">num</span>
+    <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="p">}</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span>
+</code></pre></div></div> <h2 id="guard-语句">guard 语句</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">guard</span> <span class="n">条件</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// do something...</span>
+    <span class="n">退出当前作用域</span>
+    <span class="c1">// return, break. continue, throw error</span>
+<span class="p">}</span>
+
+</code></pre></div></div> <ul> <li>当guard语句的条件为false时，就会执行大括号里面的代码</li> <li>当guard语句的条件为true时，就会跳过guard语句</li> <li>guard语句特别适合用来“提前退出”</li> <li>当使用guard语句进行可选项都定时，绑定的常量(let)、变量(var)也能在外层作用域中使用</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">login</span><span class="p">(</span><span class="n">_</span> <span class="nv">info</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">String</span><span class="p">])</span> <span class="p">{</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">username</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s">"username"</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"请输入用户名"</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">password</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s">"password"</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"请输入密码"</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+    <span class="c1">// if username</span>
+    <span class="c1">// if password</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"用户名: </span><span class="se">\(</span><span class="n">username</span><span class="se">)</span><span class="s">"</span><span class="p">,</span> <span class="s">"密码：</span><span class="se">\(</span><span class="n">password</span><span class="se">)</span><span class="s">"</span><span class="p">,</span> <span class="s">"登陆ing"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="隐式解包">隐式解包</h2> <ul> <li>-在某些情况下，可选项一旦被设定值之后，就会一直拥有值</li> <li>在这种情况下，可以去掉检查，也不必每次访问的时候都进行解包，因为它能确定每次访问的时候都有值</li> <li>可以在类型后面加个感叹号！定义一个隐式解包的可选项</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">num1</span><span class="p">:</span> <span class="kt">Int</span><span class="o">!</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">let</span> <span class="nv">num2</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">num1</span>
+<span class="k">if</span> <span class="n">num1</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">num1</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span> <span class="c1">// 16</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="k">let</span> <span class="nv">num3</span> <span class="o">=</span> <span class="n">num1</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">num3</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">num1</span><span class="p">:</span> <span class="kt">Int</span><span class="o">!</span> <span class="o">=</span> <span class="kc">nil</span>
+<span class="c1">// Fatal error: Unexpectedly found nil while implicitly unwrapping an Optional value</span>
+<span class="k">let</span> <span class="nv">num2</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">num1</span>
+</code></pre></div></div> <h2 id="多重可选项">多重可选项</h2> <p><img src="https://luowei.github.io/list/media/16396711050226/16396834299930.jpg" alt="" /></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">num1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">var</span> <span class="nv">num2</span><span class="p">:</span> <span class="kt">Int</span><span class="p">??</span> <span class="o">=</span> <span class="n">num1</span>
+<span class="k">var</span> <span class="nv">num3</span><span class="p">:</span> <span class="kt">Int</span><span class="p">??</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">num2</span> <span class="o">==</span> <span class="n">num3</span><span class="p">)</span> <span class="c1">// true</span>
+</code></pre></div></div> <ul> <li>可以使用<code class="language-plaintext highlighter-rouge">lldb</code>指今 <code class="language-plaintext highlighter-rouge">frame variable -R</code> 成者 <code class="language-plaintext highlighter-rouge">fr v -R</code> 查看区别</li> </ul> <p><img src="https://luowei.github.io/list/media/16396711050226/16396836048020.jpg" alt="" /></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">numl</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span>
+<span class="k">var</span> <span class="nv">num2</span><span class="p">:</span> <span class="kt">Int</span><span class="p">??</span> <span class="o">=</span> <span class="n">num1</span>
+<span class="k">var</span> <span class="nv">num3</span><span class="p">:</span> <span class="kt">Int</span><span class="p">??</span> <span class="o">=</span> <span class="kc">nil</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">num2</span> <span class="o">==</span> <span class="n">num3</span><span class="p">)</span> <span class="c1">// false</span>
+
+<span class="p">(</span><span class="n">num2</span> <span class="p">??</span> <span class="mi">1</span><span class="p">)</span> <span class="p">??</span> <span class="mi">2</span> <span class="c1">// 2</span>
+<span class="p">(</span><span class="n">num3</span> <span class="p">??</span> <span class="mi">1</span><span class="p">)</span> <span class="p">??</span> <span class="mi">2</span> <span class="c1">// 1</span>
+</code></pre></div></div> <h2 id="空合并运算符">空合并运算符??</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="p">??</span> <span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">optional</span><span class="p">:</span> <span class="kt">T</span><span class="p">?,</span> <span class="n">defaultValue</span><span class="p">:</span> <span class="kd">@autoclosure</span> <span class="p">()</span> <span class="k">throws</span>
+<span class="o">-&gt;</span> <span class="kt">T</span><span class="p">?)</span> <span class="k">rethrows</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">?</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="p">??</span> <span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">(</span><span class="nv">optional</span><span class="p">:</span> <span class="kt">T</span><span class="p">?,</span> <span class="n">defaultValue</span><span class="p">:</span> <span class="kd">@autoclosure</span> <span class="p">()</span> <span class="k">throws</span>
+<span class="o">-&gt;</span> <span class="kt">T</span><span class="p">)</span> <span class="k">rethrows</span> <span class="o">-&gt;</span> <span class="kt">T</span>
+</code></pre></div></div> <ul> <li>a ?? b</li> <li>a 是可选项</li> <li>b 是可选项或者不是可选项</li> <li>b 跟a的存储类型必须相同</li> <li>如果a不为nil，就返回a</li> <li>如果a为nil，就返回b</li> <li>如果b不是可选项，返回a时会自动解包</li> </ul> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396711050226.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Swift笔记 - 03.枚举类型、可选项 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396711050226.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396711050226.html&amp;title=Swift笔记 - 03.枚举类型、可选项 - 知不知&amp;summary=Swift笔记 - 03.枚举类型、可选项&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396711050226.html&amp;text=Swift笔记 - 03.枚举类型、可选项 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396711050226.html&amp;t=Swift笔记 - 03.枚举类型、可选项 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396711050226.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Swift笔记 - 03.枚举类型、可选项'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
