@@ -1,0 +1,166 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/ios/2021/12/17/16396683439682.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Swift笔记 - 02.switch、case、where、标签语句、函数、可变参数、别名</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="swift笔记---02switchcasewhere标签语句函数可变参数别名">Swift笔记 - 02.switch、case、where、标签语句、函数、可变参数、别名</h1> <h2 id="switchcase复合条件匹配">switch/case复合条件匹配</h2> <p><strong>switch也支持Character、String类型</strong></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">string</span> <span class="o">=</span> <span class="s">"Jack"</span>
+<span class="k">switch</span> <span class="n">string</span> <span class="p">{</span>
+<span class="k">case</span> <span class="s">"Jack"</span><span class="p">:</span>
+    <span class="k">fallthrough</span>
+<span class="k">case</span> <span class="s">"Rose"</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"Right person"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span>
+    <span class="k">break</span>
+<span class="p">}</span> <span class="c1">// Right person</span>
+
+
+<span class="k">switch</span> <span class="n">string</span> <span class="p">{</span>
+<span class="k">case</span> <span class="s">"Jack"</span><span class="p">,</span> <span class="s">"Rose"</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"Right person"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span>
+    <span class="k">break</span>
+<span class="p">}</span> <span class="c1">// Right person</span>
+
+
+<span class="k">let</span> <span class="nv">character</span><span class="p">:</span> <span class="kt">Character</span> <span class="o">=</span> <span class="s">"a"</span>
+<span class="k">switch</span> <span class="n">character</span> <span class="p">{</span>
+<span class="k">case</span> <span class="s">"a"</span><span class="p">,</span> <span class="s">"A"</span><span class="p">:</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"The letter A"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span> 
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"Not the letter A"</span><span class="p">)</span>
+<span class="p">}</span> <span class="c1">// The letter A</span>
+</code></pre></div></div> <h2 id="switchcase的区间匹配与元组匹配">switch/case的区间匹配与元组匹配</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//区间匹配</span>
+<span class="k">let</span> <span class="nv">count</span> <span class="o">=</span> <span class="mi">62</span>
+<span class="k">switch</span> <span class="n">count</span> <span class="p">{</span>
+<span class="k">case</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"none"</span><span class="p">)</span>
+<span class="k">case</span> <span class="mi">1</span><span class="o">..&lt;</span><span class="mi">5</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"a few"</span><span class="p">)</span>
+<span class="k">case</span> <span class="mi">5</span><span class="o">..&lt;</span><span class="mi">12</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"several"</span><span class="p">)</span>
+<span class="k">case</span> <span class="mi">12</span><span class="o">..&lt;</span><span class="mi">100</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"dozens of"</span><span class="p">)</span>
+<span class="k">case</span> <span class="mi">100</span><span class="o">..&lt;</span><span class="mi">1000</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"hundreds of"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"many"</span><span class="p">)</span>
+<span class="p">}</span> <span class="c1">// dozens of</span>
+
+<span class="c1">//元组匹配</span>
+<span class="k">let</span> <span class="nv">point</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">switch</span> <span class="n">point</span> <span class="p">{</span>
+<span class="k">case</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"the origin"</span><span class="p">)</span>
+<span class="k">case</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"on the x-axis"</span><span class="p">)</span>
+<span class="k">case</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"on the y-axis"</span><span class="p">)</span>
+<span class="k">case</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">...</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="o">...</span><span class="mi">2</span><span class="p">):</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"inside the box"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"outside of the box"</span><span class="p">)</span>
+<span class="p">}</span> <span class="c1">// inside the box</span>
+</code></pre></div></div> <h2 id="switchcase的值绑定">switch/case的值绑定</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">point</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">switch</span> <span class="n">point</span> <span class="p">{</span>
+<span class="k">case</span> <span class="p">(</span><span class="k">let</span> <span class="nv">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"on the x-axis with an x value of </span><span class="se">\(</span><span class="n">x</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+<span class="k">case</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">let</span> <span class="nv">y</span><span class="p">):</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"on the y-axis with a y value of </span><span class="se">\(</span><span class="n">y</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+<span class="k">case</span> <span class="k">let</span> <span class="p">(</span><span class="nv">x</span><span class="p">,</span> <span class="nv">y</span><span class="p">)</span> <span class="p">:</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"somewhere else at (</span><span class="se">\(</span><span class="n">x</span><span class="se">)</span><span class="s">, </span><span class="se">\(</span><span class="n">y</span><span class="se">)</span><span class="s">)"</span><span class="p">)</span>
+<span class="p">}</span> <span class="c1">// on the x-axis with an x value of 2</span>
+</code></pre></div></div> <h2 id="where-子句">where 子句</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">point</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">switch</span> <span class="n">point</span> <span class="p">{</span>
+<span class="k">case</span> <span class="k">let</span> <span class="p">(</span><span class="nv">x</span><span class="p">,</span> <span class="nv">y</span><span class="p">)</span> <span class="k">where</span> <span class="n">x</span> <span class="o">==</span> <span class="nv">y</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"on the line x == y"</span><span class="p">)</span>
+<span class="k">case</span> <span class="k">let</span> <span class="p">(</span><span class="nv">x</span><span class="p">,</span> <span class="nv">y</span><span class="p">)</span> <span class="k">where</span> <span class="n">x</span> <span class="o">==</span> <span class="o">-</span><span class="nv">y</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"on the line x == -y"</span><span class="p">)</span>
+<span class="k">case</span> <span class="k">let</span> <span class="p">(</span><span class="nv">x</span><span class="p">,</span> <span class="nv">y</span><span class="p">):</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"(</span><span class="se">\(</span><span class="n">x</span><span class="se">)</span><span class="s">,</span><span class="se">\(</span><span class="n">y</span><span class="se">)</span><span class="s">)isjustsomearbitrarypoint"</span><span class="p">)</span>
+<span class="p">}</span> <span class="c1">// on the line x = -y</span>
+
+<span class="c1">//将所有正数加起来</span>
+<span class="k">var</span> <span class="nv">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">]</span>
+<span class="k">var</span> <span class="nv">sum</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">num</span> <span class="k">in</span> <span class="n">numbers</span> <span class="k">where</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">{</span><span class="c1">//使用where来过滤num</span>
+    <span class="n">sum</span> <span class="o">+=</span> <span class="n">num</span>
+<span class="p">}</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span> <span class="c1">// 60</span>
+</code></pre></div></div> <h2 id="标签语句">标签语句</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">outer</span><span class="p">:</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">4</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">4</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">3</span> <span class="p">{</span>
+            <span class="k">continue</span> <span class="n">outer</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">3</span> <span class="p">{</span>
+            <span class="k">break</span> <span class="n">outer</span>
+        <span class="p">}</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"i == </span><span class="se">\(</span><span class="n">i</span><span class="se">)</span><span class="s">, k == </span><span class="se">\(</span><span class="n">k</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="函数的隐式返回">函数的隐式返回</h2> <p>如果整个函数体是一个单一表达式，那么函数会隐式返回这个表达式</p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">sum</span><span class="p">(</span><span class="nv">v1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">v2</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="n">v1</span> <span class="o">+</span> <span class="n">v2</span>
+<span class="p">}</span>
+<span class="nf">sum</span><span class="p">(</span><span class="nv">v1</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">v2</span><span class="p">:</span> <span class="mi">20</span><span class="p">)</span>  <span class="c1">// 30</span>
+</code></pre></div></div> <h2 id="swift可变参数">Swift可变参数</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">sum</span><span class="p">(</span><span class="n">_</span> <span class="nv">numbers</span><span class="p">:</span> <span class="kt">Int</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">number</span> <span class="k">in</span> <span class="n">numbers</span> <span class="p">{</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">number</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">total</span>
+<span class="p">}</span>
+<span class="nf">sum</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span> <span class="c1">// 100</span>
+</code></pre></div></div> <ul> <li>一个函数最多只能有1个可变参数</li> <li>紧跟在可变参数后面的参数不能省略参数标签</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//参数string不能省略标签</span>
+<span class="kd">func</span> <span class="nf">test</span><span class="p">(</span><span class="n">_</span> <span class="nv">numbers</span><span class="p">:</span> <span class="kt">Int</span><span class="o">...</span><span class="p">,</span> <span class="nv">string</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">_</span> <span class="nv">other</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+<span class="nf">test</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="nv">string</span><span class="p">:</span> <span class="s">"Jack"</span><span class="p">,</span> <span class="s">"Rose"</span><span class="p">)</span>
+</code></pre></div></div> <h2 id="函数类型作为函数返回值">函数类型作为函数返回值</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">next</span> <span class="p">(</span><span class="n">_</span> <span class="nv">input</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="n">input</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">previous</span><span class="p">(</span><span class="n">_</span> <span class="nv">input</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="n">input</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">forward</span><span class="p">(</span><span class="n">_</span> <span class="nv">forward</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="n">forward</span> <span class="p">?</span> <span class="nv">next</span> <span class="p">:</span> <span class="n">previous</span>
+<span class="p">}</span>
+<span class="nf">forward</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1">// 4</span>
+<span class="nf">forward</span><span class="p">(</span><span class="kc">false</span><span class="p">)(</span><span class="mi">3</span><span class="p">)</span> <span class="c1">// 2</span>
+</code></pre></div></div> <ul> <li>返回值是函数类型的函数，叫做高阶函数(Higher-OrderFunction)</li> </ul> <h2 id="typealias-取别名">typealias 取别名</h2> <p><strong>typealias用来给类型起别名</strong></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">typealias</span> <span class="kt">Byte</span> <span class="o">=</span> <span class="kt">Int8</span>
+<span class="kd">typealias</span> <span class="kt">Short</span> <span class="o">=</span> <span class="kt">Int16</span>
+<span class="kd">typealias</span> <span class="kt">Long</span> <span class="o">=</span> <span class="kt">Int64</span>
+
+<span class="kd">typealias</span> <span class="kt">Date</span> <span class="o">=</span> <span class="p">(</span><span class="nv">year</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">month</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">day</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">test</span><span class="p">(</span><span class="n">_</span> <span class="nv">date</span><span class="p">:</span> <span class="kt">Date</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="mi">0</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">test</span><span class="p">((</span><span class="mi">2011</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</code></pre></div></div> <p><strong>按照Swift标准库的定义，void就是空元组(）</strong></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">Void</span> <span class="o">=</span> <span class="p">()</span>
+
+<span class="kd">typealias</span> <span class="kt">IntFn</span> <span class="o">=</span> <span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span>
+
+<span class="kd">func</span> <span class="nf">difference</span><span class="p">(</span><span class="nv">v1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">v2</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="n">v1</span> <span class="o">-</span> <span class="n">v2</span>
+<span class="p">}</span>
+<span class="k">let</span> <span class="nv">fn</span><span class="p">:</span> <span class="kt">IntFn</span> <span class="o">=</span> <span class="n">difference</span>
+<span class="nf">fn</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1">// 10</span>
+
+<span class="kd">func</span> <span class="nf">setFn</span><span class="p">(</span><span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kt">IntFn</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+<span class="nf">setFn</span><span class="p">(</span><span class="n">difference</span><span class="p">)</span>
+<span class="kd">func</span> <span class="nf">getFn</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">IntFn</span> <span class="p">{</span> <span class="n">difference</span> <span class="p">}</span>
+</code></pre></div></div> <h2 id="嵌套函数">嵌套函数</h2> <ul> <li>将函数定义在西数内部 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">forward</span><span class="p">(</span><span class="n">_</span> <span class="nv">forward</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+  <span class="kd">func</span> <span class="nf">next</span><span class="p">(</span><span class="n">_</span> <span class="nv">input</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+      <span class="n">input</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="p">}</span>
+  <span class="kd">func</span> <span class="nf">previous</span> <span class="p">(</span><span class="n">_</span> <span class="nv">input</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+      <span class="n">input</span> <span class="o">-</span> <span class="mi">1</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">forward</span> <span class="p">?</span> <span class="nv">next</span> <span class="p">:</span> <span class="n">previous</span>
+<span class="p">}</span>
+<span class="nf">forward</span><span class="p">(</span><span class="kc">true</span><span class="p">)(</span><span class="mi">3</span><span class="p">)</span> <span class="c1">// 4</span>
+<span class="nf">forward</span><span class="p">(</span><span class="kc">false</span><span class="p">)(</span><span class="mi">3</span><span class="p">)</span> <span class="c1">// 2</span>
+</code></pre></div> </div> </li> </ul> <h2 id="inline内联函数">inline内联函数</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//水远不会被内联（即使开启了编译器优化）</span>
+<span class="kd">@inline</span><span class="p">(</span><span class="n">never</span><span class="p">)</span> <span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"test"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">//开启编译器优化后，即使代码很长，也会被内联（遊归调用两数、动态派发的函數除外）</span>
+<span class="kd">@inline</span><span class="p">(</span><span class="n">__always</span><span class="p">)</span> <span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"test"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>在Release模式下，编译器已经开启优化，会自动决定哪些西数需要内联，因此没必要使用<code class="language-plaintext highlighter-rouge">@inline</code></li> </ul> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396683439682.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Swift笔记 - 02.switch、case、where、标签语句、函数、可变参数、别名 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396683439682.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396683439682.html&amp;title=Swift笔记 - 02.switch、case、where、标签语句、函数、可变参数、别名 - 知不知&amp;summary=Swift笔记 - 02.switch、case、where、标签语句、函数、可变参数、别名&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396683439682.html&amp;text=Swift笔记 - 02.switch、case、where、标签语句、函数、可变参数、别名 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396683439682.html&amp;t=Swift笔记 - 02.switch、case、where、标签语句、函数、可变参数、别名 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F17%2F16396683439682.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Swift笔记 - 02.switch、case、where、标签语句、函数、可变参数、别名'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
