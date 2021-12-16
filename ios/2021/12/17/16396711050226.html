@@ -46,38 +46,64 @@
 <span class="nf">print</span><span class="p">(</span><span class="kt">Grade</span><span class="o">.</span><span class="n">great</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// B</span>
 <span class="nf">print</span><span class="p">(</span><span class="kt">Grade</span><span class="o">.</span><span class="n">good</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// C</span>
 <span class="nf">print</span><span class="p">(</span><span class="kt">Grade</span><span class="o">.</span><span class="n">bad</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// D</span>
-</code></pre></div></div> <ul> <li>如果枚举的原始值类型是Int、String,Swift会自动分配原始值<br /> ```swift enum Direction: String { case north = “north” case south = “south” case east = “east” case west = “west” }</li> </ul> <p>// 等价于 enum Direction: String { case north, south, east, west } print(Direction.north) // north print(Direction.north.rawValue) // north</p> <p>enum Season: Int { case spring, summer, autumn, winter } print (Season.spring.rawValue) // 0 print(Season.summer.rawValue) // 1 print (Season.autumn.rawValue) // 2 print (Season.winter.rawValue) // 3</p> <p>enum Season: Int { case spring = 1, summer, autumn = 4, winter } print(Season.spring.rawValue) // 1 print (Season.summer.rawValue) // 2 print (Season.autumn.rawValue) // 4 print(Season.winter.rawValue) // 5</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-## 递归枚举  
-```swift
-indirect enum ArithExpr {
-    case number(Int)
-    case sum(ArithExpr, ArithExpr)
-    case difference(ArithExpr, ArithExpr)
-}
+</code></pre></div></div> <ul> <li>如果枚举的原始值类型是Int、String,Swift会自动分配原始值</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">Direction</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">north</span> <span class="o">=</span> <span class="s">"north"</span>
+    <span class="k">case</span> <span class="n">south</span> <span class="o">=</span> <span class="s">"south"</span>
+    <span class="k">case</span> <span class="n">east</span> <span class="o">=</span> <span class="s">"east"</span>
+    <span class="k">case</span> <span class="n">west</span> <span class="o">=</span> <span class="s">"west"</span>
+<span class="p">}</span>
 
-enum ArithExpr {
-    case number(Int)
-    indirect case sum(ArithExpr, ArithExpr)
-    indirect case difference (ArithExpr, ArithExpr)
-}
+<span class="c1">// 等价于</span>
+<span class="kd">enum</span> <span class="kt">Direction</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">north</span><span class="p">,</span> <span class="n">south</span><span class="p">,</span> <span class="n">east</span><span class="p">,</span> <span class="n">west</span>
+<span class="p">}</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Direction</span><span class="o">.</span><span class="n">north</span><span class="p">)</span> <span class="c1">// north</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Direction</span><span class="o">.</span><span class="n">north</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// north</span>
 
-let five = ArithExpr.number(5)
-let four = ArithExpr.number(4)
-let two = ArithExpr.number(2)
-let sum = ArithExpr.sum(five, four)
-let difference = ArithExpr.difference(sum, two)
+<span class="kd">enum</span> <span class="kt">Season</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">spring</span><span class="p">,</span> <span class="n">summer</span><span class="p">,</span> <span class="n">autumn</span><span class="p">,</span> <span class="n">winter</span>
+<span class="p">}</span>
+<span class="nf">print</span> <span class="p">(</span><span class="kt">Season</span><span class="o">.</span><span class="n">spring</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// 0</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Season</span><span class="o">.</span><span class="n">summer</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// 1</span>
+<span class="nf">print</span> <span class="p">(</span><span class="kt">Season</span><span class="o">.</span><span class="n">autumn</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// 2</span>
+<span class="nf">print</span> <span class="p">(</span><span class="kt">Season</span><span class="o">.</span><span class="n">winter</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// 3</span>
 
-func calculate(_ expr: ArithExpr) -&gt; Int {
-    switch expr {
-    case let .number(value):
-        return value
-    case let .sum(left, right):
-        return calculate(left) + calculate(right)
-    case let .difference(left, right):
-        return calculate(left) - calculate(right)
-    }
-}
-calculate(difference)
+<span class="kd">enum</span> <span class="kt">Season</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">spring</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">summer</span><span class="p">,</span> <span class="n">autumn</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">winter</span>
+<span class="p">}</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Season</span><span class="o">.</span><span class="n">spring</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// 1</span>
+<span class="nf">print</span> <span class="p">(</span><span class="kt">Season</span><span class="o">.</span><span class="n">summer</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// 2</span>
+<span class="nf">print</span> <span class="p">(</span><span class="kt">Season</span><span class="o">.</span><span class="n">autumn</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// 4</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Season</span><span class="o">.</span><span class="n">winter</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="c1">// 5</span>
+</code></pre></div></div> <h2 id="递归枚举">递归枚举</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">indirect</span> <span class="kd">enum</span> <span class="kt">ArithExpr</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nf">number</span><span class="p">(</span><span class="kt">Int</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nf">sum</span><span class="p">(</span><span class="kt">ArithExpr</span><span class="p">,</span> <span class="kt">ArithExpr</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nf">difference</span><span class="p">(</span><span class="kt">ArithExpr</span><span class="p">,</span> <span class="kt">ArithExpr</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">enum</span> <span class="kt">ArithExpr</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nf">number</span><span class="p">(</span><span class="kt">Int</span><span class="p">)</span>
+    <span class="kd">indirect</span> <span class="k">case</span> <span class="nf">sum</span><span class="p">(</span><span class="kt">ArithExpr</span><span class="p">,</span> <span class="kt">ArithExpr</span><span class="p">)</span>
+    <span class="kd">indirect</span> <span class="k">case</span> <span class="nf">difference</span> <span class="p">(</span><span class="kt">ArithExpr</span><span class="p">,</span> <span class="kt">ArithExpr</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">five</span> <span class="o">=</span> <span class="kt">ArithExpr</span><span class="o">.</span><span class="nf">number</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">four</span> <span class="o">=</span> <span class="kt">ArithExpr</span><span class="o">.</span><span class="nf">number</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">two</span> <span class="o">=</span> <span class="kt">ArithExpr</span><span class="o">.</span><span class="nf">number</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">sum</span> <span class="o">=</span> <span class="kt">ArithExpr</span><span class="o">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">five</span><span class="p">,</span> <span class="n">four</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">difference</span> <span class="o">=</span> <span class="kt">ArithExpr</span><span class="o">.</span><span class="nf">difference</span><span class="p">(</span><span class="n">sum</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">calculate</span><span class="p">(</span><span class="n">_</span> <span class="nv">expr</span><span class="p">:</span> <span class="kt">ArithExpr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="n">expr</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="kd">let</span> <span class="o">.</span><span class="nf">number</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span>
+    <span class="k">case</span> <span class="kd">let</span> <span class="o">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nf">calculate</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">+</span> <span class="nf">calculate</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+    <span class="k">case</span> <span class="kd">let</span> <span class="o">.</span><span class="nf">difference</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nf">calculate</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">-</span> <span class="nf">calculate</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nf">calculate</span><span class="p">(</span><span class="n">difference</span><span class="p">)</span>
 </code></pre></div></div> <h2 id="可选项">可选项</h2> <p><strong>可选项绑定</strong></p> <ul> <li>可以使用可选项鄉定来判断可选项是否包含值</li> <li>如果包含就自动解包，把值赋给一个临时的常量(<code class="language-plaintext highlighter-rouge">let</code>)或者变量(<code class="language-plaintext highlighter-rouge">var</code>)，并返回<code class="language-plaintext highlighter-rouge">true</code>，否则返 回<code class="language-plaintext highlighter-rouge">false</code></li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="k">let</span> <span class="nv">number</span> <span class="o">=</span> <span class="kt">Int</span> <span class="p">(</span><span class="s">"123"</span><span class="p">)</span> <span class="p">{</span>
     <span class="nf">print</span><span class="p">(</span><span class="s">"字符串转换整数成功：</span><span class="se">\(</span><span class="n">number</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
     <span class="c1">//number是强制解包之后的Int值</span>
