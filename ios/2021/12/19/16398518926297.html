@@ -1,0 +1,415 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/ios/2021/12/19/16398518926297.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Swift笔记 - 07.单例模式、方法、下标、返回值、初始化</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="swift笔记---07单例模式方法下标返回值初始化">Swift笔记 - 07.单例模式、方法、下标、返回值、初始化</h1> <h2 id="单例模式">单例模式</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">FileManager</span> <span class="p">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">shared</span> <span class="o">=</span> <span class="kt">FileManager</span><span class="p">()</span>
+    <span class="kd">private</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="kt">FileManager</span> <span class="p">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">shared</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="c1">// ...</span>
+        <span class="k">return</span> <span class="kt">FileManager</span><span class="p">()</span>
+    <span class="p">}()</span>
+    <span class="kd">private</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="方法method">方法(Method)</h2> <ul> <li>枚举、结构体、类都可以定义实例方法、类型方法</li> <li>实例方法(InstanceMethod）：通过实例调用</li> <li>类型方法(TypeMethod）：通过类型调用，用static或者class关键字定义</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Car</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">var</span> <span class="nv">cout</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kt">Car</span><span class="o">.</span><span class="n">cout</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="p">}</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">getCount</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span> <span class="n">cout</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">let</span> <span class="nv">c0</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">c1</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">c2</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Car</span><span class="o">.</span><span class="nf">getCount</span> <span class="p">())</span> <span class="c1">// 3</span>
+</code></pre></div></div> <ul> <li><strong>self</strong></li> <li>在实例方法中代表实例</li> <li> <p>在类型方法中代表类型</p> </li> <li>在类型方法staticfuncgetcount中</li> <li>cout等价于self.cout.Car.self.cout.Car.cout</li> </ul> <h2 id="mutating关键字">mutating关键字</h2> <ul> <li>结构体和枚举是值类型，默认情况下，值类型的属性不能被自身的实例方法修改</li> <li>在<code class="language-plaintext highlighter-rouge">func</code>关键字前加<code class="language-plaintext highlighter-rouge">mutating</code>可以允许这种修改行为</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Point</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">x</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">moveBy</span><span class="p">(</span><span class="nv">deltaX</span><span class="p">:</span> <span class="kt">Double</span><span class="p">,</span> <span class="nv">deltaY</span><span class="p">:</span> <span class="kt">Double</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">x</span> <span class="o">+=</span> <span class="n">deltaX</span>
+        <span class="n">y</span> <span class="o">+=</span> <span class="n">deltaY</span>
+        <span class="c1">// self = Point(x: x + deltaX, y: y + deltaY)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">enum</span> <span class="kt">StateSwitch</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">low</span><span class="p">,</span> <span class="n">middle</span><span class="p">,</span> <span class="n">high</span>
+
+    <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">next</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="k">self</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">low</span><span class="p">:</span>
+            <span class="k">self</span> <span class="o">=</span> <span class="o">.</span><span class="n">middle</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">middle</span><span class="p">:</span>
+            <span class="k">self</span> <span class="o">=</span> <span class="o">.</span><span class="n">high</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">high</span><span class="p">:</span>
+            <span class="k">self</span> <span class="o">=</span> <span class="o">.</span><span class="n">low</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>@discardableResult</strong></p> <ul> <li>在func前面加个gdiscardableResult，可以消除：函数调用后返回值末被使用的警告</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Point</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">x</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="kd">@discardableResult</span> <span class="k">mutating</span>
+    <span class="kd">func</span> <span class="nf">moveX</span><span class="p">(</span><span class="nv">deltaX</span><span class="p">:</span> <span class="kt">Double</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Double</span> <span class="p">{</span>
+        <span class="n">x</span> <span class="o">+=</span> <span class="n">deltaX</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">var</span> <span class="nv">p</span> <span class="o">=</span> <span class="kt">Point</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="nf">moveX</span><span class="p">(</span><span class="nv">deltaX</span><span class="p">:</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="kd">@discardableResult</span>
+<span class="kd">func</span> <span class="nf">get</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="mi">10</span>
+<span class="p">}</span>
+<span class="nf">get</span><span class="p">()</span>
+</code></pre></div></div> <h2 id="下标-subscript">下标 (subscript)</h2> <ul> <li>使用<code class="language-plaintext highlighter-rouge">subscript</code>可以给任意类型（枚举、结构体、类）增加下标功能，有些地方也翻译为：下标脚本</li> <li><code class="language-plaintext highlighter-rouge">subscript</code>的语法类似于实例方法、计算属性，本质就是方法（函数）</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Point</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">x</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="nf">subscript</span><span class="p">(</span><span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Double</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">newValue</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">newValue</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="n">x</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">14</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="n">y</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">p</span> <span class="o">=</span> <span class="kt">Point</span><span class="p">()</span>
+<span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">11.1</span>
+<span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">22.2</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="c1">// 11.1</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="c1">// 22.2</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1">// 11.1</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="c1">// 22.2</span>
+</code></pre></div></div> <ul> <li><code class="language-plaintext highlighter-rouge">subscript</code>中定义的返回值类型決定了</li> <li><code class="language-plaintext highlighter-rouge">get</code>方法的返回值类型</li> <li><code class="language-plaintext highlighter-rouge">set</code>方法中<code class="language-plaintext highlighter-rouge">newValue</code>的类型</li> <li> <p><code class="language-plaintext highlighter-rouge">subscript</code>可以接受多个参数，并且类型任意</p> </li> <li><code class="language-plaintext highlighter-rouge">subscript</code>可以没有<code class="language-plaintext highlighter-rouge">set</code>方法，但必须要有<code class="language-plaintext highlighter-rouge">get</code>方法</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Point</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">x</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="nf">subscript</span><span class="p">(</span><span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Double</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="n">x</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="n">y</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>如果只有<code class="language-plaintext highlighter-rouge">get</code>方法，可以省略<code class="language-plaintext highlighter-rouge">get </code></li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Point</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">x</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="nf">subscript</span><span class="p">(</span><span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Double</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">x</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">y</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>可以设置参数标签</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Point</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">x</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="nf">subscript</span><span class="p">(</span><span class="n">index</span> <span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Double</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">x</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">y</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">p</span> <span class="o">=</span> <span class="kt">Point</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mf">22.2</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="nv">index</span><span class="p">:</span> <span class="mi">1</span><span class="p">])</span> <span class="c1">// 22.2</span>
+</code></pre></div></div> <p>下标可以是类型方法</p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Sum</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="nf">subscript</span><span class="p">(</span><span class="nv">v1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">v2</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">v1</span> <span class="o">+</span> <span class="n">v2</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Sum</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
+</code></pre></div></div> <h2 id="结构体类作为返回值对比">结构体、类作为返回值对比</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Point</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">PointManager</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">point</span> <span class="o">=</span> <span class="kt">Point</span><span class="p">()</span>
+    <span class="nf">subscript</span><span class="p">(</span><span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Point</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="n">point</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">pm</span> <span class="o">=</span> <span class="kt">PointManager</span><span class="p">()</span>
+<span class="n">pm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="n">pm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">22</span>
+<span class="c1">// Point (x: 11, y: 22)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">pm</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1">// Point (x: 11, y: 22)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">point</span><span class="p">)</span>
+
+<span class="kd">struct</span> <span class="kt">Point</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="kd">class</span> <span class="kt">PointManager</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">point</span> <span class="o">=</span> <span class="kt">Point</span><span class="p">()</span>
+        <span class="nf">subscript</span><span class="p">(</span><span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Point</span> <span class="p">{</span>
+            <span class="k">set</span> <span class="p">{</span>
+                <span class="n">point</span> <span class="o">=</span> <span class="n">newValue</span>
+            <span class="p">}</span>
+            <span class="k">get</span> <span class="p">{</span>
+                <span class="n">point</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>接收多个参数的下标</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Grid</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+    <span class="p">]</span>
+    <span class="nf">subscript</span><span class="p">(</span><span class="nv">row</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">column</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span>
+            <span class="k">guard</span> <span class="n">row</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="o">&amp;&amp;</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span>
+            <span class="p">}</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">newValue</span>
+        <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="k">guard</span> <span class="n">row</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="o">&amp;&amp;</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">column</span><span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">grid</span> <span class="o">=</span> <span class="kt">Grid</span><span class="p">()</span>
+<span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">77</span>
+<span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">88</span>
+<span class="n">grid</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">99</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div></div> <h2 id="继承">继承</h2> <ul> <li> <p>值类型（枚举、结构体）不支持继承，只有类支持继承</p> </li> <li>没有父类的类，称为：基类</li> <li> <p><code class="language-plaintext highlighter-rouge">Swift</code>并没有像<code class="language-plaintext highlighter-rouge">OC</code>、<code class="language-plaintext highlighter-rouge">Java</code>那样的规定：任何类最终都要继承自某个基类</p> </li> <li>子类可以重写父类的下标、方法、属性，重写必须加上<code class="language-plaintext highlighter-rouge">override</code>关键字</li> </ul> <h2 id="重写实例方法下标">重写实例方法、下标</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Animal</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">speak</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">print</span> <span class="p">(</span><span class="s">"Animal speak"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nf">subscript</span> <span class="p">(</span><span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">index</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">anim</span><span class="p">:</span> <span class="kt">Animal</span>
+<span class="n">anim</span> <span class="o">=</span> <span class="kt">Animal</span><span class="p">()</span>
+<span class="c1">// Animal speak</span>
+<span class="n">anim</span><span class="o">.</span><span class="nf">speak</span><span class="p">()</span>
+<span class="c1">// 6</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">anim</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Cat</span><span class="p">:</span> <span class="kt">Animal</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">speak</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">speak</span><span class="p">()</span>
+        <span class="nf">print</span> <span class="p">(</span><span class="s">"Cat speak"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">override</span> <span class="nf">subscript</span> <span class="p">(</span><span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">super</span> <span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">anim</span> <span class="o">=</span> <span class="kt">Cat</span><span class="p">()</span>
+<span class="c1">// Animal speak</span>
+<span class="c1">// Cat speak</span>
+<span class="n">anim</span><span class="o">.</span> <span class="nf">speak</span><span class="p">()</span> <span class="c1">// 7</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">anim</span><span class="p">[</span><span class="mi">6</span><span class="p">))</span>
+</code></pre></div></div> <ul> <li>被<code class="language-plaintext highlighter-rouge">class</code>修饰的类型方法、下标，允许被子类重写</li> <li>被<code class="language-plaintext highlighter-rouge">static</code>修饰的类型方法、下标，不允许被子类重写</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Animal</span> <span class="p">{</span>
+    <span class="kd">class</span> <span class="kd">func</span> <span class="nf">speak</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">print</span> <span class="p">(</span><span class="s">"Animal speak"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="kd">class</span> <span class="nf">subscript</span><span class="p">(</span><span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">index</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Animal speak</span>
+<span class="kt">Animal</span><span class="o">.</span><span class="nf">speak</span><span class="p">()</span>
+<span class="c1">// 6</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Animal</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Cat</span> <span class="p">:</span> <span class="kt">Animal</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">speak</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">speak</span><span class="p">()</span>
+        <span class="nf">print</span> <span class="p">(</span><span class="s">"Cat speak"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">override</span> <span class="kd">class</span> <span class="nf">subscript</span> <span class="p">(</span><span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">super</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Animal speak</span>
+<span class="c1">// Cat speak</span>
+<span class="kt">Cat</span><span class="o">.</span><span class="nf">speak</span><span class="p">()</span> <span class="c1">// 7</span>
+<span class="nf">print</span> <span class="p">(</span><span class="kt">Cat</span> <span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+</code></pre></div></div> <h2 id="重写属性">重写属性</h2> <ul> <li> <p>子类可以特父类的属性（存储、计算）重号为计算属性</p> </li> <li> <p>子类不可以将父类重写为存储属性</p> </li> <li> <p>只能重写var属性，不能重写let属性</p> </li> <li> <p>重与时，属性名、类型要一致</p> </li> <li>子类重写后的属性权限不能小于父类属性的权限</li> <li>如果父类属性是只读的，那么子类重写后的属性可以是只读的、也可以是可读写的。</li> <li> <p>如果父类属性是可读写的，那么子类重写后的属性也必须是可读写的</p> </li> <li>被<code class="language-plaintext highlighter-rouge">class</code>修饰的计算类型属性，可以被子类重写</li> <li>被<code class="language-plaintext highlighter-rouge">static</code>修饰的类型属性（存储、计算），不可以被子类重写</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Circle</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">var</span> <span class="nv">radius</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="kd">class</span> <span class="k">var</span> <span class="nv">diameter</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"Circle setDianeter"</span><span class="p">)</span>
+            <span class="n">radius</span> <span class="o">=</span> <span class="n">newValue</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"Circle getDianeter"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">radius</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">SubCircle</span><span class="p">:</span> <span class="kt">Circle</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">diameter</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"SubCircle setDianeter"</span><span class="p">)</span>
+            <span class="k">super</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span> <span class="n">newValue</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">?</span> <span class="nv">newValue</span> <span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"SubCircle getDianeter"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="k">super</span><span class="o">.</span><span class="n">diameter</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">Circle</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="c1">// Circle getDianeter</span>
+<span class="c1">// 12</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Circle</span><span class="o">.</span><span class="n">diameter</span><span class="p">)</span>
+<span class="c1">// Circle setDianeter</span>
+<span class="kt">Circle</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span> <span class="mi">28</span>
+<span class="c1">// 10</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Circle</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
+
+<span class="kt">SubCircle</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="c1">// SubCircle getDianeter</span>
+<span class="c1">// Circle getDianeter</span>
+<span class="c1">// 12</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Circle</span><span class="o">.</span><span class="n">diameter</span><span class="p">)</span>
+<span class="c1">// SubCircle setDianeter</span>
+<span class="c1">// Circle setDiameter</span>
+<span class="kt">SubCircle</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="c1">// 10</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">SubCircle</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
+</code></pre></div></div> <h2 id="属性观察器">属性观察器</h2> <ul> <li>可以在子类中为父类属性（除了只读计算属性、<code class="language-plaintext highlighter-rouge">let</code>属性）增加属性观察器</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Circle</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">radius</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">SubCircle</span><span class="p">:</span> <span class="kt">Circle</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">var</span> <span class="nv">radius</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">willSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"SubCircle willSetRadius"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"SubCircle didSetRadius"</span><span class="p">,</span> <span class="n">oldValue</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">circle</span> <span class="o">=</span> <span class="kt">SubCircle</span><span class="p">()</span>
+<span class="c1">// SubCircle willSetRadius 10</span>
+<span class="c1">// SubCircle didSetRadius 1 10</span>
+<span class="n">circle</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="mi">10</span>
+</code></pre></div></div> <ul> <li>子类给父类的计算属性添加属性观察器</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Circle</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">radius</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"Circle setRadius"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"Circle getRadius"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">20</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">SubCircle</span><span class="p">:</span> <span class="kt">Circle</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">var</span> <span class="nv">radius</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">willSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"SubCircle willetRadius"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"SubCircle didSetRadius"</span><span class="p">,</span> <span class="n">oldValue</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">circle</span> <span class="o">=</span> <span class="kt">SubCircle</span><span class="p">()</span>
+<span class="c1">// Circle getRadius</span>
+<span class="c1">// SubCircle willSetRadius 10</span>
+<span class="c1">// Circle setRadius 10</span>
+<span class="c1">// Circle getRadius</span>
+<span class="c1">// SubCircle didSetRadius 20 20</span>
+<span class="n">circle</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="mi">10</span>
+</code></pre></div></div> <ul> <li>父类的属性在它自己的初始化器中赋值不会触发属性观察器，但在子类的初始化器中赋值会触发属性观察器</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">willSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"willet"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"didSet"</span><span class="p">,</span> <span class="n">oldValue</span><span class="p">,</span> <span class="n">age</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Student</span><span class="p">:</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// willSet 1</span>
+<span class="c1">// didSet 0 1</span>
+<span class="k">var</span> <span class="nv">stu</span> <span class="o">=</span> <span class="kt">Student</span><span class="p">()</span>
+</code></pre></div></div> <p><strong>final</strong></p> <ul> <li>被<code class="language-plaintext highlighter-rouge">final</code>修饰的方法、下标、属性，禁止被重写</li> <li>被<code class="language-plaintext highlighter-rouge">final</code>修饰的类，禁止被继承</li> </ul> <h2 id="初始化器">初始化器</h2> <ul> <li>类、结构体、枚举都可以定义初始化器</li> <li>类有2种初始化器：指定初始化器（<code class="language-plaintext highlighter-rouge">designated initializer</code>）、便捷初始化器(<code class="language-plaintext highlighter-rouge">convenience initializer</code>)</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//指定初始化器</span>
+<span class="nf">init</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">statements</span>
+<span class="p">}</span>
+
+<span class="c1">//便捷初始化器</span>
+<span class="kd">convenience</span> <span class="nf">init</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">statements</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>每个类至少有一个指定初始化器，指定初始化器是类的主要初始化器</li> <li>默认初始化器总是类的指定初始化器</li> <li> <p>类偏向于少量指定初始化器，一个类通常只有一个指定初始化器</p> </li> <li>初始化器的相互调用规则 <ul> <li>指定初始化器必须从它的直系父类调用指定初始化器</li> <li>便捷初始化器必须从相同的类里调用另一个初始化器</li> <li>便捷初始化器最终必须调用一个指定初始化器</li> </ul> </li> </ul> <p><strong>初始化器的相互调用</strong><br /> <img src="https://luowei.github.io/list/media/16398518926297/16398559518170.jpg" alt="" /></p> <ul> <li>指定初始化器是纵向调用的；便捷初始化器是横向调用的。</li> </ul> <h2 id="两段式初始化">两段式初始化</h2> <ul> <li>Swift在编码安全方面是煞费苦心，为了保证初始化过程的安全，设定了两段式初始化、安全检查</li> <li>两段式初始化 <ul> <li>第1阶段：初始化所有存储属性 <ol> <li>外层调用指定便捷初始化器</li> <li>分配内存给实例，但末初始化</li> <li>指定初始化器确保当前类定义的存储属性都初始化</li> <li>指定初始化器调用父类的初始化器，不断向上调用，形成初始化器链</li> </ol> </li> <li>第2阶段：设置新的存储属性值 <ol> <li>从顶部初始化器往下，链中的每-</li> <li>个指定初始化器都有机会进一步定制实例</li> <li>初始化器现在能够使用<code class="language-plaintext highlighter-rouge">self</code>（访问、修改它的属性，调用它的实例方法等等）</li> <li>最终，链中任何便捷初始化器都有机会定制实例以及使用<code class="language-plaintext highlighter-rouge">self</code></li> </ol> </li> </ul> </li> </ul> <p><strong>安全检查</strong></p> <ul> <li>指定初始化器必须保证在调用父类初始化器之前，其所在类定义的所有存储属性都要初始化完成</li> <li>指定初始化器必须先调用父类初始化器，然后才能为继承的属性设置新值</li> <li>便捷初始化器必须先调用同类中的其它初始化器，然后再为任意属性设置新值</li> <li>初始化器在第1阶段初始化完成之前，不能调用任何实例方法、不能读取任何实例属性的值，也不能引用<code class="language-plaintext highlighter-rouge">self</code></li> <li>直到第1阶段结束，实例才算完全合法</li> <li> <p>当重写父类的指定初始化器时，必须加上<code class="language-plaintext highlighter-rouge">override</code>（即使子类的实现是便捷初始化器）</p> </li> <li>如果子类写了一个匹配父类便捷初始化器的初始化器，不用加上<code class="language-plaintext highlighter-rouge">override</code> <ul> <li>因为父类的便捷初始化器永远不会通过子类直接调用，因此，严格来说，子类无法重写父类的便捷初始化器</li> </ul> </li> </ul> <p><strong>自动继承</strong></p> <ol> <li>如果子类没有自定义任何指定初始化器，它会自动继承父类所有的指定初始化器</li> <li>如果子类提供了父类所有指定初始化器的实现（要么通过方式<code class="language-plaintext highlighter-rouge">1</code>继承，要么重写） <ul> <li>子类自动继承所有的父类便捷初始化器</li> </ul> </li> <li>就算子类添加了更多的便捷初始化器，这些规则仍然适用</li> <li>子类以便捷初始化器的形式重写父类的指定初始化器，也可以作为满足规则<code class="language-plaintext highlighter-rouge">2</code>的一部分</li> </ol> <p><strong>required 关键字</strong></p> <ul> <li>用<code class="language-plaintext highlighter-rouge">required</code>修饰指定初始化器，表明其所有子类都必须实现该初始化器（通过继承或者重写实现）</li> <li>如果子类重写了required初始化器，也必须加上<code class="language-plaintext highlighter-rouge">required</code>，不用加<code class="language-plaintext highlighter-rouge">override</code></li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="kd">required</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="nf">init</span><span class="p">(</span><span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="kt">Student</span><span class="p">:</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="kd">required</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>可失败初始化器</strong></p> <ul> <li>类、结构体、枚举都可以使用init?定义可失败初始化器</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="nf">init</span><span class="p">?(</span><span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">isEmpty</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">nil</span>
+        <span class="p">}</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>之前接触过的可失败初始化器</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">num</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="s">"123"</span><span class="p">)</span>
+<span class="kd">public</span> <span class="nf">init</span><span class="p">?(</span><span class="n">_</span> <span class="nv">description</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span>
+
+<span class="kd">enum</span> <span class="kt">Answer</span> <span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">wrong</span><span class="p">,</span> <span class="n">right</span>
+<span class="p">}</span>
+<span class="k">var</span> <span class="nv">an</span> <span class="o">=</span> <span class="kt">Answer</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div> <ul> <li>不允许同时定义参数标签、参数个数、参数类型相同的可失败初始化器和非可失败初始化器</li> <li>可以用<code class="language-plaintext highlighter-rouge">init!</code>定义隐式解包的可失败初始化器</li> <li>可失败初始化器可以调用非</li> <li>失败初始化器，非可失败初始化器调用可失败初始化器需要进行解包</li> <li>如果初始化器调用一个可失败初始化器导致初始化失败，那么整个初始化过程都失败，并且之后的代码都停止执行</li> <li>可以用一个非可失败初始化器重写一个可失败初始化器，但反过来是不行的</li> </ul> <p><strong>反初始化器</strong></p> <ul> <li><code class="language-plaintext highlighter-rouge">deinit</code>叫做反初始化器，类似于C++的析构西数、OC中的<code class="language-plaintext highlighter-rouge">dealloc</code>方法</li> <li>当类的实例对象被释放内存时，就会调用实例对象的<code class="language-plaintext highlighter-rouge">deinit</code>方法</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="kd">deinit</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"Person对象销毁了"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li><code class="language-plaintext highlighter-rouge">deinit</code>不接受任何参数，不能写小括号，不能自行调用</li> <li>父类的<code class="language-plaintext highlighter-rouge">deinit</code>能被子类继承</li> <li>子类的<code class="language-plaintext highlighter-rouge">deinit</code>实现执行完毕后会调用父类的<code class="language-plaintext highlighter-rouge">deinit</code></li> </ul> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16398518926297.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Swift笔记 - 07.单例模式、方法、下标、返回值、初始化 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16398518926297.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16398518926297.html&amp;title=Swift笔记 - 07.单例模式、方法、下标、返回值、初始化 - 知不知&amp;summary=Swift笔记 - 07.单例模式、方法、下标、返回值、初始化&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16398518926297.html&amp;text=Swift笔记 - 07.单例模式、方法、下标、返回值、初始化 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16398518926297.html&amp;t=Swift笔记 - 07.单例模式、方法、下标、返回值、初始化 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16398518926297.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Swift笔记 - 07.单例模式、方法、下标、返回值、初始化'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
