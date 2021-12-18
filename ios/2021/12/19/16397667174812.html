@@ -1,0 +1,192 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/ios/2021/12/19/16397667174812.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Swift笔记 - 06.属性</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="swift笔记---06属性">Swift笔记 - 06.属性</h1> <h2 id="存储属性与计算属性">存储属性与计算属性</h2> <p><strong><code class="language-plaintext highlighter-rouge">Swift</code>中跟实例相关的属性可以分为2大类</strong></p> <ul> <li>存储属性(StoredProperty) <ul> <li>类似于成员变量这个概念</li> <li>存储在实例的内存中</li> <li>结构体、类可以定义存储属性</li> <li>枚举不可以定义存储属性</li> </ul> </li> <li>计算属性(Computed Property) <ul> <li>本质就是方法(函数)</li> <li>不占用实例的方法</li> <li>枚举、结构体、类都可以定义计算属性</li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">print</span> <span class="p">(</span><span class="kt">MemoryLayout</span><span class="o">&lt;</span><span class="kt">Circle</span><span class="o">&gt;.</span><span class="n">stride</span><span class="p">)</span> <span class="c1">// 8</span>
+
+<span class="kd">struct</span> <span class="kt">Circle</span> <span class="p">{</span>
+    <span class="c1">//1存储属性</span>
+    <span class="k">var</span> <span class="nv">radius</span><span class="p">:</span> <span class="kt">Double</span>
+    <span class="c1">//1计算属性</span>
+    <span class="k">var</span> <span class="nv">diameter</span><span class="p">:</span> <span class="kt">Double</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span>
+            <span class="n">radius</span> <span class="o">=</span> <span class="n">newValue</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="n">radius</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">circle</span> <span class="o">=</span> <span class="kt">Circle</span><span class="p">(</span><span class="nv">radius</span><span class="p">:</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span> <span class="c1">// 5.0</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">diameter</span><span class="p">)</span> <span class="c1">// 10.0</span>
+
+<span class="n">circle</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span> <span class="n">radius</span><span class="p">)</span> <span class="c1">// 6.0</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">diameter</span><span class="p">)</span> <span class="c1">// 12.0</span>
+</code></pre></div></div> <ul> <li>枚举原始值rawValue的本质是：只读计算属性</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">TestEnum</span><span class="p">:</span> <span class="kt">Int</span><span class="p">{</span>
+    <span class="k">case</span> <span class="n">testl</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">test2</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">test3</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="k">var</span> <span class="nv">rawValue</span><span class="p">:</span>
+            <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="k">self</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">testl</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">10</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">test2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">11</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">test3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">12</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>使用lazy可以定义一个延迟存储属性，在第一次用到属性的时候才会进行初始化</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Car</span> <span class="p">{</span>
+    <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"Car init!"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"Car is running!"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">car</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">()</span>
+    <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"Person init!"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">goOut</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">car</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">p</span> <span class="o">=</span> <span class="kt">Person</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">"--------"</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="nf">goOut</span><span class="p">()</span>
+
+<span class="cm">/* out put:
+Person init!
+--------
+Car init!
+Car is running!
+*/</span>
+</code></pre></div></div> <ul> <li><code class="language-plaintext highlighter-rouge">lazy</code>属性必须是<code class="language-plaintext highlighter-rouge">var</code>，不能是<code class="language-plaintext highlighter-rouge">let</code></li> <li> <p><code class="language-plaintext highlighter-rouge">let</code>必须在实例的初始化方法完成之前就拥有值</p> </li> <li>如果多条线程同时第一次访问<code class="language-plaintext highlighter-rouge">lazy</code>属性</li> <li> <p>无決保证属性只被初始化1次</p> </li> <li>当结构体包含一个延迟存储属性时，只有var才能访问延迟存储属性</li> <li>因为延迟属性初始化时需要改变结构体的内存</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">PhotoView</span> <span class="p">{</span>
+    <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">image</span><span class="p">:</span> <span class="kt">Image</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">ur</span> <span class="o">=</span> <span class="s">"https://www.520it.com/xx.png"</span>
+        <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="kt">Data</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kt">Image</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+    <span class="p">}()</span>
+<span class="p">}</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Point</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">x</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">var</span> <span class="nv">y</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">z</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">}</span>
+<span class="k">let</span> <span class="nv">p</span> <span class="o">=</span> <span class="kt">Point</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+</code></pre></div></div> <h2 id="属性观察器">属性观察器</h2> <ul> <li>可以为非lazy的var存储属性设置属性观察器</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Circle</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">radius</span><span class="p">:</span> <span class="kt">Double</span> <span class="p">{</span>
+        <span class="k">willSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"willet"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"didSet"</span><span class="p">,</span> <span class="n">oldValue</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"Circle init!"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Circle init!</span>
+<span class="k">var</span> <span class="nv">circle</span> <span class="o">=</span> <span class="kt">Circle</span><span class="p">()</span>
+<span class="c1">// willet 10.5</span>
+<span class="c1">// didSet 1.0 10.5</span>
+<span class="n">circle</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="mf">10.5</span>
+<span class="c1">// 10.5</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
+</code></pre></div></div> <blockquote> <p>willSet会传递新值，默认叫newvalue <br /> didSet会传递1日值，默认叫oldvalue <br /> 在初始化器中设置属性值不会触发wi11Set和didset</p> </blockquote> <ul> <li>属性观察器、计算属性的功能，同样可以应用在全局变量、局部变量身上</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">num</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="k">get</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="mi">10</span>
+    <span class="p">}</span>
+    <span class="k">set</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"setNum"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">num</span> <span class="o">=</span> <span class="mi">11</span> <span class="c1">// setNum 11</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="c1">// 10</span>
+
+<span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">age</span> <span class="o">=</span> <span class="mi">10</span> <span class="p">{</span>
+        <span class="k">willSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"willSet"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"didSet"</span><span class="p">,</span> <span class="n">oldValue</span><span class="p">,</span> <span class="n">age</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">age</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="c1">// willet 11</span>
+    <span class="c1">// didSet 10 11</span>
+<span class="p">}</span>
+<span class="nf">test</span><span class="p">()</span>
+</code></pre></div></div> <h2 id="inout的本质">inout的本质</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Shape</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">width</span><span class="p">:</span> <span class="kt">Int</span>
+    <span class="k">var</span> <span class="nv">side</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">willSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"willSetSide"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"didsetside"</span><span class="p">,</span> <span class="n">oldValue</span><span class="p">,</span> <span class="n">side</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">girth</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="n">newValue</span> <span class="o">/</span> <span class="n">side</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"setGirth"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"getGirth"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">width</span> <span class="o">*</span> <span class="n">side</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">show</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"width=</span><span class="se">\(</span><span class="n">width</span><span class="se">)</span><span class="s">, side=</span><span class="se">\(</span><span class="n">side</span><span class="se">)</span><span class="s">, girth=</span><span class="se">\(</span><span class="n">girth</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">test</span><span class="p">(</span><span class="n">_</span> <span class="nv">num</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">s</span> <span class="o">=</span> <span class="kt">Shape</span> <span class="p">(</span><span class="nv">width</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">side</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nf">test</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">"---------"</span><span class="p">)</span>
+<span class="nf">test</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">.</span><span class="n">side</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">"---------"</span><span class="p">)</span>
+<span class="nf">test</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">.</span><span class="n">girth</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div> <p>output:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>getGirth
+width=20, side=4, girth=80
+---------
+willSetSide 20
+didSetSide 4 20
+getGirth
+width=20, side=20, girth=400
+---------
+getGirth
+setGirth 20
+getGirth
+width=1, side=20, girth=20
+</code></pre></div></div> <ul> <li>如果实参有物理内存地址，且没有设置属性观察器</li> <li> <p>直接将实参的内存地址传入西数（实参进行引用传递）</p> </li> <li>如果实参是计算属性或者设置了属性观察器</li> <li>采取了CopyInCopyout的做法 <ul> <li>调用该西数时，先复制实参的值，产生副本[get】</li> <li>将副本的内存地址传入西数（副本进行引用传递），在函数内部可以修改副本的值</li> <li>西数返回后，再将副本的值覆盖实参的值【set】</li> </ul> </li> <li>总结：inout的本质就是引用传递（地址传递）</li> </ul> <h2 id="类型属性">类型属性</h2> <ul> <li>严格来说，属性可以分为</li> <li>实例属性(Instance Property）：只能通过实例去访问 <ul> <li>存储实例属性(Stored Instance Property）：存储在实例的内存中，每个实例都有1份</li> <li>计算实例属性(Computed Instance Property)</li> </ul> </li> <li>类型属性(TypeProperty）：只能通过类型去访问 <ul> <li>存储类型属性(StoredTypeProperty）：整个程序运行过程中，就只有1份内存（类似于全局变量）</li> <li>计算类型属性(ComputedTypeProperty)</li> </ul> </li> <li>可以通过static定义类型属性</li> <li>如果是类，也可以用关键字class</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Car</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">var</span> <span class="nv">count</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kt">Car</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">c1</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">c2</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">c3</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">Car</span><span class="o">.</span><span class="n">count</span><span class="p">)</span> <span class="c1">// 3</span>
+</code></pre></div></div> <ul> <li>不同于存储实例属性，你必须给存储类型属性设定初始值</li> <li> <p>因为类型没有像实例那样的<code class="language-plaintext highlighter-rouge">init</code>初始化器来初始化存储属性</p> </li> <li>存储类型属性默认就是<code class="language-plaintext highlighter-rouge">lazy</code>，会在第一次使用的时候才初始化</li> <li>就算被多个线程同时访问，保证只会初始化一次</li> <li> <p>存储类型属性可以是<code class="language-plaintext highlighter-rouge">let</code></p> </li> <li>枚举类型也可以定义类型属性（存储类型属性、计算类型属性）</li> </ul> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16397667174812.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Swift笔记 - 06.属性 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16397667174812.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16397667174812.html&amp;title=Swift笔记 - 06.属性 - 知不知&amp;summary=Swift笔记 - 06.属性&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16397667174812.html&amp;text=Swift笔记 - 06.属性 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16397667174812.html&amp;t=Swift笔记 - 06.属性 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F19%2F16397667174812.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Swift笔记 - 06.属性'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
