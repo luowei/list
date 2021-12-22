@@ -1,0 +1,243 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/ios/2021/12/23/16401913901498.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Swift笔记 - 10.自定义错误、try?、try!、rethrows、defer、泛型、关联类</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="swift笔记---10自定义错误trytryrethrowsdefer泛型关联类型类型约束可选项本质">Swift笔记 - 10.自定义错误、try?、try!、rethrows、defer、泛型、关联类型、类型约束、可选项本质</h1> <h2 id="自定义错误">自定义错误</h2> <ul> <li>Swift中可以通过Error协议自定义运行时的错误信息 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">SomeError</span><span class="p">:</span> <span class="kt">Error</span> <span class="p">{</span>
+  <span class="k">case</span> <span class="nf">illegalArg</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span>
+  <span class="k">case</span> <span class="nf">outofBounds</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span>
+  <span class="k">case</span> <span class="n">outofMemory</span>
+<span class="p">}</span>
+</code></pre></div> </div> </li> <li>函数内部通过<code class="language-plaintext highlighter-rouge">throw</code>抛出自定义<code class="language-plaintext highlighter-rouge">Error</code>，可能会抛出<code class="language-plaintext highlighter-rouge">Error</code>的函数必须加上<code class="language-plaintext highlighter-rouge">throws</code>声明</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">divide</span><span class="p">(</span><span class="n">_</span> <span class="nv">num1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">num2</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="k">throws</span><span class="o">-&gt;</span><span class="kt">Int</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="n">num2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="kt">SomeError</span><span class="o">.</span><span class="nf">illegalArg</span><span class="p">(</span><span class="s">"0不能作为除数"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">num1</span> <span class="o">/</span> <span class="n">num2</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>需要使用<code class="language-plaintext highlighter-rouge">try</code>调用可能会抛出<code class="language-plaintext highlighter-rouge">Error</code>的函数</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</code></pre></div></div> <p><strong>使用do-cath捕捉Error</strong></p> <ul> <li>可以使用do-catch捕捉Error</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"1"</span><span class="p">)</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"2"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="k">try</span> <span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"3"</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">SomeError</span><span class="o">.</span><span class="nf">illegalArg</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"参数异常："</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">SomeError</span><span class="o">.</span><span class="nf">outofBounds</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"下标越界："</span><span class="p">,</span> <span class="s">"size=</span><span class="se">\(</span><span class="n">size</span><span class="se">)</span><span class="s">"</span><span class="p">,</span> <span class="s">"index=</span><span class="se">\(</span><span class="n">index</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="kt">SomeError</span><span class="o">.</span><span class="n">outOfMemory</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"内存溢出"</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"其他错误"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"4"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">test</span><span class="p">()</span>
+<span class="c1">// 1</span>
+<span class="c1">// 2</span>
+<span class="c1">//参数异常：0不能作为除数</span>
+<span class="c1">//4</span>
+</code></pre></div></div> <ul> <li>抛出<code class="language-plaintext highlighter-rouge">Error</code>后，<code class="language-plaintext highlighter-rouge">try</code>下一句直到作用域结束的代码都将停止运行</li> </ul> <p><strong>处理Error</strong></p> <ul> <li>处理<code class="language-plaintext highlighter-rouge">Error</code>的2种方式 <ul> <li>通过<code class="language-plaintext highlighter-rouge">do-catch</code>捕捉<code class="language-plaintext highlighter-rouge">Error</code></li> <li>不捕捉<code class="language-plaintext highlighter-rouge">Error</code>，在当前函数增加<code class="language-plaintext highlighter-rouge">throws</code>声明，<code class="language-plaintext highlighter-rouge">Error</code>将自动拋给上层函数 <ul> <li>如果最顶层函数（<code class="language-plaintext highlighter-rouge">main</code>函数）依然没有捕捉<code class="language-plaintext highlighter-rouge">Error</code>，那么程序将终止</li> </ul> </li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="k">throws</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"1"</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="k">try</span> <span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"2"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="k">try</span> <span class="nf">test</span><span class="p">()</span>
+<span class="c1">// 1</span>
+<span class="c1">// Fatal error: Error raised at top level</span>
+
+<span class="k">do</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="k">try</span> <span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="k">is</span> <span class="kt">SomeError</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"SomeError"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="k">throws</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"1"</span><span class="p">)</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="nf">print</span> <span class="p">(</span><span class="s">"2"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="k">try</span> <span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"3"</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="kt">SomeError</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"4"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="k">try</span> <span class="nf">test</span><span class="p">()</span>
+<span class="c1">// 1</span>
+<span class="c1">// 2</span>
+<span class="c1">//illegalArg("0不能作为除数…）</span>
+<span class="c1">//4</span>
+</code></pre></div></div> <h2 id="trytry">try?、try!</h2> <ul> <li>可以使用<code class="language-plaintext highlighter-rouge">try?</code>、<code class="language-plaintext highlighter-rouge">try!</code>调用可能会抛出<code class="language-plaintext highlighter-rouge">Error</code>的西数，这样就不用去处理<code class="language-plaintext highlighter-rouge">Error</code></li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"1"</span><span class="p">)</span>
+    <span class="k">var</span> <span class="nv">result1</span> <span class="o">=</span> <span class="k">try</span><span class="p">?</span> <span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1">// Optional (2), Int?</span>
+    <span class="k">var</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span><span class="p">?</span> <span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// nil</span>
+    <span class="k">var</span> <span class="nv">result3</span> <span class="o">=</span> <span class="k">try!</span> <span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1">// 2, Int</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"2"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">test</span><span class="p">()</span>
+</code></pre></div></div> <ul> <li>a、b是等价的</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">a</span> <span class="o">=</span> <span class="k">try</span><span class="p">?</span> <span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">b</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span>
+<span class="k">do</span> <span class="p">{</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="k">try</span> <span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">{}</span>
+</code></pre></div></div> <h2 id="rethrows">rethrows</h2> <ul> <li><code class="language-plaintext highlighter-rouge">rethrows</code>表明：函数本身不会抛出错误，但调用闭包参数抛出错误，那么它会将错误向上抛 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">exec</span><span class="p">(</span><span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">num1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">num2</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="k">rethrows</span> <span class="p">{</span>
+  <span class="nf">print</span><span class="p">(</span><span class="k">try</span> <span class="nf">fn</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span> <span class="n">num2</span><span class="p">))</span>
+<span class="p">}</span>
+<span class="c1">// Fatal error: Error raised at top level</span>
+<span class="k">try</span> <span class="nf">exec</span><span class="p">(</span><span class="n">divide</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre></div> </div> </li> </ul> <h2 id="defer做收尾工作">defer做收尾工作</h2> <ul> <li><code class="language-plaintext highlighter-rouge">defer</code>语句：用来定义以任何方式（抛错误、<code class="language-plaintext highlighter-rouge">return</code>等）离开代码块前必须要执行的代码</li> <li><code class="language-plaintext highlighter-rouge">defer</code>语句将延迟至当前作用域结束之前执行</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">open</span><span class="p">(</span><span class="n">_</span> <span class="nv">filename</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"open"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">0</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">close</span><span class="p">(</span> <span class="nv">file</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"close"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">processFile</span><span class="p">(</span><span class="n">_</span> <span class="nv">filename</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">throws</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">file</span> <span class="o">=</span> <span class="nf">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">defer</span> <span class="p">{</span>
+        <span class="nf">close</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="c1">// tAfile</span>
+    <span class="c1">//...</span>
+    <span class="k">try</span> <span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c1">//close将会在这里调用</span>
+<span class="p">}</span>
+<span class="k">try</span> <span class="nf">processFile</span><span class="p">(</span><span class="s">"test.txt"</span><span class="p">)</span>
+<span class="c1">// open</span>
+<span class="c1">// close</span>
+<span class="c1">// Fatal error: Error raised at top level</span>
+</code></pre></div></div> <h2 id="泛型">泛型</h2> <ul> <li>泛型可以将类型参数化，提高代码复用率，减少代码量</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="n">swapValues</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">a</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">T</span><span class="p">,</span> <span class="nv">b</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">T</span><span class="p">){</span>
+    <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">i1</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">var</span> <span class="nv">i2</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="nf">swapValues</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">i2</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">d1</span> <span class="o">=</span> <span class="mf">10.0</span>
+<span class="k">var</span> <span class="nv">d2</span> <span class="o">=</span> <span class="mf">20.0</span>
+<span class="nf">swapValues</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">d2</span><span class="p">)</span>
+<span class="kd">struct</span> <span class="kt">Date</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">year</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">month</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">day</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">}</span>
+<span class="k">var</span> <span class="nv">dd1</span> <span class="o">=</span> <span class="kt">Date</span><span class="p">(</span><span class="nv">year</span><span class="p">:</span> <span class="mi">2011</span><span class="p">,</span> <span class="nv">month</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="nv">day</span><span class="p">:</span> <span class="mi">10</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">dd2</span> <span class="o">=</span> <span class="kt">Date</span><span class="p">(</span><span class="nv">year</span><span class="p">:</span> <span class="mi">2012</span><span class="p">,</span> <span class="nv">month</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">day</span><span class="p">:</span> <span class="mi">11</span><span class="p">)</span>
+<span class="nf">swapValues</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dd1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dd2</span><span class="p">)</span>
+</code></pre></div></div> <ul> <li>泛型函数赋值给变量</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="n">test</span><span class="o">&lt;</span><span class="kt">T1</span><span class="p">,</span> <span class="kt">T2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">t1</span><span class="p">:</span> <span class="kt">T1</span><span class="p">,</span> <span class="n">_</span> <span class="nv">t2</span><span class="p">:</span> <span class="kt">T2</span><span class="p">)()</span>
+<span class="k">var</span> <span class="nv">fn</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">Double</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">()</span> <span class="o">=</span> <span class="n">test</span>
+</code></pre></div></div> <h2 id="关联类型">关联类型</h2> <ul> <li>关联类型的作用：给协议中用到的类型定义一个占位名称</li> <li>协议中可以拥有多个关联类型</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">Stackable</span> <span class="p">{</span>
+    <span class="kd">associatedtype</span> <span class="kt">Element</span> <span class="c1">//关联类型</span>
+    <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">push</span><span class="p">(</span><span class="n">_</span> <span class="nv">element</span><span class="p">:</span> <span class="kt">Element</span><span class="p">)</span>
+    <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">pop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Element</span>
+    <span class="kd">func</span> <span class="nf">top</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Element</span>
+    <span class="kd">func</span> <span class="nf">size</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Stack</span><span class="o">&lt;</span><span class="kt">E</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">Stackable</span> <span class="p">{</span>
+<span class="c1">// typealias Element = E</span>
+    <span class="k">var</span> <span class="nv">elements</span> <span class="o">=</span> <span class="p">[</span><span class="kt">E</span><span class="p">](</span><span class="nv">https</span><span class="p">:</span><span class="c1">//luowei.github.io/list/)</span>
+    <span class="kd">func</span> <span class="nf">push</span><span class="p">(</span><span class="n">_</span> <span class="nv">element</span><span class="p">:</span> <span class="kt">E</span><span class="p">)</span> <span class="p">{</span> <span class="n">elements</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">pop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">E</span> <span class="p">{</span> <span class="n">elements</span><span class="o">.</span><span class="nf">removeLast</span><span class="p">()</span> <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">top</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">E</span> <span class="p">{</span> <span class="n">elements</span><span class="o">.</span><span class="n">last</span><span class="o">!</span> <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">size</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span> <span class="n">elements</span><span class="o">.</span><span class="n">count</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Stringstack</span><span class="p">:</span> <span class="kt">Stackable</span> <span class="p">{</span>
+    <span class="c1">//给关联类型设定真实类型</span>
+    <span class="c1">// typealias Element = String</span>
+    <span class="k">var</span> <span class="nv">elements</span> <span class="o">=</span> <span class="p">[</span><span class="kt">String</span><span class="p">](</span><span class="nv">https</span><span class="p">:</span><span class="c1">//luowei.github.io/list/)</span>
+    <span class="kd">func</span> <span class="nf">push</span><span class="p">(</span><span class="n">_</span> <span class="nv">element</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span> <span class="n">elements</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">pop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span> <span class="n">elements</span><span class="o">.</span><span class="nf">removeLast</span><span class="p">()</span> <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">top</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span> <span class="n">elements</span><span class="o">.</span><span class="n">last</span><span class="o">!</span> <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">size</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span> <span class="n">elements</span><span class="o">.</span><span class="n">count</span>  <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">var</span> <span class="nv">ss</span> <span class="o">=</span> <span class="kt">StringStack</span><span class="p">()</span>
+<span class="n">ss</span><span class="o">.</span><span class="nf">push</span><span class="p">(</span><span class="s">"Jack"</span><span class="p">)</span>
+<span class="n">ss</span><span class="o">.</span><span class="nf">push</span><span class="p">(</span><span class="s">"Rose"</span><span class="p">)</span>
+</code></pre></div></div> <h2 id="类型约束">类型约束</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">Runnable</span> <span class="p">{</span> <span class="p">}</span>
+<span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span> <span class="p">}</span>
+<span class="kd">func</span> <span class="n">swapValues</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">Person</span> <span class="o">&amp;</span> <span class="kt">Runnable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">a</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">T</span><span class="p">,</span> <span class="n">_</span> <span class="nv">b</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">T</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">protocol</span> <span class="kt">Stackable</span> <span class="p">{</span>
+    <span class="kd">associatedtype</span> <span class="kt">Element</span><span class="p">:</span> <span class="kt">Equatable</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="kt">Stack</span><span class="o">&lt;</span><span class="kt">E</span><span class="p">:</span> <span class="kt">Equatable</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt">Stackable</span> <span class="p">{}</span>
+
+<span class="kd">func</span> <span class="n">equal</span><span class="o">&lt;</span><span class="kt">S1</span><span class="p">:</span> <span class="kt">Stackable</span><span class="p">,</span> <span class="kt">S2</span><span class="p">:</span> <span class="kt">Stackable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">s1</span><span class="p">:</span> <span class="kt">S1</span><span class="p">,</span> <span class="n">_</span> <span class="kt">S2</span><span class="p">:</span> <span class="kt">S2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span>
+        <span class="k">where</span> <span class="kt">S1</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">S2</span><span class="o">.</span><span class="kt">Element</span><span class="p">,</span> <span class="kt">S1</span><span class="o">.</span><span class="kt">Element</span><span class="p">:</span> <span class="kt">Hashable</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">false</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">stack1</span> <span class="o">=</span> <span class="kt">Stack</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="k">var</span> <span class="nv">stack2</span> <span class="o">=</span> <span class="kt">Stack</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="c1">// error: requires the types 'Int' and 'String' be equivalent</span>
+<span class="nf">equal</span><span class="p">(</span><span class="n">stack1</span><span class="p">,</span> <span class="n">stack2</span><span class="p">)</span>
+</code></pre></div></div> <h2 id="协议中有关联类型---注意点">协议中有关联类型 - 注意点</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">Runnable</span> <span class="p">{}</span>
+<span class="kd">class</span> <span class="kt">Person</span> <span class="p">:</span> <span class="kt">Runnable</span> <span class="p">{}</span>
+<span class="kd">class</span> <span class="kt">Car</span> <span class="p">:</span> <span class="kt">Runnable</span> <span class="p">{}</span>
+<span class="kd">func</span> <span class="nf">get</span> <span class="p">(</span><span class="n">_</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Runnable</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="n">type</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">Person</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="kt">Car</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="k">var</span> <span class="nv">r1</span> <span class="o">=</span> <span class="nf">get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">r2</span> <span class="o">=</span> <span class="nf">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div> <ul> <li>如果协议中有 <code class="language-plaintext highlighter-rouge">associatedtype</code></li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">Runnable</span> <span class="p">{</span>
+    <span class="kd">associatedtype</span> <span class="kt">Speed</span>
+    <span class="k">var</span> <span class="nv">speed</span><span class="p">:</span> <span class="kt">Speed</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="kt">Person</span><span class="p">:</span> <span class="kt">Runnable</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">speed</span><span class="p">:</span> <span class="kt">Double</span> <span class="p">{</span> <span class="mf">0.0</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="kt">Car</span><span class="p">:</span> <span class="kt">Runnable</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">speed</span><span class="p">:</span> <span class="kt">Int</span><span class="p">{</span> <span class="mi">0</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><img src="https://luowei.github.io/list/media/16401913901498/16401925326567.jpg" alt="" /> <img src="https://luowei.github.io/list/media/16401913901498/16401925451759.jpg" alt="" /></p> <p><strong>两种解决方案：</strong> 1.泛型解决；2.不透明类型(some关键字)</p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">T</span> <span class="p">:</span> <span class="kt">Runnable</span><span class="o">&gt;</span> <span class="p">(</span><span class="n">_</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">T</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="n">type</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">Person</span><span class="p">()</span> <span class="k">as!</span> <span class="kt">T</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="kt">Car</span><span class="p">()</span> <span class="k">as!</span> <span class="kt">T</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">get</span> <span class="p">(</span><span class="n">_</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kd">some</span> <span class="kt">Runnable</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kt">Car</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li><code class="language-plaintext highlighter-rouge">some</code>除了用在返回值类型上，一般还可以用在属性类型上</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">Runnable</span> <span class="p">{</span> <span class="kd">associatedtype</span> <span class="kt">Speed</span> <span class="p">}</span>
+<span class="kd">class</span> <span class="kt">Dog</span><span class="p">:</span> <span class="kt">Runnable</span> <span class="p">{</span> <span class="kd">typealias</span> <span class="kt">Speed</span> <span class="o">=</span> <span class="kt">Double</span> <span class="p">}</span>
+<span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">pet</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">Runnable</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">Dog</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="可选项的本质">可选项的本质</h2> <ul> <li>可选项的本质是enum类型<br /> ```swift public enum Optional<Wrapped> : ExpressibleByNilLiteral { case none case some (Wrapped) public init(_ some: Wrapped) }</Wrapped></li> </ul> <p>var age: Int? = 10 var age0: Optional<Int> = Optional<Int>.some(10) var age1: Optional = .some(10) var age2 = Optional.some (10) var age3 = Optional(10) age = nil age3 = .none</Int></Int></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+```swift
+var age: Int? = nil
+var age0 = Optional&lt;Int&gt;.none
+var age1: Optional&lt;Int&gt; =.none
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="o">.</span><span class="k">none</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">age</span> <span class="o">=</span> <span class="o">.</span><span class="nf">some</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">age</span> <span class="o">=</span> <span class="kc">nil</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">switch</span> <span class="n">age</span> <span class="p">{</span>
+<span class="k">case</span> <span class="k">let</span> <span class="nv">v</span><span class="p">?:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"some"</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="k">case</span> <span class="nv">nil</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"none"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="k">switch</span> <span class="n">age</span> <span class="p">{</span>
+<span class="k">case</span> <span class="kd">let</span> <span class="o">.</span><span class="nf">some</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"some"</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="k">case</span> <span class="o">.</span><span class="nv">none</span><span class="p">:</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"none"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">age_</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">??</span> <span class="o">=</span> <span class="n">age_</span>
+<span class="n">age</span> <span class="o">=</span> <span class="kc">nil</span>
+
+<span class="k">var</span> <span class="nv">age0</span> <span class="o">=</span> <span class="kt">Optional</span><span class="o">.</span><span class="nf">some</span><span class="p">(</span><span class="kt">Optional</span><span class="o">.</span><span class="nf">some</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">age0</span> <span class="o">=</span> <span class="o">.</span> <span class="k">none</span>
+<span class="k">var</span> <span class="nv">age1</span><span class="p">:</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Optional</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">some</span><span class="p">(</span><span class="o">.</span><span class="nf">some</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">age1</span> <span class="o">=</span> <span class="o">.</span><span class="k">none</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">??</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">var</span> <span class="nv">age0</span><span class="p">:</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Optional</span><span class="o">&gt;</span> <span class="o">=</span> <span class="mi">10</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F23%2F16401913901498.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Swift笔记 - 10.自定义错误、try?、try!、rethrows、defer、泛型、关联类 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F23%2F16401913901498.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F23%2F16401913901498.html&amp;title=Swift笔记 - 10.自定义错误、try?、try!、rethrows、defer、泛型、关联类 - 知不知&amp;summary=Swift笔记 - 10.自定义错误、try?、try!、rethrows、defer、泛型、关联类&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F23%2F16401913901498.html&amp;text=Swift笔记 - 10.自定义错误、try?、try!、rethrows、defer、泛型、关联类 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F23%2F16401913901498.html&amp;t=Swift笔记 - 10.自定义错误、try?、try!、rethrows、defer、泛型、关联类 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2021%2F12%2F23%2F16401913901498.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Swift笔记 - 10.自定义错误、try?、try!、rethrows、defer、泛型、关联类'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
