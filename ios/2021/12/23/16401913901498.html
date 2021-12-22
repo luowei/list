@@ -209,11 +209,22 @@
         <span class="k">return</span> <span class="kt">Dog</span><span class="p">()</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div></div> <h2 id="可选项的本质">可选项的本质</h2> <ul> <li>可选项的本质是enum类型<br /> ```swift public enum Optional<Wrapped> : ExpressibleByNilLiteral { case none case some (Wrapped) public init(_ some: Wrapped) }</Wrapped></li> </ul> <p>var age: Int? = 10 var age0: Optional<Int> = Optional<Int>.some(10) var age1: Optional = .some(10) var age2 = Optional.some (10) var age3 = Optional(10) age = nil age3 = .none</Int></Int></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-```swift
-var age: Int? = nil
-var age0 = Optional&lt;Int&gt;.none
-var age1: Optional&lt;Int&gt; =.none
+</code></pre></div></div> <h2 id="可选项的本质">可选项的本质</h2> <ul> <li>可选项的本质是enum类型</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Wrapped</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">ExpressibleByNilLiteral</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="k">none</span>
+    <span class="k">case</span> <span class="nf">some</span> <span class="p">(</span><span class="kt">Wrapped</span><span class="p">)</span>
+    <span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">some</span><span class="p">:</span> <span class="kt">Wrapped</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">var</span> <span class="nv">age0</span><span class="p">:</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;.</span><span class="nf">some</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">age1</span><span class="p">:</span> <span class="kt">Optional</span> <span class="o">=</span> <span class="o">.</span><span class="nf">some</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">age2</span> <span class="o">=</span> <span class="kt">Optional</span><span class="o">.</span><span class="nf">some</span> <span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">age3</span> <span class="o">=</span> <span class="kt">Optional</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">age</span> <span class="o">=</span> <span class="kc">nil</span>
+<span class="n">age3</span> <span class="o">=</span> <span class="o">.</span><span class="k">none</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span>
+<span class="k">var</span> <span class="nv">age0</span> <span class="o">=</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;.</span><span class="k">none</span>
+<span class="k">var</span> <span class="nv">age1</span><span class="p">:</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=.</span><span class="k">none</span>
 </code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="o">.</span><span class="k">none</span>
 <span class="n">age</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">age</span> <span class="o">=</span> <span class="o">.</span><span class="nf">some</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
