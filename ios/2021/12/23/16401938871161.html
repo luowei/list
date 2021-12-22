@@ -134,17 +134,27 @@
         <span class="nf">print</span><span class="p">(</span><span class="k">Self</span><span class="o">.</span><span class="n">count</span><span class="p">)</span> <span class="c1">// 2</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div></div> <ul> <li><code class="language-plaintext highlighter-rouge">Self</code>一般用作返回值类型，限定返回值跟方法调用者必领是同一类型（也可以作为参数类型）<br /> ```swift protocol Runnable { func test() -&gt; Self } class Person : Runnable { required init() {} func test() -&gt; Self { type(of: self).init() } } class Student : Person()</li> </ul> <p>var p = Person() // Person print(p.test())</p> <p>var stu = Student() // Student print(stu.test())</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-## assert(断言)    
-* 很多编程语言都有断言机制：不符合指定条件就抛出运行时错误，常用于调试（`Debug`）阶段的条件判断
-* 默认情況下，`Swift`的断言只会在Debug模式下生效，`Release`模式下会忽路
+</code></pre></div></div> <ul> <li><code class="language-plaintext highlighter-rouge">Self</code>一般用作返回值类型，限定返回值跟方法调用者必领是同一类型（也可以作为参数类型）</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">Runnable</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="k">Self</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="kt">Person</span> <span class="p">:</span> <span class="kt">Runnable</span> <span class="p">{</span>
+    <span class="kd">required</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="k">Self</span> <span class="p">{</span> <span class="nf">type</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="k">self</span><span class="p">)</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="kt">Student</span> <span class="p">:</span> <span class="kt">Person</span><span class="p">()</span>
 
-```swift
-func divide(_ v1: Int, _ v2: Int) -&gt; Int {
-    assert(v2 != 0，"除数不能为0")
-    return v1 / v2
-}
-print(divide(20, 0))
+<span class="k">var</span> <span class="nv">p</span> <span class="o">=</span> <span class="kt">Person</span><span class="p">()</span>
+<span class="c1">// Person</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="nf">test</span><span class="p">())</span>
+
+<span class="k">var</span> <span class="nv">stu</span> <span class="o">=</span> <span class="kt">Student</span><span class="p">()</span>
+<span class="c1">// Student</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">stu</span><span class="o">.</span><span class="nf">test</span><span class="p">())</span>
+</code></pre></div></div> <h2 id="assert断言">assert(断言)</h2> <ul> <li>很多编程语言都有断言机制：不符合指定条件就抛出运行时错误，常用于调试（<code class="language-plaintext highlighter-rouge">Debug</code>）阶段的条件判断</li> <li>默认情況下，<code class="language-plaintext highlighter-rouge">Swift</code>的断言只会在Debug模式下生效，<code class="language-plaintext highlighter-rouge">Release</code>模式下会忽路</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">divide</span><span class="p">(</span><span class="n">_</span> <span class="nv">v1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">v2</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="nf">assert</span><span class="p">(</span><span class="n">v2</span> <span class="o">!=</span> <span class="mi">0</span><span class="err">，</span><span class="s">"除数不能为0"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">v1</span> <span class="o">/</span> <span class="n">v2</span>
+<span class="p">}</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">divide</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 </code></pre></div></div> <ul> <li>增加<code class="language-plaintext highlighter-rouge">Swift Flags</code>修改断言的默认行为 <ul> <li><code class="language-plaintext highlighter-rouge">-assert-config Release</code>：强制关闭断言</li> <li><code class="language-plaintext highlighter-rouge">-assert-config Debug</code>：强制开启断言</li> </ul> </li> </ul> <p><img src="https://luowei.github.io/list/media/16401938871161/16401992342476.jpg" alt="" /></p> <h2 id="fatalerror">fatalError</h2> <ul> <li>如果遇到严重问题，希望结束程序运行时，可以直接使用<code class="language-plaintext highlighter-rouge">fatalError</code>函数地出错误（这是无法通过<code class="language-plaintext highlighter-rouge">do-catch</code>捕捉的错误）</li> <li>使用了<code class="language-plaintext highlighter-rouge">fatalError</code>函数，就不需要再写<code class="language-plaintext highlighter-rouge">return</code></li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">test</span><span class="p">(</span><span class="n">_</span> <span class="nv">num</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
     <span class="k">if</span> <span class="n">num</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">{</span>
         <span class="k">return</span> <span class="mi">1</span>
