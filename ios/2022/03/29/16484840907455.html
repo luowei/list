@@ -1,0 +1,442 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/ios/2022/03/29/16484840907455.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Swift笔记 - 14.字面量、模式、条件编译、日志、API可用性、程序入口、Swift与OC互调</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="swift笔记---14字面量模式条件编译日志api可用性程序入口swift与oc互调">Swift笔记 - 14.字面量、模式、条件编译、日志、API可用性、程序入口、Swift与OC互调</h1> <h2 id="字面量">字面量</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">age</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">var</span> <span class="nv">isRed</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="k">var</span> <span class="nv">name</span> <span class="o">=</span> <span class="s">"Jack"</span>
+</code></pre></div></div> <ul> <li> <p>上面代码中的<code class="language-plaintext highlighter-rouge">10</code>、<code class="language-plaintext highlighter-rouge">false</code>、<code class="language-plaintext highlighter-rouge">"Jack"</code>就是字面量</p> </li> <li> <p>常见字面量的默认类型</p> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">IntegerLiteralType</span> <span class="o">=</span> <span class="kt">Int</span>
+<span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">FloatLiteralType</span> <span class="o">=</span> <span class="kt">Double</span>
+<span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">BooleanLiteralType</span> <span class="o">=</span> <span class="kt">Bool</span>
+<span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">StringLiteralType</span> <span class="o">=</span> <span class="kt">String</span>
+
+<span class="c1">//可以通过typealias修改字面量的默认类型</span>
+<span class="kd">typealias</span> <span class="kt">FloatLiteralType</span> <span class="o">=</span> <span class="kt">Float</span>
+<span class="kd">typealias</span> <span class="kt">IntegerLiteralType</span> <span class="o">=</span> <span class="kt">UInt8</span>
+<span class="k">var</span> <span class="nv">age</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1">// UInt8</span>
+<span class="k">var</span> <span class="nv">height</span> <span class="o">=</span> <span class="mf">1.68</span> <span class="c1">// Float</span>
+</code></pre></div></div> <ul> <li>Swift自带的绝大部分类型，都支持直接通过字面量进行初始化 <ul> <li><code class="language-plaintext highlighter-rouge">Bool</code>、<code class="language-plaintext highlighter-rouge">Int</code>、<code class="language-plaintext highlighter-rouge">Float</code>、<code class="language-plaintext highlighter-rouge">Double</code>、<code class="language-plaintext highlighter-rouge">String</code>、<code class="language-plaintext highlighter-rouge">Array</code>、<code class="language-plaintext highlighter-rouge">Dictionary</code>、<code class="language-plaintext highlighter-rouge">Set</code>、<code class="language-plaintext highlighter-rouge">Optional</code>等</li> </ul> </li> </ul> <h3 id="字面量协议">字面量协议</h3> <ul> <li>Swift自带类型之所以能够通过字面量初始化，是因为它们遵守了对应的协议 <ul> <li><code class="language-plaintext highlighter-rouge">Bool: ExpressibleByBooleanLiteral</code></li> <li><code class="language-plaintext highlighter-rouge">Int : ExpressibleByIntegerLiteral</code></li> <li><code class="language-plaintext highlighter-rouge">Float, Double : ExpressibleByIntegerLiteral、ExpressibleByFloatLiteral</code></li> <li><code class="language-plaintext highlighter-rouge">Dictionary : ExpressibleByDictionaryLiteral</code></li> <li><code class="language-plaintext highlighter-rouge">String : ExpressibleByStringLiteral</code></li> <li><code class="language-plaintext highlighter-rouge">Array, Set : ExpressibleByArrayLiteral</code></li> <li><code class="language-plaintext highlighter-rouge">Optional : ExpressibleByNilLiteral</code></li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">b</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span> <span class="c1">// ExpressibleByBooleanLiteral</span>
+<span class="k">var</span> <span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1">// ExpressibleByIntegerLiteral</span>
+<span class="k">var</span> <span class="nv">f0</span><span class="p">:</span> <span class="kt">Float</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1">// ExpressibleByIntegerLiteral</span>
+<span class="k">var</span> <span class="nv">f1</span><span class="p">:</span> <span class="kt">Float</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="c1">// ExpressibleByFloatLiteral</span>
+<span class="k">var</span> <span class="nv">d0</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1">// ExpressibleByIntegerLiteral</span>
+<span class="k">var</span> <span class="nv">d1</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="c1">// ExpressibleByFloatLiteral</span>
+<span class="k">var</span> <span class="nv">s</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"jack"</span> <span class="c1">// ExpressibleByStringLiteral</span>
+<span class="k">var</span> <span class="nv">arr</span><span class="p">:</span> <span class="kt">Array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1">// ExpressibleByArrayLiteral</span>
+<span class="k">var</span> <span class="nv">set</span><span class="p">:</span> <span class="kt">Set</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1">// ExpressibleByArrayLiteral</span>
+<span class="k">var</span> <span class="nv">dict</span><span class="p">:</span> <span class="kt">Dictionary</span> <span class="o">=</span> <span class="p">[</span><span class="s">"jack"</span> <span class="p">:</span> <span class="mi">60</span><span class="p">]</span> <span class="c1">// ExpressibleByDictionaryLiteral</span>
+<span class="k">var</span> <span class="nv">o</span><span class="p">:</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kc">nil</span> <span class="c1">// ExpressibleByNilLiteral</span>
+</code></pre></div></div> <h3 id="字面量协议的应用">字面量协议的应用</h3> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">extension</span> <span class="kt">Int</span> <span class="p">:</span> <span class="kt">ExpressibleByBooleanLiteral</span> <span class="p">{</span>
+    <span class="kd">public</span> <span class="nf">init</span> <span class="p">(</span><span class="n">booleanLiteral</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span> <span class="k">self</span> <span class="o">=</span> <span class="n">value</span> <span class="p">?</span> <span class="mi">1</span> <span class="p">:</span> <span class="mi">0</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">var</span> <span class="nv">num</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="c1">// 1</span>
+</code></pre></div></div> <ul> <li>有点类似于C++中的转换构造函数</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Student</span> <span class="p">:</span> <span class="kt">ExpressibleByIntegerLiteral</span><span class="p">,</span> <span class="kt">ExpressibleByFloatLiteral</span><span class="p">,</span> <span class="kt">ExpressibleByStringLiteral</span><span class="p">,</span> <span class="kt">CustomStringConvertible</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span>
+    <span class="k">var</span> <span class="nv">score</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="kd">required</span> <span class="nf">init</span><span class="p">(</span><span class="n">floatLiteral</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Double</span><span class="p">)</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">value</span> <span class="p">}</span>
+    <span class="kd">required</span> <span class="nf">init</span> <span class="p">(</span><span class="n">integerLiteral</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="kt">Double</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">}</span>
+    <span class="kd">required</span> <span class="nf">init</span><span class="p">(</span><span class="n">stringLiteral</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">value</span> <span class="p">}</span>
+    <span class="kd">required</span> <span class="nf">init</span><span class="p">(</span><span class="n">unicodeScalarLiteral</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">value</span> <span class="p">}</span>
+    <span class="kd">required</span> <span class="nf">init</span><span class="p">(</span><span class="n">extendedGraphemeClusterLiteral</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">value</span> <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">description</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="s">"name=</span><span class="se">\(</span><span class="n">name</span><span class="se">)</span><span class="s">, score=</span><span class="se">\(</span><span class="n">score</span><span class="se">)</span><span class="s">"</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">var</span> <span class="nv">stu</span><span class="p">:</span> <span class="kt">Student</span> <span class="o">=</span> <span class="mi">90</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">stu</span><span class="p">)</span> <span class="c1">// name=, score=90.0</span>
+<span class="n">stu</span> <span class="o">=</span> <span class="mf">98.5</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">stu</span><span class="p">)</span> <span class="c1">// name=, score=98.5</span>
+<span class="n">stu</span> <span class="o">=</span> <span class="s">"Jack"</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">stu</span><span class="p">)</span> <span class="c1">// name=Jack, score=0.0</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Point</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">X</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="p">}</span>
+<span class="kd">extension</span> <span class="kt">Point</span> <span class="p">:</span> <span class="kt">ExpressibleByArrayLiteral</span><span class="p">,</span> <span class="kt">ExpressibleByDictionaryLiteral</span> <span class="p">{</span>
+    <span class="nf">init</span> <span class="p">(</span><span class="n">arrayLiteral</span> <span class="nv">elements</span><span class="p">:</span> <span class="kt">Double</span><span class="o">...</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">guard</span> <span class="n">elements</span><span class="o">.</span><span class="n">count</span><span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">guard</span> <span class="n">elements</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">elements</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="nf">init</span><span class="p">(</span><span class="n">dictionaryLiteral</span> <span class="nv">elements</span><span class="p">:</span> <span class="p">(</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Double</span><span class="p">)</span><span class="o">...</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">in</span> <span class="n">elements</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">"x"</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">v</span> <span class="p">}</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">"y"</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">v</span> <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">p</span><span class="p">:</span> <span class="kt">Point</span> <span class="o">=</span> <span class="p">[</span><span class="mf">10.5</span><span class="p">,</span> <span class="mf">20.5</span><span class="p">]</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="c1">// Point (x: 10.5, y: 20.5)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="s">"x' : 11, "</span><span class="n">y</span><span class="s">" : 22]
+print(p) // Point(x: 11.0, y: 22.0)
+</span></code></pre></div></div> <h2 id="swift-里的模式">Swift 里的模式</h2> <ul> <li>什么是模式？ <ul> <li>模式是用于匹配的规则，比如<code class="language-plaintext highlighter-rouge">switch</code>的<code class="language-plaintext highlighter-rouge">case</code>、捕捉错误的<code class="language-plaintext highlighter-rouge">catch.if\guard\while\for</code>语句的条件等</li> </ul> </li> <li>Swift中的模式有 <ul> <li>通配符模式(Wildcard Pattern)</li> <li>标识符模式(Identifier Pattern)</li> <li>值绑定模式(Value-Binding Pattern)</li> <li>元组模式(Tuple Pattern)</li> <li>枚举Case模式(Enumeration Case Pattern)</li> <li>可选模式(Optional Pattern)</li> <li>类型转换模式(Type-Casting Pattern)</li> </ul> </li> </ul> <h3 id="通配符模式">通配符模式</h3> <ul> <li><code class="language-plaintext highlighter-rouge">_</code> 匹配任何值</li> <li><code class="language-plaintext highlighter-rouge">_?</code> 匹配非nil值</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">Life</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nf">human</span> <span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?)</span>
+    <span class="k">case</span> <span class="nf">animal</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">check</span><span class="p">(</span> <span class="nv">life</span><span class="p">:</span> <span class="kt">Life</span><span class="p">)</span>
+    <span class="k">switch</span> <span class="n">life</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nf">human</span><span class="p">(</span><span class="k">let</span> <span class="nv">name</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="nf">print</span> <span class="p">(</span><span class="s">"human"</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nf">animal</span><span class="p">(</span><span class="k">let</span> <span class="nv">name</span><span class="p">,</span> <span class="p">?):</span>  <span class="c1">//age非空才匹配</span>
+        <span class="nf">print</span> <span class="p">(</span><span class="s">"animal"</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">default</span><span class="p">:</span>
+        <span class="nf">print</span> <span class="p">(</span><span class="s">"other"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nf">check</span><span class="p">(</span><span class="o">.</span><span class="nf">human</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Rose"</span><span class="p">,</span> <span class="nv">age</span><span class="p">:</span> <span class="mi">20</span><span class="p">))</span> <span class="c1">// human Rose</span>
+<span class="nf">check</span><span class="p">(</span><span class="o">.</span><span class="nf">human</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Jack"</span><span class="p">,</span> <span class="nv">age</span><span class="p">:</span> <span class="kc">nil</span><span class="p">))</span> <span class="c1">// human Jack</span>
+<span class="nf">check</span><span class="p">(</span><span class="o">.</span><span class="nf">animal</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Dog"</span><span class="p">,</span> <span class="nv">age</span><span class="p">:</span> <span class="mi">5</span><span class="p">))</span> <span class="c1">// animal Dog</span>
+<span class="nf">check</span><span class="p">(</span><span class="o">.</span><span class="nf">animal</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span><span class="s">"Cat"</span><span class="p">,</span> <span class="nv">age</span><span class="p">:</span> <span class="kc">nil</span><span class="p">))</span> <span class="c1">// other</span>
+
+
+<span class="k">var</span> <span class="nv">num</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">switch</span> <span class="n">num</span> <span class="p">{</span>
+<span class="k">case</span> <span class="k">let</span> <span class="nv">v</span><span class="p">?:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="k">case</span> <span class="nv">nil</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"nil"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// output:</span>
+<span class="c1">// false</span>
+<span class="c1">// Program ended with exit code:</span>
+</code></pre></div></div> <p><strong>标识符模式</strong></p> <ul> <li>给对应的变量、常量名赋值</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">age</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">let</span> <span class="nv">name</span> <span class="o">=</span> <span class="s">"jack"</span>
+</code></pre></div></div> <ul> <li>值绑定模式</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">point</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="k">switch</span> <span class="n">point</span> <span class="p">{</span>
+<span class="k">case</span> <span class="k">let</span> <span class="p">(</span><span class="nv">x</span><span class="p">,</span> <span class="nv">y</span><span class="p">)</span> <span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"The point is at (</span><span class="se">\(</span><span class="n">x</span><span class="se">)</span><span class="s">, </span><span class="se">\(</span><span class="n">y</span><span class="se">)</span><span class="s">)."</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>元组模式</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">points</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="k">in</span> <span class="n">points</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="s">"jack"</span>
+<span class="k">let</span> <span class="nv">age</span> <span class="o">=</span> <span class="mi">18</span>
+<span class="k">let</span> <span class="nv">info</span><span class="p">:</span> <span class="kt">Any</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="k">switch</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">case</span> <span class="p">(?,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="k">as</span> <span class="kt">String</span><span class="p">):</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"case"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"default"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">// default</span>
+
+<span class="k">var</span> <span class="nv">scores</span> <span class="o">=</span> <span class="p">[</span><span class="s">"jack"</span> <span class="p">:</span> <span class="mi">98</span><span class="p">,</span> <span class="s">"rose"</span> <span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s">"kate"</span> <span class="p">:</span> <span class="mi">86</span><span class="p">]</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span> <span class="k">in</span> <span class="n">scores</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li> <p>枚举Case模式</p> <ul> <li><code class="language-plaintext highlighter-rouge">if case</code> 语句等价于只有1个<code class="language-plaintext highlighter-rouge">case</code>的<code class="language-plaintext highlighter-rouge">switch</code>语句</li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">age</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="c1">//原来的写法</span>
+<span class="k">if</span> <span class="n">age</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">age</span> <span class="o">&lt;=</span> <span class="mi">9</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"[0, 9]"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">// 枚举用例模式</span>
+<span class="k">if</span> <span class="k">case</span> <span class="mi">0</span><span class="o">...</span><span class="mi">9</span> <span class="o">=</span> <span class="n">age</span> <span class="p">{</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"[0, 9]"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="k">guard</span> <span class="k">case</span> <span class="mi">0</span><span class="o">...</span><span class="mi">9</span> <span class="o">=</span> <span class="n">age</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+<span class="nf">print</span> <span class="p">(</span><span class="s">"[0, 9]"</span><span class="p">)</span>
+
+<span class="k">switch</span> <span class="n">age</span> <span class="p">{</span>
+<span class="k">case</span> <span class="mi">0</span><span class="o">...</span><span class="mi">9</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"[0, 9]"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span> <span class="k">break</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">ages</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">?]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="kc">nil</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="k">for</span> <span class="k">case</span> <span class="kc">nil</span> <span class="k">in</span> <span class="n">ages</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"有nil值"</span><span class="p">)</span>
+    <span class="k">break</span>
+<span class="p">}</span> <span class="c1">// 有nil值</span>
+
+<span class="k">let</span> <span class="nv">points</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+<span class="k">for</span> <span class="k">case</span> <span class="k">let</span> <span class="p">(</span><span class="nv">x</span><span class="p">,</span> <span class="err">0</span><span class="p">)</span> <span class="k">in</span> <span class="n">points</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="p">}</span> <span class="c1">// 1 3</span>
+</code></pre></div></div> <ul> <li>可选模式</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="k">if</span> <span class="k">case</span> <span class="o">.</span><span class="nf">some</span> <span class="p">(</span><span class="k">let</span> <span class="nv">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">age</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">if</span> <span class="k">case</span> <span class="k">let</span> <span class="nv">x</span><span class="p">?</span> <span class="o">=</span> <span class="n">age</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">ages</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">?]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">nil</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="kc">nil</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="k">for</span> <span class="k">case</span> <span class="k">let</span> <span class="nv">age</span><span class="p">?</span> <span class="k">in</span> <span class="n">ages</span> <span class="p">{</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="n">age</span><span class="p">)</span>
+<span class="p">}</span> <span class="c1">// 2 3 5</span>
+
+<span class="k">let</span> <span class="nv">ages</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">?]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">nil</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="kc">nil</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">item</span> <span class="k">in</span> <span class="n">ages</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">age</span> <span class="o">=</span> <span class="n">item</span> <span class="p">{</span>
+        <span class="nf">print</span> <span class="p">(</span><span class="n">age</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="c1">//跟上面的for，效果是等价的</span>
+
+<span class="kd">func</span> <span class="nf">check</span><span class="p">(</span><span class="n">_</span> <span class="nv">num</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?)</span> <span class="p">{</span>
+<span class="k">switch</span> <span class="n">num</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="mi">2</span><span class="p">?:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"2"</span><span class="p">)</span>
+    <span class="k">case</span> <span class="mi">4</span><span class="p">?:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"4"</span><span class="p">)</span>
+    <span class="k">case</span> <span class="mi">6</span><span class="p">?:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"6"</span><span class="p">)</span>
+    <span class="k">case</span> <span class="n">_</span><span class="p">?:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"other"</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nv">_</span><span class="p">:</span> <span class="nf">print</span> <span class="p">(</span><span class="s">"nil"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nf">check</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1">// 4</span>
+<span class="nf">check</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="c1">// other</span>
+<span class="nf">check</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span> <span class="c1">// nil</span>
+</code></pre></div></div> <p>以下两种写法等价：</p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">switch</span> <span class="n">age</span> <span class="p">{</span>
+<span class="k">case</span> <span class="k">let</span> <span class="nv">x</span><span class="p">?:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="k">case</span> <span class="nv">nil</span><span class="p">:</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"nil"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">switch</span> <span class="n">age</span> <span class="p">{</span>
+<span class="k">case</span> <span class="o">.</span><span class="nf">some</span><span class="p">(</span><span class="k">let</span> <span class="nv">x</span><span class="p">):</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="k">case</span> <span class="o">.</span><span class="nv">none</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"nil"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>类型转换模式</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">num</span><span class="p">:</span> <span class="kt">Any</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="k">switch</span> <span class="n">num</span> <span class="p">{</span>
+<span class="k">case</span> <span class="k">is</span> <span class="kt">Int</span><span class="p">:</span>
+    <span class="c1">//编译器依然认为nlm是Any类型</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"is Int"</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+<span class="c1">//case let n as Int:</span>
+<span class="c1">//    print ("as Int", n + 1)</span>
+<span class="k">default</span><span class="p">:</span>
+    <span class="k">break</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Animal</span> <span class="p">(</span> <span class="kd">func</span> <span class="nf">eat</span><span class="p">()</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="nf">type</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="k">self</span><span class="p">),</span> <span class="s">"eat"</span><span class="p">)</span> <span class="p">}</span>
+<span class="kd">class</span> <span class="kt">Dog</span> <span class="p">:</span> <span class="kt">Animal</span> <span class="p">{</span> <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="nf">type</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="k">self</span><span class="p">),</span> <span class="s">"run"</span><span class="p">)</span>
+<span class="kd">class</span> <span class="kt">Cat</span> <span class="p">:</span> <span class="kt">Animal</span> <span class="p">{</span> <span class="kd">func</span> <span class="nf">jump</span><span class="p">()</span> <span class="p">{</span> <span class="nf">print</span> <span class="p">(</span><span class="nf">type</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="k">self</span><span class="p">),</span> <span class="s">"jump"</span><span class="p">)</span> <span class="p">}</span>
+<span class="kd">func</span> <span class="nf">check</span><span class="p">(</span> <span class="nv">animal</span><span class="p">:</span> <span class="kt">Animal</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="nf">animal</span> <span class="p">(</span>
+    <span class="k">case</span> <span class="k">let</span> <span class="nv">dog</span> <span class="k">as</span> <span class="kt">Dog</span><span class="p">:</span>
+        <span class="n">dog</span><span class="o">.</span><span class="nf">eat</span><span class="p">()</span>
+        <span class="n">dog</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+    <span class="k">case</span> <span class="k">is</span> <span class="kt">Cat</span><span class="p">:</span>   <span class="c1">//is只是判斷没有转换</span>
+        <span class="n">animal</span><span class="o">.</span><span class="nf">eat</span><span class="p">()</span>  <span class="c1">//只能调Animal的eat</span>
+    <span class="k">default</span><span class="p">:</span> <span class="k">break</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Dog eat</span>
+<span class="c1">// Dog run</span>
+<span class="nf">check</span><span class="p">(</span><span class="kt">Dog</span><span class="p">())</span>
+<span class="c1">// Cat eat</span>
+<span class="nf">check</span><span class="p">(</span><span class="kt">Cat0</span><span class="p">))</span>
+</code></pre></div></div> <ul> <li>表达式模式 <ul> <li>表达式模式用在<code class="language-plaintext highlighter-rouge">case</code>中</li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">point</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="k">switch</span> <span class="n">point</span> <span class="p">{</span>
+<span class="k">case</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"(0, 0) is at the origin."</span><span class="p">)</span>
+<span class="k">case</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">...</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="o">...</span><span class="mi">2</span><span class="p">):</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">" (</span><span class="se">\(</span><span class="n">point</span><span class="o">.</span><span class="mi">0</span><span class="se">)</span><span class="s">, </span><span class="se">\(</span><span class="n">point</span><span class="o">.</span><span class="mi">1</span><span class="se">)</span><span class="s">) is near the drigin."</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"The point is at (</span><span class="se">\(</span><span class="n">point</span><span class="o">.</span><span class="mi">0</span><span class="se">)</span><span class="s">, </span><span class="se">\(</span><span class="n">point</span><span class="o">.</span><span class="mi">1</span><span class="se">)</span><span class="s">)."</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">// (1, 2) is near the origin</span>
+</code></pre></div></div> <ul> <li>自定义表达式模式 <ul> <li>可以通过重载运算符，自定叉表达式模式的匹配规则</li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Student</span> <span class="p">{</span>  <span class="c1">// 重载 ~= 运算符</span>
+<span class="k">var</span> <span class="nv">score</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s">""</span>
+<span class="kd">static</span> <span class="kd">func</span> <span class="o">~=</span> <span class="p">(</span><span class="nv">pattern</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Student</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="n">value</span><span class="o">.</span><span class="n">score</span> <span class="o">&gt;=</span> <span class="n">pattern</span> <span class="p">}</span>
+<span class="kd">static</span> <span class="kd">func</span> <span class="o">~=</span> <span class="p">(</span><span class="nv">pattern</span><span class="p">:</span> <span class="kt">ClosedRange</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Student</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="n">pattern</span><span class="o">.</span><span class="nf">contains</span> <span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">score</span><span class="p">)</span> <span class="p">}</span>
+<span class="kd">static</span> <span class="kd">func</span>
+<span class="o">~=</span> <span class="p">(</span><span class="nv">pattern</span><span class="p">:</span> <span class="kt">Range</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Student</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="n">pattern</span><span class="o">.</span><span class="nf">contains</span> <span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">score</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">stu</span> <span class="o">=</span> <span class="kt">Student</span><span class="p">(</span><span class="nv">score</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"Jack"</span><span class="p">)</span>
+<span class="k">switch</span> <span class="n">stu</span> <span class="p">{</span>
+<span class="k">case</span> <span class="mi">100</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"&gt;= 100"</span><span class="p">)</span>
+<span class="k">case</span> <span class="mi">90</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"&gt;= 90"</span><span class="p">)</span>
+<span class="k">case</span> <span class="mi">80</span><span class="o">..&lt;</span><span class="mi">90</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"[80, 90)"</span><span class="p">)</span>
+<span class="k">case</span> <span class="mi">60</span><span class="o">...</span><span class="mi">79</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"[60, 79]"</span><span class="p">)</span>
+<span class="k">case</span> <span class="mi">0</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"&gt;= 0"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span> <span class="k">break</span>
+<span class="p">}</span> <span class="c1">// [60, 79]</span>
+
+<span class="k">if</span> <span class="k">case</span> <span class="mi">60</span> <span class="o">=</span> <span class="n">stu</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"&gt;= 60"</span><span class="p">)</span>
+<span class="p">}</span> <span class="c1">// = 60</span>
+
+<span class="k">var</span> <span class="nv">info</span> <span class="o">=</span> <span class="p">(</span><span class="kt">Student</span><span class="p">(</span><span class="nv">score</span><span class="p">:</span><span class="mi">70</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"Jack"</span><span class="p">),</span> <span class="s">"及格"</span><span class="p">)</span>
+<span class="k">switch</span> <span class="n">info</span> <span class="p">{</span>
+<span class="k">case</span> <span class="k">let</span> <span class="p">(</span><span class="err">60</span><span class="p">,</span> <span class="nv">text</span><span class="p">):</span> <span class="nf">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span> <span class="k">break</span>
+<span class="p">}</span> <span class="c1">//及格</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">extension</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="o">~=</span> <span class="p">(</span><span class="nv">pattern</span><span class="p">:</span> <span class="p">(</span><span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span>
+    <span class="o">-&gt;</span> <span class="kt">Bool</span>
+        <span class="nf">pattern</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">hasPrefix</span><span class="p">(</span><span class="n">_</span> <span class="nv">s</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">((</span><span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span> <span class="nv">$0</span><span class="o">.</span><span class="nf">hasPrefix</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">}</span>
+<span class="kd">func</span> <span class="nf">hasSuffix</span><span class="p">(</span><span class="n">_</span> <span class="nv">s</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">((</span><span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="nf">hasSuffix</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">}</span>
+
+<span class="c1">//以上两行 等价于下面的函数</span>
+<span class="c1">//func hasPrefix(_ prefix: String) -&gt; ((String) -&gt; Bool) {</span>
+<span class="c1">//    return { (str: String) -&gt; Bool in</span>
+<span class="c1">//        str.hasPrefix(prefix)</span>
+<span class="c1">//    }</span>
+<span class="c1">//}</span>
+
+<span class="c1">//var fn = hasPrefix("21")</span>
+<span class="c1">//print(fn("123455"))</span>
+
+<span class="k">var</span> <span class="nv">str</span> <span class="o">=</span> <span class="s">"jack"</span>
+<span class="k">switch</span> <span class="n">str</span> <span class="p">{</span>
+<span class="k">case</span> <span class="nf">hasPrefix</span><span class="p">(</span><span class="s">"j"</span><span class="p">),</span> <span class="nf">hasSuffix</span><span class="p">(</span><span class="s">"k"</span><span class="p">):</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"以j开头，以k结尾"</span><span class="err">）</span>
+<span class="k">default</span><span class="p">:</span> <span class="k">break</span>
+<span class="p">}</span> <span class="c1">//以开头，以k结尾</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">isEven</span><span class="p">(</span><span class="n">_</span> <span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="mi">1</span> <span class="o">%</span> <span class="mi">2</span><span class="o">==</span> <span class="mi">0</span> <span class="p">}</span>
+<span class="kd">func</span> <span class="nf">isOdd</span><span class="p">(</span><span class="n">_</span> <span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="mi">1</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="n">a</span> <span class="p">}</span>
+<span class="kd">extension</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="o">~=</span><span class="kt">I</span><span class="p">(</span><span class="nv">pattern</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">(</span>
+        <span class="nf">pattern</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">age</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="k">switch</span> <span class="n">age</span> <span class="p">{</span>
+<span class="k">case</span> <span class="nv">isEven</span><span class="p">:</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"偶数"</span><span class="p">)</span>
+<span class="k">case</span> <span class="nv">isOdd</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"奇数"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="s">"其他"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">prefix</span> <span class="k">operator</span> <span class="o">~&gt;</span>
+<span class="k">prefix</span> <span class="k">operator</span> <span class="o">~&gt;=</span>
+<span class="k">prefix</span> <span class="k">operator</span> <span class="o">~</span>
+<span class="k">prefix</span> <span class="k">operator</span> <span class="o">~&lt;=</span>
+<span class="k">prefix</span> <span class="kd">func</span> <span class="o">~&gt;</span> <span class="p">(</span><span class="n">_</span> <span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">((</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">&gt;</span> <span class="n">i</span> <span class="p">}</span> <span class="p">}</span>
+<span class="k">prefix</span> <span class="kd">func</span> <span class="o">~&gt;=</span> <span class="p">(</span><span class="n">_</span> <span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">((</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">&gt;=</span> <span class="n">i</span> <span class="p">}</span>
+<span class="k">prefix</span> <span class="kd">func</span> <span class="o">~</span> <span class="p">(</span><span class="n">_</span> <span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">((</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="p">}</span> <span class="p">}</span>
+<span class="k">prefix</span> <span class="kd">func</span> <span class="o">~&lt;=</span> <span class="p">(</span><span class="n">_</span> <span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">((</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="p">}</span> <span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">age</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="k">switch</span> <span class="n">age</span> <span class="p">{</span>
+<span class="k">case</span> <span class="o">~&gt;=</span><span class="mi">0</span><span class="p">,</span> <span class="o">~&lt;=</span><span class="mi">10</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"[0, 10]"</span><span class="p">)</span>
+<span class="k">case</span> <span class="o">~&gt;</span><span class="mi">10</span><span class="p">,</span> <span class="o">~&lt;</span><span class="mi">20</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"(10, 20)"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span> <span class="k">break</span>
+<span class="p">}</span> <span class="c1">// [0, 101</span>
+</code></pre></div></div> <ul> <li>where在模式匹配中应用 <ul> <li>可以使用<code class="language-plaintext highlighter-rouge">where</code>为模式匹配增加匹配条件</li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">data</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s">"Jack"</span><span class="p">)</span>
+<span class="k">switch</span> <span class="n">data</span> <span class="p">{</span>
+<span class="k">case</span> <span class="k">let</span> <span class="p">(</span><span class="nv">age</span><span class="p">,</span> <span class="nv">_</span><span class="p">)</span> <span class="k">where</span> <span class="n">age</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"age&gt;10"</span><span class="p">)</span>
+<span class="k">case</span> <span class="k">let</span> <span class="p">(</span><span class="nv">age</span><span class="p">,</span> <span class="nv">_</span><span class="p">)</span> <span class="k">where</span> <span class="n">age</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"age&gt;0"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span> <span class="k">break</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">ages</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">55</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">age</span> <span class="k">in</span> <span class="n">ages</span> <span class="k">where</span> <span class="n">age</span> <span class="o">&gt;</span> <span class="mi">30</span> <span class="p">{</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="n">age</span><span class="p">)</span>
+<span class="p">}</span> <span class="c1">// 44 55</span>
+
+<span class="kd">protocol</span> <span class="kt">Stackable</span> <span class="p">{</span> <span class="kd">associatedtype</span> <span class="kt">Element</span> <span class="p">}</span>
+<span class="kd">protocol</span> <span class="kt">Container</span> <span class="p">{</span>
+    <span class="kd">associatedtype</span> <span class="kt">Stack</span> <span class="p">:</span> <span class="kt">Stackable</span> <span class="k">where</span> <span class="kt">Stack</span><span class="o">.</span><span class="kt">Element</span> <span class="p">:</span> <span class="kt">Equatable</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="n">equal</span><span class="o">&lt;</span><span class="kt">S1</span><span class="p">:</span> <span class="kt">Stackable</span><span class="p">,</span> <span class="kt">S2</span><span class="p">:</span> <span class="kt">Stackable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">s1</span><span class="p">:</span> <span class="kt">S1</span><span class="p">,</span> <span class="n">_</span> <span class="nv">$2</span><span class="p">:</span> <span class="kt">S2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="k">where</span> <span class="kt">S1</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">S2</span><span class="o">.</span><span class="kt">Element</span><span class="p">,</span> <span class="kt">S1</span><span class="o">.</span><span class="kt">Element</span> <span class="p">:</span> <span class="kt">Hashable</span> <span class="p">(</span>
+    <span class="k">return</span> <span class="kc">false</span>
+<span class="p">}</span>
+<span class="kd">extension</span> <span class="kt">Container</span> <span class="k">where</span> <span class="k">Self</span><span class="o">.</span><span class="kt">Stack</span><span class="o">.</span><span class="kt">Element</span> <span class="p">:</span> <span class="kt">Hashable</span> <span class="p">{</span> <span class="p">}</span>
+</code></pre></div></div> <h2 id="条件编译">条件编译</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//操作系统：macOS\iOS\tvOS\watchOS\Linux\Android\Windows\FreeBsD</span>
+<span class="cp">#if os(macOS)  || os(iOS)</span>
+<span class="o">/</span><span class="mi">1</span> <span class="kt">CPU架构</span><span class="p">:</span> <span class="n">i386</span><span class="p">\</span><span class="n">x86_64</span><span class="p">\</span><span class="n">arm</span><span class="p">\</span><span class="n">arm64</span>
+<span class="cp">#elseif arch(x86 64) || arch(arm64)</span>
+<span class="c1">//swift版本</span>
+<span class="cp">#elseif swift(&lt;5) &amp;&amp; swift(&gt;=3)</span>
+<span class="c1">//模拟器</span>
+<span class="cp">#elseif targetEnvironment(simulator)</span>
+<span class="c1">//可以导入某模块</span>
+<span class="cp">#elseif canImport(Foundation)</span>
+<span class="cp">#else</span>
+<span class="cp">#endif</span>
+</code></pre></div></div> <p><img src="https://luowei.github.io/list/media/16484840907455/16484896497894.jpg" alt="" /></p> <h2 id="打印日志">打印日志</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="n">log</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">msg</span><span class="p">:</span> <span class="kt">T</span><span class="p">,</span> 
+             <span class="nv">file</span><span class="p">:</span> <span class="kt">NSString</span> <span class="o">=</span> <span class="kd">#file</span><span class="p">,</span>
+             <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kd">#line</span><span class="p">,</span>
+               <span class="nv">fn</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="kd">#function</span><span class="p">)</span> <span class="p">{</span>
+<span class="cp">#if DEBUG</span>
+<span class="k">let</span> <span class="nv">prefix</span> <span class="o">=</span> <span class="s">"</span><span class="se">\(</span><span class="n">file</span><span class="o">.</span> <span class="n">lastPathComponent</span><span class="se">)</span><span class="s">_</span><span class="se">\(</span><span class="n">line</span><span class="se">)</span><span class="s">_</span><span class="se">\(</span><span class="n">fn</span><span class="se">)</span><span class="s">: "</span>
+<span class="nf">print</span> <span class="p">(</span><span class="k">prefix</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+<span class="cp">#endif</span>
+</code></pre></div></div> <h2 id="系统版本">系统版本</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="kd">#available(iOS 10, macOS 10.12，*)</span> <span class="p">{</span>
+<span class="c1">//对于i0S平台，只在i0S10及以上版本执行</span>
+<span class="c1">//对于macOS平台，只在macOS 10.12及以上版本执行</span>
+<span class="c1">//最后的*表示在其他所有平台都执行</span>
+</code></pre></div></div> <h2 id="api可用性">API可用性</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mi">10</span><span class="p">,</span> <span class="n">macOS</span> <span class="mf">10.15</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span>
+<span class="kd">class</span> <span class="kt">Person</span> <span class="p">(</span>
+
+<span class="kd">struct</span> <span class="kt">Student</span> <span class="p">{</span>
+    <span class="kd">@available</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">unavailable</span><span class="p">,</span> <span class="nv">renamed</span><span class="p">:</span> <span class="s">"study"</span><span class="p">)</span>
+    <span class="kd">func</span> <span class="nf">study_</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">func</span> <span class="nf">study</span><span class="p">()</span> <span class="p">{}</span>
+    
+    <span class="kd">@available</span><span class="p">(</span><span class="n">i0S</span><span class="p">,</span> <span class="nv">deprecated</span><span class="p">:</span> <span class="mi">11</span><span class="p">)</span>
+    <span class="kd">@available</span><span class="p">(</span><span class="n">macOS</span><span class="p">,</span> <span class="nv">deprecated</span><span class="p">:</span> <span class="mf">10.12</span><span class="p">)</span>
+    <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>更多用法参考：<a href="https://luowei.github.io/list/https:l/docs.swift.org/swift-boak/ReferenceManual/Attributes.html">https:l/docs.swift.org/swift-boak/ReferenceManual/Attributes.html</a></li> </ul> <h2 id="自定义ios程序入口">自定义iOS程序入口</h2> <ul> <li>在<code class="language-plaintext highlighter-rouge">AppDelegate</code>上面默认有个<code class="language-plaintext highlighter-rouge">@UIApplicationMain</code>标记，这表示 <ul> <li>编译器自动生成入口代码（<code class="language-plaintext highlighter-rouge">main</code>函数代码），自动设置<code class="language-plaintext highlighter-rouge">AppDelegate</code>为<code class="language-plaintext highlighter-rouge">APP</code>的代理</li> </ul> </li> <li>也可以删掉<code class="language-plaintext highlighter-rouge">@UIApplicationMain</code>，自定义入口代码：新建一个<code class="language-plaintext highlighter-rouge">main.swift</code>文件</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// main.swift</span>
+<span class="c1">// Test iOS</span>
+<span class="c1">// Created by MJ Lee on 2019/7/22.</span>
+<span class="c1">// Copyright © 2019 MJ Lee. All rights reserved.</span>
+
+<span class="kd">import</span> <span class="kt">UIKit</span>
+<span class="kd">class</span> <span class="kt">XXApplication</span><span class="p">:</span> <span class="kt">UIApplication</span> <span class="p">{}</span>
+
+<span class="kt">UIApplicationMain</span><span class="p">(</span><span class="kt">CommandLine</span><span class="o">.</span><span class="n">argc</span><span class="p">,</span>
+                  <span class="kt">CommandLine</span><span class="o">.</span><span class="n">unsafeArgv</span><span class="p">,</span>
+                  <span class="kt">NSStringFromClass</span><span class="p">(</span><span class="kt">XXApplication</span><span class="o">.</span><span class="k">self</span><span class="p">),</span>
+                  <span class="kt">NSStringFromClass</span><span class="p">(</span><span class="kt">AppDelegate</span><span class="o">.</span><span class="k">self</span><span class="p">))</span>
+</code></pre></div></div> <h2 id="swift调用oc">Swift调用OC</h2> <ul> <li>新建1个桥接头文件，文件名格式默认为：<strong><code class="language-plaintext highlighter-rouge">{targetName}-Bridging-Header.h</code></strong></li> <li>在 <strong><code class="language-plaintext highlighter-rouge">{targetName}-Bridging-Header.h</code></strong> 文件中<code class="language-plaintext highlighter-rouge">#import</code> OC需要暴露给Swift的内容 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#import "Person.h'</span>
+</code></pre></div> </div> </li> </ul> <p><img src="https://luowei.github.io/list/media/16484840907455/16484905077502.jpg" alt="" /></p> <ul> <li>在Swift中修改C函数名 <ul> <li>如果C语言暴露给Swift的西数名跟Swift中的其他两数名冲突了 <ul> <li>可以在Swift中使用<code class="language-plaintext highlighter-rouge">@_silgen_name</code>修改C函数名</li> </ul> </li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//C语言</span>
+<span class="n">int</span> <span class="nf">sum</span><span class="p">(</span><span class="n">int</span> <span class="n">a</span><span class="p">,</span> <span class="n">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Swift</span>
+<span class="kd">@silgen_name</span><span class="p">(</span><span class="s">"sum"</span><span class="p">)</span> <span class="kd">func</span> <span class="nf">swift_sum</span><span class="p">(</span><span class="n">_</span> <span class="nv">v1</span><span class="p">:</span> <span class="kt">Int32</span><span class="p">,</span> <span class="n">_</span> <span class="nv">v2</span><span class="p">:</span> <span class="kt">Int32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int32</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">swift_sum</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span> <span class="c1">// 30</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span> <span class="c1">// 30</span>
+</code></pre></div></div> <h2 id="oc调用swift">OC调用Swift</h2> <ul> <li>xcode已经默认生成一个用于C调用Swift的头文件，文件名格式是：<strong><code class="language-plaintext highlighter-rouge">{targetName了-Swift.h</code></strong><br /> <img src="https://luowei.github.io/list/media/16484840907455/16484907260089.jpg" alt="" /></li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">import</span> <span class="kt">Foundation</span>
+<span class="kd">@objcMembers</span> <span class="kd">class</span> <span class="kt">Car</span><span class="p">:</span> <span class="kt">NSObject</span> <span class="p">(</span>
+    <span class="k">var</span> <span class="nv">price</span><span class="p">:</span> <span class="kt">Double</span>
+    <span class="k">var</span> <span class="nv">band</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="nf">init</span> <span class="p">(</span><span class="nv">price</span><span class="p">:</span> <span class="kt">Double</span><span class="p">,</span> <span class="nv">band</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="n">price</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">band</span> <span class="o">=</span> <span class="n">band</span>
+    <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="n">price</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="s">"run"</span><span class="p">)</span> <span class="p">}</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="s">"Car run"</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">extension</span> <span class="n">car</span> <span class="p">{</span>
+    <span class="kd">@objc</span><span class="p">(</span><span class="nv">exec</span><span class="p">:</span><span class="nv">v2</span><span class="p">:</span> <span class="p">)</span>
+    <span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="n">price</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="s">"test"</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>Swift暴露给OC的类最终继承自<code class="language-plaintext highlighter-rouge">NSObject</code></li> <li>使用<code class="language-plaintext highlighter-rouge">@objc</code>修饰需要暴露给OC的成员</li> <li>使用<code class="language-plaintext highlighter-rouge">@objcMembers</code>修饰类 <ul> <li>代表默认所有成员都会暴露给OC（包括扩展中定义的成员）</li> <li>最终是否成功暴露，还需要考虑成员自身的访问级别</li> </ul> </li> <li>可以通过<code class="language-plaintext highlighter-rouge">@objc</code>重命名Swift暴露给OC的符号名（类名、厲性名、函数名等）</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">@obic</span><span class="p">(</span><span class="kt">XXCar</span><span class="p">)</span>
+<span class="kd">@objcMembers</span> <span class="kd">class</span> <span class="kt">Car</span><span class="p">:</span> <span class="kt">NSObject</span>
+    <span class="k">var</span> <span class="nv">price</span><span class="p">:</span> <span class="kt">Double</span>
+    <span class="kd">@objc</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">var</span> <span class="nv">band</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="nf">init</span><span class="p">(</span><span class="nv">price</span><span class="p">:</span> <span class="kt">Double</span><span class="p">,</span> <span class="nv">band</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="n">price</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">band</span> <span class="o">=</span> <span class="n">band</span>
+    <span class="p">}</span>
+    <span class="kd">@objc</span><span class="p">(</span><span class="n">drive</span><span class="p">)</span>
+    <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="n">price</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="s">"run"</span><span class="p">)</span> <span class="p">}</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span> <span class="nf">print</span> <span class="p">(</span><span class="s">"Car run"</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">extension</span> <span class="kt">Car</span> <span class="p">{</span>
+    <span class="kd">@objc</span><span class="p">(</span><span class="nv">exec</span><span class="p">:</span><span class="nv">v2</span><span class="p">:</span> <span class="p">)</span>
+    <span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span> <span class="nf">print</span> <span class="p">(</span><span class="n">price</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="s">"test"</span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div><pre><code class="language-OC">XXCar *c = ([XXCar alloc] initWithPrice: 10.5 band: @"BMW"] ;
+c.name = @'Bently";
+c.price = 108.5;
+[c drivel;  // 108.5 Bently run
+[c exec: 10 v2:20]; // 108.5 Bently test
+[XXCar run]; // Car run
+</code></pre><p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16484840907455.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Swift笔记 - 14.字面量、模式、条件编译、日志、API可用性、程序入口、Swift与OC互调 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16484840907455.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16484840907455.html&amp;title=Swift笔记 - 14.字面量、模式、条件编译、日志、API可用性、程序入口、Swift与OC互调 - 知不知&amp;summary=Swift笔记 - 14.字面量、模式、条件编译、日志、API可用性、程序入口、Swift与OC互调&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16484840907455.html&amp;text=Swift笔记 - 14.字面量、模式、条件编译、日志、API可用性、程序入口、Swift与OC互调 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16484840907455.html&amp;t=Swift笔记 - 14.字面量、模式、条件编译、日志、API可用性、程序入口、Swift与OC互调 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16484840907455.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Swift笔记 - 14.字面量、模式、条件编译、日志、API可用性、程序入口、Swift与OC互调'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
