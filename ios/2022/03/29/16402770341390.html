@@ -1,0 +1,293 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/ios/2022/03/29/16402770341390.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Swift笔记 - 13.闭包、捕获、局部作用域、成员重写、Swift指针及访问冲突</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="swift笔记---13闭包捕获局部作用域成员重写swift指针及访问冲突">Swift笔记 - 13.闭包、捕获、局部作用域、成员重写、Swift指针及访问冲突</h1> <h2 id="闭包中的捕获列表">闭包中的捕获列表</h2> <ul> <li>闭包表达式默认会对用到的外层对象产生额外的强引用（对外层对象进行了<code class="language-plaintext highlighter-rouge">retain</code>操作）</li> <li>下面代码会产生循环引用，导致<code class="language-plaintext highlighter-rouge">Person</code>对象无法释放（看不到<code class="language-plaintext highlighter-rouge">Person</code>的<code class="language-plaintext highlighter-rouge">deinit</code>被调用）</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">fn</span><span class="p">:</span> <span class="p">(()</span> <span class="o">-&gt;</span> <span class="p">())?</span>
+    <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span> <span class="nf">print</span> <span class="p">(</span><span class="s">"run"</span><span class="p">)</span> <span class="p">}</span>
+    <span class="kd">deinit</span> <span class="p">{</span> <span class="nf">print</span> <span class="p">(</span><span class="s">"deinit"</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">p</span> <span class="o">=</span> <span class="kt">Person</span><span class="p">()</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="p">{</span> <span class="n">p</span><span class="o">.</span><span class="n">run0</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="nf">test</span> <span class="p">()</span>
+</code></pre></div></div> <ul> <li>在闭包表达式的捕获列表声明weak或unowned引用，解决循环引用问题</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">p</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="n">p</span><span class="p">]</span> <span class="k">in</span>
+    <span class="n">p</span><span class="p">?</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="p">{</span> <span class="p">[</span><span class="k">unowned</span> <span class="n">p</span><span class="p">]</span> <span class="k">in</span>
+    <span class="n">p</span><span class="o">.</span> <span class="nf">run</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="n">wp</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span> <span class="k">unowned</span> <span class="n">up</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">+</span> <span class="mi">20</span><span class="p">]</span> <span class="k">in</span>
+    <span class="n">wp</span><span class="p">?</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>如果想在定义闭包属性的同时引用<code class="language-plaintext highlighter-rouge">self</code>，这个闭包必须是<code class="language-plaintext highlighter-rouge">lazy</code>的（因为在实例初始化完毕之后才能引用<code class="language-plaintext highlighter-rouge">self</code>） <ul> <li>下边的闭包fn内部如果用到了实例成员（属性、方法）</li> <li>编译器会强制要求明确写出<code class="language-plaintext highlighter-rouge">self</code></li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">fn</span><span class="p">:</span> <span class="p">(()</span> <span class="o">=</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="k">in</span>
+        <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span> <span class="nf">print</span> <span class="p">(</span><span class="s">"run"</span><span class="p">)</span> <span class="p">}</span>
+    <span class="kd">deinit</span> <span class="p">{</span> <span class="nf">print</span> <span class="p">(</span><span class="s">"deinit"</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>如果<code class="language-plaintext highlighter-rouge">Lazy</code>属性是闭包调用的结果，那么不用考虑循环引用的问题（因为闭包调用后，闭包的生命周期就结束了）</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">getAge</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">age</span>
+    <span class="p">}()</span>
+    <span class="kd">deinit</span> <span class="p">{</span> <span class="nf">print</span> <span class="p">(</span><span class="s">"deinit"</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="非逃逸与逃逸闭包">非逃逸与逃逸闭包</h2> <ul> <li>非逃逸闭包、逃逸闭包，一般都是当做参数传递给函数</li> <li>非逃逸闭包：闭包调用发生在函数结束前，闭包调用在函数作用域内</li> <li>逃逸闭包：闭包有可能在函数结束后调用，闭包调用逃离了函数的作用域，需要通过<code class="language-plaintext highlighter-rouge">@escaping</code>声明</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">import</span> <span class="kt">Dispatch</span>
+<span class="kd">typealias</span> <span class="kt">Fn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">()</span>
+
+<span class="c1">//fn是非选逸闭包</span>
+<span class="kd">func</span> <span class="nf">test1</span><span class="p">(</span><span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kt">Fn</span><span class="p">)</span> <span class="p">{</span> <span class="nf">fn</span><span class="p">()</span> <span class="p">}</span>
+
+<span class="c1">//fn是选逸闭包</span>
+<span class="k">var</span> <span class="nv">gFn</span><span class="p">:</span> <span class="kt">Fn</span><span class="p">?</span>
+<span class="kd">func</span> <span class="nf">test2</span><span class="p">(</span><span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">Fn</span><span class="p">)</span> <span class="p">{</span> <span class="n">gFn</span> <span class="o">=</span> <span class="n">fn</span> <span class="p">}</span>
+
+<span class="c1">//fn是选逸闭包</span>
+<span class="kd">func</span> <span class="nf">test3</span><span class="p">(</span><span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">Fn</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">async</span> <span class="p">{</span>
+        <span class="nf">fn</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">fn</span><span class="p">:</span> <span class="kt">Fn</span>
+    <span class="c1">//fn是选逸朗包</span>
+    <span class="nf">init</span><span class="p">(</span><span class="nv">fn</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">Fn</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="n">fn</span>
+    <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//Dispatchoueue.global().async也是一个逃逸闭包</span>
+        <span class="c1">//它用到了实例成员（属性、方法），编译器会强制要求明确写出self</span>
+        <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">async</span> <span class="p">{</span>
+            <span class="k">self</span><span class="o">.</span><span class="nf">fn</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>逃逸闭包不可以捕获inout参数</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">typealias</span> <span class="kt">Fn</span> <span class="o">=</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="p">()</span>
+<span class="kd">func</span> <span class="nf">other1</span><span class="p">(</span><span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kt">Fn</span><span class="p">)</span> <span class="p">{</span> <span class="nf">fn</span><span class="p">()</span> <span class="p">}</span>
+<span class="kd">func</span> <span class="nf">other2</span><span class="p">(</span><span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">Fn</span><span class="p">)</span> <span class="p">{</span> <span class="nf">fn</span><span class="p">()</span> <span class="p">}</span>
+<span class="kd">func</span> <span class="nf">test</span> <span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Fn</span> <span class="p">{</span>
+    <span class="n">other1</span> <span class="p">{</span> <span class="n">value</span> <span class="o">-=</span> <span class="mi">1</span> <span class="p">}</span>
+    <span class="c1">//error：逃逸闭包不能捕获inout参数</span>
+    <span class="n">other2</span> <span class="p">{</span> <span class="n">valve</span> <span class="o">+=</span> <span class="mi">1</span> <span class="p">}</span>
+    
+    <span class="kd">func</span> <span class="nf">plus</span><span class="p">(){</span> <span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span> <span class="p">}</span>
+        <span class="c1">//error：逃逸闭包不能捕获inout参数</span>
+        <span class="k">return</span> <span class="n">plus</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="局部作用域">局部作用域</h2> <ul> <li>可以使用do实现局部作用域</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">do</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">dog1</span> <span class="o">=</span> <span class="kt">Dog</span><span class="p">()</span>
+    <span class="n">dog1</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">dog1</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="k">do</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">dog2</span> <span class="o">=</span> <span class="kt">Dog</span><span class="p">()</span>
+    <span class="n">dog2</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">dog2</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="成员的重写">成员的重写</h2> <ul> <li>子类重写成员的访问级别必须<code class="language-plaintext highlighter-rouge">≥</code>子类的访问级别，或者<code class="language-plaintext highlighter-rouge">≥</code>父类被重写成员的访问级别</li> <li>父类的成员不能被成员作用域外定义的子类重写</li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">}</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="kt">Student</span> <span class="p">:</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{}</span>
+        <span class="k">get</span> <span class="p">{</span><span class="mi">10</span><span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="kd">public</span> <span class="kd">class</span> <span class="kt">Student</span> <span class="p">:</span> <span class="kt">Person</span> <span class="p">{</span>
+        <span class="k">override</span> <span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+            <span class="k">set</span> <span class="p">{}</span>
+            <span class="k">get</span> <span class="p">{</span><span class="mi">10</span><span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="存在内存访问冲突">存在内存访问冲突</h2> <ul> <li>内存访问冲突会在两个访问满足下列条件时发生： <ul> <li>至一个是写入操作</li> <li>它们访问的是同一块内存</li> <li>它们的访问时间重疊（比如在同一个西数内）</li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//不存在内存访问冲突</span>
+<span class="kd">func</span> <span class="nf">plus</span><span class="p">(</span><span class="n">_</span> <span class="nv">num</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span> <span class="n">num</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">}</span>
+<span class="k">var</span> <span class="nv">number</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">number</span> <span class="o">=</span> <span class="nf">plus</span><span class="p">(</span><span class="o">&amp;</span><span class="n">number</span><span class="p">)</span>
+
+<span class="c1">//存在内存访问冲突</span>
+<span class="c1">// Simultaneous accesses to 0x0, but modification requires exclusive access</span>
+<span class="k">var</span> <span class="nv">step</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="kd">func</span> <span class="nf">increment</span><span class="p">(</span><span class="n">_</span> <span class="nv">num</span><span class="p">:</span> <span class="n">thout</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span> <span class="n">num</span> <span class="o">+=</span> <span class="n">step</span> <span class="p">}</span>
+<span class="nf">increment</span><span class="p">(</span><span class="o">&amp;</span><span class="n">step</span><span class="p">)</span>
+
+<span class="c1">//解决内存访问冲突</span>
+<span class="k">var</span> <span class="nv">copyOfStep</span> <span class="o">=</span> <span class="n">step</span>
+<span class="nf">increment</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">copyOfStep</span><span class="p">)</span>
+<span class="n">step</span> <span class="o">=</span> <span class="n">copyOfStep</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">balance</span><span class="p">(</span><span class="n">_</span> <span class="nv">x</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">y</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">sum</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">-</span> <span class="n">x</span> 
+<span class="p">}</span>
+<span class="k">var</span> <span class="nv">num1</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="k">var</span> <span class="nv">num2</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="nf">balance</span><span class="p">(</span><span class="o">&amp;</span><span class="n">num1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">num2</span><span class="p">)</span> <span class="c1">// OK</span>
+<span class="nf">balance</span><span class="p">(</span><span class="o">&amp;</span><span class="n">num1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">num1</span><span class="p">)</span> <span class="c1">// Error</span>
+
+<span class="kd">struct</span> <span class="kt">Player</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">var</span> <span class="nv">health</span><span class="p">:</span> <span class="kt">Int</span>
+    <span class="k">var</span> <span class="nv">energy</span><span class="p">:</span> <span class="kt">Int</span>
+    <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">shareHealth</span><span class="p">(</span><span class="n">with</span> <span class="nv">teammate</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Player</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">balance</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">teammate</span><span class="o">.</span><span class="n">health</span><span class="p">,</span> <span class="kt">Shealth</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">var</span> <span class="nv">oscar</span> <span class="o">=</span> <span class="kt">Player</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Oscar"</span><span class="p">,</span> <span class="nv">health</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">energy</span><span class="p">:</span> <span class="mi">10</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">maria</span> <span class="o">=</span> <span class="kt">Player</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Maria"</span><span class="p">,</span> <span class="nv">health</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nv">energy</span><span class="p">:</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">oscar</span><span class="o">.</span><span class="nf">shareHealth</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="kt">Smaria</span><span class="p">)</span> <span class="c1">// OK</span>
+<span class="n">oscar</span><span class="o">.</span><span class="nf">shareHealth</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="kt">Soscar</span><span class="p">)</span> <span class="c1">// Error</span>
+
+<span class="k">var</span> <span class="nv">tulpe</span> <span class="o">=</span> <span class="p">(</span><span class="nv">health</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">energy</span><span class="p">:</span> <span class="mi">20</span><span class="p">)</span>
+<span class="c1">// Error</span>
+<span class="nf">balance</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tulpe</span><span class="o">.</span> <span class="n">health</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">tulpe</span><span class="o">.</span><span class="n">energy</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">holly</span> <span class="o">=</span> <span class="kt">Player</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Holly"</span><span class="p">,</span> <span class="nv">health</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">energy</span><span class="p">:</span> <span class="mi">10</span><span class="p">)</span>
+<span class="c1">// Error</span>
+<span class="nf">balance</span><span class="p">(</span><span class="o">&amp;</span><span class="n">holly</span><span class="o">.</span><span class="n">health</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">holly</span><span class="o">.</span><span class="n">energy</span><span class="p">)</span>
+</code></pre></div></div> <ul> <li>如果下面的条件可以满足，就说明重叠访问结构体的属性是安全的 <ul> <li>你只访问实例存储属性，不是计算属性或者类属性</li> <li>结构体是局部变量而非全局变量</li> <li>结构体要么没有被闭包捕获要么只被非逃逸闭包捕获</li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Ok</span>
+<span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">tulpe</span> <span class="o">=</span> <span class="p">(</span><span class="nv">health</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">energy</span><span class="p">:</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="nf">balance</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tulpe</span><span class="o">.</span><span class="n">health</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">tulpe</span><span class="o">.</span><span class="n">energy</span><span class="p">)</span>
+    <span class="k">var</span> <span class="nv">holly</span> <span class="o">=</span> <span class="kt">Player</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Holly"</span><span class="p">,</span> <span class="nv">health</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">energy</span><span class="p">:</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="nf">balance</span><span class="p">(</span><span class="o">&amp;</span><span class="n">holly</span><span class="o">.</span><span class="n">health</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">holly</span><span class="o">.</span><span class="n">energy</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">test</span><span class="p">()</span>
+</code></pre></div></div> <h2 id="swift当中的指针">Swift当中的指针</h2> <ul> <li>Swift中也有专门的指针类型，这些都被定性为“<code class="language-plaintext highlighter-rouge">Unsafe</code>”（不安全的），常见的有以下4种类型 <ul> <li><code class="language-plaintext highlighter-rouge">UnsafePointer&lt;Pointee&gt;</code> 类似于 <code class="language-plaintext highlighter-rouge">const Pointee *</code></li> <li><code class="language-plaintext highlighter-rouge">UnsafeMutablePointer&lt;Pointee&gt;</code> 类似于 <code class="language-plaintext highlighter-rouge">Pointee *</code></li> <li><code class="language-plaintext highlighter-rouge">UnsafeRawPointer</code> 类似于 <code class="language-plaintext highlighter-rouge">const void *</code></li> <li><code class="language-plaintext highlighter-rouge">UnsafeMutableRawPointer</code> 类似于 <code class="language-plaintext highlighter-rouge">void *</code></li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">age</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="kd">func</span> <span class="nf">test1</span><span class="p">(</span><span class="n">_</span> <span class="nv">pt</span><span class="p">:</span> <span class="kt">UnsafeMutablePointer</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ptr</span><span class="o">.</span><span class="n">pointee</span> <span class="o">+=</span> <span class="mi">10</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">test2</span><span class="p">(</span><span class="n">_</span> <span class="nv">ptr</span><span class="p">:</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="n">ptr</span><span class="o">.</span><span class="n">pointee</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">test1</span><span class="p">(</span><span class="o">&amp;</span><span class="n">age</span><span class="p">)</span>
+<span class="nf">test2</span><span class="p">(</span><span class="o">&amp;</span><span class="n">age</span><span class="p">)</span> <span class="c1">// 20</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">age</span><span class="p">)</span> <span class="c1">// 20</span>
+
+<span class="k">var</span> <span class="nv">age</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="kd">func</span> <span class="nf">test3</span><span class="p">(</span><span class="n">_</span> <span class="nv">pt</span><span class="p">:</span> <span class="kt">UnsafeMutableRawPointer</span><span class="p">)</span>
+    <span class="n">ptr</span><span class="o">.</span><span class="nf">storeBytes</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">test4</span><span class="p">(</span><span class="n">_</span> <span class="nv">ptr</span><span class="p">:</span> <span class="kt">UnsafeRawPointer</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">print</span> <span class="p">(</span><span class="n">ptr</span><span class="o">.</span> <span class="nf">load</span> <span class="p">(</span><span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">))</span>
+<span class="p">}</span>
+<span class="nf">test3</span><span class="p">(</span><span class="o">&amp;</span><span class="n">age</span><span class="p">)</span>
+<span class="nf">test4</span><span class="p">(</span><span class="o">&amp;</span><span class="n">age</span><span class="p">)</span> <span class="c1">// 20</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">age</span><span class="p">)</span> <span class="c1">// 20</span>
+
+<span class="k">var</span> <span class="nv">arr</span> <span class="o">=</span> <span class="kt">NSArray</span><span class="p">(</span><span class="nv">objects</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">44</span><span class="p">)</span>
+<span class="n">arr</span><span class="o">.</span><span class="n">enumerateObjects</span> <span class="p">{</span> <span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">2</span> <span class="p">{</span> <span class="c1">// 下标为2就停止遍历</span>
+        <span class="n">stop</span><span class="o">.</span> <span class="n">pointee</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">arr</span> <span class="o">=</span> <span class="kt">NSArray</span> <span class="p">(</span><span class="nv">objects</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">44</span><span class="p">)</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span> <span class="k">in</span> <span class="n">arr</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">obi</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">2</span> <span class="p">{</span>
+        <span class="k">break</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">arr</span> <span class="o">=</span> <span class="kt">NSArray</span><span class="p">(</span><span class="nv">objects</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">44</span><span class="p">)</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span> <span class="k">in</span> <span class="n">arr</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">2</span> <span class="p">{</span> <span class="k">break</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="获得某个变量的指针">获得某个变量的指针</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">age</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="k">var</span> <span class="nv">ptr1</span> <span class="o">=</span> <span class="nf">withUnsafeMutablePointer</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">age</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
+<span class="k">var</span> <span class="nv">ptr2</span> <span class="o">=</span> <span class="nf">withUnsafePointer</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">age</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
+<span class="n">ptr1</span><span class="o">.</span><span class="n">pointee</span> <span class="o">=</span> <span class="mi">22</span>
+<span class="nf">print</span> <span class="p">(</span><span class="n">ptr2</span><span class="o">.</span><span class="n">pointee</span><span class="p">)</span> <span class="c1">// 22</span>
+<span class="nf">print</span> <span class="p">(</span><span class="n">age</span><span class="p">)</span> <span class="c1">// 22</span>
+<span class="k">var</span> <span class="nv">ptr3</span> <span class="o">=</span> <span class="nf">withUnsafeMutablePointer</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">age</span><span class="p">)</span> <span class="p">{</span> <span class="kt">UnsafeMutableRawPointer</span><span class="p">(</span><span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">var</span> <span class="nv">ptr4</span> <span class="o">=</span> <span class="nf">withUnsafePointer</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">age</span><span class="p">)</span> <span class="p">{</span> <span class="kt">UnsafeRawPointer</span><span class="p">(</span><span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
+<span class="n">ptr3</span><span class="o">.</span><span class="nf">storeBytes</span> <span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span> <span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">ptr4</span><span class="o">.</span><span class="nf">load</span><span class="p">(</span><span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">))</span> <span class="c1">// 33</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">age</span><span class="p">)</span> <span class="c1">// 33</span>
+</code></pre></div></div> <h2 id="获得指向堆空间实例的指针">获得指向堆空间实例的指针</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Person</span> <span class="p">{}</span>
+<span class="k">var</span> <span class="nv">person</span> <span class="o">=</span> <span class="kt">Person</span><span class="p">()</span>
+<span class="k">var</span> <span class="nv">ptr</span> <span class="o">=</span> <span class="nf">withUnsafePointer</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">person</span><span class="p">)</span> <span class="p">{</span> <span class="kt">UnsafeRawPointer</span><span class="p">(</span><span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">var</span> <span class="nv">heapPtr</span> <span class="o">=</span> <span class="kt">UnsafeRawPointer</span><span class="p">(</span><span class="nv">bitPattern</span><span class="p">:</span> <span class="n">ptr</span><span class="o">.</span><span class="nf">load</span><span class="p">(</span><span class="nv">as</span><span class="p">:</span> <span class="kt">UInt</span><span class="o">.</span><span class="k">self</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">heapPtr</span><span class="o">!</span><span class="p">)</span>
+</code></pre></div></div> <h2 id="创建指针">创建指针</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">ptr</span> <span class="o">=</span> <span class="kt">UnsafeRawPointer</span><span class="p">(</span><span class="nv">bitPattern</span><span class="p">:</span> <span class="mh">0x100001234</span><span class="p">)</span>
+
+<span class="c1">// 创建</span>
+<span class="k">var</span> <span class="nv">ptr</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="c1">// 存</span>
+<span class="n">ptr</span><span class="p">?</span><span class="o">.</span><span class="nf">storeBytes</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="n">ptr</span><span class="p">?</span><span class="o">.</span><span class="nf">storeBytes</span> <span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span> <span class="nv">toByteOffset</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">((</span><span class="n">ptr</span><span class="p">?</span><span class="o">.</span><span class="nf">load</span><span class="p">(</span><span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">))</span><span class="o">!</span><span class="p">)</span> <span class="c1">// 11</span>
+<span class="nf">print</span><span class="p">((</span><span class="n">ptr</span><span class="p">?</span><span class="o">.</span><span class="nf">load</span><span class="p">(</span><span class="nv">fromByteOffset</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">))</span><span class="o">!</span><span class="p">)</span> <span class="c1">// 22</span>
+<span class="c1">//销毁</span>
+<span class="nf">free</span> <span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+
+<span class="k">var</span> <span class="nv">ptr</span> <span class="o">=</span> <span class="kt">UnsafeMutableRawPointer</span><span class="o">.</span><span class="nf">allocate</span><span class="p">(</span><span class="nv">byteCount</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="nv">alignment</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ptr</span><span class="o">.</span><span class="nf">storeBytes</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="n">ptr</span><span class="o">.</span><span class="nf">advanced</span><span class="p">(</span><span class="nv">by</span><span class="p">:</span> <span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="nf">storeBytes</span> <span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span> <span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">ptr</span><span class="o">.</span> <span class="nf">load</span><span class="p">(</span><span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">))</span> <span class="c1">// 11</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">ptr</span><span class="o">.</span><span class="nf">advanced</span> <span class="p">(</span><span class="nv">by</span><span class="p">:</span> <span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="nf">load</span><span class="p">(</span><span class="nv">as</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">))</span> <span class="c1">// 22</span>
+<span class="n">ptr</span><span class="o">.</span><span class="nf">deallocate</span><span class="p">()</span>
+
+<span class="k">var</span> <span class="nv">ptr</span> <span class="o">=</span> <span class="kt">UnsafeMutablePointer</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;.</span><span class="nf">allocate</span><span class="p">(</span><span class="nv">capacity</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">ptr</span><span class="o">.</span><span class="nf">initialize</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="mi">11</span><span class="p">)</span>
+<span class="n">ptr</span><span class="o">.</span><span class="nf">successor</span><span class="p">()</span><span class="o">.</span><span class="nf">initialize</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="mi">22</span><span class="p">)</span>
+<span class="n">ptr</span><span class="o">.</span><span class="nf">successor</span><span class="p">()</span><span class="o">.</span><span class="nf">successor</span><span class="p">()</span><span class="o">.</span><span class="nf">initialize</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="mi">33</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">ptr</span><span class="o">.</span><span class="n">pointee</span><span class="p">)</span> <span class="c1">// 11</span>
+<span class="nf">print</span> <span class="p">((</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">pointee</span><span class="p">)</span> <span class="c1">// 22</span>
+<span class="nf">print</span> <span class="p">((</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">pointee</span><span class="p">)</span> <span class="c1">// 33</span>
+
+<span class="nf">print</span> <span class="p">(</span><span class="n">ptr</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1">// 11</span>
+<span class="nf">print</span> <span class="p">(</span><span class="nf">ptr</span><span class="p">(</span><span class="mi">1</span><span class="p">])</span> <span class="c1">// 22</span>
+<span class="nf">print</span> <span class="p">(</span><span class="n">ptr</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="c1">// 33</span>
+
+<span class="n">ptr</span><span class="o">.</span><span class="nf">deinitialize</span><span class="p">(</span><span class="nv">count</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">ptr</span><span class="o">.</span><span class="nf">deallocate</span><span class="p">()</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span>
+    <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="nf">init</span><span class="p">(</span><span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">age</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="p">}</span>
+    <span class="nf">deinit</span> <span class="p">(</span> <span class="nf">print</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">"deinit"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">ptr</span> <span class="o">=</span> <span class="kt">UnsafeMutablePointer</span><span class="o">&lt;</span><span class="kt">Person</span><span class="o">&gt;.</span><span class="nf">allocate</span><span class="p">(</span><span class="nv">capacity</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">ptr</span><span class="o">.</span><span class="nf">initialize</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="kt">Person</span><span class="p">(</span><span class="nv">age</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"Jack"</span><span class="err">'</span><span class="p">))</span>
+<span class="p">(</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="nf">initialize</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="kt">Person</span><span class="p">(</span><span class="nv">age</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"Rose"</span><span class="p">))</span>
+<span class="p">(</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="nf">initialize</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="kt">Person</span><span class="p">(</span><span class="nv">age</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"Kate"</span><span class="p">))</span>
+<span class="c1">// Jack deinit</span>
+<span class="c1">// Rose deinit</span>
+<span class="c1">// Kate deinit</span>
+<span class="n">ptr</span><span class="o">.</span><span class="nf">deinitialize</span><span class="p">(</span><span class="nv">count</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="c1">//反初始化</span>
+<span class="kt">Iptr</span><span class="o">.</span><span class="nf">deallocate</span><span class="p">()</span>
+</code></pre></div></div> <h2 id="指针之间的转换">指针之间的转换</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">ptr</span> <span class="o">=</span> <span class="kt">UnsafeMutableRawPointer</span><span class="o">.</span><span class="nf">allocate</span><span class="p">(</span><span class="nv">byteCount</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="nv">alignment</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">ptr</span><span class="o">.</span><span class="nf">assumingMemoryBound</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">)</span><span class="o">.</span><span class="n">pointee</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="p">(</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="nf">assumingMemoryBound</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="kt">Double</span><span class="o">.</span><span class="k">self</span><span class="p">)</span><span class="o">.</span><span class="n">pointee</span> <span class="o">=</span> <span class="mf">22.0</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="nf">unsafeBitCast</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;.</span><span class="k">self</span><span class="p">)</span><span class="o">.</span><span class="n">pointee</span><span class="p">)</span> <span class="c1">// 11</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">unsafeBitCast</span><span class="p">(</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">8</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Double</span><span class="o">&gt;.</span><span class="k">self</span><span class="p">)</span><span class="o">.</span><span class="n">pointee</span><span class="p">)</span> <span class="c1">// 22.0</span>
+
+<span class="n">ptr</span><span class="o">.</span><span class="nf">deallocate</span><span class="p">()</span>
+</code></pre></div></div> <ul> <li><code class="language-plaintext highlighter-rouge">unsafeBitcast</code>是忽略数据类型的强制转换，不会因为数据类型的变化而改变原来的内存数据 <ul> <li>类似于C++中的<code class="language-plaintext highlighter-rouge">reinterpret_cast</code></li> </ul> </li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Person</span> <span class="p">{}</span>
+<span class="k">var</span> <span class="nv">person</span> <span class="o">=</span> <span class="kt">Person</span><span class="p">()</span>
+<span class="c1">//personobjectAddress存储的就是堆仝甸地址</span>
+<span class="k">var</span> <span class="nv">personObjectAddress</span> <span class="o">=</span> <span class="nf">unsafeBitCast</span><span class="p">(</span><span class="n">person</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt">UInt</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">UnsafeRawPointer</span><span class="p">(</span><span class="nv">bitPattern</span><span class="p">:</span> <span class="n">personObjectAddress</span><span class="p">)</span><span class="o">!</span><span class="p">)</span>
+
+<span class="kd">class</span> <span class="kt">Person</span> <span class="p">{}</span>
+<span class="k">var</span> <span class="nv">person</span> <span class="o">=</span> <span class="kt">Person</span><span class="p">()</span>
+<span class="k">var</span> <span class="nv">ptr</span> <span class="o">=</span> <span class="nf">unsafeBitCast</span><span class="p">(</span><span class="n">person</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt">UnsafeRawPointer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16402770341390.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Swift笔记 - 13.闭包、捕获、局部作用域、成员重写、Swift指针及访问冲突 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16402770341390.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16402770341390.html&amp;title=Swift笔记 - 13.闭包、捕获、局部作用域、成员重写、Swift指针及访问冲突 - 知不知&amp;summary=Swift笔记 - 13.闭包、捕获、局部作用域、成员重写、Swift指针及访问冲突&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16402770341390.html&amp;text=Swift笔记 - 13.闭包、捕获、局部作用域、成员重写、Swift指针及访问冲突 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16402770341390.html&amp;t=Swift笔记 - 13.闭包、捕获、局部作用域、成员重写、Swift指针及访问冲突 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F29%2F16402770341390.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Swift笔记 - 13.闭包、捕获、局部作用域、成员重写、Swift指针及访问冲突'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
