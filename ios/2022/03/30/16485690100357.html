@@ -1,0 +1,262 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/ios/2022/03/30/16485690100357.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Swift笔记 - 17.面向协议编程</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="swift笔记---17面向协议编程">Swift笔记 - 17.面向协议编程</h1> <h2 id="面向协议编程">面向协议编程</h2> <ul> <li>面向协议编程(ProtocolOriented Programming，简称POP） <ul> <li>是Swift的一种编程范式，Apple于2015年WWDC提出</li> <li>在Swift的标准库中，能见到大量POP的影子</li> </ul> </li> <li>同时，Swift也是一门面向对象的编程语言(Object Oriented Programming，简称OOP） <ul> <li>在Swift开发中，0OP和POP是相辅相成的，任何一方并不能取代另一方</li> </ul> </li> <li> <p>POP能弥补OOP一些设计上的不足</p> </li> <li><strong>利用协议实现前缀效果</strong></li> </ul> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">string</span> <span class="o">=</span> <span class="s">"123fdsf434"</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">mj</span><span class="o">.</span><span class="nf">numberCount</span><span class="p">())</span>
+
+<span class="kd">struct</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="kt">Base</span><span class="o">&gt;</span> <span class="p">{</span>
+<span class="k">let</span> <span class="nv">base</span><span class="p">:</span> <span class="kt">Base</span>
+    <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">base</span><span class="p">:</span> <span class="kt">Base</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">base</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">protocol</span> <span class="kt">MJCompatible</span> <span class="p">{}</span>
+<span class="kd">extension</span> <span class="kt">MJCompatible</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">var</span> <span class="nv">mj</span><span class="p">:</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;.</span><span class="k">Type</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="kt">M</span><span class="p">]</span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;.</span><span class="k">self</span> <span class="p">}</span>
+        <span class="k">set</span> <span class="p">{}</span>
+    <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">mi</span><span class="p">:</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="kt">MJ</span><span class="p">(</span><span class="k">self</span><span class="p">)</span> <span class="p">}</span>
+        <span class="k">set</span> <span class="p">{}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">String</span><span class="p">:</span> <span class="kt">MJCompatible</span> <span class="p">{}</span>
+<span class="kd">extension</span> <span class="kt">MJ</span> <span class="k">where</span> <span class="kt">Base</span> <span class="o">==</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">numberCount</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="k">in</span> <span class="n">base</span> <span class="nf">where</span> <span class="p">(</span><span class="s">"0"</span><span class="o">...</span><span class="s">"9"</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">count</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Person</span> <span class="p">{}</span>
+<span class="kd">class</span> <span class="kt">Student</span><span class="p">:</span> <span class="kt">Person</span> <span class="p">{}</span>
+
+<span class="kd">extension</span> <span class="kt">Person</span><span class="p">:</span> <span class="kt">MJCompatible</span> <span class="p">{}</span>
+<span class="kd">extension</span> <span class="kt">MJ</span> <span class="k">where</span> <span class="kt">Base</span><span class="p">:</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="kt">Person</span><span class="o">.</span><span class="n">mj</span><span class="o">.</span><span class="nf">test</span><span class="p">()</span>
+<span class="kt">Student</span><span class="o">.</span><span class="n">mi</span><span class="o">.</span><span class="nf">test</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">p</span> <span class="o">=</span> <span class="kt">Person</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">mi</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">s</span> <span class="o">=</span> <span class="kt">Student</span><span class="p">()</span>
+<span class="n">s</span><span class="o">.</span><span class="n">mi</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+
+<span class="k">var</span> <span class="nv">s1</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"123fdsf434"</span>
+<span class="k">var</span> <span class="nv">s2</span><span class="p">:</span> <span class="kt">NSString</span> <span class="o">=</span> <span class="s">"123fds f434"</span>
+<span class="k">var</span> <span class="nv">s3</span><span class="p">:</span> <span class="kt">NSMutableString</span> <span class="o">=</span> <span class="s">"123fdsf434"</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">s1</span><span class="o">.</span><span class="n">mj</span><span class="o">.</span><span class="nf">numberCount</span><span class="p">())</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">mj</span><span class="o">.</span><span class="nf">numberCount</span><span class="p">())</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">s3</span><span class="o">.</span><span class="n">m</span><span class="o">.</span><span class="nf">numberCount</span><span class="p">())</span>
+
+<span class="kd">extension</span> <span class="kt">String</span><span class="p">:</span> <span class="kt">MJCompatible</span> <span class="p">{}</span>
+<span class="kd">extension</span> <span class="kt">NSString</span><span class="p">:</span> <span class="kt">MJCompatible</span> <span class="p">{}</span>
+<span class="kd">extension</span> <span class="kt">MJ</span> <span class="k">where</span> <span class="kt">Base</span><span class="p">:</span> <span class="kt">ExpressibleByStringLiteral</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">numberCount</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">string</span> <span class="o">=</span> <span class="n">base</span> <span class="k">as!</span> <span class="kt">String</span>
+        <span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="k">in</span> <span class="n">string</span> <span class="nf">where</span> <span class="p">(</span><span class="s">"0"</span><span class="o">...</span><span class="s">"9"</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">count</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>代码实现优化过程</strong></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">str</span> <span class="o">=</span> <span class="s">"1234test1234"</span>
+<span class="kd">func</span> <span class="nf">numberCount</span> <span class="p">(</span><span class="n">_</span> <span class="nv">str</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="k">in</span> <span class="n">str</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s">"0"</span><span class="o">...</span> <span class="s">"9"</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">count</span>
+<span class="p">}</span>
+<span class="nf">print</span> <span class="p">(</span><span class="nf">numberCount</span><span class="p">(</span><span class="n">str</span><span class="p">))</span>
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">for</code>循环优化</p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">str</span> <span class="o">=</span> <span class="s">"1234test1234"</span>
+<span class="kd">func</span> <span class="nf">numberCount</span> <span class="p">(</span><span class="n">_</span> <span class="nv">str</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+<span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">c</span> <span class="k">if</span> <span class="n">str</span> <span class="nf">where</span> <span class="p">(</span><span class="s">"0"</span><span class="o">...</span><span class="s">"9"</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="p">}</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">numberCount</span><span class="p">(</span><span class="n">str</span><span class="p">))</span>
+</code></pre></div></div> <p>使用<code class="language-plaintext highlighter-rouge">extension</code>优化</p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">str</span> <span class="o">=</span> <span class="s">"123rrr"</span>
+<span class="kd">extension</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">numberCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="k">in</span> <span class="k">self</span> <span class="nf">where</span> <span class="p">(</span><span class="s">"0"</span><span class="o">...</span><span class="s">"9"</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">count</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">str</span><span class="o">.</span><span class="n">numberCount</span><span class="p">)</span>
+</code></pre></div></div> <p>定义结构体优化</p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">MJ</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">string</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">string</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="n">string</span>
+    <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">numberCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="k">in</span> <span class="n">string</span> <span class="nf">where</span> <span class="p">(</span><span class="s">""</span><span class="o">...</span><span class="s">"9"</span> <span class="p">)</span><span class="o">.</span><span class="nf">contains</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">count</span>
+<span class="p">}</span>
+<span class="kd">extension</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">mj</span><span class="p">:</span> <span class="kt">MJ</span> <span class="p">(</span> <span class="k">return</span><span class="p">[</span><span class="kt">MJ</span><span class="p">(</span><span class="k">self</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="nf">print</span> <span class="p">(</span><span class="s">"123kkk"</span> <span class="o">.</span><span class="n">mj</span><span class="o">.</span><span class="n">numberCount</span><span class="p">)</span>
+</code></pre></div></div> <p>加入MJ <code class="language-plaintext highlighter-rouge">extension</code>优化</p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="kt">Base</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">base</span><span class="p">:</span> <span class="kt">Base</span>
+    <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">base</span><span class="p">:</span> <span class="kt">Base</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">base</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">extension</span> <span class="kt">String</span>
+    <span class="k">var</span> <span class="nv">mj</span><span class="p">:</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="p">{</span> <span class="kt">MJ</span><span class="p">(</span><span class="k">self</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="kt">Person</span> <span class="p">()</span>
+<span class="kd">extension</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">mi</span><span class="p">:</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="kt">Person</span><span class="o">&gt;</span> <span class="p">{</span> <span class="kt">MJ</span><span class="p">(</span><span class="k">self</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//扩展</span>
+<span class="kd">extension</span> <span class="kt">MJ</span> <span class="k">where</span> <span class="kt">Base</span> <span class="o">==</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">numberCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="n">e</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="k">in</span> <span class="n">base</span> <span class="nf">where</span> <span class="p">(</span><span class="s">"®"</span><span class="o">...</span><span class="s">"9"</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">count</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">extension</span> <span class="kt">MJ</span> <span class="k">where</span> <span class="kt">Base</span><span class="p">:</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+<span class="k">var</span> <span class="nv">person</span> <span class="o">=</span> <span class="kt">Person</span><span class="p">()</span>
+<span class="n">person</span><span class="o">.</span><span class="n">mj</span><span class="o">.</span><span class="n">rund</span><span class="p">)</span>
+<span class="c1">//"123xxx".mj.numberCount</span>
+</code></pre></div></div> <p>再优化，以支持静态扩展</p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="kt">Base</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">base</span><span class="p">:</span> <span class="kt">Base</span>
+    <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">base</span><span class="p">:</span> <span class="kt">Base</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">base</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">extension</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">mj</span><span class="p">:</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="p">{</span> <span class="kt">MJ</span><span class="p">(</span><span class="k">self</span><span class="p">)</span> <span class="p">}</span>
+    <span class="kd">static</span> <span class="k">var</span> <span class="nv">mj</span><span class="p">:</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;.</span><span class="k">Type</span> <span class="p">{</span> <span class="kt">MJString</span><span class="o">&gt;.</span><span class="k">self</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Person</span> <span class="p">{</span>
+<span class="kd">extension</span> <span class="kt">Person</span> <span class="p">{</span>
+<span class="k">var</span> <span class="nv">mj</span><span class="p">:</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="kt">Person</span><span class="o">&gt;</span> <span class="p">{</span> <span class="kt">MJ</span><span class="p">(</span><span class="k">self</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//扩展</span>
+<span class="kd">extension</span> <span class="kt">MJ</span> <span class="k">where</span> <span class="kt">Base</span> <span class="o">==</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">numberCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="k">in</span> <span class="n">base</span> <span class="nf">where</span> <span class="p">(</span><span class="s">"0"</span><span class="o">...</span><span class="s">"9"</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">count</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">MJ</span> <span class="k">where</span> <span class="kt">Base</span><span class="p">:</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">person</span> <span class="o">=</span> <span class="kt">Person</span><span class="p">()</span>
+<span class="n">person</span><span class="o">.</span><span class="n">mj</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+
+<span class="c1">//"123xxx" .mj.numberCount</span>
+</code></pre></div></div> <p>再度优化让它支持 <code class="language-plaintext highlighter-rouge">mutating</code> 方法</p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//前缀类型</span>
+<span class="kd">struct</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="kt">Base</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">base</span><span class="p">:</span> <span class="kt">Base</span>
+    <span class="nf">init</span><span class="p">(</span> <span class="nv">base</span><span class="p">:</span> <span class="kt">Base</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">base</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">利用协议扩展前缓属性</span>
+<span class="kd">protocol</span> <span class="kt">MJCompatible</span> <span class="p">{}</span>
+<span class="kd">extension</span> <span class="kt">MJCompatible</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">var</span> <span class="nv">mj</span><span class="p">:</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;.</span><span class="k">Type</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{}</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;.</span><span class="k">self</span> <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">mj</span><span class="p">:</span> <span class="kt">MJ</span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{}</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="kt">MJ</span><span class="p">(</span><span class="k">self</span><span class="p">)</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//给宇符串扩展功能</span>
+<span class="c1">//让String拥有mj前缀属性</span>
+<span class="kd">extension</span> <span class="kt">String</span><span class="p">:</span> <span class="kt">MJCompatible</span> <span class="p">{}</span>
+<span class="c1">//给String.mj.String().mj前缀扩展功能</span>
+<span class="kd">extension</span> <span class="kt">MJ</span> <span class="k">where</span> <span class="kt">Base</span> <span class="o">==</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">numberCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="k">in</span> <span class="n">base</span> <span class="nf">where</span> <span class="p">(</span><span class="s">"0"</span><span class="o">...</span><span class="s">"9"</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">count</span>
+    <span class="p">}</span>
+    
+    <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{}</span>
+    
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">str</span> <span class="o">=</span> <span class="s">"123213"</span>
+<span class="n">str</span><span class="o">.</span><span class="n">mj</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+</code></pre></div></div> <p>再度优化</p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 给 String.mj.String().mj前缀扩展功能</span>
+<span class="kd">extension</span> <span class="kt">MJ</span> <span class="k">where</span> <span class="kt">Base</span><span class="p">:</span> <span class="kt">ExpressibleByStringLiteral</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">numberCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="nf">in</span> <span class="p">(</span><span class="n">base</span> <span class="k">as!</span> <span class="kt">Strina</span><span class="p">)</span> <span class="nf">where</span> <span class="p">(</span><span class="s">"0"</span><span class="o">...</span> <span class="s">"9"</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">count</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">str1</span> <span class="o">=</span> <span class="s">"123xxx"</span>
+<span class="k">var</span> <span class="nv">str2</span><span class="p">:</span> <span class="kt">NSString</span> <span class="o">=</span> <span class="s">"123xxx"</span>
+<span class="k">var</span> <span class="nv">str3</span><span class="p">:</span> <span class="kt">NSMutableString</span> <span class="o">=</span> <span class="s">"123xxx"</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">str1</span><span class="o">.</span><span class="n">mj</span><span class="o">.</span><span class="n">numberCount</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">str2</span><span class="o">.</span><span class="n">mj</span><span class="o">.</span><span class="n">numberCount</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">str3</span><span class="o">.</span><span class="n">mj</span><span class="o">.</span><span class="n">numberCount</span><span class="p">)</span>
+</code></pre></div></div> <p><strong>利用协议实现类型判断</strong></p> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">isArray</span><span class="p">(</span><span class="n">_</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="n">value</span> <span class="k">is</span> <span class="p">[</span><span class="kt">Any</span><span class="p">]</span> <span class="p">}</span>
+<span class="nf">isArray</span><span class="p">(</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
+<span class="nf">isArray</span><span class="p">(</span> <span class="p">[</span><span class="s">"1"</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
+<span class="nf">isArray</span><span class="p">(</span> <span class="kt">NSArray</span><span class="p">()</span> <span class="p">)</span>
+<span class="nf">isArray</span><span class="p">(</span><span class="kt">NSMutableArray</span><span class="p">())</span>
+
+<span class="c1">// output:</span>
+<span class="c1">// true</span>
+<span class="c1">// true</span>
+<span class="c1">// true</span>
+<span class="c1">// true</span>
+</code></pre></div></div> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">ArrayType</span> <span class="p">{}</span>
+<span class="kd">extension</span> <span class="kt">Array</span><span class="p">:</span> <span class="kt">ArrayType</span> <span class="p">{}</span>
+<span class="kd">extension</span> <span class="kt">NSArray</span><span class="p">:</span> <span class="kt">ArrayType</span> <span class="p">{}</span>
+<span class="c1">//因为实现了ArrayType协议，isArrayType的实现是根据协议来判断，所以都会返回true.</span>
+<span class="kd">func</span> <span class="nf">isArrayType</span><span class="p">(</span><span class="n">_</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">Any</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="n">type</span> <span class="k">is</span> <span class="kt">ArrayType</span><span class="o">.</span><span class="k">Type</span> <span class="p">}</span>
+<span class="nf">isArrayType</span><span class="p">([</span><span class="kt">Int</span><span class="p">]</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="nf">isArrayType</span><span class="p">([</span><span class="kt">Any</span><span class="p">]</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="nf">isArrayType</span><span class="p">(</span><span class="kt">NSArray</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="nf">isArrayType</span><span class="p">(</span><span class="kt">NSMutableArray</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+
+<span class="c1">// output:</span>
+<span class="c1">// true</span>
+<span class="c1">// true</span>
+<span class="c1">// true</span>
+<span class="c1">// true</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F30%2F16485690100357.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Swift笔记 - 17.面向协议编程 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F30%2F16485690100357.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F30%2F16485690100357.html&amp;title=Swift笔记 - 17.面向协议编程 - 知不知&amp;summary=Swift笔记 - 17.面向协议编程&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F30%2F16485690100357.html&amp;text=Swift笔记 - 17.面向协议编程 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F30%2F16485690100357.html&amp;t=Swift笔记 - 17.面向协议编程 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fios%2F2022%2F03%2F30%2F16485690100357.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Swift笔记 - 17.面向协议编程'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
