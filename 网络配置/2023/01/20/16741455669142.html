@@ -1,0 +1,84 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/2023/01/20/16741455669142.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>windows &amp; linux 上设置端口转发</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="windows--linux-上设置端口转发">windows &amp; linux 上设置端口转发</h1> <p>以下案例在使用某机场代理时，发现其代理的端口都是私有的，这边是打开作用域在<code class="language-plaintext highlighter-rouge">0.0.0.0</code>上的端口转发到本地<code class="language-plaintext highlighter-rouge">127.0.0.1</code>的私有端口上，从而实现可供外部设备连接使用。</p><pre><code class="language-cmd">
+@echo off
+
+rem Find the process information of a listening port 15246
+rem for /f "tokens=5" %i in ('netstat -ano ^| find ":15246" ^| find "LISTENING"') do set "PID=%i"
+
+rem Kill the process using the PID
+rem taskkill /F /PID %PID%
+
+rem echo The process with PID %PID% is killed
+
+
+rem ==== Add port proxy ====
+rem rem Check if port 15236 is in a listening state
+rem for /f "tokens=5" %i in ('netstat -ano ^| find ":15236" ^| find "LISTENING"') do set "PID=%i"
+rem 
+rem rem If port 15236 is in a listening state, create the port proxy rule for port 15246
+rem if defined PID (
+rem     netsh interface portproxy add v4tov4 listenport=15246 listenaddress=0.0.0.0 connectport=15236 connectaddress=127.0.0.1
+rem     echo Port 15246 is now forwarded to port 15236
+rem ) else (
+rem     echo Port 15236 is not in a listening state
+rem )
+rem 
+rem for /f "tokens=5" %i in ('netstat -ano ^| find ":15235" ^| find "LISTENING"') do set "PID=%i"
+rem 
+rem rem If port 15236 is in a listening state, create the port proxy rule for port 15246
+rem if defined PID (
+rem     netsh interface portproxy add v4tov4 listenport=15245 listenaddress=0.0.0.0 connectport=15235 connectaddress=127.0.0.1
+rem     echo Port 15245 is now forwarded to port 15235
+rem ) else (
+rem     echo Port 15235 is not in a listening state
+rem )
+rem rem netsh interface portproxy show all
+
+rem create a port proxy, which forwards all incoming traffic on IP address 0.0.0.0 and port 15246 to IP address 127.0.0.1 and port 15236.
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=15246 connectaddress=127.0.0.1 connectport=15236
+echo Port 15246 is now forwarded to port 15236
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=15245 connectaddress=127.0.0.1 connectport=15235
+echo Port 15245 is now forwarded to port 15235
+
+rem create a firewall rule that allows incoming traffic on port 15246
+rem netsh advfirewall firewall add rule name="Port 15246" dir=in action=allow protocol=TCP localport=15246
+rem netsh advfirewall firewall add rule name="Port 15245" dir=in action=allow protocol=TCP localport=15245
+
+rem ==== netsh help command ==== 
+rem to verify that the port 15246 is listening
+rem netstat -anb | find ":15246"
+
+rem to see a list of all current port proxies:
+rem netsh interface portproxy show all
+
+rem to delete a specific port proxy
+rem netsh interface portproxy delete v4tov4 listenport=15246 listenaddress=0.0.0.0
+rem netsh interface portproxy delete v4tov4 listenport=15245 listenaddress=0.0.0.0
+
+
+pause
+
+
+</code></pre><hr /> <p>同样，这样还分享一个在linux上使用socat工具作端口转发的shell脚本，以供参考</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#/bin/sh</span>
+
+
+<span class="c"># Check if socat is running on port 15246</span>
+<span class="k">if </span>lsof <span class="nt">-i</span> :15246 | <span class="nb">grep</span> <span class="nt">-q</span> <span class="s2">"LISTEN"</span><span class="p">;</span> <span class="k">then</span>
+  <span class="c"># Get the PID of the socat process</span>
+  <span class="nv">pid</span><span class="o">=</span><span class="si">$(</span>lsof <span class="nt">-i</span> :15246 | <span class="nb">grep</span> <span class="s2">"LISTEN"</span> | <span class="nb">awk</span> <span class="s1">'{print $2}'</span><span class="si">)</span>
+  <span class="c"># Kill the process</span>
+  <span class="nb">kill</span> <span class="nv">$pid</span>
+  <span class="nb">echo</span> <span class="s2">"Socat process on port 15246 killed."</span>
+<span class="k">fi</span>
+
+
+<span class="c"># socat TCP-LISTEN:15246,reuseaddr,fork TCP:localhost:15236 </span>
+<span class="c"># 后台执行</span>
+<span class="o">(</span>socat TCP-LISTEN:15246,reuseaddr,fork TCP:localhost:15236<span class="o">)</span> &amp;
+
+
+<span class="k">if </span>lsof <span class="nt">-i</span> :15246 | <span class="nb">grep</span> <span class="nt">-q</span> <span class="s2">"LISTEN"</span><span class="p">;</span> <span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"==== Now, Socat process on port 15246 killed."</span>
+<span class="k">else
+  </span><span class="nb">echo</span> <span class="s2">"==== Socat start faild!"</span>
+<span class="k">fi</span>
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%25E9%2585%258D%25E7%25BD%25AE%2F2023%2F01%2F20%2F16741455669142.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=windows &amp; linux 上设置端口转发 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%25E9%2585%258D%25E7%25BD%25AE%2F2023%2F01%2F20%2F16741455669142.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%25E9%2585%258D%25E7%25BD%25AE%2F2023%2F01%2F20%2F16741455669142.html&amp;title=windows &amp; linux 上设置端口转发 - 知不知&amp;summary=windows &amp; linux 上设置端口转发&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%25E9%2585%258D%25E7%25BD%25AE%2F2023%2F01%2F20%2F16741455669142.html&amp;text=windows &amp; linux 上设置端口转发 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%25E9%2585%258D%25E7%25BD%25AE%2F2023%2F01%2F20%2F16741455669142.html&amp;t=windows &amp; linux 上设置端口转发 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%25E9%2585%258D%25E7%25BD%25AE%2F2023%2F01%2F20%2F16741455669142.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('windows & linux 上设置端口转发'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
