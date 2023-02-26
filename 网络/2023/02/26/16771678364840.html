@@ -1,0 +1,153 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/%E7%BD%91%E7%BB%9C/2023/02/26/16771678364840.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>基于docker的Wireguard安装配置</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="基于docker的wireguard安装配置">基于docker的Wireguard安装配置</h1> <h2 id="公网端配置">公网端配置</h2> <h3 id="环境配置">环境配置</h3> <h4 id="添加sudo用户"><strong>添加sudo用户</strong></h4> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>adduser &lt;username&gt;  <span class="c"># 添加用户</span>
+passwd &lt;username&gt;  <span class="c"># 设置密码</span>
+usermod <span class="nt">-aG</span> <span class="nb">sudo</span> &lt;username&gt;  <span class="c"># 追加sudo权限到用户</span>
+</code></pre></div></div> <h4 id="安装依赖与配置ip转发"><strong>安装依赖与配置IP转发</strong></h4> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#安装wireguard依赖软件</span>
+apt instal resolvconf <span class="nt">-y</span>
+
+<span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> systemd-resolved
+
+<span class="c">#开启IP转发</span>
+<span class="nb">echo</span> <span class="s2">"net.ipv4.ip_forward = 1"</span> <span class="o">&gt;&gt;</span> /etc/sysctl.conf
+sysctl <span class="nt">-p</span>
+</code></pre></div></div> <h3 id="nginx-proxy-manager的安装配置">Nginx Proxy Manager的安装配置</h3> <h4 id="直接docker下安装"><strong>直接docker下安装</strong></h4> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker network create mynet
+
+docker run <span class="nt">-d</span> <span class="se">\</span>
+  <span class="nt">--name</span><span class="o">=</span>npm-db <span class="se">\</span>
+  <span class="nt">--network</span> mynet <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">MYSQL_USER</span><span class="o">=</span>aleph <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">DB_MYSQL_USER</span><span class="o">=</span>aleph <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">MYSQL_ROOT_PASSWORD</span><span class="o">=</span>aleph <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">MYSQL_PASSWORD</span><span class="o">=</span>aleph <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">MYSQL_DATABASE</span><span class="o">=</span>npm <span class="se">\</span>
+  <span class="nt">-v</span> ./data/mysql:/var/lib/mysql <span class="se">\</span>
+  <span class="nt">--restart</span> always <span class="se">\</span>
+  jc21/mariadb-aria:latest
+  
+docker run <span class="nt">-d</span> <span class="se">\</span>
+  <span class="nt">--name</span><span class="o">=</span>npm <span class="se">\</span>
+  <span class="nt">--network</span> mynet <span class="se">\</span>
+  <span class="nt">-p</span> 80:80 <span class="se">\</span>
+  <span class="nt">-p</span> 443:443 <span class="se">\</span>
+  <span class="nt">-p</span> 81:81 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">DB_MYSQL_HOST</span><span class="o">=</span>npm-db <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">DB_MYSQL_PORT</span><span class="o">=</span>3306 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">DB_MYSQL_USER</span><span class="o">=</span>aleph <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">DB_MYSQL_PASSWORD</span><span class="o">=</span>aleph <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">DB_MYSQL_NAME</span><span class="o">=</span>npm <span class="se">\</span>
+  <span class="nt">-v</span> ./data:/data <span class="se">\</span>
+  <span class="nt">-v</span> ./letsencrypt:/etc/letsencrypt <span class="se">\</span>
+  <span class="nt">--restart</span> unless-stopped <span class="se">\</span>
+  jc21/nginx-proxy-manager:latest  
+</code></pre></div></div> <h4 id="docker-composeyml"><strong>docker-compose.yml</strong></h4> <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">3"</span>
+<span class="na">services</span><span class="pi">:</span>
+  <span class="na">app</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s1">'</span><span class="s">jc21/nginx-proxy-manager:latest'</span>
+    <span class="na">restart</span><span class="pi">:</span> <span class="s">unless-stopped</span>
+    <span class="na">ports</span><span class="pi">:</span>
+      <span class="c1"># These ports are in format &lt;host-port&gt;:&lt;container-port&gt;</span>
+      <span class="pi">-</span> <span class="s1">'</span><span class="s">80:80'</span> <span class="c1"># Public HTTP Port</span>
+      <span class="pi">-</span> <span class="s1">'</span><span class="s">443:443'</span> <span class="c1"># Public HTTPS Port</span>
+      <span class="pi">-</span> <span class="s1">'</span><span class="s">81:81'</span> <span class="c1"># Admin Web Port</span>
+      <span class="c1"># Add any other Stream port you want to expose</span>
+      <span class="c1"># - '21:21' # FTP</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="na">DB_MYSQL_HOST</span><span class="pi">:</span> <span class="s2">"</span><span class="s">db"</span>
+      <span class="na">DB_MYSQL_PORT</span><span class="pi">:</span> <span class="m">3306</span>
+      <span class="na">DB_MYSQL_USER</span><span class="pi">:</span> <span class="s2">"</span><span class="s">aleph"</span>
+      <span class="na">DB_MYSQL_PASSWORD</span><span class="pi">:</span> <span class="s2">"</span><span class="s">aleph"</span>
+      <span class="na">DB_MYSQL_NAME</span><span class="pi">:</span> <span class="s2">"</span><span class="s">npm"</span>
+      <span class="c1"># Uncomment this if IPv6 is not enabled on your host</span>
+      <span class="c1"># DISABLE_IPV6: 'true'</span>
+    <span class="na">volumes</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">./data:/data</span>
+      <span class="pi">-</span> <span class="s">./letsencrypt:/etc/letsencrypt</span>
+    <span class="na">depends_on</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">db</span>
+
+  <span class="na">db</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s1">'</span><span class="s">jc21/mariadb-aria:latest'</span>
+    <span class="na">restart</span><span class="pi">:</span> <span class="s">unless-stopped</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="na">MYSQL_ROOT_PASSWORD</span><span class="pi">:</span> <span class="s1">'</span><span class="s">aleph'</span>
+      <span class="na">MYSQL_DATABASE</span><span class="pi">:</span> <span class="s1">'</span><span class="s">npm'</span>
+      <span class="na">MYSQL_USER</span><span class="pi">:</span> <span class="s1">'</span><span class="s">aleph'</span>
+      <span class="na">MYSQL_PASSWORD</span><span class="pi">:</span> <span class="s1">'</span><span class="s">aleph'</span>
+    <span class="na">volumes</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">./data/mysql:/var/lib/mysql</span>
+
+<span class="c1"># 启动</span>
+<span class="s">docker-compose up -d</span>
+</code></pre></div></div> <h3 id="安装配置wireguard">安装配置Wireguard</h3> <h4 id="docker下安装"><strong>docker下安装</strong></h4> <p>参考：<a href="https://luowei.github.io/list/https://gitee.com/spoto/wireguard">Docker安装Wireguard</a></p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 端口 51821 只内容器内网访问</span>
+docker run <span class="nt">-d</span> <span class="se">\</span>
+  <span class="nt">--name</span><span class="o">=</span>wg-easy <span class="se">\</span>
+  <span class="nt">--network</span> mynet <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_HOST</span><span class="o">=</span>121.40.146.181 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">PASSWORD</span><span class="o">=</span>&lt;password&gt; <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_DEFAULT_ADDRESS</span><span class="o">=</span>10.10.10.x <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_DEFAULT_DNS</span><span class="o">=</span>8.8.8.8 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_ALLOWED_IPS</span><span class="o">=</span>10.10.10.0/24 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_PERSISTENT_KEEPALIVE</span><span class="o">=</span>25 <span class="se">\</span>
+  <span class="nt">-v</span> ~/.wg-easy:/etc/wireguard <span class="se">\</span>
+  <span class="nt">-p</span> 51820:51820/udp <span class="se">\</span>
+  <span class="nt">--cap-add</span><span class="o">=</span>NET_ADMIN <span class="se">\</span>
+  <span class="nt">--cap-add</span><span class="o">=</span>SYS_MODULE <span class="se">\</span>
+  <span class="nt">--sysctl</span><span class="o">=</span><span class="s2">"net.ipv4.conf.all.src_valid_mark=1"</span> <span class="se">\</span>
+  <span class="nt">--sysctl</span><span class="o">=</span><span class="s2">"net.ipv4.ip_forward=1"</span> <span class="se">\</span>
+  <span class="nt">--restart</span> unless-stopped <span class="se">\</span>
+  weejewel/wg-easy  
+  
+<span class="c"># 端口 51821 对外网开放访问</span>
+  docker run <span class="nt">-d</span> <span class="se">\</span>
+  <span class="nt">--name</span><span class="o">=</span>wg-easy <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_HOST</span><span class="o">=</span>121.40.146.181 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">PASSWORD</span><span class="o">=</span>&lt;password&gt; <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_DEFAULT_ADDRESS</span><span class="o">=</span>10.10.10.x <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_DEFAULT_DNS</span><span class="o">=</span>8.8.8.8 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_ALLOWED_IPS</span><span class="o">=</span>10.10.10.0/24 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_PERSISTENT_KEEPALIVE</span><span class="o">=</span>25 <span class="se">\</span>
+  <span class="nt">-v</span> ~/.wg-easy:/etc/wireguard <span class="se">\</span>
+  <span class="nt">-p</span> 51820:51820/udp <span class="se">\</span>
+  <span class="nt">-p</span> 51821:51821/tcp <span class="se">\</span>
+  <span class="nt">--cap-add</span><span class="o">=</span>NET_ADMIN <span class="se">\</span>
+  <span class="nt">--cap-add</span><span class="o">=</span>SYS_MODULE <span class="se">\</span>
+  <span class="nt">--sysctl</span><span class="o">=</span><span class="s2">"net.ipv4.conf.all.src_valid_mark=1"</span> <span class="se">\</span>
+  <span class="nt">--sysctl</span><span class="o">=</span><span class="s2">"net.ipv4.ip_forward=1"</span> <span class="se">\</span>
+  <span class="nt">--restart</span> unless-stopped <span class="se">\</span>
+  weejewel/wg-easy  
+</code></pre></div></div> <h3 id="使用docker-compose-安装配置">使用docker-compose 安装配置</h3> <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">3.8"</span>  
+<span class="na">services</span><span class="pi">:</span>  
+  <span class="na">wg-easy</span><span class="pi">:</span>  
+    <span class="na">environment</span><span class="pi">:</span>  
+      <span class="pi">-</span> <span class="s">WG_HOST=121.40.146.181</span>
+      <span class="pi">-</span> <span class="s">PASSWORD=xx_password</span>
+      <span class="pi">-</span> <span class="s">WG_DEFAULT_ADDRESS=10.10.10.10</span>
+      <span class="pi">-</span> <span class="s">WG_DEFAULT_DNS=114.114.114.114</span>  
+      <span class="pi">-</span> <span class="s">WG_ALLOWED_IPS=10.8.1.0/24</span>  
+  
+    <span class="na">image</span><span class="pi">:</span> <span class="s">weejewel/wg-easy</span>  
+    <span class="na">container_name</span><span class="pi">:</span> <span class="s">wg-easy</span>  
+    <span class="na">volumes</span><span class="pi">:</span>  
+      <span class="pi">-</span> <span class="s">.wg-easy:/etc/wireguard</span>  
+    <span class="na">ports</span><span class="pi">:</span>  
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">51820:51820/udp"</span>  
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">51821:51821/tcp"</span>  
+    <span class="na">restart</span><span class="pi">:</span> <span class="s">unless-stopped</span>  
+    <span class="na">cap_add</span><span class="pi">:</span>  
+      <span class="pi">-</span> <span class="s">NET_ADMIN</span>  
+      <span class="pi">-</span> <span class="s">SYS_MODULE</span>  
+    <span class="na">sysctls</span><span class="pi">:</span>  
+      <span class="pi">-</span> <span class="s">net.ipv4.ip_forward=1</span>  
+      <span class="pi">-</span> <span class="s">net.ipv4.conf.all.src_valid_mark=1</span>
+</code></pre></div></div> <h2 id="客户端配置">客户端配置</h2> <h3 id="群晖synology配置">群晖Synology配置</h3> <ol> <li>首先下载 <a href="https://luowei.github.io/list/https://github.com/vegardit/synology-wireguard/releases/download/WireGuard-1.0.20220627-DSM7.1/WireGuard-geminilake-1.0.20220627_debug_DSM7.1.spk">synology-wireguard</a> , 安装详细参见： <a href="https://github.com/vegardit/synology-wireguard">https://github.com/vegardit/synology-wireguard</a> 与 <a href="https://suzuhafan.com/synology/synology-920-install-wireguard-on-dsm7.html">https://suzuhafan.com/synology/synology-920-install-wireguard-on-dsm7.html</a> ；</li> <li>安装 ```sh <h1 id="下载">下载</h1> <p>wget https://github.com/vegardit/synology-wireguard/releases/download/WireGuard-1.0.20220627-DSM7.1/WireGuard-geminilake-1.0.20220627_DSM7.1.spk</p> <h1 id="安装">安装</h1> <p>synopkg install WireGuard-geminilake-1.0.20220627_DSM7.1.spk</p> </li> </ol> <h1 id="start-脚本生成wg0conf配置文件-添加并加-interface--peer-节点信息">start 脚本生成wg0.conf配置文件, 添加并加 interface &amp; peer 节点信息</h1> <p>/var/packages/WireGuard/scripts/start</p> <h1 id="把-wg0conf-复制到-etcwireguard-目录下如果etcwireguard目录不存在就手动建一个">把 wg0.conf 复制到 /etc/wireguard/ 目录下，如果/etc/wireguard目录不存在就手动建一个</h1> <p>cp /volume1/@appconf/WireGuard/wg0.conf /etc/wireguard/wg0.conf</p> <p>wg-autostart enable wg0</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+3. 启动配置
+```sh
+# 启动
+sudo wg-quick up wg0
+# 关闭
+sudo wg-quick down wg0
+</code></pre></div></div> <ol> <li>查看连接状态 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>wg show wg0
+</code></pre></div> </div> </li> <li>设置开机启动，群晖上面该命令和 Linux 有区别 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 开启</span>
+<span class="nb">sudo </span>wg-autostart <span class="nb">enable </span>wg0
+<span class="c"># 关闭</span>
+<span class="nb">sudo </span>wg-autostart disable wg0
+</code></pre></div> </div> </li> </ol> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%2F2023%2F02%2F26%2F16771678364840.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=基于docker的Wireguard安装配置 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%2F2023%2F02%2F26%2F16771678364840.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%2F2023%2F02%2F26%2F16771678364840.html&amp;title=基于docker的Wireguard安装配置 - 知不知&amp;summary=基于docker的Wireguard安装配置&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%2F2023%2F02%2F26%2F16771678364840.html&amp;text=基于docker的Wireguard安装配置 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%2F2023%2F02%2F26%2F16771678364840.html&amp;t=基于docker的Wireguard安装配置 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E7%25BD%2591%25E7%25BB%259C%2F2023%2F02%2F26%2F16771678364840.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('基于docker的Wireguard安装配置'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
