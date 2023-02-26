@@ -81,7 +81,7 @@ docker run <span class="nt">-d</span> <span class="se">\</span>
 docker run <span class="nt">-d</span> <span class="se">\</span>
   <span class="nt">--name</span><span class="o">=</span>wg-easy <span class="se">\</span>
   <span class="nt">--network</span> mynet <span class="se">\</span>
-  <span class="nt">-e</span> <span class="nv">WG_HOST</span><span class="o">=</span>121.40.146.181 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_HOST</span><span class="o">=</span>121.40.146.x <span class="se">\</span>
   <span class="nt">-e</span> <span class="nv">PASSWORD</span><span class="o">=</span>&lt;password&gt; <span class="se">\</span>
   <span class="nt">-e</span> <span class="nv">WG_DEFAULT_ADDRESS</span><span class="o">=</span>10.10.10.x <span class="se">\</span>
   <span class="nt">-e</span> <span class="nv">WG_DEFAULT_DNS</span><span class="o">=</span>8.8.8.8 <span class="se">\</span>
@@ -99,7 +99,7 @@ docker run <span class="nt">-d</span> <span class="se">\</span>
 <span class="c"># 端口 51821 对外网开放访问</span>
   docker run <span class="nt">-d</span> <span class="se">\</span>
   <span class="nt">--name</span><span class="o">=</span>wg-easy <span class="se">\</span>
-  <span class="nt">-e</span> <span class="nv">WG_HOST</span><span class="o">=</span>121.40.146.181 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">WG_HOST</span><span class="o">=</span>121.40.146.x <span class="se">\</span>
   <span class="nt">-e</span> <span class="nv">PASSWORD</span><span class="o">=</span>&lt;password&gt; <span class="se">\</span>
   <span class="nt">-e</span> <span class="nv">WG_DEFAULT_ADDRESS</span><span class="o">=</span>10.10.10.x <span class="se">\</span>
   <span class="nt">-e</span> <span class="nv">WG_DEFAULT_DNS</span><span class="o">=</span>8.8.8.8 <span class="se">\</span>
@@ -118,7 +118,7 @@ docker run <span class="nt">-d</span> <span class="se">\</span>
 <span class="na">services</span><span class="pi">:</span>  
   <span class="na">wg-easy</span><span class="pi">:</span>  
     <span class="na">environment</span><span class="pi">:</span>  
-      <span class="pi">-</span> <span class="s">WG_HOST=121.40.146.181</span>
+      <span class="pi">-</span> <span class="s">WG_HOST=121.40.146.x</span>
       <span class="pi">-</span> <span class="s">PASSWORD=xx_password</span>
       <span class="pi">-</span> <span class="s">WG_DEFAULT_ADDRESS=10.10.10.10</span>
       <span class="pi">-</span> <span class="s">WG_DEFAULT_DNS=114.114.114.114</span>  
