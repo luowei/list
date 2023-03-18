@@ -1,0 +1,231 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/docker/2023/03/19/16776073933176.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>常用的 dokcer 环境与项目配置</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="常用的-dokcer-环境与项目配置">常用的 dokcer 环境与项目配置</h1> <h2 id="docker基本配置">docker基本配置</h2> <p><strong>网络访问问题</strong></p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 后台执行 socat 端口转发</span>
+<span class="o">(</span>socat TCP-LISTEN:15246,reuseaddr,fork TCP:localhost:15236<span class="o">)</span> &amp;
+
+<span class="c"># 设置终端网络代理</span>
+<span class="nb">export </span><span class="nv">https_proxy</span><span class="o">=</span>http://10.10.10.4:15246 <span class="nv">http_proxy</span><span class="o">=</span>http://10.10.10.4:15246 <span class="nv">all_proxy</span><span class="o">=</span>http://10.10.10.4:15246
+</code></pre></div></div> <p><strong>国区docker镜像</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker中国官方镜像 https://registry.docker-cn.com
+Azure 中国镜像 https://dockerhub.azk8s.cn
+网易云镜像 https://hub-mirror.c.163.com
+阿里云 https://&lt;你的ID&gt;.mirror.aliyuncs.com 需要去阿里云申请，免费的
+腾讯云 https://mirror.ccs.tencentyun.com
+百度云 https://mirror.baidubce.com
+</code></pre></div></div> <h2 id="必备的docker项目">必备的docker项目</h2> <h3 id="nginx--jekyll">nginx &amp;&amp; jekyll</h3> <h4 id="拉镜像建目录">拉镜像、建目录</h4> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 拉取镜像</span>
+docker pull nginx
+
+<span class="c"># 创建nginx映射目录</span>
+<span class="nb">mkdir</span> <span class="nt">-p</span> ~/nginx/www ~/nginx/logs ~/nginx/conf/conf.d
+</code></pre></div></div> <h4 id="生成并复制nginxconf">生成并复制nginx.conf</h4> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 运行demo容器，生成nginx.conf</span>
+docker run <span class="nt">--name</span> runoob-nginx-test <span class="nt">-p</span> 8081:80 <span class="nt">-d</span> nginx
+
+<span class="c"># 复制</span>
+<span class="nb">sudo </span>docker <span class="nb">cp </span>55ff0ee131d:/etc/nginx/nginx.conf /volume1/docker/nginx/conf
+
+<span class="c"># 停止demo容器并清除掉</span>
+docker container stop runoob-nginx-test 
+docker container prune
+
+<span class="c"># 进入容器内的bash</span>
+docker <span class="nb">exec</span> <span class="nt">-it</span> wg-easy /bin/bash
+</code></pre></div></div> <h4 id="创建前台网络">创建前台网络</h4> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker network create net-front
+</code></pre></div></div> <h4 id="创建jekyll容器并启动">创建jekyll容器并启动</h4> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> /volume1/docker/jekyll/vendor/bundle
+<span class="nb">cd</span> /volume1/docker/jekyll
+
+<span class="c"># 先进bash</span>
+docker run <span class="nt">--rm</span> <span class="nt">--name</span> my-jekyll <span class="se">\</span>
+    <span class="nt">--network</span> net-front <span class="se">\</span>
+    <span class="nt">--volume</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">:/srv/jekyll"</span> <span class="se">\</span>
+    <span class="nt">--volume</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/vendor/bundle:/usr/local/bundle"</span> <span class="se">\</span>
+    <span class="nt">-p</span> 4000:4000 <span class="se">\</span>
+    <span class="nt">-it</span> jekyll/jekyll:3.8 <span class="se">\</span>
+    bash
+    
+<span class="c"># 再手动装依赖</span>
+<span class="nv">$ </span>bundle <span class="nb">install</span>
+
+<span class="c"># 后台运行</span>
+docker run <span class="nt">-d</span> <span class="nt">--name</span> my-jekyll <span class="se">\</span>
+    <span class="nt">--restart</span><span class="o">=</span>always <span class="se">\</span>
+    <span class="nt">--network</span> net-front <span class="se">\</span>
+    <span class="nt">--volume</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">:/srv/jekyll"</span> <span class="se">\</span>
+    <span class="nt">--volume</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/vendor/bundle:/usr/local/bundle"</span> <span class="se">\</span>
+    <span class="nt">-p</span> 4000:4000 <span class="se">\</span>
+    <span class="nt">-it</span> jekyll/jekyll:3.8 <span class="se">\</span>
+    jekyll serve <span class="nt">--watch</span> <span class="nt">--drafts</span> <span class="nt">--incremental</span>
+</code></pre></div></div> <h4 id="创建nginx容器并启动">创建nginx容器并启动</h4> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /volume1/docker/nginx
+    
+docker run <span class="nt">-d</span> <span class="nt">-p</span> 80:80 <span class="se">\</span>
+    <span class="nt">--name</span> my-nginx <span class="se">\</span>
+    <span class="nt">--restart</span><span class="o">=</span>always <span class="se">\</span>
+    <span class="nt">--network</span> my-web-net <span class="se">\</span>
+    <span class="nt">--hostname</span><span class="o">=</span>xxx.com <span class="se">\</span>
+    <span class="nt">--add-host</span><span class="o">=</span>app.xxx.com:127.0.0.1 <span class="se">\</span>
+    <span class="nt">-v</span> <span class="nv">$PWD</span>/conf/conf.d:/etc/nginx/conf.d <span class="se">\</span>
+    <span class="nt">-v</span> <span class="nv">$PWD</span>/conf/nginx.conf:/etc/nginx/nginx.conf <span class="se">\</span>
+   <span class="nt">-v</span> <span class="nv">$PWD</span>/www:/usr/share/nginx <span class="se">\</span>
+   <span class="nt">-v</span> <span class="nv">$PWD</span>/../jekyll/_site:/usr/share/nginx/jekyll <span class="se">\</span>
+   nginx
+</code></pre></div></div> <h4 id="r2s的openwrt上配置docker环境">R2S的OpenWrt上配置docker环境</h4> <p><strong>nginx容器</strong></p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-d</span> <span class="nt">-p</span> 8000:8000 <span class="se">\</span>
+    <span class="nt">--name</span> my-nginx <span class="se">\</span>
+    <span class="nt">--restart</span><span class="o">=</span>always <span class="se">\</span>
+    <span class="nt">--network</span> bridge <span class="se">\</span>
+    <span class="nt">-v</span> /root/docker/nginx/conf/conf.d:/etc/nginx/conf.d <span class="se">\</span>
+    <span class="nt">-v</span> /root/docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf <span class="se">\</span>
+    <span class="nt">-v</span> /root/docker/nginx/www:/usr/share/nginx <span class="se">\</span>
+    <span class="nt">-v</span> /root/docker/jekyll/_site:/usr/share/nginx/jekyll <span class="se">\</span>
+   nginx
+</code></pre></div></div> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span>  <span class="se">\</span>
+    <span class="nt">--name</span> my-jekyll <span class="se">\</span>
+    <span class="nt">--network</span> bridge <span class="se">\</span>
+    <span class="nt">--volume</span><span class="o">=</span><span class="s2">"/root/docker/jekyll:/srv/jekyll"</span> <span class="se">\</span>
+    <span class="nt">--volume</span><span class="o">=</span><span class="s2">"/root/docker/jekyll/vendor/bundle:/usr/local/bundle"</span> <span class="se">\</span>
+    <span class="nt">-p</span> 4000:4000 <span class="se">\</span>
+    <span class="nt">-it</span> jekyll/jekyll:3.8 <span class="se">\</span>
+    bash
+</code></pre></div></div> <p><strong>查看容器日志</strong></p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker logs <span class="nt">-f</span> 43c3d0557491
+</code></pre></div></div> <h3 id="reader-web">Reader web</h3> <p><a href="https://luowei.github.io/list/https://github.com/hectorqin/reader/blob/master/doc.md#docker%25E7%2589%2588">参考：Reader Docker安装版</a></p> <h4 id="设置代理"><strong>设置代理</strong></h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export https_proxy=http://192.168.11.210:15246 http_proxy=http://192.168.11.210:15246 all_proxy=192.168.11.210:15246
+</code></pre></div></div> <h4 id="在synology上查看某端口占用情况"><strong>在synology上查看某端口占用情况</strong></h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo netstat -tuln | grep [port_number]
+</code></pre></div></div> <h4 id="docker运行"><strong>docker运行</strong></h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#docker run -d --restart=always --name=reader -e "SPRING_PROFILES_ACTIVE=prod" -v $(pwd)/logs:/logs -v $(pwd)/storage:/storage -p 8080:8080 hectorqin/reader
+
+
+# 多用户版
+#docker run -d \
+    --restart=unless-stopped \
+    --name=reader \
+    -v $(pwd)/logs:/logs \
+    -v $(pwd)/storage:/storage \
+    -p 8080:8080 \
+    hectorqin/reader java -jar /app/bin/reader.jar --spring.profiles.active=prod --reader.app.secure=true --reader.app.secureKey=Alh.350 --reader.app.inviteCode=luowei123
+
+# 多用户版 使用环境变量
+#docker run -d \
+    --restart=always \
+    --name=reader \
+    -e "SPRING_PROFILES_ACTIVE=prod" \
+    -e "READER_APP_SECURE=true" \
+    -e "READER_APP_SECUREKEY=Alh.350" \
+    -e "READER_APP_INVITECODE=luowei123" \
+    -v $(pwd)/logs:/logs \
+    -v $(pwd)/storage:/storage \
+    -p 4396:8080 \
+    hectorqin/reader
+</code></pre></div></div> <h3 id="mysql数据库搭建">Mysql数据库搭建</h3> <h4 id="docker命令">docker命令</h4> <p><strong>参考：</strong> <a href="https://luowei.github.io/list/https://migueldoctor.medium.com/run-mysql-phpmyadmin-locally-in-3-steps-using-docker-74eb735fa1fc">Run MySQL &amp; phpMyAdmin locally in 3 steps using Docker</a></p> <p><strong>创建并运行mysql容器</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 添加网络
+docker network create mynet
+
+docker run -d \
+    --restart always \
+    --name db_mysql \
+    --network mynet \
+    -e MYSQL_USER=name \
+    -e MYSQL_PASSWORD=name13579 \
+    -e MYSQL_ROOT_PASSWORD=name.13579 \
+    -p 3307:3306 \
+    mysql:8.0.1
+
+</code></pre></div></div> <p><strong>与容器数据库交互</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 进入容器
+docker exec -it db_mysql bash
+# 连接mysql
+mysql -u root -p
+# 显示数据库
+show databases;
+</code></pre></div></div> <p><strong>创建并运行phpMyAdmin</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run -d \
+    --name db_mysql_phpmyadmin \
+    --network mynet \
+    -e MYSQL_USER=name \
+    -e MYSQL_PASSWORD=name13579 \
+    -e MYSQL_ROOT_PASSWORD=name.13579 \
+    -e PMA_HOST=db_mysql \
+    -p 31000:80 \
+    phpmyadmin/phpmyadmin:latest
+
+docker run --rm -it \
+    --name db_mysql_phpmyadmin \
+    --network mynet \
+    -e MYSQL_USER=name \
+    -e MYSQL_PASSWORD=name13579 \
+    -e MYSQL_ROOT_PASSWORD=name.13579 \
+    -e PMA_HOST=db_mysql \
+    -p 31000:80 \
+    phpmyadmin/phpmyadmin:latest
+</code></pre></div></div> <h3 id="postgres数据库搭建">postgres数据库搭建</h3> <h4 id="创建并运行postgres容器">创建并运行postgres容器</h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run -d \
+    --name db_postgres \
+    --network mynet \
+    -e POSTGRES_PASSWORD=name.13579 \
+    -p 5433:5432 \
+    postgres
+</code></pre></div></div> <p><strong>创建并运行pgAdmin容器</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run -d \
+    --name my-pgadmin \
+    --network mynet \
+    -p 31001:80 \
+    -e 'PGADMIN_DEFAULT_EMAIL=name010101@gmail.com' \
+    -e 'PGADMIN_DEFAULT_PASSWORD=name.13579' \
+    dpage/pgadmin4
+</code></pre></div></div> <h3 id="wiki-搭建">wiki 搭建</h3> <p>因镜像托管在github上，先在网速快的机器上下载再导入外网速度慢的机器上，具体操作如下：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pull
+docker pull --platform amd64 ghcr.io/requarks/wiki:2
+# 导出
+docker save -o jekyll-serve.tar ghcr.io/requarks/wiki:2
+# 导入
+docker load -i ./image/ghcr.io_requarks_wiki.tar
+# 添加镜像名与标签
+docker tag &lt;id&gt; ${repo/image_name:tag}
+</code></pre></div></div> <p><strong>授权数据库</strong></p> <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">GRANT</span> <span class="k">ALL</span> <span class="k">PRIVILEGES</span> <span class="k">ON</span> <span class="n">wiki</span><span class="p">.</span><span class="o">*</span> <span class="k">TO</span> <span class="s1">'luowei'</span><span class="o">@</span><span class="s1">'%'</span><span class="p">;</span>
+</code></pre></div></div> <p><strong>wiki容器安装命令</strong></p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># postgres 数据库</span>
+docker run <span class="nt">-d</span> <span class="se">\</span>
+    <span class="nt">-p</span> 8080:3000 <span class="se">\</span>
+    <span class="nt">--name</span> wiki <span class="se">\</span>
+    <span class="nt">--network</span> mynet <span class="se">\</span>
+    <span class="nt">--restart</span> unless-stopped <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_TYPE=postgres"</span> <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_HOST=db"</span> <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_PORT=5432"</span> <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_USER=name"</span> <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_PASS=name13579"</span> <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_NAME=wiki"</span> ghcr.io/requarks/wiki:2
+
+docker run <span class="nt">-d</span> <span class="se">\</span>
+    <span class="nt">--name</span> wiki <span class="se">\</span>
+    <span class="nt">--restart</span> unless-stopped <span class="se">\</span>
+    <span class="nt">--network</span> mynet <span class="se">\</span>
+    <span class="nt">-p</span> 3000:3000 <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_TYPE=mysql"</span>  <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_HOST=db_mysql"</span>  <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_PORT=3306"</span>  <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_USER=name"</span>  <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_PASS=name13579"</span>  <span class="se">\</span>
+    <span class="nt">-e</span> <span class="s2">"DB_NAME=wiki"</span>  <span class="se">\</span>
+    ghcr.io/requarks/wiki:2
+</code></pre></div></div> <h3 id="chevereto图床服务搭建">Chevereto图床服务搭建</h3> <p><strong>相关文档：</strong><br /> <a href="https://luowei.github.io/list/https://chevereto-free.github.io/setup/container/compose.html#up">https://chevereto-free.github.io/setup/container/compose.html#up</a> <br /> <a href="https://luowei.github.io/list/https://github.com/rodber/chevereto-free/blob/1.6/httpd-php.yml">https://github.com/rodber/chevereto-free/blob/1.6/httpd-php.yml</a></p> <p><strong>数据库授权</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GRANT ALL PRIVILEGES ON chevereto.* TO 'luowei'@'%';
+</code></pre></div></div> <p><strong>chevereto容器安装命令</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run -d  \
+    --name chevereto \
+    --restart unless-stopped \
+    -p 8810:80  \
+    --network mynet  \
+    -v $PWD/storage:/var/www/html/images  \
+    -v $PWD/content:/var/www/html/content  \
+    -e "CHEVERETO_TAG=free" \
+    -e "CHEVERETO_DB_HOST=db_mysql" \
+    -e "CHEVERETO_DB_USER=name" \
+    -e "CHEVERETO_DB_PASS=name13579" \
+    -e "CHEVERETO_DB_PORT=3306" \
+    -e "CHEVERETO_DB_NAME=chevereto" \
+    -e "CHEVERETO_DISABLE_UPDATE_HTTP=1" \
+    -e "CHEVERETO_DISABLE_UPDATE_CLI=1" \
+    -e "CHEVERETO_HTTPS=0" \
+    ghcr.io/rodber/chevereto-free:latest
+
+
+docker run --rm -it  \
+    --name chevereto \
+    -p 8810:80  \
+    --network mynet  \
+    -e "CHEVERETO_TAG=free" \
+    -e "CHEVERETO_DB_HOST=db_mysql" \
+    -e "CHEVERETO_DB_USER=name" \
+    -e "CHEVERETO_DB_PASS=name13579" \
+    -e "CHEVERETO_DB_PORT=3306" \
+    -e "CHEVERETO_DB_NAME=chevereto" \
+    -e "CHEVERETO_DISABLE_UPDATE_HTTP=1" \
+    -e "CHEVERETO_DISABLE_UPDATE_CLI=1" \
+    -e "CHEVERETO_HTTPS=0" \
+    ghcr.io/rodber/chevereto-free:latest
+
+</code></pre></div></div> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocker%2F2023%2F03%2F19%2F16776073933176.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=常用的 dokcer 环境与项目配置 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocker%2F2023%2F03%2F19%2F16776073933176.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocker%2F2023%2F03%2F19%2F16776073933176.html&amp;title=常用的 dokcer 环境与项目配置 - 知不知&amp;summary=常用的 dokcer 环境与项目配置&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocker%2F2023%2F03%2F19%2F16776073933176.html&amp;text=常用的 dokcer 环境与项目配置 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocker%2F2023%2F03%2F19%2F16776073933176.html&amp;t=常用的 dokcer 环境与项目配置 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2Fdocker%2F2023%2F03%2F19%2F16776073933176.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('常用的 dokcer 环境与项目配置'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
