@@ -138,25 +138,34 @@ docker run <span class="nt">-d</span> <span class="se">\</span>
     <span class="na">sysctls</span><span class="pi">:</span>  
       <span class="pi">-</span> <span class="s">net.ipv4.ip_forward=1</span>  
       <span class="pi">-</span> <span class="s">net.ipv4.conf.all.src_valid_mark=1</span>
-</code></pre></div></div> <h2 id="客户端配置">客户端配置</h2> <h3 id="群晖synology客户端配置">群晖Synology客户端配置</h3> <ol> <li> <p>首先下载 <a href="https://luowei.github.io/list/https://github.com/vegardit/synology-wireguard/releases/download/WireGuard-1.0.20220627-DSM7.1/WireGuard-geminilake-1.0.20220627_debug_DSM7.1.spk">synology-wireguard</a> , 安装详细参见： <a href="https://github.com/vegardit/synology-wireguard">https://github.com/vegardit/synology-wireguard</a> 与 <a href="https://suzuhafan.com/synology/synology-920-install-wireguard-on-dsm7.html">https://suzuhafan.com/synology/synology-920-install-wireguard-on-dsm7.html</a> ；</p> </li> <li> <p>安装<br /> ```sh</p> <h1 id="下载">下载</h1> <p>wget https://github.com/vegardit/synology-wireguard/releases/download/WireGuard-1.0.20220627-DSM7.1/WireGuard-geminilake-1.0.20220627_DSM7.1.spk</p> <h1 id="安装">安装</h1> <p>synopkg install WireGuard-geminilake-1.0.20220627_DSM7.1.spk</p> </li> </ol> <h1 id="start-脚本生成wg0conf配置文件-添加并加-interface--peer-节点信息">start 脚本生成wg0.conf配置文件, 添加并加 interface &amp; peer 节点信息</h1> <p>/var/packages/WireGuard/scripts/start</p> <h1 id="把-wg0conf-复制到-etcwireguard-目录下如果etcwireguard目录不存在就手动建一个">把 wg0.conf 复制到 /etc/wireguard/ 目录下，如果/etc/wireguard目录不存在就手动建一个</h1> <p>cp /volume1/@appconf/WireGuard/wg0.conf /etc/wireguard/wg0.conf</p> <p>wg-autostart enable wg0</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-**注：wg0.conf**
-```sh
-[Interface]
-PrivateKey = xxxxxxxxxxxxxxxx
-Address = 10.10.10.7/24
-# Don't add the DNS = x.x.x.x because setting is unsupported, otherwise would report "resolvconf: command not found"
-# DNS = 8.8.8.8
+</code></pre></div></div> <h2 id="客户端配置">客户端配置</h2> <h3 id="群晖synology客户端配置">群晖Synology客户端配置</h3> <ol> <li> <p>首先下载 <a href="https://luowei.github.io/list/https://github.com/vegardit/synology-wireguard/releases/download/WireGuard-1.0.20220627-DSM7.1/WireGuard-geminilake-1.0.20220627_debug_DSM7.1.spk">synology-wireguard</a> , 安装详细参见： <a href="https://github.com/vegardit/synology-wireguard">https://github.com/vegardit/synology-wireguard</a> 与 <a href="https://suzuhafan.com/synology/synology-920-install-wireguard-on-dsm7.html">https://suzuhafan.com/synology/synology-920-install-wireguard-on-dsm7.html</a> ；</p> </li> <li> <p>安装</p> </li> </ol> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 下载</span>
+wget https://github.com/vegardit/synology-wireguard/releases/download/WireGuard-1.0.20220627-DSM7.1/WireGuard-geminilake-1.0.20220627_DSM7.1.spk
+<span class="c"># 安装</span>
+synopkg <span class="nb">install </span>WireGuard-geminilake-1.0.20220627_DSM7.1.spk
 
-PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o ovs_eth0 -j MASQUERADE;
-PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o ovs_eth0 -j MASQUERADE;
+<span class="c"># start 脚本生成wg0.conf配置文件, 添加并加 interface &amp; peer 节点信息</span>
+/var/packages/WireGuard/scripts/start
+
+<span class="c"># 把 wg0.conf 复制到 /etc/wireguard/ 目录下，如果/etc/wireguard目录不存在就手动建一个</span>
+<span class="nb">cp</span> /volume1/@appconf/WireGuard/wg0.conf /etc/wireguard/wg0.conf
+
+wg-autostart <span class="nb">enable </span>wg0
+</code></pre></div></div> <p><strong>注：wg0.conf</strong></p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>Interface]
+PrivateKey <span class="o">=</span> xxxxxxxxxxxxxxxx
+Address <span class="o">=</span> 10.10.10.7/24
+<span class="c"># Don't add the DNS = x.x.x.x because setting is unsupported, otherwise would report "resolvconf: command not found"</span>
+<span class="c"># DNS = 8.8.8.8</span>
+
+PostUp <span class="o">=</span> iptables <span class="nt">-A</span> FORWARD <span class="nt">-i</span> %i <span class="nt">-j</span> ACCEPT<span class="p">;</span> iptables <span class="nt">-A</span> FORWARD <span class="nt">-o</span> %i <span class="nt">-j</span> ACCEPT<span class="p">;</span> iptables <span class="nt">-t</span> nat <span class="nt">-A</span> POSTROUTING <span class="nt">-o</span> ovs_eth0 <span class="nt">-j</span> MASQUERADE<span class="p">;</span>
+PostDown <span class="o">=</span> iptables <span class="nt">-D</span> FORWARD <span class="nt">-i</span> %i <span class="nt">-j</span> ACCEPT<span class="p">;</span> iptables <span class="nt">-D</span> FORWARD <span class="nt">-o</span> %i <span class="nt">-j</span> ACCEPT<span class="p">;</span> iptables <span class="nt">-t</span> nat <span class="nt">-D</span> POSTROUTING <span class="nt">-o</span> ovs_eth0 <span class="nt">-j</span> MASQUERADE<span class="p">;</span>
 
 
-[Peer]
-PublicKey = XXXXXXXXXXXXxxxxxx
-PresharedKey = XXXXXxxxXXXXXXxxxxx
-AllowedIPs = 10.10.10.0/24
-PersistentKeepalive = 25
-Endpoint = 121.40.x.x:51820
+<span class="o">[</span>Peer]
+PublicKey <span class="o">=</span> XXXXXXXXXXXXxxxxxx
+PresharedKey <span class="o">=</span> XXXXXxxxXXXXXXxxxxx
+AllowedIPs <span class="o">=</span> 10.10.10.0/24
+PersistentKeepalive <span class="o">=</span> 25
+Endpoint <span class="o">=</span> 121.40.x.x:51820
 </code></pre></div></div> <p>启动</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/var/packages/WireGuard/scripts/start
 </code></pre></div></div> <ol> <li>启动配置 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 启动</span>
 <span class="nb">sudo </span>wg-quick up wg0
