@@ -1,0 +1,93 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>知不知</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#157878"> <meta name="baidu-site-verification" content="" /> <meta name="apple-itunes-app" content="app-id=1227288468, app-argument=https://luowei.github.io/list/%E5%AD%A6%E4%B9%A0/2024/01/10/17048962247450.html"> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/normalize.css"> <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> <link rel="stylesheet" href="https://luowei.github.io/list/assets/css/cayman.css"> </head> <body> <section class="page-header"> <h1 class="project-name">知不知</h1> <h2 class="project-tagline"><a style="color:#ffffff;" href="http://luowei.github.io/list">知不知</a> 是一个代码爱好者的技术知识分享部落格。</h2> <a href="http://wodedata.com" target="_blank" class="btn">wodedata</a> <a href="https://luowei.github.io/list" class="btn">home</a> <a href="http://app.wodedata.com" target="_blank" class="btn">APP作品</a> </section> <section class="main-content"> <!-- 标题 --> <h2>Debian12上安装PVE8</h2> <!-- Google Ads --> <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <p><ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8760692904992206" data-ad-slot="2948937366"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></p> <h1 id="debian12上安装pve8">Debian12上安装PVE8</h1> <h4 id="首页检查hostname及hosts配置">首页检查hostname及hosts配置</h4> <p>检查下 hostname 是否有设置</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hostname
+</code></pre></div></div> <p>如果没有设置 <code class="language-plaintext highlighter-rouge">hostname</code>, 使用以下命令设置 <code class="language-plaintext highlighter-rouge">hostname</code></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hostnamectl set-hostname pve-mark --static
+</code></pre></div></div> <p>编辑 <code class="language-plaintext highlighter-rouge">/etc/hosts</code> 文件以更新 IP 地址和 DNS 名称条目，<strong>一定要把pve主机名改成静态ip</strong></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1	localhost
+# 127.0.1.1	pve-mark.wodedata.com	pve-mark
+192.168.11.170  pve-mark.wodedata.com   pve-mark
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+</code></pre></div></div> <p>检查主接口的 IP 地址</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip ad
+</code></pre></div></div> <p>使用 <code class="language-plaintext highlighter-rouge">hostname</code> 命令测试配置的主机名是否ok：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hostname --ip-address
+192.168.11.170
+</code></pre></div></div> <h4 id="备份sourceslist">备份sources.list</h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cp /etc/apt/sources.list /etc/apt/sources.list.bak
+</code></pre></div></div> <h4 id="更换新源">更换新源</h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 编辑 sources.list
+
+nano /etc/apt/sources.list
+
+# 改为如下内容
+
+deb https://mirrors.ustc.edu.cn/debian/ bookworm main non-free non-free-firmware contrib
+deb-src https://mirrors.ustc.edu.cn/debian/ bookworm main non-free non-free-firmware contrib
+deb https://mirrors.ustc.edu.cn/debian-security/ bookworm-security main
+deb-src https://mirrors.ustc.edu.cn/debian-security/ bookworm-security main
+deb https://mirrors.ustc.edu.cn/debian/ bookworm-updates main non-free non-free-firmware contrib
+deb-src https://mirrors.ustc.edu.cn/debian/ bookworm-updates main non-free non-free-firmware contrib
+deb https://mirrors.ustc.edu.cn/debian/ bookworm-backports main non-free non-free-firmware contrib
+deb-src https://mirrors.ustc.edu.cn/debian/ bookworm-backports main non-free non-free-firmware contrib
+</code></pre></div></div> <h4 id="更换-pve-源">更换 PVE 源</h4> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 编辑文件 pve-no-subscription.list</span>
+nano /etc/apt/sources.list.d/pve-no-subscription.list
+<span class="c"># 更换为如下内容</span>
+deb https://mirrors.ustc.edu.cn/proxmox/debian bookworm pve-no-subscription
+<span class="c"># 将下面这一行注释掉</span>
+<span class="c"># deb https://mirrors.tuna.tsinghua.edu.cn/proxmox/debian bookworm pve-no-subscription</span>
+
+<span class="c"># 编辑 PVE ceph 源</span>
+nano /etc/apt/sources.list.d/ceph.list
+<span class="c"># 改成如下内容</span>
+deb https://mirrors.ustc.edu.cn/proxmox/debian/ceph-quincy bookworm no-subscription
+<span class="c">#deb https://enterprise.proxmox.com/debian/ceph-quincy bookworm enterprise</span>
+
+<span class="c"># 备份CT镜像下载源</span>
+<span class="nb">cp</span> /usr/share/perl5/PVE/APLInfo.pm /usr/share/perl5/PVE/APLInfo.pm_back
+<span class="c"># 替换CT镜像下载源</span>
+<span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'s|http://download.proxmox.com|https://mirrors.ustc.edu.cn/proxmox|g'</span> /usr/share/perl5/PVE/APLInfo.pm
+
+<span class="c"># 重启服务</span>
+systemctl restart pvedaemon.service
+
+<span class="c"># 将此文件的中的所有内容注释掉</span>
+nano /etc/apt/sources.list.d/pve-enterprise.list
+</code></pre></div></div> <h4 id="添加gpg-key">添加GPG KEY</h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 下载中科大的GPG KEY
+wget https://mirrors.ustc.edu.cn/proxmox/debian/proxmox-release-bookworm.gpg -O /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
+</code></pre></div></div> <p>更新软件源与系统</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt update <span class="o">&amp;&amp;</span> apt full-upgrade
+</code></pre></div></div> <p>备份<code class="language-plaintext highlighter-rouge">/boot/grub/grub.cfg</code> 有windows的多系统注意以下section下的<code class="language-plaintext highlighter-rouge">menuentry</code></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### BEGIN /etc/grub.d/30_os-prober ###
+menuentry 'Windows Boot Manager (on /dev/nvme0n1p1)' --class windows --class os $menuentry_id_option 'osprober-efi-3876-F8BB' {
+	insmod part_gpt
+	insmod fat
+	search --no-floppy --fs-uuid --set=root 3876-F8BB
+	chainloader /EFI/Microsoft/Boot/bootmgfw.efi
+}
+### END /etc/grub.d/30_os-prober ###
+</code></pre></div></div> <p><img src="https://luowei.github.io/list/https://lsky.wodedata.com/i/2024/01/10/659ea70a4ee8a.png" alt="" /></p> <p>安装PVE Kernel</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install proxmox-default-kernel
+systemctl reboot
+</code></pre></div></div> <p>安装PVE(建意在系统终端里执行，以防半图形设置界面在ssh远程tty里展示不出来)</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install proxmox-ve postfix open-iscsi chrony
+</code></pre></div></div> <p>如果您的网络中有邮件服务器，则应将 postfix 配置为卫星系统，并且您现有的邮件服务器将作为“中继主机”来路由电子邮件由 proxmox 服务器发送到最终接收者。如果您不知道在此处输入什么内容，请选择仅限本地。 <img src="https://luowei.github.io/list/https://lsky.wodedata.com/i/2023/12/27/658ba2a1ccbdd.png" alt="" /></p> <p>确认系统邮件名称/相应更新。 <img src="https://luowei.github.io/list/https://lsky.wodedata.com/i/2023/12/27/658ba6d3e7cdb.png" alt="" /></p> <p>卸载 Debian 默认内核：</p> <div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">apt</span><span class="w"> </span><span class="nx">remove</span><span class="w"> </span><span class="nx">linux-image-amd64</span><span class="w"> </span><span class="s1">'linux-image-6.1*'</span><span class="w">
+</span></code></pre></div></div> <p>通过运行以下命令更新并检查 grub2 配置</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>update-grub
+</code></pre></div></div> <p>删除 os-prober 包</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt remove os-prober
+</code></pre></div></div> <p>安装后重新启动 Debian 系统以启动到 Proxmox 环境，重新</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl reboot
+</code></pre></div></div> <p>如果重启后，打开浏览器并输入 Proxmox VE Web 控制台 URL – (<code class="language-plaintext highlighter-rouge">https://&lt;serverip_or_hostname&gt;:8006</code>)，登录后，创建一个名为 <code class="language-plaintext highlighter-rouge">vmbr0</code> 的 Linux Bridge，选一个需要使用的网络接口与vmbr0 Bridge绑定即可。</p> <p><strong>手动配置<code class="language-plaintext highlighter-rouge">vmbr0</code></strong> 若无法访问，就应该是PVE没有连接网络或管理网卡(<code class="language-plaintext highlighter-rouge">/etc/network/interfaces</code>)未配置，在终端手动配置 PVE管理网卡即可，如下：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># vim /etc/network/interfaces
+
+auto vmbr0
+iface vmbr0 inet static
+        address 192.168.11.166/24
+        gateway 192.168.11.1
+        bridge-ports enp1s0
+        bridge-stp off
+        bridge-fd 0
+</code></pre></div></div> <p>如果系统有图形界面，进入主机图形界面用浏览器打开PVE后台，添加一个vmbr0桥接口网卡也可以。然后重启网络：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo systemctl restart networking
+sudo systemctl restart NetworkManager
+</code></pre></div></div> <p><strong>若windows启动项目消失，重新添加windows启动项</strong><br /> 查看所有磁盘分区，确定Windows所在的分区</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lsblk -fs
+</code></pre></div></div> <p>编辑GRUB配置文件, 要在GRUB中添加Windows启动项，需要编辑<code class="language-plaintext highlighter-rouge">/boot/grub/grub.cfg</code>文件。但是，我们不应该直接编辑此文件，因为它会在系统更新时自动重写。相反，我们应该编辑<code class="language-plaintext highlighter-rouge">/etc/grub.d/40_custom</code>文件，该文件不会在系统更新时自动更改，仔细观察发现其实所有启动项目配置都在 <code class="language-plaintext highlighter-rouge">/etc/grub.d</code> 目录下。 我们在自定义启动项目文件中编辑： <code class="language-plaintext highlighter-rouge">vim /etc/grub.d/40_custom</code>, 在文件末尾添加以下内容：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>menuentry "Windows" {
+insmod ntfs
+set root=(hd0,X)
+chainloader +1
+}
+
+# 代码中，X应该替换为Windows分区的编号。例如，如果Windows分区是/dev/sda2，则X应该替换为2。
+</code></pre></div></div> <p>保存并关闭40_custom文件后，更新GRUB配置</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>update-grub
+# 检查 cat /boot/grub/grub.cfg 更新后，重启
+cat /boot/grub/grub.cfg
+reboot
+</code></pre></div></div> <p>当然也可以安装图形界面应用：<code class="language-plaintext highlighter-rouge">apt install grub-customizer</code> 来添加与检查grub选项。</p> <p><strong>参考：</strong> <a href="https://luowei.github.io/list/https://cn.linux-console.net/?p=22386">如何在 Debian 12 上安装 Proxmox VE 8 (Bookworm)</a> <br /> <a href="https://luowei.github.io/list/https://www.wunote.cn/article/10000/">Proxmox VE 8 (PVE8)修改国内软件镜像源</a> <br /> <a href="https://luowei.github.io/list/https://pve.proxmox.com/wiki/Install_Proxmox_VE_on_Debian_12_Bookworm">Install Proxmox VE</a></p> <p><span class="site-footer-credits">版权所有，转载请注明出处 <a href="https://luowei.github.io/list">luowei.github.io</a>.</span></p> <link rel="stylesheet" href="/list/assets/css/font-awesome.min.css?ver=20151122" /> <!--[if IE 7 ]><link rel="stylesheet" href="/list/assets/css/font-awesome-ie7.min.css?ver=20151122"><![endif]--> <div style="float: right"> <span id="share"> <a class="wechat" target="_blank" title="分享到微信" href="https://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E5%25AD%25A6%25E4%25B9%25A0%2F2024%2F01%2F10%2F17048962247450.html"><i class="icon-large icon-wechat"></i></a> <a class="weibo" target="_blank" title="分享到微博" href="http://service.weibo.com/share/share.php?title=Debian12上安装PVE8 - 知不知&amp;url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E5%25AD%25A6%25E4%25B9%25A0%2F2024%2F01%2F10%2F17048962247450.html&amp;type=3&amp;searchPic=1"><i class="icon-large icon-weibo"></i></a> <a class="qzone" target="_blank" title="分享到 QQ 空间" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E5%25AD%25A6%25E4%25B9%25A0%2F2024%2F01%2F10%2F17048962247450.html&amp;title=Debian12上安装PVE8 - 知不知&amp;summary=Debian12上安装PVE8&amp;site=/list"><i class="icon-large icon-qzone"></i></a> <a class="twitter" target="_blank" title="Share to Twitter" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E5%25AD%25A6%25E4%25B9%25A0%2F2024%2F01%2F10%2F17048962247450.html&amp;text=Debian12上安装PVE8 - 知不知&amp;via=luowei010101"><i class="icon-large icon-twitter"></i></a> <a class="facebook" target="_blank" title="Share to Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E5%25AD%25A6%25E4%25B9%25A0%2F2024%2F01%2F10%2F17048962247450.html&amp;t=Debian12上安装PVE8 - 知不知"><i class="icon-large icon-facebook-sign"></i></a> <a class="googleplus" target="_blank" title="Share to Google+" href="https://plus.google.com/share?url=https%3A%2F%2Fluowei.github.io%2Flist%2F%25E5%25AD%25A6%25E4%25B9%25A0%2F2024%2F01%2F10%2F17048962247450.html"><i class="icon-large icon-google-plus-sign"></i></a> </span> </div> <hr /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" /> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <div id="gitalk-container"></div> <script type="text/javascript"> var gitalk = new Gitalk({ clientID: '9d5ee666269c252cf949', clientSecret: '728cd598f1fca9d8c1df1dfa300057883a3a8676', repo: 'list', owner: 'luowei', admin: ['luowei'], id: decodeURI('Debian12上安装PVE8'), distractionFreeMode: false }); gitalk.render('gitalk-container'); </script> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1277627361'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1277627361%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script> <footer class="site-footer"> <span class="site-footer-owner"><a href="https://luowei.github.io/list">知不知</a> is maintained by <a href="http://luowei.github.io/list">luowei</a>.</span> <span class="site-footer-credits">Developed by <a href="https://luowei.github.io/list">luowei</a>.</span> </footer> </section> </body> </html>
