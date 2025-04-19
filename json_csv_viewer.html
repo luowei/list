@@ -1,0 +1,1408 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>优化缩进版JSON与CSV Web查看器</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind-dark.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css">
+    <style>
+        :root {
+            --depth-0: #f3f4f6;
+            --depth-1: #e5e7eb;
+            --depth-2: #d1d5db;
+            --depth-3: #9ca3af;
+            --depth-4: #6b7280;
+            --depth-5: #4b5563;
+            --nested-color-1: rgba(59, 130, 246, 0.05);
+            --nested-color-2: rgba(16, 185, 129, 0.05);
+            --nested-color-3: rgba(249, 115, 22, 0.05);
+            --nested-color-4: rgba(139, 92, 246, 0.05);
+            --nested-color-5: rgba(239, 68, 68, 0.05);
+        }
+        
+        .dark {
+            --depth-0: #1f2937;
+            --depth-1: #374151;
+            --depth-2: #4b5563;
+            --depth-3: #6b7280;
+            --depth-4: #9ca3af;
+            --depth-5: #d1d5db;
+            --nested-color-1: rgba(59, 130, 246, 0.1);
+            --nested-color-2: rgba(16, 185, 129, 0.1);
+            --nested-color-3: rgba(249, 115, 22, 0.1);
+            --nested-color-4: rgba(139, 92, 246, 0.1);
+            --nested-color-5: rgba(239, 68, 68, 0.1);
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            transition: background-color 0.3s;
+        }
+        
+        .json-key {
+            color: #8839ef;
+            font-weight: 600;
+        }
+        
+        .json-string {
+            color: #40a02b;
+        }
+        
+        .json-number {
+            color: #fe640b;
+        }
+        
+        .json-boolean {
+            color: #1e66f5;
+            font-weight: 600;
+        }
+        
+        .json-null {
+            color: #e64553;
+            font-style: italic;
+        }
+
+        .json-view-row {
+            border-radius: 4px;
+            margin: 2px 0;
+            transition: background-color 0.2s;
+        }
+        
+        /* 增强高亮效果 */
+        .json-view-row.active {
+            background-color: rgba(59, 130, 246, 0.15) !important;
+            border-left: 3px solid #3b82f6 !important;
+            transition: all 0.2s ease;
+        }
+
+        .dark .json-view-row.active {
+            background-color: rgba(59, 130, 246, 0.25) !important;
+        }
+
+        .nested-depth-0 { background-color: var(--nested-color-1); border-left: 3px solid #3b82f6; }
+        .nested-depth-1 { background-color: var(--nested-color-2); border-left: 3px solid #10b981; }
+        .nested-depth-2 { background-color: var(--nested-color-3); border-left: 3px solid #f97316; }
+        .nested-depth-3 { background-color: var(--nested-color-4); border-left: 3px solid #8b5cf6; }
+        .nested-depth-4 { background-color: var(--nested-color-5); border-left: 3px solid #ef4444; }
+        
+        .indent-marker {
+            display: inline-block;
+            width: 20px;
+            user-select: none;
+        }
+        
+        .collapsible-icon {
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .collapsible-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+        
+        #current-path {
+            padding: 8px 12px;
+            margin-bottom: 16px;
+            background-color: #f3f4f6;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .dark #current-path {
+            background-color: #374151;
+        }
+
+        .path-component {
+            cursor: pointer;
+            padding: 2px 5px;
+            border-radius: 4px;
+            background-color: rgba(0, 0, 0, 0.05);
+            margin-right: 2px;
+            transition: background-color 0.2s;
+        }
+        
+        .path-component:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .path-component {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dark .path-component:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* 当前激活的路径组件 */
+        .path-component.active {
+            background-color: #3b82f6 !important;
+            color: white !important;
+            font-weight: 500;
+        }
+        
+        .path-divider {
+            margin: 0 4px;
+            color: #6b7280;
+            user-select: none;
+        }
+        
+        .preview-button {
+            cursor: pointer;
+            color: #3b82f6;
+            margin-left: 8px;
+            padding: 2px 5px;
+            border-radius: 4px;
+            background-color: rgba(59, 130, 246, 0.1);
+            transition: background-color 0.2s;
+        }
+        
+        .preview-button:hover {
+            background-color: rgba(59, 130, 246, 0.2);
+        }
+        
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+            display: none;
+        }
+
+        .fullscreen-overlay:not(.hidden) {
+            display: flex;
+        }
+        
+        .fullscreen-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .fullscreen-control-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .fullscreen-control-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .fullscreen-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        
+        .loading-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            border-top-color: #3b82f6;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .drag-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+        
+        .drag-area.active {
+            border-color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        
+        .dark .drag-area {
+            border-color: #4b5563;
+        }
+        
+        .dark .drag-area.active {
+            border-color: #60a5fa;
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        
+        .overflow-guard {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        
+        .media-preview {
+            max-width: 120px;
+            max-height: 80px;
+            object-fit: contain;
+            border-radius: 4px;
+            margin-left: 8px;
+            border: 1px solid #d1d5db;
+        }
+        
+        .dark .media-preview {
+            border-color: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 dark:text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-white">JSON与CSV Web查看器</h1>
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                    <i class="fas fa-moon dark:hidden"></i> <!-- 亮色模式显示 -->
+                    <i class="fas fa-sun hidden dark:block"></i> <!-- 暗色模式显示 -->
+                </button>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mt-2">支持嵌套数据展开/收起、媒体预览和路径导航</p>
+        </header>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
+            
+            <div id="drop-area" class="drag-area mb-6">
+                <i class="fas fa-file-upload text-4xl text-gray-400 mb-3"></i>
+                <p class="text-gray-600 dark:text-gray-300 mb-2">拖放文件到此处或点击选择文件</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">支持 .json 和 .csv 文件</p>
+                <div>
+                    <label class="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600 transition-colors">
+                        选择文件
+                        <input type="file" id="file-input" accept=".json,.csv" class="hidden">
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <label for="text-input" class="block text-gray-700 dark:text-gray-300 mb-2">或直接输入JSON/CSV文本:</label>
+                <textarea id="text-input" rows="6" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white resize-none"></textarea>
+                <div class="mt-2 text-right">
+                    <button id="parse-button" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-code mr-2"></i> 解析数据
+                    </button>
+                </div>
+            </div>
+            
+            <div id="status-message" class="hidden mb-4 p-4 rounded-lg"></div>
+            
+            <div id="viewer-container" class="hidden">
+                <!-- 移动功能块到这里 -->
+                <div id="current-path" class="overflow-x-auto whitespace-nowrap mb-4 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    <span class="path-component" data-path="$">$</span>
+                </div>
+                
+                <div class="flex space-x-4 mb-4">
+                    <button id="expand-all" class="flex items-center justify-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-expand-alt mr-2"></i> 全部展开
+                    </button>
+                    <button id="collapse-all" class="flex items-center justify-center px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-compress-alt mr-2"></i> 全部收起
+                    </button>
+                    <div class="relative">
+                        <select id="expand-depth" class="appearance-none bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="1">展开深度 1</option>
+                            <option value="2">展开深度 2</option>
+                            <option value="3">展开深度 3</option>
+                            <option value="4">展开深度 4</option>
+                            <option value="99" selected>展开所有层级</option>  <!-- 默认选中全部展开 -->
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-guard">
+                    <div id="json-viewer" class="w-full"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">媒体预览</h2>
+            <div id="media-preview-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <p class="text-gray-500 dark:text-gray-400 col-span-full">检测到的媒体文件将显示在这里</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="fullscreen-view" class="fullscreen-overlay hidden">
+        <div class="fullscreen-controls">
+            <button id="zoom-in" class="fullscreen-control-button">
+                <i class="fas fa-search-plus"></i>
+            </button>
+            <button id="zoom-out" class="fullscreen-control-button">
+                <i class="fas fa-search-minus"></i>
+            </button>
+            <button id="rotate-right" class="fullscreen-control-button">
+                <i class="fas fa-redo"></i>
+            </button>
+            <button id="reset-view" class="fullscreen-control-button">
+                <i class="fas fa-compress-arrows-alt"></i>
+            </button>
+            <button id="close-fullscreen" class="fullscreen-control-button">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="fullscreen-content-container" class="relative">
+            <img id="fullscreen-image" class="fullscreen-content hidden" src="" alt="Full screen preview">
+            <video id="fullscreen-video" class="fullscreen-content hidden" controls playsinline webkit-playsinline></video>
+            <audio id="fullscreen-audio" class="hidden" controls></audio>
+        </div>
+    </div>
+
+    <script>
+        // Variables
+        let jsonData = null;
+        let csvData = null;
+        let currentPath = ['$']; // 当前路径栈（初始化包含根节点）
+        let pathHistory = [];    // 路径历史记录（可选）
+        let mediaFiles = [];
+        let currentScale = 1;
+        let currentRotation = 0;
+        
+        // DOM Elements
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('file-input');
+        const textInput = document.getElementById('text-input');
+        const parseButton = document.getElementById('parse-button');
+        const statusMessage = document.getElementById('status-message');
+        const viewerContainer = document.getElementById('viewer-container');
+        const jsonViewer = document.getElementById('json-viewer');
+        const currentPathDisplay = document.getElementById('current-path');
+        const expandAllButton = document.getElementById('expand-all');
+        const collapseAllButton = document.getElementById('collapse-all');
+        const expandDepthSelect = document.getElementById('expand-depth');
+        const mediaPreviewContainer = document.getElementById('media-preview-container');
+        const fullscreenView = document.getElementById('fullscreen-view');
+        const fullscreenImage = document.getElementById('fullscreen-image');
+        const fullscreenVideo = document.getElementById('fullscreen-video');
+        const fullscreenAudio = document.getElementById('fullscreen-audio');
+        const zoomInButton = document.getElementById('zoom-in');
+        const zoomOutButton = document.getElementById('zoom-out');
+        const rotateRightButton = document.getElementById('rotate-right');
+        const resetViewButton = document.getElementById('reset-view');
+        const closeFullscreenButton = document.getElementById('close-fullscreen');
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // 初始化主题
+            setupThemeToggle();
+
+            // // 确保元素正确获取
+            // const currentPathDisplay = document.getElementById('current-path');
+            // const expandAllButton = document.getElementById('expand-all');
+            // const collapseAllButton = document.getElementById('collapse-all');
+            // const expandDepthSelect = document.getElementById('expand-depth');
+            
+            // 展开/收起事件
+            expandAllButton.addEventListener('click', () => {
+                const depth = parseInt(expandDepthSelect.value);
+                expandAll(depth);
+            });
+
+            // 事件监听
+            expandDepthSelect.addEventListener('change', () => {
+                // 当选择器值变化时，重新展开到指定深度
+                const depth = parseInt(expandDepthSelect.value);
+                expandAll(depth);
+            });
+            
+            collapseAllButton.addEventListener('click', collapseAll);
+
+            if (fileInput) {
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        handleFileUpload(e.target.files[0]);
+                    }
+                });
+            }
+            
+            // 初始化路径显示
+            updatePathDisplay();
+
+        });
+
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.classList.add('active');
+        });
+        
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('active');
+        });
+        
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('active');
+            
+            if (e.dataTransfer.files.length) {
+                handleFileUpload(e.dataTransfer.files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            console.log("文件已选择:", e.target.files); 
+            if (e.target.files.length) {
+                handleFileUpload(e.target.files[0]);
+            }
+        });
+        
+        parseButton.addEventListener('click', () => {
+            const text = textInput.value.trim();
+            if (!text) {
+                showStatus('请输入JSON或CSV数据', 'error');
+                return;
+            }
+            
+            parseInputText(text);
+        });
+        
+        closeFullscreenButton.addEventListener('click', closeFullscreen);
+        
+        zoomInButton.addEventListener('click', () => {
+            currentScale += 0.1;
+            updateImageTransform();
+        });
+        
+        zoomOutButton.addEventListener('click', () => {
+            if (currentScale > 0.2) {
+                currentScale -= 0.1;
+                updateImageTransform();
+            }
+        });
+        
+        rotateRightButton.addEventListener('click', () => {
+            currentRotation += 90;
+            updateImageTransform();
+        });
+        
+        resetViewButton.addEventListener('click', () => {
+            currentScale = 1;
+            currentRotation = 0;
+            updateImageTransform();
+        });
+        
+        fullscreenView.addEventListener('click', (e) => {
+            if (e.target === fullscreenView) {
+                closeFullscreen();
+            }
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !fullscreenView.classList.contains('hidden')) {
+                closeFullscreen();
+            }
+        });
+        
+        //------------------------------ function -------------------------------
+        // 主题切换功能
+        function setupThemeToggle() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+
+            // 初始化主题
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+
+            // 切换事件
+            themeToggle.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                updateThemeIcon(isDark);
+            });
+
+            // 初始化图标
+            updateThemeIcon(document.documentElement.classList.contains('dark'));
+        }
+
+        // 更新主题图标
+        function updateThemeIcon(isDark) {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            const moonIcon = themeToggle.querySelector('.fa-moon');
+            const sunIcon = themeToggle.querySelector('.fa-sun');
+            
+            if (moonIcon) moonIcon.classList.toggle('hidden', isDark);
+            if (sunIcon) sunIcon.classList.toggle('hidden', !isDark);
+        }
+
+        // 文件上传处理
+        function handleFileUpload(file) {
+            // 验证文件类型
+            const validTypes = ['json', 'csv'];
+            const fileType = file.name.split('.').pop().toLowerCase();
+            
+            if (!validTypes.includes(fileType)) {
+                showStatus(`不支持的文件类型: .${fileType}`, 'error');
+                return;
+            }
+
+            // 读取文件内容
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                try {
+                    const content = e.target.result;
+                    parseInputText(content, fileType);
+                    showStatus(`成功加载 ${file.name}`, 'success');
+                } catch (error) {
+                    showStatus(`解析错误: ${error.message}`, 'error');
+                }
+            };
+            
+            reader.onerror = () => {
+                showStatus('文件读取失败', 'error');
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        // 路径重置函数
+        function resetPath() {
+            currentPath = ['$'];
+            updatePathDisplay();
+        }
+
+        function parseInputText(text, fileType = null) {
+            if (!fileType) {
+                // Try to auto-detect format
+                try {
+                    JSON.parse(text);
+                    fileType = 'json';
+                } catch (e) {
+                    if (text.includes(',') || text.includes(';')) {
+                        fileType = 'csv';
+                    } else {
+                        showStatus('无法识别数据格式，请确保输入有效的JSON或CSV', 'error');
+                        return;
+                    }
+                }
+            }
+            
+            if (fileType === 'json') {
+                try {
+                    jsonData = JSON.parse(text);
+                    csvData = null;
+                    resetPath();
+                    renderJsonData(jsonData);
+                    showStatus('JSON数据已成功加载', 'success');
+                } catch (e) {
+                    showStatus(`JSON解析错误: ${e.message}`, 'error');
+                }
+            } else if (fileType === 'csv') {
+                try {
+                    csvData = parseCSV(text);
+                    jsonData = null;
+                    resetPath();
+                    renderCsvData(csvData);
+                    showStatus('CSV数据已成功加载', 'success');
+                } catch (e) {
+                    showStatus(`CSV解析错误: ${e.message}`, 'error');
+                }
+            }
+        }
+        
+        function parseCSV(text) {
+            const lines = text.split(/\r\n|\n/);
+            const delimiter = text.includes(';') ? ';' : ',';
+            const result = [];
+            
+            if (lines.length < 2) {
+                throw new Error('CSV数据至少需要一个标题行和一个数据行');
+            }
+            
+            const headers = lines[0].split(delimiter).map(header => header.trim().replace(/^["'](.*)["']$/, '$1'));
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                
+                const values = parseCSVLine(lines[i], delimiter);
+                const row = {};
+                
+                headers.forEach((header, index) => {
+                    row[header] = values[index] || '';
+                });
+                
+                result.push(row);
+            }
+            
+            return result;
+        }
+        
+        function parseCSVLine(line, delimiter) {
+            const result = [];
+            let cell = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"' && (i === 0 || line[i-1] !== '\\')) {
+                    inQuotes = !inQuotes;
+                } else if (char === delimiter && !inQuotes) {
+                    result.push(cell.trim().replace(/^["'](.*)["']$/, '$1'));
+                    cell = '';
+                } else {
+                    cell += char;
+                }
+            }
+            
+            result.push(cell.trim().replace(/^["'](.*)["']$/, '$1'));
+            return result;
+        }
+        
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800', 'bg-yellow-100', 'text-yellow-800');
+            
+            if (type === 'success') {
+                statusMessage.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                statusMessage.classList.add('bg-red-100', 'text-red-800');
+            } else if (type === 'warning') {
+                statusMessage.classList.add('bg-yellow-100', 'text-yellow-800');
+            }
+            
+            statusMessage.classList.remove('hidden');
+            
+            setTimeout(() => {
+                statusMessage.classList.add('hidden');
+            }, 5000);
+        }
+        
+        function renderJsonData(data) {
+            jsonViewer.innerHTML = '';
+            mediaFiles = [];
+            mediaPreviewContainer.innerHTML = '<p class="text-gray-500 dark:text-gray-400 col-span-full">检测到的媒体文件将显示在这里</p>';
+            
+            if (data === null || data === undefined) {
+                jsonViewer.innerHTML = '<div class="p-4 text-gray-500">数据为空</div>';
+                viewerContainer.classList.remove('hidden');
+                return;
+            }
+            
+            const fragment = document.createDocumentFragment();
+            
+            renderJsonNode(data, fragment, 0, '$', 0);
+            
+            jsonViewer.appendChild(fragment);
+            viewerContainer.classList.remove('hidden');
+            
+            if (mediaFiles.length > 0) {
+                renderMediaPreviews();
+            }
+        }
+        
+        function renderCsvData(data) {
+            jsonViewer.innerHTML = '';
+            mediaFiles = [];
+            mediaPreviewContainer.innerHTML = '<p class="text-gray-500 dark:text-gray-400 col-span-full">检测到的媒体文件将显示在这里</p>';
+            
+            if (!data || !data.length) {
+                jsonViewer.innerHTML = '<div class="p-4 text-gray-500">数据为空</div>';
+                viewerContainer.classList.remove('hidden');
+                return;
+            }
+            
+            // Convert CSV to a more JSON-like structure for the viewer
+            const jsonLikeData = { 
+                rows: data 
+            };
+            
+            const fragment = document.createDocumentFragment();
+            
+            renderJsonNode(jsonLikeData, fragment, 0, '$', 0);
+            
+            jsonViewer.appendChild(fragment);
+            viewerContainer.classList.remove('hidden');
+            
+            if (mediaFiles.length > 0) {
+                renderMediaPreviews();
+            }
+        }
+        
+        function renderJsonNode(data, parent, level, path, depthIndex) {
+            const indentClass = `nested-depth-${depthIndex % 5}`;
+            const type = getValueType(data);
+            
+            if (type === 'object' || type === 'array') {
+                const isArray = Array.isArray(data);
+                const containerDiv = document.createElement('div');
+                containerDiv.className = level === 0 ? '' : `json-view-row ${indentClass}`;
+                containerDiv.dataset.path = path; // 添加路径标识
+                
+                // 检查是否是当前选中路径
+                if (path === getCurrentPathString()) {
+                    containerDiv.classList.add('active');
+                }
+                    
+                // 点击事件处理
+                containerDiv.addEventListener('click', (e) => {
+                    if (e.target === containerDiv || e.target === rowDiv) {
+                        updateCurrentPath(path);
+                    }
+                });
+
+                // Creating the main row with toggle
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'flex items-start';
+                
+                // Indentation based on level
+                if (level > 0) {
+                    for (let i = 0; i < level; i++) {
+                        const indentSpan = document.createElement('span');
+                        indentSpan.className = 'indent-marker';
+                        indentSpan.innerHTML = '&nbsp;';
+                        rowDiv.appendChild(indentSpan);
+                    }
+                }
+                
+                // Toggle icon
+                const toggleIcon = document.createElement('span');
+                toggleIcon.className = 'collapsible-icon';
+                toggleIcon.innerHTML = '<i class="fas fa-caret-down"></i>';
+                toggleIcon.dataset.path = path;
+                rowDiv.appendChild(toggleIcon);
+                
+                // Type indicator and count
+                const countLabel = isArray ? data.length : Object.keys(data).length;
+                const previewText = document.createElement('span');
+                
+                if (isArray) {
+                    previewText.innerHTML = `<span>Array</span> <span class="text-gray-500">[${countLabel}]</span>`;
+                } else {
+                    previewText.innerHTML = `<span>Object</span> <span class="text-gray-500">{${countLabel}}</span>`;
+                }
+                
+                rowDiv.appendChild(previewText);
+                containerDiv.appendChild(rowDiv);
+                
+                // Container for children
+                const childrenContainer = document.createElement('div');
+                childrenContainer.className = 'ml-5';
+                childrenContainer.dataset.path = path;
+                
+                toggleIcon.addEventListener('click', () => {
+                    toggleIcon.classList.toggle('collapsed');
+                    const iconElement = toggleIcon.querySelector('i');
+                    if (toggleIcon.classList.contains('collapsed')) {
+                        iconElement.className = 'fas fa-caret-right';
+                        childrenContainer.classList.add('hidden');
+                    } else {
+                        iconElement.className = 'fas fa-caret-down';
+                        childrenContainer.classList.remove('hidden');
+                    }
+                });
+                
+                // Render children
+                if (isArray) {
+                    data.forEach((item, index) => {
+                        const childPath = `${path}[${index}]`;
+                        const keyValueDiv = document.createElement('div');
+                        keyValueDiv.className = 'flex items-start mt-1';
+                        
+                        // Key display
+                        const keySpan = document.createElement('span');
+                        keySpan.className = 'json-key mr-2';
+                        keySpan.textContent = `[${index}]:`;
+                        keyValueDiv.appendChild(keySpan);
+                        
+                        // Create container for potentially nested value
+                        const valueContainer = document.createElement('div');
+                        valueContainer.className = 'flex-grow';
+                        
+                        const valueType = getValueType(item);
+                        if (valueType === 'object' || valueType === 'array') {
+                            renderJsonNode(item, valueContainer, level + 1, childPath, depthIndex + 1);
+                        } else {
+                            renderPrimitiveValue(item, valueContainer, childPath, valueType);
+                        }
+
+                        // 添加点击事件
+                        keyValueDiv.addEventListener('click', (e) => {
+                            if (e.target === keySpan || e.target === valueContainer) {
+                                updateCurrentPath(childPath);
+                            }
+                        });
+                        
+                        keyValueDiv.appendChild(valueContainer);
+                        childrenContainer.appendChild(keyValueDiv);
+                    });
+                } else {
+                    Object.keys(data).forEach(key => {
+                        const childPath = `${path}.${key}`;
+                        const keyValueDiv = document.createElement('div');
+                        keyValueDiv.className = 'flex items-start mt-1';
+                        
+                        // Key display
+                        const keySpan = document.createElement('span');
+                        keySpan.className = 'json-key mr-2';
+                        keySpan.textContent = `${key}:`;
+                        keyValueDiv.appendChild(keySpan);
+                        
+                        // Create container for potentially nested value
+                        const valueContainer = document.createElement('div');
+                        valueContainer.className = 'flex-grow';
+                        
+                        const valueType = getValueType(data[key]);
+                        if (valueType === 'object' || valueType === 'array') {
+                            renderJsonNode(data[key], valueContainer, level + 1, childPath, depthIndex + 1);
+                        } else {
+                            renderPrimitiveValue(data[key], valueContainer, childPath, valueType);
+                        }
+
+                        // 添加点击事件
+                        keyValueDiv.addEventListener('click', (e) => {
+                            if (e.target === keySpan || e.target === valueContainer) {
+                                updateCurrentPath(childPath);
+                            }
+                        });
+                        
+                        keyValueDiv.appendChild(valueContainer);
+                        childrenContainer.appendChild(keyValueDiv);
+                    });
+                }
+                
+                containerDiv.appendChild(childrenContainer);
+                parent.appendChild(containerDiv);
+            } else {
+                renderPrimitiveValue(data, parent, path, type);
+            }
+        }
+        
+        // 获取当前路径的字符串表示（如 "$.user.address"）
+        function getCurrentPathString() {
+            return currentPath.join('.').replace(/\.\[/g, '[');
+        }
+
+        // 更新当前路径并刷新高亮
+        function updateCurrentPath(newPath) {
+            // 移除旧高亮
+            document.querySelectorAll('.json-view-row.active, .path-component.active')
+                .forEach(el => el.classList.remove('active'));
+
+            // 更新路径栈
+            currentPath = parsePathToArray(newPath);
+            updatePathDisplay();
+            
+            // 添加新高亮
+            const pathStr = getCurrentPathString();
+            document.querySelector(`.json-view-row[data-path="${pathStr}"]`)?.classList.add('active');
+            document.querySelectorAll('.path-component').forEach((comp, i) => {
+                if (i <= currentPath.length - 1) comp.classList.add('active');
+            });
+        }
+
+        // 将路径字符串转为数组（如 "$.user[0].name" → ["$", "user", "0", "name"]）
+        function parsePathToArray(pathStr) {
+            return pathStr.split(/\.|(?=\[)/).map(seg => seg.replace(/^\[|\]$/g, ''));
+        }
+
+        // 更新路径导航点击处理函数
+        function handlePathComponentClick(index) {
+            // 1. 移除所有现有高亮
+            document.querySelectorAll('.json-view-row.active, .path-component.active').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // 2. 更新当前路径
+            currentPath = currentPath.slice(0, index + 1);
+            const currentPathString = currentPath.join('.').replace(/\.\[/g, '[');
+            
+            // 3. 应用新高亮
+            // 高亮路径组件
+            document.querySelectorAll('.path-component').forEach((comp, i) => {
+                if (i <= index) comp.classList.add('active');
+            });
+            
+            // 高亮对应的JSON节点
+            const targetNode = document.querySelector(`.json-view-row[data-path="${currentPathString}"]`);
+            if (targetNode) {
+                targetNode.classList.add('active');
+                
+                // 4. 确保节点可见（展开父级）
+                expandPathToNode(targetNode);
+            }
+            
+            // 5. 更新数据显示（如果需要）
+            // navigateToPath(index); // 如果你的实现中有这个函数
+        }
+
+        // 辅助函数：展开路径直到目标节点可见
+        function expandPathToNode(node) {
+            let current = node.parentElement;
+            while (current && !current.classList.contains('json-viewer')) {
+                if (current.classList.contains('hidden')) {
+                    const toggle = current.previousElementSibling?.querySelector('.collapsible-icon');
+                    if (toggle) {
+                        toggle.classList.remove('collapsed');
+                        const icon = toggle.querySelector('i');
+                        if (icon) icon.className = 'fas fa-caret-down';
+                        current.classList.remove('hidden');
+                    }
+                }
+                current = current.parentElement;
+            }
+        }
+
+        // 路径显示更新
+        function updatePathDisplay() {
+            const pathDisplay = document.getElementById('current-path');
+            pathDisplay.innerHTML = '';
+            
+            currentPath.forEach((component, index) => {
+                const span = document.createElement('span');
+                span.className = 'path-component';
+                span.textContent = component;
+                span.dataset.index = index;
+                
+                span.addEventListener('click', () => {
+                    navigateToPath(index);
+                });
+                
+                pathDisplay.appendChild(span);
+                
+                if (index < currentPath.length - 1) {
+                    const divider = document.createElement('span');
+                    divider.className = 'path-divider';
+                    divider.textContent = '>';
+                    pathDisplay.appendChild(divider);
+                }
+            });
+        }
+
+        function navigateToPath(targetIndex) {
+            // 截取到目标位置的路径
+            currentPath = currentPath.slice(0, targetIndex + 1);
+            updatePathDisplay();
+            
+            // 获取对应数据并重新渲染
+            let currentData = jsonData || csvData;
+            for (let i = 1; i < currentPath.length; i++) {
+                const key = currentPath[i];
+                currentData = currentData[key];
+            }
+            
+            renderJsonData(currentData); // 重新渲染子集
+        }
+
+        function isBase64Image(str) {
+            if (typeof str !== 'string') return false;
+            // 检查是否是 Base64 图片（data:image/...）
+            return /^data:image\/(jpeg|jpg|png|gif|svg\+xml|webp);base64,/.test(str);
+        }
+
+        function renderPrimitiveValue(value, parent, path, type) {
+            const valueSpan = document.createElement('span');
+            
+            switch (type) {
+                case 'string':
+                    valueSpan.className = 'json-string';
+                    
+                    // Check for media URLs
+                    const isMediaUrl = detectMediaUrl(value);
+                    
+                    if (isMediaUrl) {
+                        const mediaType = isMediaUrl;
+                        mediaFiles.push({path, url: value, type: mediaType});
+                        
+                        // Create container for text and preview button
+                        const container = document.createElement('div');
+                        container.className = 'flex items-center';
+                        
+                        // Value text
+                        valueSpan.textContent = `"${value}"`;
+                        container.appendChild(valueSpan);
+                        
+                        // Preview button
+                        const previewButton = document.createElement('button');
+                        previewButton.className = 'preview-button';
+                        previewButton.innerHTML = mediaType === 'image' 
+                            ? '<i class="fas fa-image"></i>' 
+                            : mediaType === 'video' 
+                                ? '<i class="fas fa-video"></i>' 
+                                : '<i class="fas fa-volume-up"></i>';
+                        previewButton.title = `预览${mediaType === 'image' ? '图片' : mediaType === 'video' ? '视频' : '音频'}`;
+                        
+                        previewButton.addEventListener('click', () => {
+                            showMediaPreview(value, mediaType);
+                        });
+                        
+                        container.appendChild(previewButton);
+                        
+                        // Thumbnail preview for images
+                        if (mediaType === 'image') {
+                            const img = document.createElement('img');
+                            img.className = 'media-preview';
+                            img.alt = '缩略图';
+                            img.src = value;
+                            container.appendChild(img);
+                        }
+                        
+                        parent.appendChild(container);
+                    } else if (isBase64Image(value)) {
+                        // Handle base64 images
+                        const container = document.createElement('div');
+                        container.className = 'flex items-center';
+                        
+                        // Truncate long base64 strings
+                        const displayValue = value.length > 50 
+                            ? `"${value.substring(0, 30)}...${value.substring(value.length - 20)}"`
+                            : `"${value}"`;
+                        
+                        valueSpan.textContent = displayValue;
+                        container.appendChild(valueSpan);
+                        
+                        // Preview button for base64 image
+                        const previewButton = document.createElement('button');
+                        previewButton.className = 'preview-button';
+                        previewButton.innerHTML = '<i class="fas fa-image"></i>';
+                        previewButton.title = '预览Base64图片';
+                        
+                        previewButton.addEventListener('click', () => {
+                            showMediaPreview(value, 'image');
+                        });
+                        
+                        container.appendChild(previewButton);
+                        
+                        // Thumbnail preview
+                        const img = document.createElement('img');
+                        img.className = 'media-preview';
+                        img.alt = 'Base64缩略图';
+                        img.src = value;
+                        container.appendChild(img);
+                        
+                        parent.appendChild(container);
+                        
+                        // Add to media files for gallery
+                        mediaFiles.push({path, url: value, type: 'image'});
+                    } else {
+                        valueSpan.textContent = `"${value}"`;
+                        parent.appendChild(valueSpan);
+                    }
+                    break;
+                    
+                case 'number':
+                    valueSpan.className = 'json-number';
+                    valueSpan.textContent = value;
+                    parent.appendChild(valueSpan);
+                    break;
+                    
+                case 'boolean':
+                    valueSpan.className = 'json-boolean';
+                    valueSpan.textContent = value;
+                    parent.appendChild(valueSpan);
+                    break;
+                    
+                case 'null':
+                    valueSpan.className = 'json-null';
+                    valueSpan.textContent = 'null';
+                    parent.appendChild(valueSpan);
+                    break;
+                    
+                default:
+                    valueSpan.textContent = value !== undefined ? value.toString() : 'undefined';
+                    parent.appendChild(valueSpan);
+            }
+        }
+        
+        function getValueType(value) {
+            if (value === null) return 'null';
+            if (Array.isArray(value)) return 'array';
+            return typeof value;
+        }
+        
+        function detectMediaUrl(url) {
+            if (typeof url !== 'string') return false;
+            
+            // Common media URL field names
+            const mediaUrlRegex = /\.(jpg|jpeg|png|gif|bmp|webp|svg|mp4|webm|mov|mp3|wav|ogg)($|\?)/i;
+            const imageUrlRegex = /\.(jpg|jpeg|png|gif|bmp|webp|svg)($|\?)/i;
+            const videoUrlRegex = /\.(mp4|webm|mov|avi|mkv)($|\?)/i;
+            const audioUrlRegex = /\.(mp3|wav|ogg|aac|flac)($|\?)/i;
+            
+            // Check for common URL patterns
+            if (url.match(/^https?:\/\//i)) {
+                if (url.match(imageUrlRegex)) return 'image';
+                if (url.match(videoUrlRegex)) return 'video';
+                if (url.match(audioUrlRegex)) return 'audio';
+                if (url.match(mediaUrlRegex)) return 'media';
+            }
+            
+            return false;
+        }
+        
+        function showMediaPreview(url, type) {
+            // 确保先关闭其他可能打开的预览
+            closeFullscreen();
+            
+            // 显示对应的媒体类型
+            switch (type) {
+                case 'image':
+                    fullscreenImage.src = url;
+                    fullscreenImage.classList.remove('hidden');
+                    break;
+                case 'video':
+                    fullscreenVideo.innerHTML = `<source src="${url}" type="video/mp4">`;
+                    fullscreenVideo.classList.remove('hidden');
+                    break;
+                case 'audio':
+                    fullscreenAudio.src = url;
+                    fullscreenAudio.classList.remove('hidden');
+                    break;
+            }
+            
+            // 显示浮层
+            fullscreenView.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // 防止页面滚动
+        }
+        
+        function resetFullscreenView() {
+            fullscreenImage.classList.add('hidden');
+            fullscreenVideo.classList.add('hidden');
+            fullscreenAudio.classList.add('hidden');
+            
+            fullscreenImage.src = '';
+            fullscreenVideo.innerHTML = '';
+            fullscreenAudio.src = '';
+            
+            currentScale = 1;
+            currentRotation = 0;
+            updateImageTransform();
+        }
+        
+        function closeFullscreen() {
+            fullscreenView.classList.add('hidden');
+            fullscreenImage.classList.add('hidden');
+            fullscreenVideo.classList.add('hidden');
+            fullscreenAudio.classList.add('hidden');
+            document.body.style.overflow = ''; // 恢复页面滚动
+            
+            // 重置视频/音频
+            fullscreenVideo.pause();
+            fullscreenVideo.currentTime = 0;
+            fullscreenAudio.pause();
+            fullscreenAudio.currentTime = 0;
+            
+            // 重置缩放和旋转
+            currentScale = 1;
+            currentRotation = 0;
+            updateImageTransform();
+        }
+        
+        function updateImageTransform() {
+            fullscreenImage.style.transform = `scale(${currentScale}) rotate(${currentRotation}deg)`;
+        }
+        
+        function renderMediaPreviews() {
+            mediaPreviewContainer.innerHTML = '';
+            
+            if (mediaFiles.length === 0) {
+                mediaPreviewContainer.innerHTML = '<p class="text-gray-500 dark:text-gray-400 col-span-full">未检测到媒体文件</p>';
+                return;
+            }
+            
+            mediaFiles.slice(0, 9).forEach(file => {
+                const card = document.createElement('div');
+                card.className = 'bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden';
+                
+                let content = '';
+                
+                if (file.type === 'image') {
+                    content = `
+                        <div class="relative aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-800">
+                            <img src="${file.url}" alt="预览" class="object-contain w-full h-full">
+                        </div>
+                    `;
+                } else if (file.type === 'video') {
+                    content = `
+                        <div class="relative aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-800">
+                            <video class="object-contain w-full h-full" controls playsinline webkit-playsinline>
+                                <source src="${file.url}" type="video/mp4">
+                            </video>
+                        </div>
+                    `;
+                } else if (file.type === 'audio') {
+                    content = `
+                        <div class="p-4 flex justify-center items-center h-24 bg-gray-200 dark:bg-gray-800">
+                            <i class="fas fa-volume-up text-3xl text-gray-500 dark:text-gray-400"></i>
+                        </div>
+                        <audio class="w-full" controls>
+                            <source src="${file.url}">
+                        </audio>
+                    `;
+                }
+                
+                card.innerHTML = `
+                    ${content}
+                    <div class="p-3">
+                        <p class="text-sm text-gray-600 dark:text-gray-300 truncate">${file.path}</p>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    showMediaPreview(file.url, file.type);
+                });
+                
+                mediaPreviewContainer.appendChild(card);
+            });
+            
+            if (mediaFiles.length > 9) {
+                const moreCard = document.createElement('div');
+                moreCard.className = 'bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center p-6';
+                moreCard.innerHTML = `
+                    <p class="text-lg font-semibold text-gray-600 dark:text-gray-300">
+                        +${mediaFiles.length - 9} 更多
+                    </p>
+                `;
+                mediaPreviewContainer.appendChild(moreCard);
+            }
+        }
+        
+        // 计算节点深度的辅助函数
+        function calculateNodeDepth(path) {
+            // 计算路径中的深度：每有一个点或左中括号算一级
+            return (path.match(/\./g) || []).length + (path.match(/\[/g) || []).length;
+        }
+
+        // 增强的expandAll函数
+        function expandAll(maxDepth = null) {
+            // 如果没有传入maxDepth，则使用选择器的值
+            const depth = maxDepth !== null ? maxDepth : parseInt(expandDepthSelect.value);
+            
+            const toggleIcons = document.querySelectorAll('.collapsible-icon');
+            
+            toggleIcons.forEach(toggle => {
+                const path = toggle.dataset.path;
+                // 计算当前节点的深度
+                const currentDepth = calculateNodeDepth(path);
+                
+                if (currentDepth <= depth) {
+                    // 展开节点
+                    toggle.classList.remove('collapsed');
+                    const icon = toggle.querySelector('i');
+                    if (icon) icon.className = 'fas fa-caret-down';
+                    
+                    const container = document.querySelector(`div[data-path="${path}"]`);
+                    if (container) container.classList.remove('hidden');
+                } else {
+                    // 确保深层节点是收起的
+                    toggle.classList.add('collapsed');
+                    const icon = toggle.querySelector('i');
+                    if (icon) icon.className = 'fas fa-caret-right';
+                    
+                    const container = document.querySelector(`div[data-path="${path}"]`);
+                    if (container) container.classList.add('hidden');
+                }
+            });
+        }
+
+        // 收起所有节点
+        function collapseAll() {
+            const toggleIcons = document.querySelectorAll('.collapsible-icon');
+            
+            toggleIcons.forEach(toggle => {
+                const path = toggle.dataset.path; // 从toggle元素获取path
+                toggle.classList.add('collapsed');
+                const icon = toggle.querySelector('i');
+                if (icon) icon.className = 'fas fa-caret-right';
+                
+                const container = document.querySelector(`div[data-path="${path}"]`);
+                if (container) container.classList.add('hidden');
+            });
+        }
+
+        // 路径导航功能
+        function navigateToPath(index) {
+            currentPath = currentPath.slice(0, index + 1);
+            updatePathDisplay();
+        }
+
+        // 更新路径显示
+        function updatePathDisplay() {
+            currentPathDisplay.innerHTML = '';
+            
+            currentPath.forEach((component, index) => {
+                const span = document.createElement('span');
+                span.className = 'path-component';
+                span.textContent = component;
+                span.dataset.index = index;
+                
+                span.addEventListener('click', () => {
+                    navigateToPath(index);
+                });
+                
+                currentPathDisplay.appendChild(span);
+                
+                if (index < currentPath.length - 1) {
+                    const divider = document.createElement('span');
+                    divider.className = 'path-divider';
+                    divider.textContent = '>';
+                    currentPathDisplay.appendChild(divider);
+                }
+            });
+        }    
+
+        // Example data for initial view
+        const exampleData = {
+            "示例数据": {
+                "类型": [
+                    "对象",
+                    "数组",
+                    "字符串",
+                    "数字"
+                ],
+                "嵌套对象": {
+                    "属性1": "值1",
+                    "属性2": 42,
+                    "更深层级": {
+                        "数组": [1, 2, 3],
+                        "图片示例": "https://picsum.photos/id/237/200/300"
+                    }
+                },
+                "媒体示例": {
+                    "图片": "https://picsum.photos/id/1/200/300",
+                    "视频": "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4"
+                }
+            }
+        };
+        
+        textInput.value = JSON.stringify(exampleData, null, 2);
+        renderJsonData(exampleData);
+        updatePathDisplay();
+    </script>
+</body>
+</html>
