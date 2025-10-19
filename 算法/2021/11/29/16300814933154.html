@@ -45,12 +45,12 @@ for (int i = n / 2 - 1; i &gt;= 0; i--)
     <span class="k">let</span> <span class="nv">right</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span>
     
     <span class="c1">//如果左指针left在当前堆大小n的范围内，并且left所指的值大于前最大值</span>
-    <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">array</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">array</span><span class="p">[</span><span class="n">largest</span><span class="p">]</span> <span class="p">{</span>
-        <span class="n">largest</span> <span class="o">=</span> <span class="n">left</span> <span class="c1">//赋值largest指向左指针位置，largest指向发生变化</span>
+    <span class="k">if</span> <span class="k">left</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">array</span><span class="p">[</span><span class="k">left</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">array</span><span class="p">[</span><span class="n">largest</span><span class="p">]</span> <span class="p">{</span>
+        <span class="n">largest</span> <span class="o">=</span> <span class="k">left</span> <span class="c1">//赋值largest指向左指针位置，largest指向发生变化</span>
     <span class="p">}</span>
     <span class="c1">//如果右指针right在当前堆大小n的范围内，并且right所指的值大于前最大值</span>
-    <span class="k">if</span> <span class="n">right</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">array</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">array</span><span class="p">[</span><span class="n">largest</span><span class="p">]</span> <span class="p">{</span>
-        <span class="n">largest</span> <span class="o">=</span> <span class="n">right</span> <span class="c1">//赋值largest指向右指针位置，largest指向发生变化</span>
+    <span class="k">if</span> <span class="k">right</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">array</span><span class="p">[</span><span class="k">right</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">array</span><span class="p">[</span><span class="n">largest</span><span class="p">]</span> <span class="p">{</span>
+        <span class="n">largest</span> <span class="o">=</span> <span class="k">right</span> <span class="c1">//赋值largest指向右指针位置，largest指向发生变化</span>
     <span class="p">}</span>
     
     <span class="c1">//如果largest指向发生变化，不再是默认i指的位置了</span>
@@ -90,30 +90,30 @@ for (int i = n / 2 - 1; i &gt;= 0; i--)
       <span class="c1"># If root is not largest, swap with largest and continue heapifying
 </span>      <span class="k">if</span> <span class="n">largest</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
           <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="n">largest</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">largest</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-          <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">largest</span><span class="p">)</span>
+          <span class="nf">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">largest</span><span class="p">)</span>
   
   
   <span class="k">def</span> <span class="nf">heapSort</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
-      <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+      <span class="n">n</span> <span class="o">=</span> <span class="nf">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
   
       <span class="c1"># Build max heap
-</span>      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-          <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</span>      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+          <span class="nf">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
   
-      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
           <span class="c1"># Swap
 </span>          <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
   
           <span class="c1"># Heapify root element
-</span>          <span class="n">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span>          <span class="nf">heapify</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
   
   
   <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-  <span class="n">heapSort</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
-  <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="s">"Sorted array is"</span><span class="p">)</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-      <span class="k">print</span><span class="p">(</span><span class="s">"%d "</span> <span class="o">%</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s">''</span><span class="p">)</span>
+  <span class="nf">heapSort</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="nf">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+  <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Sorted array is</span><span class="sh">"</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+      <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">%d </span><span class="sh">"</span> <span class="o">%</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="sh">''</span><span class="p">)</span>
 </code></pre></div></div> <p><strong>Java 实现</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Heap Sort in Java</span>
   
   <span class="kd">public</span> <span class="kd">class</span> <span class="nc">HeapSort</span> <span class="o">{</span>
@@ -180,7 +180,7 @@ for (int i = n / 2 - 1; i &gt;= 0; i--)
   <span class="o">}</span>
 </code></pre></div></div> <p><strong>C 实现</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Heap Sort in C</span>
   
-  <span class="cp">#include &lt;stdio.h&gt;
+  <span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
 </span>  
   <span class="c1">// Function to swap the the position of two elements</span>
   <span class="kt">void</span> <span class="nf">swap</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span>
@@ -242,7 +242,7 @@ for (int i = n / 2 - 1; i &gt;= 0; i--)
   <span class="p">}</span>
 </code></pre></div></div> <p><strong>C++ 实现</strong></p> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Heap Sort in C++</span>
   
-  <span class="cp">#include &lt;iostream&gt;
+  <span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
 </span>  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
   
   <span class="kt">void</span> <span class="nf">heapify</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>

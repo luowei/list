@@ -3,8 +3,8 @@
 <span class="cp">#ifndef _STACK_H   
 #define _STACK_H   
 </span>    
-<span class="cp">#include "stack.h"   
-#include "data.h"   
+<span class="cp">#include</span> <span class="cpf">"stack.h"</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"data.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="cp">#define ElemType TREE*   
 </span>    
@@ -27,9 +27,9 @@
 <span class="cp">#endif
 </span></code></pre></div></div> <p><strong>stack.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//stack.c   </span>
     
-<span class="cp">#include&lt;stdio.h&gt;   
-#include&lt;stdlib.h&gt;   
-#include "stack.h"   
+<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"stack.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="n">STACK</span> <span class="o">*</span> <span class="nf">InitStack</span><span class="p">()</span> <span class="c1">//初始化一个栈   </span>
 <span class="p">{</span>   
@@ -96,8 +96,8 @@
 <span class="cp">#endif 
 </span></code></pre></div></div> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
 <span class="c1">//将十进制数转换成八进制数   </span>
-<span class="cp">#include &lt;stdio.h&gt;   
-#include "stack.h"   
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"stack.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
 <span class="p">{</span>   
@@ -123,7 +123,7 @@
 <span class="cp">#ifndef _STACK_H   
 #define _STACK_H   
 </span>    
-<span class="cp">#include "data.h"   
+<span class="cp">#include</span> <span class="cpf">"data.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="cp">#define STACK_INIT_SIZE 10   
 #define STACK_INCREME 10   
@@ -144,9 +144,9 @@
 <span class="cp">#endif  
 </span></code></pre></div></div> <p><strong>stack.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//stack.c   </span>
     
-<span class="cp">#include&lt;stdio.h&gt;   
-#include&lt;stdlib.h&gt;   
-#include "stack.h"   
+<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"stack.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="n">STACK</span> <span class="o">*</span> <span class="nf">InitStack</span><span class="p">()</span> <span class="c1">//初始化一个栈   </span>
 <span class="p">{</span>   
@@ -208,8 +208,8 @@
 <span class="cp">#ifndef _DATA_H   
 #define _DATA_H   
 </span>    
-<span class="cp">#include "stack.h"   
-#include&lt;stdio.h&gt;   
+<span class="cp">#include</span> <span class="cpf">"stack.h"</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="c1">//typedef int ElemType;   </span>
 <span class="k">typedef</span> <span class="k">struct</span> <span class="c1">//位置   </span>
@@ -228,11 +228,11 @@
 <span class="cp">#endif 
 </span></code></pre></div></div> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
     
-<span class="cp">#include "stack.h"   
-#include "data.h"   
-#include &lt;stdio.h&gt;   
-#include &lt;conio.h&gt;   
-#include &lt;stdlib.h&gt;   
+<span class="cp">#include</span> <span class="cpf">"stack.h"</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"data.h"</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">&lt;conio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="kt">int</span> <span class="n">item</span><span class="p">[</span><span class="mi">10</span><span class="p">][</span><span class="mi">10</span><span class="p">]</span><span class="o">=</span><span class="p">{</span>   
     <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>   
@@ -346,7 +346,7 @@
     
 <span class="c1">//利用数组创建队列   </span>
     
-<span class="cp">#include &lt;stdio.h&gt;   
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="cp">#define MAX_SIZE 10   
 </span>    
@@ -411,7 +411,7 @@
     
 <span class="c1">//利用数组创建队列   </span>
     
-<span class="cp">#include &lt;stdio.h&gt;   
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="cp">#define MAX_SIZE 10   
 </span>    
@@ -478,8 +478,8 @@
     
 <span class="c1">//双队列   </span>
     
-<span class="cp">#include&lt;stdio.h&gt;   
-#include&lt;stdlib.h&gt;   
+<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="k">typedef</span> <span class="k">struct</span> <span class="n">_queue</span>   
 <span class="p">{</span>   
@@ -574,8 +574,8 @@
     
 <span class="c1">//输出限制型双队列   </span>
     
-<span class="cp">#include&lt;stdio.h&gt;   
-#include&lt;stdlib.h&gt;   
+<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="k">typedef</span> <span class="k">struct</span> <span class="n">_queue</span>   
 <span class="p">{</span>   

@@ -19,9 +19,9 @@
 <span class="cp">#endif  
 </span></code></pre></div></div> <p><strong>str.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//str.c   </span>
     
-<span class="cp">#include&lt;stdio.h&gt;   
-#include&lt;stdlib.h&gt;   
-#include "str.h"   
+<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"str.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="n">STR</span> <span class="o">*</span><span class="nf">NewStr</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">)</span> <span class="c1">//新建一个串   </span>
 <span class="p">{</span>   
@@ -103,9 +103,9 @@
 <span class="p">}</span>
 </code></pre></div></div> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
     
-<span class="cp">#include&lt;stdio.h&gt;   
-#include&lt;stdlib.h&gt;   
-#include "str.h"   
+<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"str.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
 <span class="p">{</span>   
@@ -154,10 +154,10 @@
 <span class="cp">#endif  
 </span></code></pre></div></div> <p><strong>tree.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//tree.c   </span>
     
-<span class="cp">#include&lt;stdio.h&gt;   
-#include&lt;stdlib.h&gt;   
-#include&lt;string.h&gt;   
-#include "tree.h"   
+<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;string.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"tree.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="kt">int</span> <span class="nf">InsertTree</span><span class="p">(</span><span class="n">TREE</span> <span class="o">**</span><span class="n">t</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="kt">int</span> <span class="n">size</span><span class="p">)</span>   
 <span class="c1">//第1个参数为目录指针变量的地址，第2个参数数据无类型，第3个参数数据的大小   </span>
@@ -262,10 +262,10 @@
     
 <span class="c1">//用树表示目录层次   </span>
     
-<span class="cp">#include&lt;stdio.h&gt;   
-#include&lt;stdlib.h&gt;   
-#include&lt;string.h&gt;   
-#include "tree.h"   
+<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;string.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"tree.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="n">TREE</span> <span class="o">*</span><span class="n">root</span><span class="o">=</span><span class="nb">NULL</span><span class="p">,</span><span class="o">*</span><span class="n">curDir</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span><span class="c1">//根目录、当前目录   </span>
     
@@ -352,11 +352,11 @@
 <span class="cp">#endif  
 </span></code></pre></div></div> <p><strong>tree.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//tree.c   </span>
     
-<span class="cp">#include &lt;stdio.h&gt;   
-#include &lt;conio.h&gt;   
-#include &lt;stdlib.h&gt;   
-#include "tree.h"   
-#include "stack.h"   
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">&lt;conio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"tree.h"</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"stack.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="n">TREE</span> <span class="o">*</span><span class="nf">MakeTree</span><span class="p">()</span>   
 <span class="p">{</span>   
@@ -419,7 +419,7 @@
 <span class="cp">#ifndef _STACK_H   
 #define _STACK_H   
 </span>    
-<span class="cp">#include "tree.h"   
+<span class="cp">#include</span> <span class="cpf">"tree.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="cp">#define ElemType TREE*   
 </span>    
@@ -442,9 +442,9 @@
 <span class="cp">#endif  
 </span></code></pre></div></div> <p><strong>stack.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//stack.c   </span>
     
-<span class="cp">#include&lt;stdio.h&gt;   
-#include&lt;stdlib.h&gt;   
-#include "stack.h"   
+<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"stack.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="n">STACK</span> <span class="o">*</span> <span class="nf">InitStack</span><span class="p">()</span> <span class="c1">//初始化一个栈   </span>
 <span class="p">{</span>   
@@ -526,9 +526,9 @@
 <span class="cp">#endif  
 </span></code></pre></div></div> <p><strong>tree.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//tree.c   </span>
     
-<span class="cp">#include &lt;stdio.h&gt;   
-#include &lt;stdlib.h&gt;   
-#include "tree.h"   
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"tree.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="n">TREE</span> <span class="o">*</span><span class="nf">MakeEmptyTree</span><span class="p">()</span> <span class="c1">//创建一个空树   </span>
 <span class="p">{</span>   
@@ -619,9 +619,9 @@
 <span class="p">}</span>
 </code></pre></div></div> <p><strong>test.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//test.c   </span>
     
-<span class="cp">#include &lt;stdio.h&gt;   
-#include &lt;stdlib.h&gt;   
-#include "tree.h"   
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">   </span><span class="cp">
+#include</span> <span class="cpf">"tree.h"</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>   
 <span class="p">{</span>   
@@ -660,7 +660,7 @@
 <span class="p">}</span>
 </code></pre></div></div> <h3 id="图">图</h3> <p><strong>demo中的图结构</strong><br /> <img src="https://raw.githubusercontent.com/luowei/list/gh-pages/images/c/base/01.jpg" alt="demo中的图结构" /></p> <p><strong>main.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c   </span>
     
-<span class="cp">#include&lt;stdio.h&gt;   
+<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">   </span><span class="cp">
 </span>    
 <span class="cp">#define MAX 10000   
 #define N 6   

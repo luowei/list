@@ -77,22 +77,22 @@
 </span>
 
 <span class="k">def</span> <span class="nf">mergeSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nf">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
 
         <span class="c1">#  r is the point where the array is divided into two subarrays
-</span>        <span class="n">r</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span>
+</span>        <span class="n">r</span> <span class="o">=</span> <span class="nf">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span>
         <span class="n">L</span> <span class="o">=</span> <span class="n">array</span><span class="p">[:</span><span class="n">r</span><span class="p">]</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">r</span><span class="p">:]</span>
 
         <span class="c1"># Sort the two halves
-</span>        <span class="n">mergeSort</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
-        <span class="n">mergeSort</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+</span>        <span class="nf">mergeSort</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+        <span class="nf">mergeSort</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
 
         <span class="n">i</span> <span class="o">=</span> <span class="n">j</span> <span class="o">=</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="c1"># Until we reach either end of either L or M, pick larger among
 </span>        <span class="c1"># elements L and M and place them in the correct position at A[p..r]
-</span>        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+</span>        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nf">len</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nf">len</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
                 <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -103,12 +103,12 @@
 
         <span class="c1"># When we run out of elements in either L or M,
 </span>        <span class="c1"># pick up the remaining elements and put in A[p..r]
-</span>        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+</span>        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nf">len</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
             <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+        <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nf">len</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
             <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
             <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -116,19 +116,19 @@
 
 <span class="c1"># Print the array
 </span><span class="k">def</span> <span class="nf">printList</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s">" "</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="sh">"</span><span class="s"> </span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">()</span>
 
 
 <span class="c1"># Driver program
-</span><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+</span><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
     <span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 
-    <span class="n">mergeSort</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+    <span class="nf">mergeSort</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 
-    <span class="k">print</span><span class="p">(</span><span class="s">"Sorted array is: "</span><span class="p">)</span>
-    <span class="n">printList</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Sorted array is: </span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">printList</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 </code></pre></div></div> <p><strong>Java 实现</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Merge sort in Java</span>
 
 <span class="kd">class</span> <span class="nc">MergeSort</span> <span class="o">{</span>
@@ -218,7 +218,7 @@
 <span class="o">}</span>
 </code></pre></div></div> <p><strong>C 实现</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Merge sort in C</span>
 
-<span class="cp">#include &lt;stdio.h&gt;
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
 </span>
 <span class="c1">// Merge two subarrays L and M into arr</span>
 <span class="kt">void</span> <span class="nf">merge</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">q</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
@@ -302,7 +302,7 @@
 <span class="p">}</span>
 </code></pre></div></div> <p><strong>C++ 实现</strong></p> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Merge sort in C++</span>
 
-<span class="cp">#include &lt;iostream&gt;
+<span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
 </span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 
 <span class="c1">// Merge two subarrays L and M into arr</span>

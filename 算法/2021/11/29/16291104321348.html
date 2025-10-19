@@ -64,30 +64,30 @@
     <span class="n">bucket</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># Create empty buckets
-</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
-        <span class="n">bucket</span><span class="p">.</span><span class="n">append</span><span class="p">([])</span>
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+        <span class="n">bucket</span><span class="p">.</span><span class="nf">append</span><span class="p">([])</span>
 
     <span class="c1"># Insert elements into their respective buckets
 </span>    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">array</span><span class="p">:</span>
-        <span class="n">index_b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">j</span><span class="p">)</span>
-        <span class="n">bucket</span><span class="p">[</span><span class="n">index_b</span><span class="p">].</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="n">index_b</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">j</span><span class="p">)</span>
+        <span class="n">bucket</span><span class="p">[</span><span class="n">index_b</span><span class="p">].</span><span class="nf">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
 
     <span class="c1"># Sort the elements of each bucket
-</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
-        <span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+        <span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nf">sorted</span><span class="p">(</span><span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
     <span class="c1"># Get the sorted elements
 </span>    <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
             <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
             <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">array</span>
 
 
 <span class="n">array</span> <span class="o">=</span> <span class="p">[.</span><span class="mi">42</span><span class="p">,</span> <span class="p">.</span><span class="mi">32</span><span class="p">,</span> <span class="p">.</span><span class="mi">33</span><span class="p">,</span> <span class="p">.</span><span class="mi">52</span><span class="p">,</span> <span class="p">.</span><span class="mi">37</span><span class="p">,</span> <span class="p">.</span><span class="mi">47</span><span class="p">,</span> <span class="p">.</span><span class="mi">51</span><span class="p">]</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"Sorted Array in descending order is"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">bucketSort</span><span class="p">(</span><span class="n">array</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Sorted Array in descending order is</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">bucketSort</span><span class="p">(</span><span class="n">array</span><span class="p">))</span>
 </code></pre></div></div> <p><strong>Java 实现</strong></p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Bucket sort in Java</span>
 
 <span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
@@ -137,8 +137,8 @@
 <span class="o">}</span>
 </code></pre></div></div> <p><strong>C 实现</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Bucket sort in C</span>
 
-<span class="cp">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
 </span>
 <span class="cp">#define NARRAY 7   // Array size
 #define NBUCKET 6  // Number of buckets
@@ -291,8 +291,8 @@
 <span class="p">}</span>
 </code></pre></div></div> <p><strong>C++ 实现</strong></p> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Bucket sort in C++</span>
 
-<span class="cp">#include &lt;iomanip&gt;
-#include &lt;iostream&gt;
+<span class="cp">#include</span> <span class="cpf">&lt;iomanip&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
 </span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 
 <span class="cp">#define NARRAY 7   // Array size

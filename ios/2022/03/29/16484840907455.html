@@ -356,14 +356,14 @@ print(p) // Point(x: 11.0, y: 22.0)
 <span class="cp">#else</span>
 <span class="cp">#endif</span>
 </code></pre></div></div> <p><img src="https://luowei.github.io/list/media/16484840907455/16484896497894.jpg" alt="" /></p> <h2 id="打印日志">打印日志</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="n">log</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">msg</span><span class="p">:</span> <span class="kt">T</span><span class="p">,</span> 
-             <span class="nv">file</span><span class="p">:</span> <span class="kt">NSString</span> <span class="o">=</span> <span class="kd">#file</span><span class="p">,</span>
-             <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kd">#line</span><span class="p">,</span>
-               <span class="nv">fn</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="kd">#function</span><span class="p">)</span> <span class="p">{</span>
+             <span class="nv">file</span><span class="p">:</span> <span class="kt">NSString</span> <span class="o">=</span> <span class="k">#file</span><span class="p">,</span>
+             <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="k">#line</span><span class="p">,</span>
+               <span class="nv">fn</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="k">#function</span><span class="p">)</span> <span class="p">{</span>
 <span class="cp">#if DEBUG</span>
 <span class="k">let</span> <span class="nv">prefix</span> <span class="o">=</span> <span class="s">"</span><span class="se">\(</span><span class="n">file</span><span class="o">.</span> <span class="n">lastPathComponent</span><span class="se">)</span><span class="s">_</span><span class="se">\(</span><span class="n">line</span><span class="se">)</span><span class="s">_</span><span class="se">\(</span><span class="n">fn</span><span class="se">)</span><span class="s">: "</span>
 <span class="nf">print</span> <span class="p">(</span><span class="k">prefix</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
 <span class="cp">#endif</span>
-</code></pre></div></div> <h2 id="系统版本">系统版本</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="kd">#available(iOS 10, macOS 10.12，*)</span> <span class="p">{</span>
+</code></pre></div></div> <h2 id="系统版本">系统版本</h2> <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="k">#available</span><span class="p">(</span><span class="n">iOS</span> <span class="mi">10</span><span class="p">,</span> <span class="n">macOS</span> <span class="mf">10.12</span><span class="err">，</span><span class="o">*</span><span class="p">)</span> <span class="p">{</span>
 <span class="c1">//对于i0S平台，只在i0S10及以上版本执行</span>
 <span class="c1">//对于macOS平台，只在macOS 10.12及以上版本执行</span>
 <span class="c1">//最后的*表示在其他所有平台都执行</span>

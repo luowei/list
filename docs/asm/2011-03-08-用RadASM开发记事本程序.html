@@ -167,18 +167,18 @@ aboutApp     db     "</span><span class="err">小记事本，维唯为为，汇�
 <span class="nf">BOOL</span> <span class="nv">BitBlt</span><span class="p">(</span>
 <span class="nf">HDC</span> <span class="nv">hdcDest</span><span class="p">,</span> <span class="o">//</span> <span class="nv">handle</span> <span class="nv">to</span> <span class="nv">destination</span> <span class="nv">device</span> <span class="nv">context</span>
 <span class="nf">int</span> <span class="nv">nXDest</span><span class="p">,</span> <span class="o">//</span> <span class="nv">x</span><span class="o">-</span><span class="nv">coordinate</span> <span class="nv">of</span> <span class="nv">destination</span> <span class="nv">rectangle</span><span class="err">'</span><span class="nv">s</span> <span class="nv">upper</span><span class="o">-</span><span class="nv">left</span>
-<span class="err">//</span> <span class="nf">corner</span>
+<span class="o">//</span> <span class="nf">corner</span>
 <span class="nf">int</span> <span class="nv">nYDest</span><span class="p">,</span> <span class="o">//</span> <span class="nv">y</span><span class="o">-</span><span class="nv">coordinate</span> <span class="nv">of</span> <span class="nv">destination</span> <span class="nv">rectangle</span><span class="err">'</span><span class="nv">s</span> <span class="nv">upper</span><span class="o">-</span><span class="nv">left</span>
-<span class="err">//</span> <span class="nf">corner</span>
+<span class="o">//</span> <span class="nf">corner</span>
 <span class="nf">int</span> <span class="nv">nWidth</span><span class="p">,</span> <span class="o">//</span> <span class="nv">width</span> <span class="nv">of</span> <span class="nv">destination</span> <span class="nv">rectangle</span>
 <span class="nf">int</span> <span class="nv">nHeight</span><span class="p">,</span> <span class="o">//</span> <span class="nv">height</span> <span class="nv">of</span> <span class="nv">destination</span> <span class="nv">rectangle</span>
 <span class="nf">HDC</span> <span class="nv">hdcSrc</span><span class="p">,</span> <span class="o">//</span> <span class="nv">handle</span> <span class="nv">to</span> <span class="nv">source</span> <span class="nv">device</span> <span class="nv">context</span>
 <span class="nf">int</span> <span class="nv">nXSrc</span><span class="p">,</span> <span class="o">//</span> <span class="nv">x</span><span class="o">-</span><span class="nv">coordinate</span> <span class="nv">of</span> <span class="nv">source</span> <span class="nv">rectangle</span><span class="err">'</span><span class="nv">s</span> <span class="nv">upper</span><span class="o">-</span><span class="nv">left</span>
-<span class="err">//</span> <span class="nf">corner</span>
+<span class="o">//</span> <span class="nf">corner</span>
 <span class="nf">int</span> <span class="nv">nYSrc</span><span class="p">,</span> <span class="o">//</span> <span class="nv">y</span><span class="o">-</span><span class="nv">coordinate</span> <span class="nv">of</span> <span class="nv">source</span> <span class="nv">rectangle</span><span class="err">'</span><span class="nv">s</span> <span class="nv">upper</span><span class="o">-</span><span class="nv">left</span>
-<span class="err">//</span> <span class="nf">corner</span>
-<span class="kd">DW</span><span class="nv">ORD</span> <span class="nv">dwRop</span> <span class="o">//</span> <span class="nv">raster</span> <span class="nv">operation</span> <span class="nv">code</span>
-<span class="err">)</span><span class="c1">;</span>
+<span class="o">//</span> <span class="nf">corner</span>
+<span class="kt">DWORD</span> <span class="kd">dw</span><span class="nv">Rop</span> <span class="o">//</span> <span class="nv">raster</span> <span class="nv">operation</span> <span class="nv">code</span>
+<span class="p">)</span><span class="c1">;</span>
 <span class="c1">;--------------------------------------------------------------------------------</span>
 <span class="err">#</span>
 
@@ -270,7 +270,7 @@ aboutApp     db     "</span><span class="err">小记事本，维唯为为，汇�
         <span class="nf">invoke</span> <span class="nv">CreateWindowEx</span><span class="p">,</span><span class="nv">WS_EX_CLIENTEDGE</span><span class="p">,</span><span class="nv">offset</span> <span class="nb">edi</span><span class="nv">tClass</span><span class="p">,</span><span class="err">\</span>
         <span class="nf">NULL</span><span class="p">,</span><span class="nv">WS_CHILDWINDOW</span> <span class="nv">OR</span> <span class="nv">WS_VISIBLE</span> <span class="nv">OR</span> <span class="nv">WS_VSCROLL</span> <span class="nv">OR</span> <span class="nv">WS_HSCROLL</span> <span class="err">\</span>
         <span class="nf">OR</span> <span class="nb">ES</span><span class="nv">_AUTOHSCROLL</span> <span class="nv">OR</span> <span class="nb">ES</span><span class="nv">_AUTOVSCROLL</span> <span class="nv">OR</span> <span class="nb">ES</span><span class="nv">_MULTILINE</span> <span class="nv">OR</span> <span class="nv">WS_MAXIMIZE</span><span class="p">,</span><span class="err">\</span>
-        <span class="err">0,0,300,300,</span><span class="nf">hWnd</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">hInstance</span><span class="p">,</span><span class="nv">NULL</span>
+        <span class="err">0</span><span class="p">,</span><span class="err">0</span><span class="p">,</span><span class="err">300</span><span class="p">,</span><span class="err">300</span><span class="p">,</span><span class="nf">hWnd</span><span class="p">,</span><span class="nv">NULL</span><span class="p">,</span><span class="nv">hInstance</span><span class="p">,</span><span class="nv">NULL</span>
         <span class="nf">mov</span> <span class="nv">hEdit</span><span class="p">,</span><span class="nb">eax</span>
         <span class="c1">;设置RichEdit的文本编辑区域，留空一部分用于显示行号</span>
         <span class="nf">invoke</span> <span class="nv">SendMessage</span><span class="p">,</span><span class="nv">hEdit</span><span class="p">,</span><span class="nv">EM_SETMARGINS</span><span class="p">,</span><span class="nv">EC_LEFTMARGIN</span> <span class="nv">OR</span> <span class="nv">EC_RIGHTMARGIN</span><span class="p">,</span><span class="mh">00050005h</span><span class="o">+</span><span class="mi">40</span>

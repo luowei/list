@@ -45,7 +45,7 @@
 
 <span class="c1">//fn是选逸闭包</span>
 <span class="kd">func</span> <span class="nf">test3</span><span class="p">(</span><span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">Fn</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">async</span> <span class="p">{</span>
+    <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="k">async</span> <span class="p">{</span>
         <span class="nf">fn</span><span class="p">()</span>
     <span class="p">}</span>
 <span class="p">}</span>
@@ -59,7 +59,7 @@
     <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
         <span class="c1">//Dispatchoueue.global().async也是一个逃逸闭包</span>
         <span class="c1">//它用到了实例成员（属性、方法），编译器会强制要求明确写出self</span>
-        <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">async</span> <span class="p">{</span>
+        <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="k">async</span> <span class="p">{</span>
             <span class="k">self</span><span class="o">.</span><span class="nf">fn</span><span class="p">()</span>
         <span class="p">}</span>
     <span class="p">}</span>

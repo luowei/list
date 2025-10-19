@@ -44,9 +44,9 @@
     <span class="nt">&lt;/c:if&gt;</span>
 <span class="nt">&lt;/td&gt;</span>
 </code></pre></div></div> <p><strong>selected提交表单</strong> <br /> js</p> <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*提交查询表单*/</span>
-<span class="kd">function</span> <span class="nx">nonEasouIdSubmit</span><span class="p">()</span>
+<span class="kd">function</span> <span class="nf">nonEasouIdSubmit</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">searchForm</span><span class="dl">"</span><span class="p">).</span><span class="nx">submit</span><span class="p">();</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">searchForm</span><span class="dl">"</span><span class="p">).</span><span class="nf">submit</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div></div> <p>jsp</p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">"nonEasouId"</span> <span class="na">id=</span><span class="s">"nonEasouId"</span> <span class="na">onchange=</span><span class="s">"nonEasouIdSubmit()"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">""</span> <span class="err">&lt;</span><span class="na">c:if</span> <span class="na">test=</span><span class="s">"${nonEasouId==null}"</span><span class="nt">&gt;</span>selected<span class="nt">&lt;/c:if&gt;</span>&gt;
@@ -97,7 +97,7 @@
         <span class="nt">&lt;figure</span> <span class="na">class=</span><span class="s">"fig_marquee"</span><span class="nt">&gt;</span>${whichDown.song}<span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">"${whichDown.songer ne null &amp;&amp; whichDown.songer ne ''}"</span><span class="nt">&gt;</span>-${whichDown.songer}<span class="nt">&lt;/c:if&gt;&lt;/figure&gt;</span>
         <span class="nt">&lt;script&gt;</span>
             <span class="kd">var</span> <span class="nx">$</span><span class="o">=</span><span class="kd">function</span><span class="p">(</span><span class="nx">par</span><span class="p">){</span>
-                <span class="k">return</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span><span class="o">==</span><span class="k">typeof</span> <span class="nx">par</span><span class="p">?</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">par</span><span class="p">):</span><span class="nx">par</span><span class="p">;</span>
+                <span class="k">return</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span><span class="o">==</span><span class="k">typeof</span> <span class="nx">par</span><span class="p">?</span><span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">par</span><span class="p">):</span><span class="nx">par</span><span class="p">;</span>
             <span class="p">};</span>
         <span class="nt">&lt;/script&gt;</span>
     <span class="nt">&lt;/h1&gt;</span>
@@ -111,15 +111,15 @@
 <span class="nt">&lt;/style&gt;</span>
 <span class="nt">&lt;body&gt;</span>
 <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
-    <span class="nx">jQuery</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">){</span>
-        <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#startDate1</span><span class="dl">'</span><span class="p">).</span><span class="nx">datepicker</span><span class="p">({</span>
+    <span class="nf">jQuery</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">){</span>
+        <span class="nf">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#startDate1</span><span class="dl">'</span><span class="p">).</span><span class="nf">datepicker</span><span class="p">({</span>
             <span class="na">yearRange</span><span class="p">:</span> <span class="dl">'</span><span class="s1">1900:2099</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//取值范围.</span>
             <span class="na">showOn</span><span class="p">:</span> <span class="dl">'</span><span class="s1">both</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//输入框和图片按钮都可以使用日历控件。</span>
             <span class="na">buttonImage</span><span class="p">:</span> <span class="dl">'</span><span class="s1">../js/date/calendar.gif</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//日历控件的按钮</span>
             <span class="na">buttonImageOnly</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
             <span class="na">showButtonPanel</span><span class="p">:</span> <span class="kc">true</span>
         <span class="p">});</span>
-        <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#startDate2</span><span class="dl">'</span><span class="p">).</span><span class="nx">datepicker</span><span class="p">({</span>
+        <span class="nf">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#startDate2</span><span class="dl">'</span><span class="p">).</span><span class="nf">datepicker</span><span class="p">({</span>
             <span class="na">yearRange</span><span class="p">:</span> <span class="dl">'</span><span class="s1">1900:2099</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//取值范围.</span>
             <span class="na">showOn</span><span class="p">:</span> <span class="dl">'</span><span class="s1">both</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//输入框和图片按钮都可以使用日历控件。</span>
             <span class="na">buttonImage</span><span class="p">:</span> <span class="dl">'</span><span class="s1">../js/date/calendar.gif</span><span class="dl">'</span><span class="p">,</span> <span class="c1">//日历控件的按钮</span>
@@ -130,7 +130,7 @@
 <span class="nt">&lt;/script&gt;</span>
 <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
     <span class="c1">//整个Step3的对象</span>
-    <span class="kd">function</span> <span class="nx">SubStep3</span><span class="p">(</span><span class="nx">startDate</span><span class="p">,</span><span class="nx">startHour</span><span class="p">,</span><span class="nx">startMin</span><span class="p">,</span><span class="nx">intervalDay</span><span class="p">,</span><span class="nx">intervalWeek</span><span class="p">,</span><span class="nx">whichDay</span><span class="p">,</span><span class="nx">whichWeek</span><span class="p">,</span><span class="nx">whichWeekDay</span><span class="p">,</span><span class="nx">whichMonth</span><span class="p">,</span><span class="nx">week</span><span class="p">,</span><span class="nx">month</span><span class="p">){</span>
+    <span class="kd">function</span> <span class="nf">SubStep3</span><span class="p">(</span><span class="nx">startDate</span><span class="p">,</span><span class="nx">startHour</span><span class="p">,</span><span class="nx">startMin</span><span class="p">,</span><span class="nx">intervalDay</span><span class="p">,</span><span class="nx">intervalWeek</span><span class="p">,</span><span class="nx">whichDay</span><span class="p">,</span><span class="nx">whichWeek</span><span class="p">,</span><span class="nx">whichWeekDay</span><span class="p">,</span><span class="nx">whichMonth</span><span class="p">,</span><span class="nx">week</span><span class="p">,</span><span class="nx">month</span><span class="p">){</span>
         <span class="k">this</span><span class="p">.</span><span class="nx">startDate</span><span class="o">=</span><span class="nx">startDate</span><span class="p">;</span>
         <span class="k">this</span><span class="p">.</span><span class="nx">startHour</span><span class="o">=</span><span class="nx">startHour</span><span class="p">;</span>
         <span class="k">this</span><span class="p">.</span><span class="nx">startMin</span><span class="o">=</span><span class="nx">startMin</span><span class="p">;</span>
@@ -146,160 +146,160 @@
     <span class="c1">//var Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday;</span>
     <span class="c1">//var January,February,March,April,May,June,July,August,September,October,November,December;</span>
     <span class="c1">//var startDate,startHour,startMin,intervalDay,intervalWeek,whichDay,whichWeek,whichMonth;</span>
-    <span class="kd">var</span> <span class="nx">SubStep3</span><span class="o">=</span><span class="k">new</span> <span class="nx">SubStep3</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">step_3</span><span class="o">=</span><span class="k">new</span> <span class="nb">Array</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">step_3_1</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">step_3_2</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">step_3_3</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">step_3_4</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
-    <span class="kd">function</span> <span class="nx">divStep_3_1Click</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">SubStep3</span><span class="o">=</span><span class="k">new</span> <span class="nc">SubStep3</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">step_3</span><span class="o">=</span><span class="k">new</span> <span class="nc">Array</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">step_3_1</span><span class="o">=</span><span class="k">new</span> <span class="nc">Object</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">step_3_2</span><span class="o">=</span><span class="k">new</span> <span class="nc">Object</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">step_3_3</span><span class="o">=</span><span class="k">new</span> <span class="nc">Object</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">step_3_4</span><span class="o">=</span><span class="k">new</span> <span class="nc">Object</span><span class="p">();</span>
+    <span class="kd">function</span> <span class="nf">divStep_3_1Click</span><span class="p">(){</span>
     <span class="p">}</span>
-    <span class="kd">function</span> <span class="nx">divStep_3_2Click</span><span class="p">(){</span>
+    <span class="kd">function</span> <span class="nf">divStep_3_2Click</span><span class="p">(){</span>
     <span class="p">}</span>
-    <span class="kd">function</span> <span class="nx">divStep_3_3Click</span><span class="p">(){</span>
+    <span class="kd">function</span> <span class="nf">divStep_3_3Click</span><span class="p">(){</span>
     <span class="p">}</span>
-    <span class="kd">function</span> <span class="nx">divStep_3_4Click</span><span class="p">(){</span>
+    <span class="kd">function</span> <span class="nf">divStep_3_4Click</span><span class="p">(){</span>
     <span class="p">}</span>
     <span class="c1">//检查是否为数字</span>
-    <span class="kd">function</span> <span class="nx">checkNum</span><span class="p">(){</span>
+    <span class="kd">function</span> <span class="nf">checkNum</span><span class="p">(){</span>
         <span class="kd">var</span> <span class="nx">eventcode</span><span class="o">=</span><span class="nx">event</span><span class="p">.</span><span class="nx">keyCode</span><span class="p">;</span>
         <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">eventcode</span><span class="o">&gt;=</span><span class="mi">48</span> <span class="o">&amp;&amp;</span> <span class="nx">eventcode</span><span class="o">&lt;=</span><span class="mi">57</span><span class="p">)){</span>
             <span class="nx">event</span><span class="p">.</span><span class="nx">returnValue</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
         <span class="p">}</span>
     <span class="p">}</span>
     <span class="c1">//检查日期</span>
-    <span class="kd">function</span> <span class="nx">checkStartDate</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
-        <span class="kd">var</span> <span class="nx">splitDate</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">-</span><span class="dl">"</span><span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">year</span><span class="o">=</span><span class="nb">Number</span><span class="p">(</span><span class="nx">splitDate</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-        <span class="kd">var</span> <span class="nx">month</span><span class="o">=</span><span class="nb">Number</span><span class="p">(</span><span class="nx">splitDate</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-        <span class="kd">var</span> <span class="nx">day</span><span class="o">=</span><span class="nb">Number</span><span class="p">(</span><span class="nx">splitDate</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
-        <span class="nb">Date</span> <span class="nx">date</span><span class="o">=</span><span class="k">new</span> <span class="nb">Date</span><span class="p">();</span>
+    <span class="kd">function</span> <span class="nf">checkStartDate</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">splitDate</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">-</span><span class="dl">"</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">year</span><span class="o">=</span><span class="nc">Number</span><span class="p">(</span><span class="nx">splitDate</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+        <span class="kd">var</span> <span class="nx">month</span><span class="o">=</span><span class="nc">Number</span><span class="p">(</span><span class="nx">splitDate</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="kd">var</span> <span class="nx">day</span><span class="o">=</span><span class="nc">Number</span><span class="p">(</span><span class="nx">splitDate</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+        <span class="nb">Date</span> <span class="nx">date</span><span class="o">=</span><span class="k">new</span> <span class="nc">Date</span><span class="p">();</span>
         <span class="k">if</span><span class="p">(</span><span class="nx">year</span><span class="o">&lt;</span><span class="mi">1970</span> <span class="o">||</span> <span class="nx">year</span><span class="o">&gt;</span><span class="mi">3000</span> <span class="o">||</span> <span class="nx">month</span><span class="o">&gt;</span><span class="mi">12</span> <span class="o">||</span> <span class="nx">month</span><span class="o">&lt;</span><span class="mi">0</span> <span class="o">||</span> <span class="nx">day</span><span class="o">&gt;</span><span class="mi">31</span> <span class="o">||</span><span class="nx">day</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">){</span>
-            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
         <span class="p">}</span>
         <span class="k">else</span><span class="p">{</span>
-            <span class="nx">date</span><span class="p">.</span><span class="nx">setDate</span><span class="p">(</span><span class="nx">year</span><span class="p">).</span><span class="nx">setMonth</span><span class="p">(</span><span class="nx">month</span><span class="p">).</span><span class="nx">setFullYear</span><span class="p">(</span><span class="nx">day</span><span class="p">);</span>
+            <span class="nx">date</span><span class="p">.</span><span class="nf">setDate</span><span class="p">(</span><span class="nx">year</span><span class="p">).</span><span class="nf">setMonth</span><span class="p">(</span><span class="nx">month</span><span class="p">).</span><span class="nf">setFullYear</span><span class="p">(</span><span class="nx">day</span><span class="p">);</span>
 <span class="c1">//alert(date.toString());</span>
         <span class="p">}</span>
-        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+        <span class="nf">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="c1">//检查小时</span>
-    <span class="kd">function</span> <span class="nx">checkStartHour</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
-        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">24</span><span class="p">){</span>
-            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nf">checkStartHour</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">24</span><span class="p">){</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
         <span class="p">}</span>
-        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+        <span class="nf">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="c1">//检查分钟</span>
-    <span class="kd">function</span> <span class="nx">checkStartMin</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
-        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">59</span><span class="p">){</span>
+    <span class="kd">function</span> <span class="nf">checkStartMin</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">59</span><span class="p">){</span>
 <span class="c1">//alert("_______:"+document.getElementById(fieldId).value);</span>
-            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
         <span class="p">}</span>
-        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+        <span class="nf">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="c1">//-------------------------------------</span>
     <span class="c1">//检查间隔天数</span>
-    <span class="kd">function</span> <span class="nx">checkIntervalDay</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
-        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">366</span><span class="p">){</span>
-            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nf">checkIntervalDay</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">366</span><span class="p">){</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">""</span><span class="p">;</span>
         <span class="p">}</span>
-        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+        <span class="nf">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="c1">//检查间隔周数</span>
-    <span class="kd">function</span> <span class="nx">checkIntervalWeek</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
-        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">52</span><span class="p">){</span>
-            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">"</span><span class="s2">1</span><span class="dl">"</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nf">checkIntervalWeek</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">52</span><span class="p">){</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">"</span><span class="s2">1</span><span class="dl">"</span><span class="p">;</span>
         <span class="p">}</span>
-        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+        <span class="nf">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="c1">//把值设置到对应的div对象属性中</span>
-    <span class="kd">function</span> <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
-        <span class="kd">var</span> <span class="nx">fieldValue</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nf">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">fieldValue</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">;</span>
         <span class="k">if</span><span class="p">(</span><span class="nx">divId</span><span class="o">==</span><span class="dl">"</span><span class="s2">step-3-1</span><span class="dl">"</span><span class="p">){</span>
-            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setDivValue___fieldValue:</span><span class="dl">"</span><span class="o">+</span><span class="nx">fieldValue</span><span class="p">);</span>
-            <span class="nx">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
+            <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setDivValue___fieldValue:</span><span class="dl">"</span><span class="o">+</span><span class="nx">fieldValue</span><span class="p">);</span>
+            <span class="nf">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">divId</span><span class="o">==</span><span class="dl">"</span><span class="s2">step-3-2</span><span class="dl">"</span><span class="p">){</span>
-            <span class="nx">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
+            <span class="nf">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">divId</span><span class="o">==</span><span class="dl">"</span><span class="s2">step-3-3</span><span class="dl">"</span><span class="p">){</span>
-            <span class="nx">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
+            <span class="nf">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">divId</span><span class="o">==</span><span class="dl">"</span><span class="s2">step-3-4</span><span class="dl">"</span><span class="p">){</span>
-            <span class="nx">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
+            <span class="nf">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">);</span>
         <span class="p">}</span>
     <span class="p">}</span>
     <span class="c1">//设置对象属性的值</span>
-    <span class="kd">function</span> <span class="nx">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">){</span>
+    <span class="kd">function</span> <span class="nf">setField</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span><span class="nx">fieldValue</span><span class="p">){</span>
         <span class="kd">var</span> <span class="nx">fieldIdArr</span><span class="o">=</span><span class="p">[</span><span class="dl">"</span><span class="s2">startDate</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">startHour</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">startMin</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">intervalDay</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">intervalWeek</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">whichDay</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">whichWeek</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">whichWeekDay</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">whichMonth</span><span class="dl">"</span><span class="p">];</span>
-        <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___fieldValue:</span><span class="dl">"</span><span class="o">+</span><span class="nx">fieldValue</span><span class="p">);</span>
-        <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">fieldId:</span><span class="dl">"</span><span class="o">+</span><span class="nx">fieldId</span><span class="p">);</span>
-        <span class="nx">alert</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">toString</span><span class="p">());</span>
+        <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___fieldValue:</span><span class="dl">"</span><span class="o">+</span><span class="nx">fieldValue</span><span class="p">);</span>
+        <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">fieldId:</span><span class="dl">"</span><span class="o">+</span><span class="nx">fieldId</span><span class="p">);</span>
+        <span class="nf">alert</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">.</span><span class="nf">toString</span><span class="p">()</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nf">toString</span><span class="p">());</span>
         <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
             <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startDate</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
-            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startDate</span><span class="p">);</span>
+            <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startDate</span><span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">1</span><span class="p">]){</span>
             <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startHour</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
-            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startHour</span><span class="p">);</span>
+            <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startHour</span><span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">2</span><span class="p">]){</span>
             <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startMin</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
-            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startMin</span><span class="p">);</span>
+            <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">startMin</span><span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">3</span><span class="p">]){</span>
             <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">intervalDay</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
-            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">intervalDay</span><span class="p">);</span>
+            <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">intervalDay</span><span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">4</span><span class="p">]){</span>
             <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">intervalWeek</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
-            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">intervalWeek</span><span class="p">);</span>
+            <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">intervalWeek</span><span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">5</span><span class="p">]){</span>
             <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichDay</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
-            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichDay</span><span class="p">);</span>
+            <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichDay</span><span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">6</span><span class="p">]){</span>
             <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichWeek</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
-            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichWeek</span><span class="p">);</span>
+            <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichWeek</span><span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">7</span><span class="p">]){</span>
             <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichWeekDay</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
-            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.whichWeekDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichWeekDay</span><span class="p">);</span>
+            <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.whichWeekDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichWeekDay</span><span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">fieldId</span> <span class="o">==</span> <span class="nx">fieldIdArr</span><span class="p">[</span><span class="mi">8</span><span class="p">]){</span>
             <span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichMonth</span><span class="o">=</span><span class="nx">fieldValue</span><span class="p">;</span>
-            <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichMonth</span><span class="p">);</span>
+            <span class="nf">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">setField___step_3_1.intervalDay:</span><span class="dl">"</span><span class="o">+</span><span class="nx">step_3_1</span><span class="p">.</span><span class="nx">whichMonth</span><span class="p">);</span>
         <span class="p">}</span>
     <span class="p">}</span>
     <span class="c1">//检查第几天</span>
-    <span class="kd">function</span> <span class="nx">checkWhichDay</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
-        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">31</span><span class="p">){</span>
-            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">"</span><span class="s2">1</span><span class="dl">"</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nf">checkWhichDay</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">((</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">31</span><span class="p">){</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">).</span><span class="nx">value</span><span class="o">=</span><span class="dl">"</span><span class="s2">1</span><span class="dl">"</span><span class="p">;</span>
         <span class="p">}</span>
-        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
+        <span class="nf">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="c1">//选择天被点击</span>
-    <span class="kd">function</span> <span class="nx">selWhichDayClick</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId</span><span class="p">,</span><span class="nx">disableFieldId1</span><span class="p">,</span><span class="nx">disableFieldId12</span><span class="p">){</span>
-        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">enableFieldId</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
-        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">disableFieldId1</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
-        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">disableFieldId12</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
-        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId</span><span class="p">);</span>
+    <span class="kd">function</span> <span class="nf">selWhichDayClick</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId</span><span class="p">,</span><span class="nx">disableFieldId1</span><span class="p">,</span><span class="nx">disableFieldId12</span><span class="p">){</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">enableFieldId</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">disableFieldId1</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">disableFieldId12</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
+        <span class="nf">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="c1">//选择周被点击</span>
-    <span class="kd">function</span> <span class="nx">selWhichWeekClick</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId1</span><span class="p">,</span><span class="nx">enableFieldId2</span><span class="p">,</span><span class="nx">disableFieldId</span><span class="p">){</span>
-        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">disableFieldId</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
-        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">enableFieldId1</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
-        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">enableFieldId2</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
-        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId1</span><span class="p">);</span>
-        <span class="nx">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId2</span><span class="p">);</span>
+    <span class="kd">function</span> <span class="nf">selWhichWeekClick</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId1</span><span class="p">,</span><span class="nx">enableFieldId2</span><span class="p">,</span><span class="nx">disableFieldId</span><span class="p">){</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">disableFieldId</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">enableFieldId1</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="nx">enableFieldId2</span><span class="p">).</span><span class="nx">disabled</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
+        <span class="nf">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId1</span><span class="p">);</span>
+        <span class="nf">setDivValue</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">enableFieldId2</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="c1">//当每周的星期被点击</span>
-    <span class="kd">function</span> <span class="nx">weekCheckbox</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldName</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+    <span class="kd">function</span> <span class="nf">weekCheckbox</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldName</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
     <span class="p">}</span>
     <span class="c1">//当每月的星期被点击</span>
-    <span class="kd">function</span> <span class="nx">monthClick</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldName</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
+    <span class="kd">function</span> <span class="nf">monthClick</span><span class="p">(</span><span class="nx">divId</span><span class="p">,</span><span class="nx">fieldName</span><span class="p">,</span><span class="nx">fieldId</span><span class="p">){</span>
     <span class="p">}</span>
 <span class="nt">&lt;/script&gt;</span>
 <span class="c">&lt;!-- 每天--&gt;</span>
